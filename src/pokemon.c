@@ -56,6 +56,8 @@
 #include "constants/trainers.h"
 #include "constants/union_room.h"
 #include "constants/weather.h"
+#include "day_night.h"
+#include "constants/day_night.h"
 
 #define FRIENDSHIP_EVO_THRESHOLD ((P_FRIENDSHIP_EVO_THRESHOLD >= GEN_9) ? 160 : 220)
 
@@ -1473,7 +1475,7 @@ static u16 CalculateBoxMonChecksum(struct BoxPokemon *boxMon)
 #define CALC_STAT(base, iv, ev, statIndex, field)               \
 {                                                               \
     u8 baseStat = gSpeciesInfo[species].base;                   \
-    s32 n = (((2 * baseStat + iv + ev / 4) * level) / 100) + 5; \
+    s32 n = (((2 * baseStat + iv) * level) / 100) + 5;          \
     n = ModifyStatByNature(nature, n, statIndex);               \
     if (B_FRIENDSHIP_BOOST == TRUE)                             \
         n = n + ((n * 10 * friendship) / (MAX_FRIENDSHIP * 100));\
@@ -1485,17 +1487,17 @@ void CalculateMonStats(struct Pokemon *mon)
     s32 oldMaxHP = GetMonData(mon, MON_DATA_MAX_HP, NULL);
     s32 currentHP = GetMonData(mon, MON_DATA_HP, NULL);
     s32 hpIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_HP) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_HP_IV, NULL);
-    s32 hpEV = GetMonData(mon, MON_DATA_HP_EV, NULL);
+    //s32 hpEV = GetMonData(mon, MON_DATA_HP_EV, NULL);
     s32 attackIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_ATK) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_ATK_IV, NULL);
-    s32 attackEV = GetMonData(mon, MON_DATA_ATK_EV, NULL);
+    //s32 attackEV = GetMonData(mon, MON_DATA_ATK_EV, NULL);
     s32 defenseIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_DEF) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_DEF_IV, NULL);
-    s32 defenseEV = GetMonData(mon, MON_DATA_DEF_EV, NULL);
+    //s32 defenseEV = GetMonData(mon, MON_DATA_DEF_EV, NULL);
     s32 speedIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_SPEED) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_SPEED_IV, NULL);
-    s32 speedEV = GetMonData(mon, MON_DATA_SPEED_EV, NULL);
+    //s32 speedEV = GetMonData(mon, MON_DATA_SPEED_EV, NULL);
     s32 spAttackIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_SPATK) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_SPATK_IV, NULL);
-    s32 spAttackEV = GetMonData(mon, MON_DATA_SPATK_EV, NULL);
+    //s32 spAttackEV = GetMonData(mon, MON_DATA_SPATK_EV, NULL);
     s32 spDefenseIV = GetMonData(mon, MON_DATA_HYPER_TRAINED_SPDEF) ? MAX_PER_STAT_IVS : GetMonData(mon, MON_DATA_SPDEF_IV, NULL);
-    s32 spDefenseEV = GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
+    //s32 spDefenseEV = GetMonData(mon, MON_DATA_SPDEF_EV, NULL);
     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP, NULL);
     s32 level = GetLevelFromMonExp(mon);
@@ -1512,7 +1514,8 @@ void CalculateMonStats(struct Pokemon *mon)
     else
     {
         s32 n = 2 * gSpeciesInfo[species].baseHP + hpIV;
-        newMaxHP = (((n + hpEV / 4) * level) / 100) + level + 10;
+        //newMaxHP = (((n + hpEV / 4) * level) / 100) + level + 10;
+        newMaxHP = ((n * level) / 100) + level + 10;
     }
 
     gBattleScripting.levelUpHP = newMaxHP - oldMaxHP;
@@ -1565,6 +1568,11 @@ void BoxMonToMon(const struct BoxPokemon *src, struct Pokemon *dest)
     SetMonData(dest, MON_DATA_MAIL, &value);
     value = GetBoxMonData(&dest->box, MON_DATA_HP_LOST);
     CalculateMonStats(dest);
+    if (GetMonData(dest, MON_DATA_DEAD) && FlagGet(FLAG_NUZLOCKE))
+    {
+        value = 0;
+        SetMonData(dest, MON_DATA_HP, &value);
+    }
     value = GetMonData(dest, MON_DATA_MAX_HP) - value;
     SetMonData(dest, MON_DATA_HP, &value);
 }
@@ -1580,6 +1588,23 @@ u8 GetLevelFromMonExp(struct Pokemon *mon)
 
     return level - 1;
 }
+// u8 GetLevelFromMonExp(struct Pokemon *mon)
+// {
+//     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
+//     u32 exp = GetMonData(mon, MON_DATA_EXP, NULL);
+//     s32 level = 1;
+
+//     while (level <= GetCurrentLevelCap() && gExperienceTables[gSpeciesInfo[species].growthRate][level] <= exp)
+//         level++;
+
+//     if (level - 1 == GetCurrentLevelCap())
+//     {
+//         exp = gExperienceTables[gSpeciesInfo[species].growthRate][level - 1];
+//         SetMonData(mon, MON_DATA_EXP, &exp);
+//     }
+
+//     return level - 1;
+// }
 
 u8 GetLevelFromBoxMonExp(struct BoxPokemon *boxMon)
 {
@@ -2542,6 +2567,9 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
         case MON_DATA_LANGUAGE:
             retVal = boxMon->language;
             break;
+        case MON_DATA_DEAD:
+            retVal = boxMon->dead;
+            break;
         case MON_DATA_SANITY_IS_BAD_EGG:
             retVal = boxMon->isBadEgg;
             break;
@@ -2970,6 +2998,9 @@ void SetBoxMonData(struct BoxPokemon *boxMon, s32 field, const void *dataArg)
             break;
         case MON_DATA_LANGUAGE:
             SET8(boxMon->language);
+            break;
+        case MON_DATA_DEAD:
+            SET8(boxMon->dead);
             break;
         case MON_DATA_SANITY_IS_BAD_EGG:
             SET8(boxMon->isBadEgg);
@@ -3434,6 +3465,7 @@ const u32 sExpCandyExperienceTable[] = {
     [EXP_3000 - 1] = 3000,
     [EXP_10000 - 1] = 10000,
     [EXP_30000 - 1] = 30000,
+    [EXP_999999 - 1] = 999999, //(gExperienceTables[gSpeciesInfo[species].growthRate][levelCap] - currentExp),
 };
 
 // Returns TRUE if the item has no effect on the Pokémon, FALSE otherwise
@@ -3510,8 +3542,18 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                 {
                     u16 species = GetMonData(mon, MON_DATA_SPECIES, NULL);
                     dataUnsigned = sExpCandyExperienceTable[param - 1] + GetMonData(mon, MON_DATA_EXP, NULL);
-                    if (dataUnsigned > gExperienceTables[gSpeciesInfo[species].growthRate][MAX_LEVEL])
-                        dataUnsigned = gExperienceTables[gSpeciesInfo[species].growthRate][MAX_LEVEL];
+                    // if (dataUnsigned > gExperienceTables[gSpeciesInfo[species].growthRate][MAX_LEVEL])
+                    //     dataUnsigned = gExperienceTables[gSpeciesInfo[species].growthRate][MAX_LEVEL];
+                    
+                    if (B_RARE_CANDY_CAP)
+                    {
+                        u32 currentLevelCap = GetCurrentLevelCap();
+
+                        if (dataUnsigned > gExperienceTables[gSpeciesInfo[species].growthRate][currentLevelCap])
+                            dataUnsigned = gExperienceTables[gSpeciesInfo[species].growthRate][currentLevelCap];
+                    }
+                    else if (dataUnsigned > gExperienceTables[gSpeciesInfo[species].growthRate][MAX_LEVEL])
+                         dataUnsigned = gExperienceTables[gSpeciesInfo[species].growthRate][MAX_LEVEL];
                 }
 
                 if (dataUnsigned != 0) // Failsafe
@@ -4165,7 +4207,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_DAY:
-                if (GetTimeOfDay() != TIME_NIGHT && friendship >= FRIENDSHIP_EVO_THRESHOLD)
+                if (GetCurrentTimeOfDay() != TIME_NIGHT && friendship >= 220)
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
             case EVO_LEVEL_DAY:
@@ -4173,7 +4215,7 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem, s
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
             case EVO_FRIENDSHIP_NIGHT:
-                if (GetTimeOfDay() == TIME_NIGHT && friendship >= FRIENDSHIP_EVO_THRESHOLD)
+                if (GetCurrentTimeOfDay() == TIME_NIGHT && friendship >= 220)
                     targetSpecies = evolutions[i].targetSpecies;
                 break;
             case EVO_LEVEL_NIGHT:
@@ -6491,12 +6533,14 @@ void HealBoxPokemon(struct BoxPokemon *boxMon)
     u32 data;
 
     data = 0;
-    SetBoxMonData(boxMon, MON_DATA_HP_LOST, &data);
+    SetBoxMonData(boxMon, MON_DATA_HP, &data);
+    //data = 0;
+    //SetBoxMonData(boxMon, MON_DATA_HP, &data);
 
-    data = STATUS1_NONE;
-    SetBoxMonData(boxMon, MON_DATA_STATUS, &data);
+    // data = STATUS1_NONE;
+    // SetBoxMonData(boxMon, MON_DATA_STATUS, &data);
 
-    BoxMonRestorePP(boxMon);
+    // BoxMonRestorePP(boxMon);
 }
 
 u16 GetCryIdBySpecies(u16 species)

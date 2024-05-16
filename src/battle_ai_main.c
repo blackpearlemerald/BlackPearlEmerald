@@ -1027,6 +1027,12 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         }
     }
 
+    // Ai Override used to FIX substitute logic
+    u32 noOfHitsToFaintSubMon = NoOfHitsForTargetToFaintAI(battlerDef, battlerAtk);
+    DebugPrintf(" noOfHitsToFaintSubMon: %d", noOfHitsToFaintSubMon);
+    u32 shouldSub = (noOfHitsToFaintSubMon > 4);
+    DebugPrintf(" shouldSub: %d", shouldSub);
+
     // check move effects
     switch (moveEffect)
     {
@@ -1453,7 +1459,7 @@ static s32 AI_CheckBadMove(u32 battlerAtk, u32 battlerDef, u32 move, s32 score)
         case EFFECT_SUBSTITUTE:
             if (gBattleMons[battlerAtk].status2 & STATUS2_SUBSTITUTE || aiData->abilities[battlerDef] == ABILITY_INFILTRATOR)
                 ADJUST_SCORE(-8);
-            else if (aiData->hpPercents[battlerAtk] <= 25)
+            else if (!shouldSub)
                 ADJUST_SCORE(-10);
             else if (HasSubstituteIgnoringMove(battlerDef))
                 ADJUST_SCORE(-8);
@@ -3155,6 +3161,12 @@ static u32 AI_CalcMoveScore(u32 battlerAtk, u32 battlerDef, u32 move)
     bool32 isDoubleBattle = IsValidDoubleBattle(battlerAtk);
     u32 i;
 
+    // Ai Override fixing Hazards logic, if player mon one shots enemy mon at current hp, ai will not click a hazard mon
+    u32 noOfHitsToFaintHazardMon = NoOfHitsForTargetToFaintAI(battlerDef, battlerAtk);
+    u32 shouldHazard = (noOfHitsToFaintHazardMon > 1);
+    DebugPrintf(" noOfHitsToFaintHazard Mon: %d", noOfHitsToFaintHazardMon);
+    DebugPrintf(" shouldHazard: %d", shouldHazard);
+
     // The AI should understand that while Dynamaxed, status moves function like Protect.
     if (IsDynamaxed(battlerAtk) && gMovesInfo[move].category == DAMAGE_CATEGORY_STATUS)
         moveEffect = EFFECT_PROTECT;
@@ -3174,6 +3186,11 @@ static u32 AI_CalcMoveScore(u32 battlerAtk, u32 battlerDef, u32 move)
         || (gBattleMons[battlerAtk].status1 & STATUS1_FROSTBITE && HasOnlyMovesWithCategory(battlerAtk, DAMAGE_CATEGORY_SPECIAL, TRUE)))
             ADJUST_SCORE(-20); // Force switch if all your attacking moves are physical and you have Natural Cure.
     }
+
+    // if (!shouldHazard && IsNonVolatileStatusMoveEffect(moveEffect))
+    // {
+    //     ADJUST_SCORE(-20);
+    // }
 
     // move effect checks
     switch (moveEffect)
@@ -3634,15 +3651,83 @@ static u32 AI_CalcMoveScore(u32 battlerAtk, u32 battlerDef, u32 move)
         }
         break;
     case EFFECT_SPIKES:
-    case EFFECT_STEALTH_ROCK:
-    case EFFECT_STICKY_WEB:
-    case EFFECT_TOXIC_SPIKES:
-        if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, aiData));
+        if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, aiData))
         {
             if (gDisableStructs[battlerAtk].isFirstTurn)
                 ADJUST_SCORE(BEST_EFFECT);
             else
                 ADJUST_SCORE(DECENT_EFFECT);
+        }
+        else
+        {
+            //AI Override to NOT click hazards if player mon has setup move
+            ADJUST_SCORE(-10);
+        }
+
+        //AI Override to NOT click hazards if player mon will one shot Ai
+        if (!shouldHazard)
+        {
+            ADJUST_SCORE(-10);
+        }
+        break;
+    case EFFECT_STEALTH_ROCK:
+        if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, aiData))
+        {
+            if (gDisableStructs[battlerAtk].isFirstTurn)
+                ADJUST_SCORE(BEST_EFFECT);
+            else
+                ADJUST_SCORE(DECENT_EFFECT);
+        }
+        else
+        {
+            //AI Override to NOT click hazards if player mon has setup move
+            ADJUST_SCORE(-10);
+        }
+
+        //AI Override to NOT click hazards if player mon will one shot Ai
+        if (!shouldHazard)
+        {
+            ADJUST_SCORE(-10);
+        }
+        break;
+    case EFFECT_STICKY_WEB:
+        if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, aiData))
+        {
+            if (gDisableStructs[battlerAtk].isFirstTurn)
+                ADJUST_SCORE(BEST_EFFECT);
+            else
+                ADJUST_SCORE(DECENT_EFFECT);
+        }
+        else
+        {
+            //AI Override to NOT click hazards if player mon has setup move
+            ADJUST_SCORE(-10);
+        }
+
+        //AI Override to NOT click hazards if player mon will one shot Ai
+        if (!shouldHazard)
+        {
+            ADJUST_SCORE(-10);
+        }
+        break;
+    case EFFECT_TOXIC_SPIKES:
+        if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, aiData))
+        {
+            if (gDisableStructs[battlerAtk].isFirstTurn)
+                ADJUST_SCORE(BEST_EFFECT);
+            else
+                ADJUST_SCORE(DECENT_EFFECT);
+        }
+        else
+        {
+            //AI Override to NOT click hazards if player mon has setup move
+            ADJUST_SCORE(-10);
+        }
+
+        //AI Override to NOT click hazards if player mon will one shot Ai
+        if (!shouldHazard)
+        {
+            ADJUST_SCORE(-10);
         }
         break;
     case EFFECT_FORESIGHT:

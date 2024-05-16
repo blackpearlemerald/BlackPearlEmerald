@@ -22,6 +22,11 @@ Route110_TrickHousePuzzle8_EventScript_Keira::
 	msgbox Route110_TrickHousePuzzle8_Text_KeiraPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route110_TrickHousePuzzle8_EventScript_Keira2::
+	trainerbattle_single TRAINER_KEIRA2, Route110_TrickHousePuzzle8_Text_KeiraIntro, Route110_TrickHousePuzzle8_Text_KeiraDefeat
+	msgbox Route110_TrickHousePuzzle8_Text_KeiraPostBattle, MSGBOX_AUTOCLOSE
+	end
+
 Route110_TrickHousePuzzle8_EventScript_Leroy::
 	trainerbattle_single TRAINER_LEROY, Route110_TrickHousePuzzle8_Text_LeroyIntro, Route110_TrickHousePuzzle8_Text_LeroyDefeat
 	msgbox Route110_TrickHousePuzzle8_Text_LeroyPostBattle, MSGBOX_AUTOCLOSE

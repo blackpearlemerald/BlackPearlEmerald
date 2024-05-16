@@ -56,6 +56,7 @@
 #include "constants/union_room.h"
 #include "constants/vars.h"
 #include "constants/weather.h"
+#include "constants/day_night.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -884,6 +885,12 @@ gText_UnusedNicknameReceivedPokemon::
 gText_PlayerWhitedOut::
 	.string "{PLAYER} is out of usable\n"
 	.string "POKéMON!\p{PLAYER} whited out!$"
+
+gText_PlayerNuzlockeFailed::
+    .string "{PLAYER} failed the\n"
+    .string "Nuzlocke challenge.\p"
+    .string "The Nuzlocke setting\n"
+    .string "has been turned off.$"
 
 gText_RegisteredTrainerinPokeNav::
 	.string "Registered {STR_VAR_1} {STR_VAR_2}\n"

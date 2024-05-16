@@ -6419,7 +6419,6 @@ static void SetPlacedMonData(u8 boxId, u8 position)
 {
     if (OW_PC_HEAL <= GEN_7)
         HealPokemon(&sStorage->movingMon);
-
     if (boxId == TOTAL_BOXES_COUNT)
         gPlayerParty[position] = sStorage->movingMon;
     else

@@ -114,6 +114,8 @@ enum {
     MON_DATA_GIGANTAMAX_FACTOR,
     MON_DATA_TERA_TYPE,
     MON_DATA_EVOLUTION_TRACKER,
+    MON_DATA_DEAD, //MAYBE DELETE THIS???
+    MON_DATA_SPECIES2, //NUZLOCK DUPE CLAUSE ADD??
 };
 
 struct PokemonSubstruct0
@@ -246,7 +248,9 @@ struct BoxPokemon
     u8 hasSpecies:1;
     u8 isEgg:1;
     u8 blockBoxRS:1; // Unused, but Pokémon Box Ruby & Sapphire will refuse to deposit a Pokémon with this flag set.
-    u8 unused_13:4;
+    //u8 unused_13:4;
+    u8 dead : 1;
+    u8 unused : 3;
     u8 otName[PLAYER_NAME_LENGTH];
     u8 markings:4;
     u8 compressedStatus:4;
@@ -389,9 +393,9 @@ struct SpeciesInfo /*0x8C*/
  /* 0x38 */ u16 trainerScale;
  /* 0x3A */ u16 trainerOffset;
  /* 0x3C */ const u8 *description;
- /* 0x40 */ u8 bodyColor : 7;
+ /* 0x40 */ u8 bodyColor:7;
             // Graphical Data
-            u8 noFlip : 1;
+            u8 noFlip:1;
  /* 0x41 */ u8 frontAnimDelay;
  /* 0x42 */ u8 frontAnimId;
  /* 0x43 */ u8 backAnimId;

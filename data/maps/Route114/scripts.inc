@@ -90,8 +90,14 @@ Route114_EventScript_Lucas::
 	end
 
 Route114_EventScript_Shane::
-	trainerbattle_single TRAINER_SHANE, Route114_Text_ShaneIntro, Route114_Text_ShaneDefeat
-	msgbox Route114_Text_ShanePostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_SHANE, Route114_Text_ShaneIntro, Route114_Text_ShaneDefeat, Route114_EventScript_Shane_Reward
+	msgbox Route114_Text_ShanePostBattle, MSGBOX_DEFAULT
+	release
+	end
+
+Route114_EventScript_Shane_Reward::
+	giveitem ITEM_AGGRONITE
+	release
 	end
 
 Route114_EventScript_Nancy::

@@ -28,6 +28,38 @@ Route110_TrickHousePuzzle5_EventScript_FoundScroll::
 	goto Route110_TrickHousePuzzle_EventScript_FoundScroll
 	end
 
+Route110_TrickHousePuzzle5_EventScript_Yuji3::
+	trainerbattle_single TRAINER_YUJI3, Route110_TrickHousePuzzle5_Text_YujiIntro, Route110_TrickHousePuzzle5_Text_YujiDefeat
+	msgbox Route110_TrickHousePuzzle5_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+Route110_TrickHousePuzzle5_EventScript_Yuji4::
+	trainerbattle_single TRAINER_YUJI4, Route110_TrickHousePuzzle5_Text_YujiIntro, Route110_TrickHousePuzzle5_Text_YujiDefeat
+	msgbox Route110_TrickHousePuzzle5_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+Route110_TrickHousePuzzle5_EventScript_Yuji5::
+	trainerbattle_single TRAINER_YUJI5, Route110_TrickHousePuzzle5_Text_YujiIntro, Route110_TrickHousePuzzle5_Text_YujiDefeat
+	msgbox Route110_TrickHousePuzzle5_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+Route110_TrickHousePuzzle5_EventScript_Yuji6::
+	trainerbattle_single TRAINER_YUJI6, Route110_TrickHousePuzzle5_Text_YujiIntro, Route110_TrickHousePuzzle5_Text_YujiDefeat
+	msgbox Route110_TrickHousePuzzle5_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	end
+
+Route110_TrickHousePuzzle5_Text_YujiIntro:
+	.string "Heh! Boulders like this, I can brush\n"
+	.string "aside with one finger!$"
+
+Route110_TrickHousePuzzle5_Text_YujiDefeat:
+	.string "I can push boulders, but I can't solve\n"
+	.string "the puzzle…$"
+
+Route110_TrickHousePuzzle5_Text_YujiPostBattle:
+	.string "It's not good enough to be brawny…\n"
+	.string "You have to use your head. Be brainy!$"
+
 Route110_TrickHousePuzzle5_EventScript_Mechadoll1::
 	lockall
 	applymovement LOCALID_MECHADOLL_1, Common_Movement_FacePlayer

@@ -341,9 +341,9 @@ Route116_EventScript_Dawson::
 	msgbox Route116_Text_DawsonPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route116_EventScript_Devan::
-	trainerbattle_single TRAINER_DEVAN, Route116_Text_DevanIntro, Route116_Text_DevanDefeat
-	msgbox Route116_Text_DevanPostBattle, MSGBOX_AUTOCLOSE
+Route116_EventScript_Italia::
+	trainerbattle_single TRAINER_ITALIA, Route116_Text_ItaliaIntro, Route116_Text_ItaliaDefeat
+	msgbox Route116_Text_ItaliaPostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route116_EventScript_Johnson::

@@ -224,6 +224,28 @@ PetalburgCity_Movement_WallyTutorialWally:
 	walk_in_place_faster_right
 	step_end
 
+PetalburgCity_EventScript_BattleSnorlax::
+	checkitem ITEM_POKE_FLUTE
+	goto_if_eq VAR_RESULT, FALSE, PetalburgCity_EventScript_SleepingSnorlax
+	lock
+	setwildbattle SPECIES_SNORLAX, 50
+	waitse
+	playmoncry SPECIES_SNORLAX, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	dowildbattle
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject(10)
+	setflag FLAG_HIDE_OVERWORLD_SNORLAX
+	fadescreenswapbuffers FADE_FROM_BLACK
+	release
+	end
+
+PetalburgCity_EventScript_SleepingSnorlax::
+	msgbox SnorlaxSleep_Text_Petalburg, MSGBOX_DEFAULT
+	release
+	end
+
 PetalburgCity_EventScript_GymSign::
 	msgbox PetalburgCity_Text_GymSign, MSGBOX_SIGN
 	end
@@ -765,3 +787,7 @@ PetalburgCity_Text_ImLookingForTalentedTrainers:
 	.string "I'm roaming the land in search of\n"
 	.string "talented TRAINERS.\p"
 	.string "I'm sorry to have taken your time.$"
+
+SnorlaxSleep_Text_Petalburg:
+	.string "The wild pokemon is fast asleep...\n"
+	.string "(A special flute might wake it up)$"

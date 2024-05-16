@@ -1755,8 +1755,8 @@ const u32 gItemIconPalette_ShinyCharm[] = INCBIN_U32("graphics/items/icon_palett
 const u32 gItemIcon_CatchingCharm[] = INCBIN_U32("graphics/items/icons/catching_charm.4bpp.lz");
 const u32 gItemIconPalette_CatchingCharm[] = INCBIN_U32("graphics/items/icon_palettes/catching_charm.gbapal.lz");
 
-const u32 gItemIcon_ExpCharm[] = INCBIN_U32("graphics/items/icons/exp_charm.4bpp.lz");
-const u32 gItemIconPalette_ExpCharm[] = INCBIN_U32("graphics/items/icon_palettes/exp_charm.gbapal.lz");
+const u32 gItemIcon_ExpCharm[] = INCBIN_U32("graphics/items/icons/pocket_watch.4bpp.lz");
+const u32 gItemIconPalette_ExpCharm[] = INCBIN_U32("graphics/items/icon_palettes/pocket_watch.gbapal.lz");
 
 const u32 gItemIcon_GlimmeringCharm[] = INCBIN_U32("graphics/items/icons/glimmering_charm.4bpp.lz");
 const u32 gItemIconPalette_GlimmeringCharm[] = INCBIN_U32("graphics/items/icon_palettes/glimmering_charm.gbapal.lz");
@@ -1874,6 +1874,9 @@ const u32 gItemIconPalette_SSTicket[] = INCBIN_U32("graphics/items/icon_palettes
 
 const u32 gItemIcon_EonTicket[] = INCBIN_U32("graphics/items/icons/eon_ticket.4bpp.lz");
 const u32 gItemIconPalette_EonTicket[] = INCBIN_U32("graphics/items/icon_palettes/eon_ticket.gbapal.lz");
+
+const u32 gItemIcon_PocketWatch[] = INCBIN_U32("graphics/items/icons/pocket_watch.4bpp.lz");
+const u32 gItemIconPalette_PocketWatch[] = INCBIN_U32("graphics/items/icon_palettes/pocket_watch.gbapal.lz");
 
 const u32 gItemIcon_MysticTicket[] = INCBIN_U32("graphics/items/icons/mystic_ticket.4bpp.lz");
 const u32 gItemIconPalette_MysticTicket[] = INCBIN_U32("graphics/items/icon_palettes/mystic_ticket.gbapal.lz");
@@ -2002,6 +2005,12 @@ const u32 gItemIconPalette_TeraOrb[] = INCBIN_U32("graphics/items/icon_palettes/
 
 const u32 gItemIcon_TinyBambooShoot[] = INCBIN_U32("graphics/items/icons/tiny_bamboo_shoot.4bpp.lz");
 const u32 gItemIconPalette_TinyBambooShoot[] = INCBIN_U32("graphics/items/icon_palettes/tiny_bamboo_shoot.gbapal.lz");
+
+const u32 gItemIcon_CandyJar[] = INCBIN_U32("graphics/items/icons/candy_jar.4bpp.lz");
+const u32 gItemIconPalette_CandyJar[] = INCBIN_U32("graphics/items/icon_palettes/candy_jar.gbapal.lz");
+
+const u32 gItemIcon_PicnicBasket[] = INCBIN_U32("graphics/items/icons/picnic_basket.4bpp.lz");
+const u32 gItemIconPalette_PicnicBasket[] = INCBIN_U32("graphics/items/icon_palettes/picnic_basket.gbapal.lz");
 
 // Tera Shards
 

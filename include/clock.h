@@ -5,5 +5,6 @@
 
 void InitTimeBasedEvents(void);
 void DoTimeBasedEvents(void);
+void StartWallClock(void);
 
 #endif // GUARD_CLOCK_H

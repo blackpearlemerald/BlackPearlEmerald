@@ -904,6 +904,14 @@ LittlerootTown_EventScript_GiveRunningShoes::
 	waitfanfare
 	setflag FLAG_RECEIVED_RUNNING_SHOES
 	msgbox LittlerootTown_Text_ExplainRunningShoes, MSGBOX_DEFAULT
+	giveitem ITEM_POKEVIAL
+	giveitem ITEM_POKEMON_BOX_LINK
+	giveitem ITEM_TAXI_TICKET
+	giveitem ITEM_CANDY_JAR
+	giveitem ITEM_OLD_ROD
+	giveitem ITEM_ESCAPE_ROPE
+	giveitem ITEM_POCKET_WATCH
+	setflag FLAG_RECEIVED_OLD_ROD
 	msgbox LittlerootTown_Text_ComeHomeIfAnythingHappens, MSGBOX_DEFAULT
 	closemessage
 	delay 30
@@ -945,7 +953,8 @@ LittlerootTown_Text_ExplainRunningShoes:
 	.string "“Press the B Button while wearing these\n"
 	.string "RUNNING SHOES to run extra-fast!\p"
 	.string "“Slip on these RUNNING SHOES and race\n"
-	.string "in the great outdoors!”$"
+	.string "in the great outdoors!\p"
+	.string "Please also take these items...$"
 
 LittlerootTown_Text_ComeHomeIfAnythingHappens:
 	.string "… … … … … … … …\n"

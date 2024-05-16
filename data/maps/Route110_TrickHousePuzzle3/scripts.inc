@@ -301,6 +301,11 @@ Route110_TrickHousePuzzle3_EventScript_Alan::
 	msgbox Route110_TrickHousePuzzle3_Text_AlanPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route110_TrickHousePuzzle3_EventScript_Alan2::
+	trainerbattle_single TRAINER_ALAN2, Route110_TrickHousePuzzle3_Text_AlanIntro, Route110_TrickHousePuzzle3_Text_AlanDefeat
+	msgbox Route110_TrickHousePuzzle3_Text_AlanPostBattle, MSGBOX_AUTOCLOSE
+	end
+
 Route110_TrickHousePuzzle3_Text_WroteSecretCodeLockOpened:
 	.string "{PLAYER} wrote down the secret code\n"
 	.string "on the door.\p"

@@ -32,41 +32,46 @@ VictoryRoad_B2F_EventScript_Dianne::
 	end
 
 VictoryRoad_B2F_Text_VitoIntro:
-	.string "I trained together with my whole family,\n"
-	.string "every one of us!\l"
-	.string "I'm not losing to anyone!$"
+	.string ".......................\n"
+	.string ".......................$"
 
 VictoryRoad_B2F_Text_VitoDefeat:
-	.string "Better than my family?!\n"
-	.string "Is that possible?!$"
+	.string "...!$"
 
 VictoryRoad_B2F_Text_VitoPostBattle:
-	.string "I was better than everyone in my\n"
-	.string "family. I've never lost before…\p"
-	.string "I've lost my confidence…\n"
-	.string "Maybe I'll go home…$"
+	.string "...$"
 
 VictoryRoad_B2F_Text_OwenIntro:
-	.string "I'd heard that there was a tough\n"
-	.string "little kid around. Do they mean you?$"
+	.string "I've been looking forward to\n"
+	.string "seeing you, {PLAYER}.\p"
+	.string "I've assembled a teams that will\n"
+	.string "beat any Pokemon type!\p"
+	.string "I am a CHAMPION!\p"
+	.string "Or as I prefer to call it...\p"
+	.string "One of the most powerful trainers\n"
+	.string "in the world!$"
 
 VictoryRoad_B2F_Text_OwenDefeat:
-	.string "The little shrimp is tough!$"
+	.string "Why did I lose?$"
 
 VictoryRoad_B2F_Text_OwenPostBattle:
-	.string "The rumors I heard, that tough little\n"
-	.string "kid is from PETALBURG CITY.$"
+	.string "Although I don't like to admit it,\n"
+	.string "you've won.$"
 
 VictoryRoad_B2F_Text_CarolineIntro:
-	.string "You must be getting a little tired.$"
+	.string "Oh, wow, {PLAYER}.\n"
+	.string "I'm amazed you knoew where to find me\p"
+	.string "You should have a very good idea\n"
+	.string "about how good I am.\p"
+	.string "Okay, {PLAYER}, If you're going to mount\n"
+	.string "a serious challenge, expect the worst!$"
 
 VictoryRoad_B2F_Text_CarolineDefeat:
-	.string "No signs of tiring at all!$"
+	.string "I had no idea you'd become so strong...$"
 
 VictoryRoad_B2F_Text_CarolinePostBattle:
-	.string "VICTORY ROAD and the POKéMON LEAGUE\n"
-	.string "are long and grueling challenges.\l"
-	.string "Beware of fatigue!$"
+	.string "I've always thought that you would\n"
+	.string "eventually become the CHAMPION$"
 
 VictoryRoad_B2F_Text_JulieIntro:
 	.string "You shouldn't get complacent just\n"
@@ -82,17 +87,19 @@ VictoryRoad_B2F_Text_JuliePostBattle:
 	.string "remember the TRAINERS you've faced.$"
 
 VictoryRoad_B2F_Text_FelixIntro:
-	.string "I've come this far, but the tension's\n"
-	.string "giving me awful stomach pain…$"
+	.string "I can't wait to see the look on your\n"
+	.string "face when you've lost all hope!\p"
+	.string "I won't allow anyone to beat me!\n"
+	.string "No matter who does what!$"
 
 VictoryRoad_B2F_Text_FelixDefeat:
-	.string "Ooh…\n"
-	.string "It hurts…$"
+	.string "My calculations... No!\n"
+	.string "I should not have lost!$"
 
 VictoryRoad_B2F_Text_FelixPostBattle:
-	.string "I can't help getting all tense knowing\n"
-	.string "that I'm nearing the POKéMON LEAGUE.\p"
-	.string "It's all I can do to feign calm.$"
+	.string "I AM PERFECTION!\p"
+	.string "Since I couldn't become the hero,\n"
+	.string "I have prepared the next Trainer!$"
 
 VictoryRoad_B2F_Text_DianneIntro:
 	.string "The elite among the elite gather in\n"

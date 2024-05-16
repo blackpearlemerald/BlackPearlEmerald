@@ -342,12 +342,15 @@ extern const u8 gText_ThisIsAPokemon[];
 extern const u8 gText_Birch_MainSpeech[];
 extern const u8 gText_Birch_AndYouAre[];
 extern const u8 gText_Birch_BoyOrGirl[];
+extern const u8 gText_Birch_Nuzlocke[];
 extern const u8 gText_Birch_WhatsYourName[];
 extern const u8 gText_Birch_SoItsPlayer[];
 extern const u8 gText_Birch_YourePlayer[];
 extern const u8 gText_Birch_AreYouReady[];
 extern const u8 gText_ContinueMenuPlayer[];
 extern const u8 gText_ContinueMenuTime[];
+extern const u8 gText_AM[];
+extern const u8 gText_PM[];
 extern const u8 gText_ContinueMenuPokedex[];
 extern const u8 gText_ContinueMenuBadges[];
 extern const u8 gText_BirchBoy[];
@@ -523,6 +526,7 @@ extern const u8 gText_SpDef[];
 extern const u8 gText_Speed[];
 extern const u8 gText_Dash[];
 extern const u8 gText_Plus[];
+extern const u8 gText_StatEditor[];
 
 //Pokédex text
 extern const u8 gText_CryOf[];
@@ -945,6 +949,8 @@ extern const u8 gText_LureEffectsLingered[];
 extern const u8 gText_UsedVar2WildLured[];
 extern const u8 gText_UsedVar2WildRepelled[];
 extern const u8 gText_BoxFull[];
+extern const u8 gText_BallsCannotBeUsedNuz[];
+extern const u8 gText_WontHaveEffectNuzlocke[];
 extern const u8 gText_WontHaveEffect[];
 extern const u8 gText_NextFusionMon[];
 
@@ -2074,6 +2080,7 @@ extern const u8 gPCText_Simple[];
 extern const u8 gText_PartyFull[];
 extern const u8 gText_Box[];
 extern const u8 gText_JustOnePkmn[];
+extern const u8 gText_UsedPokeVial[];
 
 // battle main
 extern const u8 gText_LinkStandby3[];
