@@ -3387,6 +3387,16 @@ void IncreaseStatUpScore(u32 battlerAtk, u32 battlerDef, u32 statId, s32 *score)
     if (AI_DATA->abilities[battlerAtk] == ABILITY_CONTRARY)
         return;
 
+    // Ai Override 20% chance to NOT use a set-up move
+    // if (Random() % 5 == 0)
+    //     return;
+
+    if (!shouldSetUp) 
+    {
+        ADJUST_SCORE_PTR(-10);
+        return;
+    }
+
     // Don't increase stat if AI is at +4
     if (gBattleMons[battlerAtk].statStages[statId] >= MAX_STAT_STAGE - 2)
         return;
@@ -3689,6 +3699,25 @@ bool32 AI_ShouldCopyStatChanges(u32 battlerAtk, u32 battlerDef)
 //TODO - track entire opponent party data to determine hazard effectiveness
 bool32 AI_ShouldSetUpHazards(u32 battlerAtk, u32 battlerDef, struct AiLogicData *aiData)
 {
+    //if (Random() % 3 != 0) //Ai Override 33% chance to NOT click hazards move
+    //if (Random() & 1) //Ai Override 50% chance to NOT click hazards move
+
+    //if (IsStatRaisingEffect(gMovesInfo[move].effect))
+
+    u16 *moves = GetMovesArray(battlerDef);
+    bool32 hassetupmove = FALSE;
+    DebugPrintf("hassetupmove = FALSE");
+    for (u32 i = 0; i < 4; i++) {
+        DebugPrintf("SET UP MOVE CHECK FOR LOOP RAN");
+        if ((moves[i] != MOVE_NONE) && (IsStatRaisingEffect(gMovesInfo[moves[i]].effect))) {
+            DebugPrintf("hassetupmove = TRUE");
+            hassetupmove = TRUE;
+        }
+    }
+    if (hassetupmove == TRUE)
+        return FALSE;
+    if (aiData->predictedMoves[battlerDef] == ABILITY_MAGIC_BOUNCE)
+        return FALSE;
     if (aiData->abilities[battlerDef] == ABILITY_MAGIC_BOUNCE
      || CountUsablePartyMons(battlerDef) == 0
      || HasMoveWithAdditionalEffect(battlerDef, MOVE_EFFECT_RAPID_SPIN)

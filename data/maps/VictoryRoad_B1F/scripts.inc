@@ -27,16 +27,15 @@ VictoryRoad_B1F_EventScript_Halle::
 	end
 
 VictoryRoad_B1F_Text_SamuelIntro:
-	.string "The thought that I'm getting closer to\n"
-	.string "the POKéMON LEAGUE…\p"
-	.string "I'm getting stage fright…$"
+	.string "I will create the future I desire!\p"
+	.string "I shall sweep you before me!$"
 
 VictoryRoad_B1F_Text_SamuelDefeat:
-	.string "I couldn't do a thing…$"
+	.string "Everything's ruined…$"
 
 VictoryRoad_B1F_Text_SamuelPostBattle:
-	.string "The POKéMON LEAGUE became distant\n"
-	.string "again… What a letdown…$"
+	.string "Your ideals... Your feelings...\n"
+	.string "They were stronger than mine, it seems.$"
 
 VictoryRoad_B1F_Text_ShannonIntro:
 	.string "To win your way through the POKéMON\n"
@@ -63,29 +62,30 @@ VictoryRoad_B1F_Text_MichellePostBattle:
 	.string "Your POKéMON are all eager to go!$"
 
 VictoryRoad_B1F_Text_MitchellIntro:
-	.string "My POKéMON are cosmically\n"
-	.string "awe inspiring!$"
+	.string "I will do what I must to put your\n"
+	.string "worries to rest...\p"
+	.string "By demonstrating my strength\n"
+	.string "in battle!$"
 
 VictoryRoad_B1F_Text_MitchellDefeat:
-	.string "I've never met anyone like you before.$"
+	.string "You are strong...$"
 
 VictoryRoad_B1F_Text_MitchellPostBattle:
-	.string "Even outside of battle, I sense\n"
-	.string "incredible power emanating from you\l"
-	.string "and your POKéMON.$"
+	.string "You should carry on...$"
 
 VictoryRoad_B1F_Text_HalleIntro:
-	.string "Okay, no need to get your back up!\n"
-	.string "Relax, let's take it easy!$"
+	.string "Why should I run and hide from\n"
+	.string "the world and wait quietly?\p"
+	.string "By freeing ourselves, our world\n"
+	.string "can be made complete.\p"
+	.string "That is my justice!\n"
+	.string "No one can interfere!$"
 
 VictoryRoad_B1F_Text_HalleDefeat:
-	.string "Whoa!\n"
-	.string "Wonderful!$"
+	.string "This can't be!$"
 
 VictoryRoad_B1F_Text_HallePostBattle:
-	.string "Sure, this is VICTORY ROAD.\p"
-	.string "But it's not all that different from\n"
-	.string "the path you've taken so far.\p"
-	.string "Try to enjoy things the rest of\n"
-	.string "the way!$"
+	.string "Don't think you have what it\n"
+	.string "takes to become Champion,\l"
+	.string "just because you beat me...$"
 

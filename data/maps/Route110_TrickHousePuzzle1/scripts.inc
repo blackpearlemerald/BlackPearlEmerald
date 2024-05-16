@@ -31,6 +31,11 @@ Route110_TrickHousePuzzle1_EventScript_Eddie::
 	msgbox Route110_TrickHousePuzzle1_Text_EddiePostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route110_TrickHousePuzzle1_EventScript_Eddie2::
+	trainerbattle_single TRAINER_EDDIE2, Route110_TrickHousePuzzle1_Text_EddieIntro, Route110_TrickHousePuzzle1_Text_EddieDefeat
+	msgbox Route110_TrickHousePuzzle1_Text_EddiePostBattle, MSGBOX_AUTOCLOSE
+	end
+
 Route110_TrickHousePuzzle1_EventScript_Robin::
 	trainerbattle_single TRAINER_ROBIN, Route110_TrickHousePuzzle1_Text_RobinIntro, Route110_TrickHousePuzzle1_Text_RobinDefeat
 	msgbox Route110_TrickHousePuzzle1_Text_RobinPostBattle, MSGBOX_AUTOCLOSE

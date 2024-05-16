@@ -26,6 +26,9 @@ void ItemUseOutOfBattle_TMHM(u8);
 void ItemUseOutOfBattle_Repel(u8);
 void ItemUseOutOfBattle_Lure(u8);
 void ItemUseOutOfBattle_EscapeRope(u8);
+void ItemUseOutOfBattle_PokeVial(u8);
+void ItemUseOutOfBattle_Fly(u8);
+void ItemUseOutOfBattle_PocketWatch(u8);
 void ItemUseOutOfBattle_BlackWhiteFlute(u8);
 void ItemUseOutOfBattle_EvolutionStone(u8);
 void ItemUseOutOfBattle_Berry(u8);
@@ -54,6 +57,7 @@ enum {
     BALL_THROW_UNABLE_SEMI_INVULNERABLE,
     BALL_THROW_ABLE,
     BALL_THROW_UNABLE_DISABLED_FLAG,
+    BALL_THROW_UNABLE_NUZLOCKE,
 };
 
 bool32 CanThrowBall(void);

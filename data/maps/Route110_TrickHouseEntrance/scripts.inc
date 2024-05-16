@@ -48,13 +48,7 @@ Route110_TrickHouseEntrance_EventScript_EnterFromCorridor::
 
 Route110_TrickHouseEntrance_EventScript_CheckReadyForNextPuzzle::
 	setvar VAR_TRICK_HOUSE_ENTRANCE_STATE, 0
-	call_if_eq VAR_TRICK_HOUSE_LEVEL, 1, Route110_TrickHouseEntrance_EventScript_CheckReadyForPuzzle2
-	call_if_eq VAR_TRICK_HOUSE_LEVEL, 2, Route110_TrickHouseEntrance_EventScript_CheckReadyForPuzzle3
-	call_if_eq VAR_TRICK_HOUSE_LEVEL, 3, Route110_TrickHouseEntrance_EventScript_CheckReadyForPuzzle4
-	call_if_eq VAR_TRICK_HOUSE_LEVEL, 4, Route110_TrickHouseEntrance_EventScript_CheckReadyForPuzzle5
-	call_if_eq VAR_TRICK_HOUSE_LEVEL, 5, Route110_TrickHouseEntrance_EventScript_CheckReadyForPuzzle6
-	call_if_eq VAR_TRICK_HOUSE_LEVEL, 6, Route110_TrickHouseEntrance_EventScript_CheckReadyForPuzzle7
-	call_if_eq VAR_TRICK_HOUSE_LEVEL, 7, Route110_TrickHouseEntrance_EventScript_CheckReadyForPuzzle8
+	call_if_unset FLAG_BADGE04_GET, Route110_TrickHouseEntrance_EventScript_NotReadyForPuzzle
 	call_if_eq VAR_TRICK_HOUSE_LEVEL, 8, Route110_TrickHouseEntrance_EventScript_FinishedPuzzles
 	return
 
@@ -338,7 +332,7 @@ Route110_TrickHouseEntrance_EventScript_GiveReward::
 	end
 
 Route110_TrickHouseEntrance_EventScript_GivePuzzle1Reward::
-	giveitem ITEM_RARE_CANDY
+	giveitem ITEM_GENGARITE
 	goto_if_eq VAR_RESULT, TRUE, Route110_TrickHouseEntrance_EventScript_GotReward
 	call_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox Route110_TrickHouseEntrance_Text_DidYouNotComeToClaimReward, MSGBOX_DEFAULT
@@ -346,7 +340,7 @@ Route110_TrickHouseEntrance_EventScript_GivePuzzle1Reward::
 	end
 
 Route110_TrickHouseEntrance_EventScript_GivePuzzle2Reward::
-	giveitem ITEM_TIMER_BALL
+	giveitem ITEM_TYRANITARITE
 	goto_if_eq VAR_RESULT, TRUE, Route110_TrickHouseEntrance_EventScript_GotReward
 	call_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox Route110_TrickHouseEntrance_Text_DidYouNotComeToClaimReward, MSGBOX_DEFAULT
@@ -354,7 +348,7 @@ Route110_TrickHouseEntrance_EventScript_GivePuzzle2Reward::
 	end
 
 Route110_TrickHouseEntrance_EventScript_GivePuzzle3Reward::
-	giveitem ITEM_HARD_STONE
+	giveitem ITEM_MAWILITE
 	goto_if_eq VAR_RESULT, TRUE, Route110_TrickHouseEntrance_EventScript_GotReward
 	call_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox Route110_TrickHouseEntrance_Text_DidYouNotComeToClaimReward, MSGBOX_DEFAULT
@@ -362,7 +356,7 @@ Route110_TrickHouseEntrance_EventScript_GivePuzzle3Reward::
 	end
 
 Route110_TrickHouseEntrance_EventScript_GivePuzzle4Reward::
-	giveitem ITEM_SMOKE_BALL
+	giveitem ITEM_GARCHOMPITE
 	goto_if_eq VAR_RESULT, TRUE, Route110_TrickHouseEntrance_EventScript_GotReward
 	call_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox Route110_TrickHouseEntrance_Text_DidYouNotComeToClaimReward, MSGBOX_DEFAULT
@@ -370,7 +364,7 @@ Route110_TrickHouseEntrance_EventScript_GivePuzzle4Reward::
 	end
 
 Route110_TrickHouseEntrance_EventScript_GivePuzzle5Reward::
-	giveitem ITEM_TM_TAUNT
+	giveitem ITEM_AUDINITE
 	goto_if_eq VAR_RESULT, TRUE, Route110_TrickHouseEntrance_EventScript_GotReward
 	call_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox Route110_TrickHouseEntrance_Text_DidYouNotComeToClaimReward, MSGBOX_DEFAULT
@@ -378,7 +372,7 @@ Route110_TrickHouseEntrance_EventScript_GivePuzzle5Reward::
 	end
 
 Route110_TrickHouseEntrance_EventScript_GivePuzzle6Reward::
-	giveitem ITEM_MAGNET
+	giveitem ITEM_CHOICE_SPECS
 	goto_if_eq VAR_RESULT, TRUE, Route110_TrickHouseEntrance_EventScript_GotReward
 	call_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox Route110_TrickHouseEntrance_Text_DidYouNotComeToClaimReward, MSGBOX_DEFAULT
@@ -386,7 +380,7 @@ Route110_TrickHouseEntrance_EventScript_GivePuzzle6Reward::
 	end
 
 Route110_TrickHouseEntrance_EventScript_GivePuzzle7Reward::
-	giveitem ITEM_PP_MAX
+	giveitem ITEM_CHOICE_BAND
 	goto_if_eq VAR_RESULT, TRUE, Route110_TrickHouseEntrance_EventScript_GotReward
 	call_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox Route110_TrickHouseEntrance_Text_DidYouNotComeToClaimReward, MSGBOX_DEFAULT
@@ -451,20 +445,57 @@ Route110_TrickHouseEntrance_EventScript_Door::
 	case 5, Route110_TrickHouseEntrance_EventScript_CheckLevelForMessage
 	end
 
+Route110_TrickHouseEntrance_EventScript_DoorAlt::
+	lockall
+	switch VAR_TRICK_HOUSE_ENTRANCE_STATE
+	case 0, Route110_TrickHouseEntrance_EventScript_ItsAScroll
+	case 1, Route110_TrickHouseEntrance_EventScript_GoInHolePromptAlt
+	case 4, Route110_TrickHouseEntrance_EventScript_LeftOnJourneyNote
+	case 5, Route110_TrickHouseEntrance_EventScript_CheckLevelForMessage
+	end
+
 Route110_TrickHouseEntrance_EventScript_ItsAScroll::
 	msgbox Route110_TrickHouseEntrance_Text_ItsAScroll, MSGBOX_DEFAULT
 	releaseall
 	end
 
 Route110_TrickHouseEntrance_EventScript_GoInHolePrompt::
+	goto_if_eq VAR_TRICK_HOUSE_LEVEL, 8, Route110_TrickHouseEntrance_EventScript_LeftOnJourneyNote
 	msgbox Route110_TrickHouseEntrance_Text_GoInHoleBehindScroll, MSGBOX_YESNO
 	closemessage
 	goto_if_eq VAR_RESULT, YES, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom
 	releaseall
 	end
 
+Route110_TrickHouseEntrance_EventScript_GoInHolePromptAlt::
+	msgbox Route110_TrickHouseEntrance_Text_GoInHoleBehindScroll, MSGBOX_YESNO
+	closemessage
+	goto_if_eq VAR_RESULT, YES, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoomAlt
+	releaseall
+	end
+
 Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom::
 	setmetatile 5, 1, METATILE_GenericBuilding_TrickHouse_Stairs_Down, FALSE
+	special DrawWholeMapView
+	delay 20
+	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkUp
+	waitmovement 0
+	applymovement OBJ_EVENT_ID_PLAYER, Route110_TrickHouseEntrance_Movement_EnterRoom
+	waitmovement 0
+	clearflag FLAG_HIDE_TRICKHOUSE_ENCOUNTER
+	switch VAR_TRICK_HOUSE_LEVEL
+	case 0, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom1
+	case 1, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom2
+	case 2, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom3
+	case 3, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom4
+	case 4, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom5
+	case 5, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom6
+	case 6, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom7
+	case 7, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom8
+	end
+
+Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoomAlt::
+	setmetatile 2, 1, METATILE_GenericBuilding_TrickHouse_Stairs_Down, FALSE
 	special DrawWholeMapView
 	delay 20
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkUp
@@ -480,6 +511,7 @@ Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom::
 	case 5, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom6
 	case 6, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom7
 	case 7, Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom8
+	case 8, Route110_TrickHouseEntrance_EventScript_LeaveTrickHouse
 	end
 
 Route110_TrickHouseEntrance_Movement_EnterRoom:
@@ -530,6 +562,12 @@ Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom7::
 
 Route110_TrickHouseEntrance_EventScript_EnterPuzzleRoom8::
 	warp MAP_ROUTE110_TRICK_HOUSE_PUZZLE8, 0, 21
+	waitstate
+	releaseall
+	end
+
+Route110_TrickHouseEntrance_EventScript_LeaveTrickHouse::
+	warp MAP_ROUTE110_TRICK_HOUSE_ENTRANCE, 5, 2
 	waitstate
 	releaseall
 	end
@@ -753,7 +791,9 @@ Route110_TrickHouseEntrance_Text_ComeToChallengeTrickHouse:
 	.string "That's why you're here, isn't it?\n"
 	.string "Yes, it is!\p"
 	.string "Consider your challenge accepted!\p"
-	.string "Enter through the scroll there,\n"
+	.string "There are Trainers and Pokemon from\n"
+	.string "many regions behind this scroll!\p"
+	.string "Please, enter through the scroll,\n"
 	.string "and let your challenge commence!\p"
 	.string "I shall be waiting in the back!$"
 
@@ -804,7 +844,7 @@ Route110_TrickHouseEntrance_Text_MechadollWhichTent:
 	.string "WHICH DO YOU PREFER?$"
 
 Route110_TrickHouseEntrance_Text_ThenFarewell:
-	.string "THEN FAREWELL.$"
+	.string "Farewell!$"
 
 Route110_TrickHouseEntrance_Text_PCFullAgain:
 	.string "YOUR PC STATUS: FULL AGAIN.\n"

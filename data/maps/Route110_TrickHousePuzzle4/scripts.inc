@@ -22,6 +22,11 @@ Route110_TrickHousePuzzle4_EventScript_Yuji::
 	msgbox Route110_TrickHousePuzzle4_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route110_TrickHousePuzzle4_EventScript_Yuji2::
+	trainerbattle_single TRAINER_YUJI2, Route110_TrickHousePuzzle4_Text_YujiIntro, Route110_TrickHousePuzzle4_Text_YujiDefeat
+	msgbox Route110_TrickHousePuzzle4_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	end
+
 Route110_TrickHousePuzzle4_EventScript_Paula::
 	trainerbattle_single TRAINER_PAULA, Route110_TrickHousePuzzle4_Text_PaulaIntro, Route110_TrickHousePuzzle4_Text_PaulaDefeat
 	msgbox Route110_TrickHousePuzzle4_Text_PaulaPostBattle, MSGBOX_AUTOCLOSE

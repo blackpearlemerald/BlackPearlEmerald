@@ -251,7 +251,7 @@
 #define TRAINER_SAMANTHA                    245
 #define TRAINER_MAURA                       246
 #define TRAINER_KAYLA                       247
-#define TRAINER_ALEXIS                      248
+#define TRAINER_BENNY2                      248
 #define TRAINER_JACKI_1                     249
 #define TRAINER_JACKI_2                     250
 #define TRAINER_JACKI_3                     251
@@ -606,7 +606,7 @@
 #define TRAINER_MAY_RUSTBORO_MUDKIP         600
 #define TRAINER_MAXIE_MAGMA_HIDEOUT         601
 #define TRAINER_MAXIE_MT_CHIMNEY            602
-#define TRAINER_TIANA                       603
+#define TRAINER_DTATE                       603
 #define TRAINER_HALEY_1                     604
 #define TRAINER_JANICE                      605
 #define TRAINER_VIVI                        606
@@ -756,7 +756,7 @@
 #define TRAINER_ALIX                        750
 #define TRAINER_HELENE                      751
 #define TRAINER_MARLENE                     752
-#define TRAINER_DEVAN                       753
+#define TRAINER_ITALIA                      753
 #define TRAINER_JOHNSON                     754
 #define TRAINER_MELINA                      755
 #define TRAINER_BRANDI                      756
@@ -852,18 +852,26 @@
 #define TRAINER_THALIA_4                    846
 #define TRAINER_THALIA_5                    847
 #define TRAINER_MARIELA                     848
-#define TRAINER_ALVARO                      849
+#define TRAINER_KEIRA2                      849
 #define TRAINER_EVERETT                     850
 #define TRAINER_RED                         851
 #define TRAINER_LEAF                        852
 #define TRAINER_BRENDAN_PLACEHOLDER         853
 #define TRAINER_MAY_PLACEHOLDER             854
+#define TRAINER_EDDIE2                      855
+#define TRAINER_GEORGIA2                    856
+#define TRAINER_ALAN2                       857
+#define TRAINER_YUJI2                       858
+#define TRAINER_YUJI3                       859
+#define TRAINER_YUJI4                       860
+#define TRAINER_YUJI5                       861
+#define TRAINER_YUJI6                       862
 
 // NOTE: Because each Trainer uses a flag to determine when they are defeated, there is only space for 9 additional trainers before trainer flag space overflows
 //       More space can be made by shifting flags around in constants/flags.h or changing how trainer flags are handled
 //       MAX_TRAINERS_COUNT can be increased but will take up additional saveblock space
 
-#define TRAINERS_COUNT                      855
+#define TRAINERS_COUNT                      863
 #define MAX_TRAINERS_COUNT                  864
 #define TRAINER_PARTNER(partner)           (MAX_TRAINERS_COUNT + partner)
 

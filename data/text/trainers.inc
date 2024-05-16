@@ -57,17 +57,17 @@ Route102_Text_RickPostBattle:
 	.string "If you lock eyes with a TRAINER,\n"
 	.string "you have to challenge! It's a rule!$"
 
-Route102_Text_TianaIntro:
-	.string "I'm going to keep winning and aim\n"
-	.string "to be the best TRAINER.\p"
-	.string "Help me further my career!$"
+Route102_Text_DtateIntro:
+	.string "DUUUUUUUUUUUUUUUUUU\n"
+	.string "UUUUUUUUUUUUUUU\p"
+	.string "UUUUUUUUUUDE$"
 
-Route102_Text_TianaDefeated:
-	.string "I ended up furthering your career…$"
+Route102_Text_DtateDefeated:
+	.string "DUUUUUUUUUUUUUUUUUUDE$"
 
-Route102_Text_TianaPostBattle:
-	.string "To keep winning my way up, I see that\n"
-	.string "I have to catch more POKéMON.$"
+Route102_Text_DtatePostBattle:
+	.string "You literally just DUUU\n"
+	.string "UUUUUUUUUUDE.$"
 
 Route103_Text_DaisyIntro:
 	.string "Did you feel the tug of our\n"
@@ -1813,17 +1813,14 @@ Route114_Text_LucasPostBattle:
 	.string "with blizzards and avalanches.$"
 
 Route114_Text_ShaneIntro:
-	.string "Camping's fun! You can fish, roast\n"
-	.string "marshmallows, and tell spooky stories!\p"
-	.string "But the best of all are the POKéMON\n"
-	.string "battles!$"
+	.string "What do you know about...\n"
+	.string "THE WALL!$"
 
 Route114_Text_ShaneDefeat:
-	.string "Way too strong!$"
+	.string "The Wall wants to give you a reward...$"
 
 Route114_Text_ShanePostBattle:
-	.string "I think it's great that I can go\n"
-	.string "camping with my POKéMON.$"
+	.string "THE WALL!$"
 
 Route114_Text_NancyIntro:
 	.string "I need to exercise after a meal.\n"
@@ -2316,16 +2313,14 @@ Route116_Text_DawsonPostBattle:
 	.string "You've ruined my hairdo, too!\l"
 	.string "I'll have to call my stylist now!$"
 
-Route116_Text_DevanIntro:
-	.string "We'll rock you hard!$"
+Route116_Text_ItaliaIntro:
+	.string "I'm busy working on my house.$"
 
-Route116_Text_DevanDefeat:
-	.string "Aiyiyi!\n"
-	.string "No contest at all!$"
+Route116_Text_ItaliaDefeat:
+	.string "I had work to do anyways...$"
 
-Route116_Text_DevanPostBattle:
-	.string "I should try different POKéMON\n"
-	.string "types, that's what I ought to do.$"
+Route116_Text_ItaliaPostBattle:
+	.string "I had work to do anyways...$"
 
 Route116_Text_JohnsonIntro:
 	.string "It's a dead end up here.\n"

@@ -97,7 +97,7 @@
 #define FLAG_RESCUED_BIRCH                       0x52
 #define FLAG_LEGENDARIES_IN_SOOTOPOLIS           0x53
 
-#define FLAG_UNUSED_0x054                    0x54  // Unused Flag
+#define FLAG_DISABLE_BAG                    0x54  // DISABLE BAG IN TRAINER BATTLES ???
 #define FLAG_UNUSED_0x055                    0x55  // Unused Flag
 
 #define FLAG_HIDE_CONTEST_POKE_BALL          0x56  // Always set after new game, object it hides is added directly
@@ -652,36 +652,38 @@
 #define FLAG_HIDDEN_ITEM_ROUTE_123_RARE_CANDY                (FLAG_HIDDEN_ITEMS_START + 0x6E)
 #define FLAG_HIDDEN_ITEM_ROUTE_105_BIG_PEARL                 (FLAG_HIDDEN_ITEMS_START + 0x6F)
 
-#define FLAG_UNUSED_0x264  0x264 // Unused Flag
-#define FLAG_UNUSED_0x265  0x265 // Unused Flag
-#define FLAG_UNUSED_0x266  0x266 // Unused Flag
-#define FLAG_UNUSED_0x267  0x267 // Unused Flag
-#define FLAG_UNUSED_0x268  0x268 // Unused Flag
-#define FLAG_UNUSED_0x269  0x269 // Unused Flag
-#define FLAG_UNUSED_0x26A  0x26A // Unused Flag
-#define FLAG_UNUSED_0x26B  0x26B // Unused Flag
-#define FLAG_UNUSED_0x26C  0x26C // Unused Flag
-#define FLAG_UNUSED_0x26D  0x26D // Unused Flag
-#define FLAG_UNUSED_0x26E  0x26E // Unused Flag
-#define FLAG_UNUSED_0x26F  0x26F // Unused Flag
-#define FLAG_UNUSED_0x270  0x270 // Unused Flag
-#define FLAG_UNUSED_0x271  0x271 // Unused Flag
-#define FLAG_UNUSED_0x272  0x272 // Unused Flag
-#define FLAG_UNUSED_0x273  0x273 // Unused Flag
-#define FLAG_UNUSED_0x274  0x274 // Unused Flag
-#define FLAG_UNUSED_0x275  0x275 // Unused Flag
-#define FLAG_UNUSED_0x276  0x276 // Unused Flag
-#define FLAG_UNUSED_0x277  0x277 // Unused Flag
-#define FLAG_UNUSED_0x278  0x278 // Unused Flag
-#define FLAG_UNUSED_0x279  0x279 // Unused Flag
-#define FLAG_UNUSED_0x27A  0x27A // Unused Flag
-#define FLAG_UNUSED_0x27B  0x27B // Unused Flag
-#define FLAG_UNUSED_0x27C  0x27C // Unused Flag
-#define FLAG_UNUSED_0x27D  0x27D // Unused Flag
-#define FLAG_UNUSED_0x27E  0x27E // Unused Flag
-#define FLAG_UNUSED_0x27F  0x27F // Unused Flag
-#define FLAG_UNUSED_0x280  0x280 // Unused Flag
-#define FLAG_UNUSED_0x281  0x281 // Unused Flag
+#define FLAG_SYS_MOVE_INFO 0x264 // Battle Move Info
+
+//BPE ITEM OVERHAUL NEW FLAGS
+#define FLAG_ITEM_PETALBURG_CITY_ETHER_2  0x265 // Unused Flag
+#define FLAG_ITEM_ROUTE_103_GUARD_SPEC_2  0x266 // Unused Flag
+#define FLAG_ITEM_ROUTE_104_POKE_BALL_2  0x267 // Unused Flag
+#define FLAG_ITEM_ROUTE_104_POKE_BALL_3  0x268 // Unused Flag
+#define FLAG_ITEM_ROUTE_104_POKE_BALL_4  0x269 // Unused Flag
+#define FLAG_ITEM_ROUTE_104_POTION_2  0x26A // Unused Flag
+#define FLAG_ITEM_ROUTE_104_POTION_3  0x26B // Unused Flag
+#define FLAG_ITEM_ROUTE_106_PROTEIN_2  0x26C // Unused Flag
+#define FLAG_ITEM_ROUTE_105_IRON_2  0x26D // Unused Flag
+#define FLAG_ITEM_ROUTE_110_ELIXIR_2  0x26E // Unused Flag
+#define FLAG_ITEM_ROUTE_110_ELIXIR_3  0x26F // Unused Flag
+#define FLAG_ITEM_ROUTE_117_GREAT_BALL_2  0x270 // Unused Flag
+#define FLAG_ITEM_ROUTE_111_TM_SANDSTORM_2  0x271 // Unused Flag
+#define FLAG_ITEM_ROUTE_114_PROTEIN_2  0x272 // Unused Flag
+#define FLAG_ITEM_ROUTE_114_PROTEIN_3  0x273 // Unused Flag
+#define FLAG_ITEM_ROUTE_114_PROTEIN_4  0x274 // Unused Flag
+#define FLAG_ITEM_ROUTE_114_RARE_CANDY_2  0x275 // Unused Flag
+#define FLAG_ITEM_ROUTE_133_STAR_PIECE_2  0x276 // Unused Flag
+#define FLAG_ITEM_ROUTE_119_HYPER_POTION_1_2  0x277 // Unused Flag
+#define FLAG_ITEM_ROUTE_119_RARE_CANDY_2  0x278 // Unused Flag
+#define FLAG_ITEM_PETALBURG_WOODS_ETHER_2  0x279 // Unused Flag
+#define FLAG_ITEM_PETALBURG_WOODS_GREAT_BALL_2  0x27A // Unused Flag
+#define FLAG_ITEM_GRANITE_CAVE_1F_ESCAPE_ROPE_2  0x27B // Unused Flag
+#define FLAG_ITEM_RUSTURF_TUNNEL_POKE_BALL_2  0x27C // Unused Flag
+#define FLAG_ITEM_JAGGED_PASS_BURN_HEAL_2  0x27D // Unused Flag
+#define FLAG_ITEM_ROUTE_118_HYPER_POTION_2  0x27E // Unused Flag
+#define FLAG_ITEM_NEW_MAUVILLE_ULTRA_BALL_2  0x27F // Unused Flag
+#define FLAG_ITEM_NEW_MAUVILLE_ULTRA_BALL_3  0x280 // Unused Flag
+#define FLAG_ITEM_SHOAL_CAVE_ICE_ROOM_TM_HAIL_2  0x281 // Unused Flag
 #define FLAG_UNUSED_0x282  0x282 // Unused Flag
 #define FLAG_UNUSED_0x283  0x283 // Unused Flag
 #define FLAG_UNUSED_0x284  0x284 // Unused Flag
@@ -1218,7 +1220,7 @@
 #define FLAG_ITEM_SAFARI_ZONE_NORTH_EAST_NUGGET                     0x491
 #define FLAG_ITEM_SAFARI_ZONE_SOUTH_EAST_BIG_PEARL                  0x492
 
-#define FLAG_UNUSED_0x493                                           0x493 // Unused Flag
+#define FLAG_NUZLOCKE                                               0x493 // NUZLOCKE MODE
 #define FLAG_UNUSED_0x494                                           0x494 // Unused Flag
 #define FLAG_UNUSED_0x495                                           0x495 // Unused Flag
 #define FLAG_UNUSED_0x496                                           0x496 // Unused Flag
@@ -1262,9 +1264,9 @@
 #define FLAG_UNUSED_0x4BC                                           0x4BC // Unused Flag
 #define FLAG_UNUSED_0x4BD                                           0x4BD // Unused Flag
 #define FLAG_UNUSED_0x4BE                                           0x4BE // Unused Flag
-#define FLAG_UNUSED_0x4BF                                           0x4BF // Unused Flag
-#define FLAG_UNUSED_0x4C0                                           0x4C0 // Unused Flag
-#define FLAG_UNUSED_0x4C1                                           0x4C1 // Unused Flag
+#define FLAG_HIDE_ROUTE121_GRUNTS                                   0x4BF // Unused Flag
+#define FLAG_HIDE_TRICKHOUSE_ENCOUNTER                              0x4C0 // HIDE TRICKHOUSE ENCOUNTER
+#define FLAG_HIDE_OVERWORLD_SNORLAX                                 0x4C1 // HIDE SNORLAX IN PETALBURG
 #define FLAG_UNUSED_0x4C2                                           0x4C2 // Unused Flag
 #define FLAG_UNUSED_0x4C3                                           0x4C3 // Unused Flag
 #define FLAG_UNUSED_0x4C4                                           0x4C4 // Unused Flag

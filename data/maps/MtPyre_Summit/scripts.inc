@@ -429,6 +429,46 @@ MtPyre_Summit_EventScript_Grunt4::
 	msgbox MtPyre_Summit_Text_Grunt4PostBattle, MSGBOX_AUTOCLOSE
 	end
 
+MtPyre_Summit_EventScript_Steven::
+	lock
+	faceplayer
+	goto MtPyre_Summit_EventScript_StevenGiveDeconScope
+	end
+
+MtPyre_Summit_EventScript_StevenGiveDeconScope::
+	msgbox MtPyre_Summit_Text_StevenGiveDevonScope, MSGBOX_DEFAULT
+	giveitem ITEM_DEVON_SCOPE
+	setflag FLAG_RECEIVED_DEVON_SCOPE
+	msgbox MtPyre_Summit_Text_StevenGoodbye, MSGBOX_DEFAULT
+	closemessage
+	delay 10
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject(9)
+	setflag FLAG_HIDE_ROUTE_120_STEVEN
+	fadescreenswapbuffers FADE_FROM_BLACK
+	release
+	end
+
+MtPyre_Summit_Text_StevenGiveDevonScope:
+	.string "STEVEN: Hm? {PLAYER}{KUN}, hi.\n"
+	.string "It's been a while.\p"
+	.string "You've encountered things you\n"
+	.string "can't see, right?\p"
+	.string "Now, if I use a special device\n"
+	.string "on invisible obstacles…\p"
+	.string "I can see them…\p"
+	.string "I'd like you to have this\n"
+	.string "DEVON SCOPE.\p"
+	.string "Who knows, there may be other\n"
+	.string "concealed POKéMON.$"
+
+MtPyre_Summit_Text_StevenGoodbye:
+	.string "STEVEN: {PLAYER}{KUN}.\p"
+	.string "I enjoy seeing POKéMON and TRAINERS\n"
+	.string "who strive together.\p"
+	.string "I think you're doing great.\p"
+	.string "Well, let's meet again somewhere.$"
+
 MtPyre_Summit_Text_Grunt1Intro:
 	.string "No! Those TEAM MAGMA goons got\n"
 	.string "here ahead of us!\p"

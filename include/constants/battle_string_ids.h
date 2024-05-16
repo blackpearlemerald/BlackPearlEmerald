@@ -7,7 +7,9 @@
 #define STRINGID_SWITCHINMON    3
 #define STRINGID_USEDMOVE       4
 #define STRINGID_BATTLEEND      5
-#define STRINGID_TRAINERSLIDE   6
+#define STRINGID_NUZLOCKELOST   6
+#define STRINGID_NUZLOCKEDUPS   7  //uncomment this when fixing dupe clause
+#define STRINGID_TRAINERSLIDE   8 //this was originally 6, I changed it to be 7, to follow nuzlocke tutorial
 
 // todo: make some of those names less vague: attacker/target vs pkmn, etc.
 #define STRINGID_TRAINER1LOSETEXT                     12

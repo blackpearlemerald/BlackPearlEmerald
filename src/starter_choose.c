@@ -112,9 +112,9 @@ static const u8 sStarterLabelCoords[STARTER_MON_COUNT][2] =
 
 static const u16 sStarterMon[STARTER_MON_COUNT] =
 {
-    SPECIES_TREECKO,
-    SPECIES_TORCHIC,
-    SPECIES_MUDKIP,
+    //SPECIES_GIBLE,
+    //SPECIES_BELDUM,
+    //SPECIES_LARVITAR,
 };
 
 static const struct BgTemplate sBgTemplates[3] =
@@ -373,6 +373,7 @@ static void VblankCB_StarterChoose(void)
 
 void CB2_ChooseStarter(void)
 {
+    
     u8 taskId;
     u8 spriteId;
 
@@ -464,11 +465,14 @@ void CB2_ChooseStarter(void)
 
 static void CB2_StarterChoose(void)
 {
-    RunTasks();
-    AnimateSprites();
-    BuildOamBuffer();
-    DoScheduledBgTilemapCopiesToVram();
-    UpdatePaletteFade();
+
+    SetMainCallback2(gMain.savedCallback);
+    
+    //RunTasks();
+    //AnimateSprites();
+    //BuildOamBuffer();
+    //DoScheduledBgTilemapCopiesToVram();
+    //UpdatePaletteFade();
 }
 
 static void Task_StarterChoose(u8 taskId)

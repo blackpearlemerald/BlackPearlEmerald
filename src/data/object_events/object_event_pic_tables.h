@@ -1260,3 +1260,27 @@ static const struct SpriteFrameImage sPicTable_RubySapphireBrendan[] = {
 static const struct SpriteFrameImage sPicTable_RubySapphireMay[] = {
     overworld_ascending_frames(gObjectEventPic_RubySapphireMayNormal, 2, 4),
 };
+
+const struct SpriteFrameImage gObjectEventPicTable_Wake[] = {
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 1),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 2),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 3),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 4),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 5),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 6),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 7),
+    overworld_frame(gObjectEventPic_Wake, 2, 4, 8),
+};
+
+const struct SpriteFrameImage gObjectEventPicTable_Cynthia[] = {
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 1),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 2),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 3),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 4),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 5),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 6),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 7),
+    overworld_frame(gObjectEventPic_Cynthia, 2, 4, 8),
+};

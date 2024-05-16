@@ -44,7 +44,15 @@
 #include "constants/item_effects.h"
 #include "constants/items.h"
 #include "constants/songs.h"
+#include "battle_setup.h"
+#include "region_map.h"
 #include "constants/map_types.h"
+#include "battle_anim.h"
+#include "pokedex.h"
+#include "battle_message.h"
+#include "script_pokemon_util.h"
+#include "clock.h"
+
 
 static void SetUpItemUseCallback(u8);
 static void FieldCB_UseItemOnField(void);
@@ -78,6 +86,7 @@ static void Task_CloseCantUseKeyItemMessage(u8);
 static void SetDistanceOfClosestHiddenItem(u8, s16, s16);
 static void CB2_OpenPokeblockFromBag(void);
 static void ItemUseOnFieldCB_Honey(u8 taskId);
+static void ItemUseOnFieldCB_PokeVial(u8 taskId);
 static bool32 IsValidLocationForVsSeeker(void);
 
 // EWRAM variables
@@ -1082,8 +1091,17 @@ void ItemUseOutOfBattle_EvolutionStone(u8 taskId)
 
 static u32 GetBallThrowableState(void)
 {
+    //bool8 isWildShiny = GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)]], MON_DATA_IS_SHINY);
+    u32 isWildShiny = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_IS_SHINY);
+    DebugPrintf(" isWildShiny: %d", isWildShiny);
+    DebugPrintf(" gNuzlockeCannotCatch: %d", gNuzlockeCannotCatch);
+    //bool8 isWildShiny = GetMonData(&gEnemyParty[0], MON_DATA_IS_SHINY, NULL);
+    //u32 shinyValue = GET_SHINY_VALUE();
+    //(shinyValue < SHINY_ODDS)
+    //bool8 isWildShiny = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattleAnimTarget]], MON_DATA_IS_SHINY);
+
     if (IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT))
-     && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))
+        && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))
         return BALL_THROW_UNABLE_TWO_MONS;
     else if (IsPlayerPartyAndPokemonStorageFull() == TRUE)
         return BALL_THROW_UNABLE_NO_ROOM;
@@ -1091,6 +1109,13 @@ static u32 GetBallThrowableState(void)
         return BALL_THROW_UNABLE_SEMI_INVULNERABLE;
     else if (FlagGet(B_FLAG_NO_CATCHING))
         return BALL_THROW_UNABLE_DISABLED_FLAG;
+    else if (isWildShiny == 1)
+        return BALL_THROW_ABLE;
+    else if ((gNuzlockeCannotCatch == 1) || (gNuzlockeCannotCatch == 2))
+        return BALL_THROW_UNABLE_NUZLOCKE;
+    // else if ((GetSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[GetCatchingBattler()].species), FLAG_GET_CAUGHT)))
+    //     return BALL_THROW_UNABLE_NUZLOCKE;
+
 
     return BALL_THROW_ABLE;
 }
@@ -1103,8 +1128,16 @@ bool32 CanThrowBall(void)
 static const u8 sText_CantThrowPokeBall_TwoMons[] = _("Cannot throw a ball!\nThere are two Pokémon out there!\p");
 static const u8 sText_CantThrowPokeBall_SemiInvulnerable[] = _("Cannot throw a ball!\nThere's no Pokémon in sight!\p");
 static const u8 sText_CantThrowPokeBall_Disabled[] = _("POKé BALLS cannot be used\nright now!\p");
+static const u8 sText_CantThrowPokeBall_Nuzlocke[] = _("You've already caught\na Pokémon on this Route!\p");
 void ItemUseInBattle_PokeBall(u8 taskId)
 {
+    //// This if might be in wrong spot...
+    //if (gNuzlockeCannotCatch == 1) {
+    //    GetMapNameHandleAquaHideout(gStringVar1, currLocConvertForNuzlocke(GetCurrentRegionMapSectionId()));
+    //    DisplayItemMessage(taskId, FONT_NORMAL, gText_BallsCannotBeUsedNuz, CloseItemMessage);
+    //    return;
+    //}
+
     switch (GetBallThrowableState())
     {
     case BALL_THROW_ABLE:
@@ -1138,6 +1171,12 @@ void ItemUseInBattle_PokeBall(u8 taskId)
             DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_Disabled, CloseItemMessage);
         else
             DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_Disabled, Task_CloseBattlePyramidBagMessage);
+        break;
+    case BALL_THROW_UNABLE_NUZLOCKE:
+        if (!InBattlePyramid())
+            DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_Nuzlocke, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_Nuzlocke, Task_CloseBattlePyramidBagMessage);
         break;
     }
 }
@@ -1222,6 +1261,9 @@ bool32 CannotUseItemsInBattle(u16 itemId, struct Pokemon *mon)
             failStr = sText_CantThrowPokeBall_Disabled;
             cannotUse = TRUE;
             break;
+        case BALL_THROW_UNABLE_NUZLOCKE:
+            failStr = sText_CantThrowPokeBall_Nuzlocke;
+            cannotUse = TRUE;
         }
         break;
     case EFFECT_ITEM_INCREASE_ALL_STATS:
@@ -1497,6 +1539,52 @@ void FieldUseFunc_VsSeeker(u8 taskId)
     }
     else
         DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].data[3]);
+}
+
+void ItemUseOutOfBattle_PokeVial(u8 taskId)
+{
+    // if (VarGet(VAR_POKEVIAL_CHARGES) == 0)
+    // {
+    //     if (!gTasks[taskId].tUsingRegisteredKeyItem)
+    //     {
+    //         DisplayItemMessage(taskId, 1, gText_PokeVialEmpty, CloseItemMessage);
+    //     }
+    //     else
+    //     {
+    //         DisplayItemMessageOnField(taskId, gText_PokeVialEmpty, Task_CloseCantUseKeyItemMessage);
+    //     }
+    // }
+    // else
+    // {
+        sItemUseOnFieldCB = ItemUseOnFieldCB_PokeVial;
+        SetUpItemUseOnFieldCallback(taskId);
+    // }
+}
+
+void ItemUseOutOfBattle_PocketWatch(u8 taskId)
+{
+    // CODE HERE FOR POCKET WATCH
+    StartWallClock();
+    DestroyTask(taskId);
+}
+
+void ItemUseOutOfBattle_Fly(u8 taskId)
+{
+    if (Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) == TRUE)
+    {
+        SetMainCallback2(CB2_OpenFlyMap);
+        Task_FadeAndCloseBagMenu(taskId);
+    }
+    else
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].data[3]);
+}
+
+static void ItemUseOnFieldCB_PokeVial(u8 taskId)
+{
+    PlaySE(SE_USE_ITEM);
+    HealPlayerParty();
+    //VarSet(VAR_POKEVIAL_CHARGES, VarGet(VAR_POKEVIAL_CHARGES) - 1);
+    DisplayItemMessageOnField(taskId, gText_UsedPokeVial, Task_CloseCantUseKeyItemMessage);
 }
 
 void Task_ItemUse_CloseMessageBoxAndReturnToField_VsSeeker(u8 taskId)

@@ -159,6 +159,40 @@ Route121_EventScript_Cristin::
 	release
 	end
 
+Route121_EventScript_AquaGrunt1::
+    lock
+    faceplayer
+    msgbox Route121_Text_DontButtIn, MSGBOX_DEFAULT
+    closemessage
+    applymovement 30, Common_Movement_FaceOriginalDirection
+    waitmovement 0
+    release
+    end
+
+Route121_EventScript_AquaGrunt2::
+    lock
+    faceplayer
+    msgbox Route121_Text_DontButtIn, MSGBOX_DEFAULT
+    closemessage
+    applymovement 31, Common_Movement_FaceOriginalDirection
+    waitmovement 0
+    release
+    end
+
+Route121_EventScript_AquaGrunt3::
+    lock
+    faceplayer
+    msgbox Route121_Text_DontButtIn, MSGBOX_DEFAULT
+    closemessage
+    applymovement 32, Common_Movement_FaceOriginalDirection
+    waitmovement 0
+    release
+    end
+
+Route121_Text_DontButtIn:
+    .string "Hey, you there!\n"
+    .string "Don't butt in!$"
+
 Route121_EventScript_RegisterCristin::
 	special PlayerFaceTrainerAfterBattle
 	waitmovement 0

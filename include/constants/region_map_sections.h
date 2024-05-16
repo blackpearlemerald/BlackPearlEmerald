@@ -215,6 +215,14 @@
 #define MAPSEC_NAVEL_ROCK                   0xD3
 #define MAPSEC_TRAINER_HILL                 0xD4
 #define MAPSEC_NONE                         0xD5
+#define MAPSEC_TRICK_HOUSE_1                0xD6
+#define MAPSEC_TRICK_HOUSE_2                0xD7
+#define MAPSEC_TRICK_HOUSE_3                0xD8
+#define MAPSEC_TRICK_HOUSE_4                0xD9
+#define MAPSEC_TRICK_HOUSE_5                0xDA
+#define MAPSEC_TRICK_HOUSE_6                0xDB
+#define MAPSEC_TRICK_HOUSE_7                0xDC
+#define MAPSEC_TRICK_HOUSE_8                0xDD
 
 #define METLOC_SPECIAL_EGG                  0xFD
 #define METLOC_IN_GAME_TRADE                0xFE
