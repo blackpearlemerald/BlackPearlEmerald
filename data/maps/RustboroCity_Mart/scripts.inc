@@ -61,21 +61,6 @@ RustboroCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_CHERI_BERRY
 	.2byte ITEM_CHESTO_BERRY
 	.2byte ITEM_ENIGMA_BERRY
-	.2byte ITEM_TM01
-	.2byte ITEM_TM04
-	.2byte ITEM_TM05
-	.2byte ITEM_TM06
-	.2byte ITEM_TM13
-	.2byte ITEM_TM16
-	.2byte ITEM_TM17
-	.2byte ITEM_TM18
-	.2byte ITEM_TM19
-	.2byte ITEM_TM20
-	.2byte ITEM_TM22
-	.2byte ITEM_TM23
-	.2byte ITEM_TM24
-	.2byte ITEM_TM27
-	.2byte ITEM_TM57
 	.2byte ITEM_NONE
 	release
 	end

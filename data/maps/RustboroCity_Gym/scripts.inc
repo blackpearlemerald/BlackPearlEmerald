@@ -26,6 +26,35 @@ RustboroCity_Gym_EventScript_RoxanneDefeated::
 	end
 
 RustboroCity_Gym_EventScript_GiveRockTomb::
+	additem ITEM_TM_TAKE_DOWN
+	additem ITEM_TM_AGILITY
+	additem ITEM_TM_MUD_SLAP
+	additem ITEM_TM_SCARY_FACE
+	additem ITEM_TM_ACID_SPRAY
+	additem ITEM_TM_PSYBEAM
+	additem ITEM_TM_CONFUSE_RAY
+	additem ITEM_TM_THIEF
+	additem ITEM_TM_DISARMING_VOICE
+	additem ITEM_TM_TRAILBLAZE
+	additem ITEM_TM_CHILLING_WATER
+	additem ITEM_TM_CHARGE_BEAM
+	additem ITEM_TM_FIRE_SPIN
+	additem ITEM_TM_AERIAL_ACE
+	additem ITEM_TM_FALSE_SWIPE
+	additem ITEM_TM_MUD_SHOT
+	additem ITEM_TM_MAGICAL_LEAF
+	additem ITEM_TM_ICY_WIND
+	additem ITEM_TM_BULLDOZE
+	additem ITEM_TM_LOW_SWEEP
+	additem ITEM_TM_BULLET_SEED
+	additem ITEM_TM_METAL_CLAW
+	additem ITEM_TM_POISON_TAIL
+	additem ITEM_TM_DRAINING_KISS
+	additem ITEM_TM_FLAME_CHARGE
+	additem ITEM_TM_SNARL
+	additem ITEM_TM_SWIFT
+	additem ITEM_TM_WATER_PULSE
+	additem ITEM_TM_POUNCE
 	giveitem ITEM_EVIOLITE
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	setflag FLAG_RECEIVED_TM_ROCK_TOMB

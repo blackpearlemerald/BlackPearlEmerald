@@ -221,7 +221,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
+      "graphics_id": "OBJ_EVENT_GFX_VAR_0",
       "x": 25,
       "y": 32,
       "elevation": 3,
@@ -482,14 +482,14 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_FISHERMAN",
-      "x": 26,
-      "y": 108,
+      "x": 17,
+      "y": 111,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_RIGHT",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
-      "trainer_sight_or_berry_tree_id": "5",
+      "trainer_sight_or_berry_tree_id": "19",
       "script": "Route119_EventScript_Chris",
       "flag": "0"
     },
