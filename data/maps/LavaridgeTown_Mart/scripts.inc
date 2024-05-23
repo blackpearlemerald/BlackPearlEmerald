@@ -49,20 +49,6 @@ LavaridgeCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_SITRUS_BERRY
 	.2byte ITEM_CUSTAP_BERRY
 	.2byte ITEM_LUM_BERRY
-	.2byte ITEM_TM93
-	.2byte ITEM_TM94
-	.2byte ITEM_TM95
-	.2byte ITEM_TM96
-	.2byte ITEM_TM98
-	.2byte ITEM_TM99
-	.2byte ITEM_TM101
-	.2byte ITEM_TM104
-	.2byte ITEM_TM105
-	.2byte ITEM_TM106
-	.2byte ITEM_TM108
-	.2byte ITEM_TM109
-	.2byte ITEM_TM111
-	.2byte ITEM_TM112
 	.2byte ITEM_NONE
 	release
 	end

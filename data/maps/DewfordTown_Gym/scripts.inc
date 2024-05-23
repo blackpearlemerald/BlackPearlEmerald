@@ -168,6 +168,36 @@ DewfordTown_Gym_EventScript_BrawlyDefeated::
 	end
 
 DewfordTown_Gym_EventScript_GiveBulkUp::
+	additem ITEM_TM_AIR_CUTTER
+	additem ITEM_TM_NIGHT_SHADE
+	additem ITEM_TM_DRAGON_TAIL
+	additem ITEM_TM_VENOSHOCK
+	additem ITEM_TM_AVALANCHE
+	additem ITEM_TM_ENDURE
+	additem ITEM_TM_SUNNY_DAY
+	additem ITEM_TM_RAIN_DANCE
+	additem ITEM_TM_SANDSTORM
+	additem ITEM_TM_SNOWSCAPE
+	additem ITEM_TM_DIG
+	additem ITEM_TM_FIRE_FANG
+	additem ITEM_TM_THUNDER_FANG
+	additem ITEM_TM_ICE_FANG
+	additem ITEM_TM_REFLECT
+	additem ITEM_TM_LIGHT_SCREEN
+	additem ITEM_TM_ROCK_BLAST
+	additem ITEM_TM_DRAGON_CHEER
+	additem ITEM_TM_HEX
+	additem ITEM_TM_VOLT_SWITCH
+	additem ITEM_TM_BRICK_BREAK
+	additem ITEM_TM_ZEN_HEADBUTT
+	additem ITEM_TM_U_TURN
+	additem ITEM_TM_SHADOW_CLAW
+	additem ITEM_TM_PSYCHIC_FANGS
+	additem ITEM_TM_TAUNT
+	additem ITEM_TM_KNOCK_OFF
+	additem ITEM_TM_VACUUM_WAVE
+	additem ITEM_TM_STOMPING_TANTRUM
+	additem ITEM_TM_ICICLE_SPEAR
 	giveitem ITEM_FOCUS_SASH
 	goto_if_eq VAR_RESULT, 0, Common_EventScript_BagIsFull
 	msgbox DewfordTown_Gym_Text_ExplainBulkUp, MSGBOX_DEFAULT
@@ -175,6 +205,36 @@ DewfordTown_Gym_EventScript_GiveBulkUp::
 	return
 
 DewfordTown_Gym_EventScript_GiveBulkUp2:
+	additem ITEM_TM_AIR_CUTTER
+	additem ITEM_TM_NIGHT_SHADE
+	additem ITEM_TM_DRAGON_TAIL
+	additem ITEM_TM_VENOSHOCK
+	additem ITEM_TM_AVALANCHE
+	additem ITEM_TM_ENDURE
+	additem ITEM_TM_SUNNY_DAY
+	additem ITEM_TM_RAIN_DANCE
+	additem ITEM_TM_SANDSTORM
+	additem ITEM_TM_SNOWSCAPE
+	additem ITEM_TM_DIG
+	additem ITEM_TM_FIRE_FANG
+	additem ITEM_TM_THUNDER_FANG
+	additem ITEM_TM_ICE_FANG
+	additem ITEM_TM_REFLECT
+	additem ITEM_TM_LIGHT_SCREEN
+	additem ITEM_TM_ROCK_BLAST
+	additem ITEM_TM_DRAGON_CHEER
+	additem ITEM_TM_HEX
+	additem ITEM_TM_VOLT_SWITCH
+	additem ITEM_TM_BRICK_BREAK
+	additem ITEM_TM_ZEN_HEADBUTT
+	additem ITEM_TM_U_TURN
+	additem ITEM_TM_SHADOW_CLAW
+	additem ITEM_TM_PSYCHIC_FANGS
+	additem ITEM_TM_TAUNT
+	additem ITEM_TM_KNOCK_OFF
+	additem ITEM_TM_VACUUM_WAVE
+	additem ITEM_TM_STOMPING_TANTRUM
+	additem ITEM_TM_ICICLE_SPEAR
 	giveitem ITEM_FOCUS_SASH
 	goto_if_eq VAR_RESULT, 0, Common_EventScript_ShowBagIsFull
 	msgbox DewfordTown_Gym_Text_ExplainBulkUp, MSGBOX_DEFAULT

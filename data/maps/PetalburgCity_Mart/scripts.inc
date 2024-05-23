@@ -43,32 +43,6 @@ PetalburgCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_POMEG_BERRY
 	.2byte ITEM_MAX_REPEL
 	.2byte ITEM_METAL_COAT
-	.2byte ITEM_TM88
-	.2byte ITEM_TM90
-	.2byte ITEM_TM91
-	.2byte ITEM_TM100
-	.2byte ITEM_TM102
-	.2byte ITEM_TM107
-	.2byte ITEM_TM113
-	.2byte ITEM_TM114
-	.2byte ITEM_TM115
-	.2byte ITEM_TM116
-	.2byte ITEM_TM118
-	.2byte ITEM_TM119
-	.2byte ITEM_TM120
-	.2byte ITEM_TM121
-	.2byte ITEM_TM122
-	.2byte ITEM_TM123
-	.2byte ITEM_TM124
-	.2byte ITEM_TM125
-	.2byte ITEM_TM126
-	.2byte ITEM_TM127
-	.2byte ITEM_TM128
-	.2byte ITEM_TM129
-	.2byte ITEM_TM131
-	.2byte ITEM_TM122
-	.2byte ITEM_TM134
-	.2byte ITEM_TM135
 	.2byte ITEM_NONE
 	release
 	end

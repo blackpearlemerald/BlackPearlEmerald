@@ -72,37 +72,6 @@ MauvilleCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_BABIRI_BERRY
 	.2byte ITEM_CHILAN_BERRY
 	.2byte ITEM_ROSELI_BERRY
-	.2byte ITEM_TM29
-	.2byte ITEM_TM48
-	.2byte ITEM_TM58
-	.2byte ITEM_TM59
-	.2byte ITEM_TM60
-	.2byte ITEM_TM61
-	.2byte ITEM_TM62
-	.2byte ITEM_TM63
-	.2byte ITEM_TM64
-	.2byte ITEM_TM65
-	.2byte ITEM_TM66
-	.2byte ITEM_TM67
-	.2byte ITEM_TM68
-	.2byte ITEM_TM69
-	.2byte ITEM_TM70
-	.2byte ITEM_TM71
-	.2byte ITEM_TM72
-	.2byte ITEM_TM73
-	.2byte ITEM_TM77
-	.2byte ITEM_TM78
-	.2byte ITEM_TM79
-	.2byte ITEM_TM80
-	.2byte ITEM_TM81
-	.2byte ITEM_TM82
-	.2byte ITEM_TM83
-	.2byte ITEM_TM84
-	.2byte ITEM_TM85
-	.2byte ITEM_TM86
-	.2byte ITEM_TM87
-	.2byte ITEM_TM89
-	.2byte ITEM_TM92
 	.2byte ITEM_NONE
 	release
 	end

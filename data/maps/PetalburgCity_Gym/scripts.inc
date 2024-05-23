@@ -405,7 +405,32 @@ PetalburgCity_Gym_EventScript_NormanBattle::
 	end
 
 PetalburgCity_Gym_EventScript_GiveFacade::
-	giveitem ITEM_MEGA_RING
+	additem ITEM_TM_SPIKES
+	additem ITEM_TM_TOXIC_SPIKES
+	additem ITEM_TM_DRAGON_DANCE
+	additem ITEM_TM_GUNK_SHOT
+	additem ITEM_TM_DRAGON_PULSE
+	additem ITEM_TM_STEALTH_ROCK
+	additem ITEM_TM_HEAT_WAVE
+	additem ITEM_TM_ENERGY_BALL
+	additem ITEM_TM_PSYCHIC
+	additem ITEM_TM_HEAVY_SLAM
+	additem ITEM_TM_ENCORE
+	additem ITEM_TM_FIRE_BLAST
+	additem ITEM_TM_HYDRO_PUMP
+	additem ITEM_TM_BLIZZARD
+	additem ITEM_TM_PHANTOM_FORCE
+	additem ITEM_TM_OUTRAGE
+	additem ITEM_TM_OVERHEAT
+	additem ITEM_TM_FOCUS_BLAST
+	additem ITEM_TM_LEAF_STORM
+	additem ITEM_TM_HURRICANE
+	additem ITEM_TM_TRICK_ROOM
+	additem ITEM_TM_HYPER_BEAM
+	additem ITEM_TM_THUNDER
+	additem ITEM_TM_DRACO_METEOR
+	additem ITEM_TM_PETAL_BLIZZARD
+	giveitem ITEM_ASSAULT_VEST
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	setflag FLAG_RECEIVED_TM_FACADE
 	msgbox PetalburgCity_Gym_Text_ExplainFacade, MSGBOX_DEFAULT

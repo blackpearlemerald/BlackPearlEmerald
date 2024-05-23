@@ -112,6 +112,38 @@ MauvilleCity_Gym_EventScript_WattsonDefeated::
 	end
 
 MauvilleCity_Gym_EventScript_GiveShockWave2::
+	additem ITEM_TM_FOUL_PLAY
+	additem ITEM_TM_BULK_UP
+	additem ITEM_TM_AIR_SLASH
+	additem ITEM_TM_BODY_SLAM
+	additem ITEM_TM_FIRE_PUNCH
+	additem ITEM_TM_THUNDER_PUNCH
+	additem ITEM_TM_ICE_PUNCH
+	additem ITEM_TM_SLEEP_TALK
+	additem ITEM_TM_SEED_BOMB
+	additem ITEM_TM_ELECTRO_BALL
+	additem ITEM_TM_DRAIN_PUNCH
+	additem ITEM_TM_DRAGON_CLAW
+	additem ITEM_TM_DAZZLING_GLEAM
+	additem ITEM_TM_METRONOME
+	additem ITEM_TM_GRASS_KNOT
+	additem ITEM_TM_THUNDER_WAVE
+	additem ITEM_TM_POISON_JAB
+	additem ITEM_TM_STOMPING_TANTRUM
+	additem ITEM_TM_REST
+	additem ITEM_TM_ROCK_SLIDE
+	additem ITEM_TM_METRONOME
+	additem ITEM_TM_GRASS_KNOT
+	additem ITEM_TM_THUNDER_WAVE
+	additem ITEM_TM_POISON_JAB
+	additem ITEM_TM_HIGH_HORSEPOWER
+	additem ITEM_TM_REST
+	additem ITEM_TM_BODY_PRESS
+	additem ITEM_TM_PAIN_SPLIT
+	additem ITEM_TM_SCORCHING_SANDS
+	additem ITEM_TM_EXPANDING_FORCE
+	additem ITEM_TM_HARD_PRESS
+	additem ITEM_TM_UPPER_HAND
 	giveitem ITEM_LIFE_ORB
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT
@@ -120,6 +152,38 @@ MauvilleCity_Gym_EventScript_GiveShockWave2::
 	end
 
 MauvilleCity_Gym_EventScript_GiveShockWave::
+	additem ITEM_TM_FOUL_PLAY
+	additem ITEM_TM_BULK_UP
+	additem ITEM_TM_AIR_SLASH
+	additem ITEM_TM_BODY_SLAM
+	additem ITEM_TM_FIRE_PUNCH
+	additem ITEM_TM_THUNDER_PUNCH
+	additem ITEM_TM_ICE_PUNCH
+	additem ITEM_TM_SLEEP_TALK
+	additem ITEM_TM_SEED_BOMB
+	additem ITEM_TM_ELECTRO_BALL
+	additem ITEM_TM_DRAIN_PUNCH
+	additem ITEM_TM_DRAGON_CLAW
+	additem ITEM_TM_DAZZLING_GLEAM
+	additem ITEM_TM_METRONOME
+	additem ITEM_TM_GRASS_KNOT
+	additem ITEM_TM_THUNDER_WAVE
+	additem ITEM_TM_POISON_JAB
+	additem ITEM_TM_STOMPING_TANTRUM
+	additem ITEM_TM_REST
+	additem ITEM_TM_ROCK_SLIDE
+	additem ITEM_TM_METRONOME
+	additem ITEM_TM_GRASS_KNOT
+	additem ITEM_TM_THUNDER_WAVE
+	additem ITEM_TM_POISON_JAB
+	additem ITEM_TM_HIGH_HORSEPOWER
+	additem ITEM_TM_REST
+	additem ITEM_TM_BODY_PRESS
+	additem ITEM_TM_PAIN_SPLIT
+	additem ITEM_TM_SCORCHING_SANDS
+	additem ITEM_TM_EXPANDING_FORCE
+	additem ITEM_TM_HARD_PRESS
+	additem ITEM_TM_UPPER_HAND
 	giveitem ITEM_LIFE_ORB
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT

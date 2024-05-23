@@ -85,6 +85,43 @@ LavaridgeTown_Gym_1F_EventScript_FlanneryDefeated::
 	end
 
 LavaridgeTown_Gym_1F_EventScript_GiveOverheat2::
+	additem ITEM_TM_FLASH_CANNON
+	additem ITEM_TM_DARK_PULSE
+	additem ITEM_TM_LEECH_LIFE
+	additem ITEM_TM_EERIE_IMPULSE
+	additem ITEM_TM_SKILL_SWAP
+	additem ITEM_TM_IRON_HEAD
+	additem ITEM_TM_POWER_GEM
+	additem ITEM_TM_IRON_DEFENSE
+	additem ITEM_TM_X_SCISSOR
+	additem ITEM_TM_DRILL_RUN
+	additem ITEM_TM_CRUNCH
+	additem ITEM_TM_TRICK
+	additem ITEM_TM_GIGA_DRAIN
+	additem ITEM_TM_AURA_SPHERE
+	additem ITEM_TM_WILL_O_WISP
+	additem ITEM_TM_TAILWIND
+	additem ITEM_TM_SHADOW_BALL
+	additem ITEM_TM_ICE_SPINNER
+	additem ITEM_TM_EARTH_POWER
+	additem ITEM_TM_THUNDERBOLT
+	additem ITEM_TM_FLAMETHROWER
+	additem ITEM_TM_SCALD
+	additem ITEM_TM_PLAY_ROUGH
+	additem ITEM_TM_CALM_MIND
+	additem ITEM_TM_SWORDS_DANCE
+	additem ITEM_TM_AMNESIA
+	additem ITEM_TM_ICE_BEAM
+	additem ITEM_TM_POLLEN_PUFF
+	additem ITEM_TM_REVERSAL
+	additem ITEM_TM_SLUDGE_BOMB
+	additem ITEM_TM_EARTHQUAKE
+	additem ITEM_TM_STONE_EDGE
+	additem ITEM_TM_BRAVE_BIRD
+	additem ITEM_TM_CLOSE_COMBAT
+	additem ITEM_TM_SOLAR_BEAM
+	additem ITEM_TM_WILD_CHARGE
+	additem ITEM_TM_FLARE_BLITZ
 	giveitem ITEM_MEGA_RING
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox LavaridgeTown_Gym_1F_Text_ExplainOverheat, MSGBOX_DEFAULT
@@ -93,6 +130,43 @@ LavaridgeTown_Gym_1F_EventScript_GiveOverheat2::
 	end
 
 LavaridgeTown_Gym_1F_EventScript_GiveOverheat::
+	additem ITEM_TM_FLASH_CANNON
+	additem ITEM_TM_DARK_PULSE
+	additem ITEM_TM_LEECH_LIFE
+	additem ITEM_TM_EERIE_IMPULSE
+	additem ITEM_TM_SKILL_SWAP
+	additem ITEM_TM_IRON_HEAD
+	additem ITEM_TM_POWER_GEM
+	additem ITEM_TM_IRON_DEFENSE
+	additem ITEM_TM_X_SCISSOR
+	additem ITEM_TM_DRILL_RUN
+	additem ITEM_TM_CRUNCH
+	additem ITEM_TM_TRICK
+	additem ITEM_TM_GIGA_DRAIN
+	additem ITEM_TM_AURA_SPHERE
+	additem ITEM_TM_WILL_O_WISP
+	additem ITEM_TM_TAILWIND
+	additem ITEM_TM_SHADOW_BALL
+	additem ITEM_TM_ICE_SPINNER
+	additem ITEM_TM_EARTH_POWER
+	additem ITEM_TM_THUNDERBOLT
+	additem ITEM_TM_FLAMETHROWER
+	additem ITEM_TM_SCALD
+	additem ITEM_TM_PLAY_ROUGH
+	additem ITEM_TM_CALM_MIND
+	additem ITEM_TM_SWORDS_DANCE
+	additem ITEM_TM_AMNESIA
+	additem ITEM_TM_ICE_BEAM
+	additem ITEM_TM_POLLEN_PUFF
+	additem ITEM_TM_REVERSAL
+	additem ITEM_TM_SLUDGE_BOMB
+	additem ITEM_TM_EARTHQUAKE
+	additem ITEM_TM_STONE_EDGE
+	additem ITEM_TM_BRAVE_BIRD
+	additem ITEM_TM_CLOSE_COMBAT
+	additem ITEM_TM_SOLAR_BEAM
+	additem ITEM_TM_WILD_CHARGE
+	additem ITEM_TM_FLARE_BLITZ
 	giveitem ITEM_MEGA_RING
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox LavaridgeTown_Gym_1F_Text_ExplainOverheat, MSGBOX_DEFAULT
