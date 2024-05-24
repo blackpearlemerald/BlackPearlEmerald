@@ -235,6 +235,11 @@ RustboroCity_Gym_Text_StoneBadgeInfoTakeThis:
 	.string "Also, please accept this reward!$"
 
 RustboroCity_Gym_Text_ExplainRockTomb:
+	.string "I would also like to give you this…\p"
+	.string "{PLAYER} recieved TM Package 1!\p"
+	.string "Those rewards will help you greatly\n"
+	.string "on your journey!\p" 
+	.string "One last thing...\p"  
 	.string "Please check the Rustboro Mart for\n" 
 	.string "new items and TMs!$"
 

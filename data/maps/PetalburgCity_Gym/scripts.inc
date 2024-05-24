@@ -1315,6 +1315,11 @@ PetalburgCity_Gym_Text_ExplainBalanceBadgeTakeThis:
 	.string "Also, please accept this reward!$"
 
 PetalburgCity_Gym_Text_ExplainFacade:
+	.string "I would also like to give you this…\p"
+	.string "{PLAYER} recieved TM Package 5!\p"
+	.string "Those rewards will help you greatly\n"
+	.string "on your journey!\p" 
+	.string "One last thing...\p"  
 	.string "Please check the Petalburg Mart for\n" 
 	.string "new items and TMs!$"
 

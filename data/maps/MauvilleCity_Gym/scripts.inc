@@ -428,6 +428,11 @@ MauvilleCity_Gym_Text_ExplainDynamoBadgeTakeThis:
 	.string "Also, please accept this reward!$"
 
 MauvilleCity_Gym_Text_ExplainShockWave:
+	.string "I would also like to give you this…\p"
+	.string "{PLAYER} recieved TM Package 3!\p"
+	.string "Those rewards will help you greatly\n"
+	.string "on your journey!\p" 
+	.string "One last thing...\p"  
 	.string "Please check the Mauville Mart for\n" 
 	.string "new items and TMs!$"
 
