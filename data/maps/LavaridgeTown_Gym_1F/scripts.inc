@@ -421,7 +421,12 @@ LavaridgeTown_Gym_1F_Text_ExplainHeatBadgeTakeThis:
 LavaridgeTown_Gym_1F_Text_ExplainOverheat:
 	.string "This powerful ring will allow you\n"
 	.string "to Mega Evolve a Pokemon in Battle!\p"
-	.string "As always, go check the Lavaridge Mart\n" 
+	.string "I would also like to give you this…\p"
+	.string "{PLAYER} recieved TM Package 4!\p"
+	.string "Those rewards will help you greatly\n"
+	.string "on your journey!\p" 
+	.string "One last thing...\p"  
+	.string "Go check the Lavaridge Mart\n" 
 	.string "for new items and TMs!$"
 
 LavaridgeTown_Gym_1F_Text_RegisteredFlannery:

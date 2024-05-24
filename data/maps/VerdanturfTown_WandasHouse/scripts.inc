@@ -139,9 +139,10 @@ VerdanturfTown_WandasHouse_Text_DontWorryAboutWally:
 	.string "POKéMON with him, too.$"
 
 VerdanturfTown_WandasHouse_Text_CanSeeGirlfriendEveryDay:
-	.string "Thanks to you, I can see my girlfriend\n"
-	.string "every day.\l"
-	.string "Happy? You bet I am!$"
+	.string "Due to my sucessful experiements,\n"
+	.string "these Pokemon can talk like humans!\p"
+	.string "They can even teach your Pokemon\n"
+	.string "special moves!$"
 
 VerdanturfTown_WandasHouse_Text_DaughtersBoyfriendDriven:
 	.string "My daughter's boyfriend is a very\n"
@@ -166,3 +167,94 @@ VerdanturfTown_WandasHouse_Text_WallyWasInEverGrande:
 	.string "His parents in PETALBURG would be\n"
 	.string "astonished to hear that!$"
 
+General_EggTutor_EventScript::
+	lockall
+	setflag FLAG_EGG_MOVE_TUTOR
+	applymovement LOCALID_MOVE_RELEARNER, Common_Movement_FacePlayer
+	waitmovement 0
+	msgbox General_EggTutor_Text_ImTheEggTutor, MSGBOX_DEFAULT
+	goto General_EggTutor_EventScript_AskTeachMove
+	clearflag FLAG_EGG_MOVE_TUTOR
+	end
+
+
+General_EggTutor_EventScript_AskTeachMove::
+	msgbox General_EggTutor_Text_WantMeToTeachMove, MSGBOX_YESNO
+	switch VAR_RESULT
+	case NO, General_EggTutor_EventScript_ComeBackWithHeartScale
+	checkitem ITEM_PEARL
+	goto_if_eq VAR_RESULT, FALSE, General_EggTutor_EventScript_ComeBackWithHeartScale
+	goto General_EggTutor_EventScript_ChooseMon
+	clearflag FLAG_EGG_MOVE_TUTOR
+	end
+
+General_EggTutor_EventScript_ChooseMon::
+	msgbox General_EggTutor_Text_TutorWhichMon, MSGBOX_DEFAULT
+	special ChooseMonForMoveRelearner
+	waitstate
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, General_EggTutor_EventScript_ComeBackWithHeartScale
+	special IsSelectedMonEgg
+	goto_if_eq VAR_RESULT, TRUE, General_EggTutor_EventScript_CantTeachEgg
+	goto_if_eq VAR_0x8005, 0, General_EggTutor_EventScript_NoMoveToTeachMon
+	goto General_EggTutor_EventScript_ChooseMove
+	end
+
+General_EggTutor_EventScript_ChooseMove::
+	msgbox General_EggTutor_Text_TeachWhichMove, MSGBOX_DEFAULT
+	special TeachMoveRelearnerMove
+	waitstate
+	goto_if_eq VAR_0x8004, 0, General_EggTutor_EventScript_ChooseMon
+	removeitem ITEM_PEARL
+	msgbox General_EggTutor_Text_ThereYouGo, MSGBOX_DEFAULT
+	goto General_EggTutor_EventScript_ComeBackWithHeartScale
+	end
+
+General_EggTutor_EventScript_NoMoveToTeachMon::
+	msgbox General_EggTutor_Text_DontHaveMoveToTeachPokemon, MSGBOX_DEFAULT
+	goto General_EggTutor_EventScript_ChooseMon
+	end
+
+General_EggTutor_EventScript_CantTeachEgg::
+	msgbox General_EggTutor_Text_CantTeachEgg, MSGBOX_DEFAULT
+	goto General_EggTutor_EventScript_ChooseMon
+	end
+
+General_EggTutor_EventScript_ComeBackWithHeartScale::
+	msgbox General_EggTutor_Text_ComeBack, MSGBOX_DEFAULT
+	clearflag FLAG_EGG_MOVE_TUTOR
+	releaseall
+	end
+
+General_EggTutor_Text_ImTheEggTutor:
+	.string "Hi! I'm the EGG MOVE TUTOR!\p"
+	.string "I can teach your Pokémon any Egg Moves\n"
+	.string "they could possibly learn!\p"
+	.string "...For a price!$"
+
+General_EggTutor_Text_WantMeToTeachMove:
+	.string "Would you like me to teach one of your\n"
+	.string "Pokémon an Egg Move, for one PEARL?$"
+
+General_EggTutor_Text_TutorWhichMon:
+	.string "Which Pokémon?$"
+
+General_EggTutor_Text_TeachWhichMove:
+	.string "Which move should I teach?$"
+
+General_EggTutor_Text_DontHaveMoveToTeachPokemon:
+	.string "That Pokémon doesn't have any Egg\n"
+	.string "Moves.$"
+
+General_EggTutor_Text_ThereYouGo:
+	.string "{PLAYER} handed over one PEARL\n"
+	.string "in exchange./p"
+	.string "There you go!$"
+
+General_EggTutor_Text_ComeBack:
+	.string "Come back with a Pearl if you want\n"
+	.string "your Pokemon to learn an Egg Move.$"
+
+General_EggTutor_Text_CantTeachEgg:
+	.string "Just because I'm an Egg Move tutor\n"
+	.string "doesn't mean I can teach moves to an\l"
+	.string "Egg!$"

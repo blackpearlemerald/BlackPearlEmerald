@@ -463,8 +463,13 @@ DewfordTown_Gym_Text_KnuckleBadgeInfoTakeThis:
 	.string "Also, please accept this reward!$"
 
 DewfordTown_Gym_Text_ExplainBulkUp:
+	.string "I would also like to give you this…\p"
+	.string "{PLAYER} recieved TM Package 2!\p"
+	.string "Those rewards will help you greatly\n"
+	.string "on your journey!\p" 
+	.string "One last thing...\p"   
 	.string "Please check the Slateport Mart for\n" 
-	.string "new items and TMs!$"
+	.string "new items!$"
 
 DewfordTown_Gym_Text_RegisteredBrawly:
 	.string "Registered GYM LEADER CONNOR\n"

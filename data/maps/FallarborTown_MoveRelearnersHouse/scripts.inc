@@ -58,12 +58,13 @@ FallarborTown_MoveRelearnersHouse_EventScript_ComeBackWithHeartScale::
 	end
 
 FallarborTown_MoveRelearnersHouse_Text_ImTheMoveTutor:
-	.string "I'm the MOVE TUTOR.\p"
+	.string "Hello brother, I'm the MOVE TUTOR.\p"
 	.string "I know all the moves that POKéMON\n"
 	.string "learn. Every one of them, and I can\l"
 	.string "teach POKéMON those moves.\p"
 	.string "I can teach a move to a POKéMON\n"
-	.string "of yours if you'd like.$"
+	.string "of yours if you'd like?\p"
+	.string "I'll even do it for free!$"
 
 FallarborTown_MoveRelearnersHouse_Text_ThatsAHeartScaleWantMeToTeachMove:
 	.string "Let me guess, you want me to teach\n"
@@ -86,7 +87,7 @@ FallarborTown_MoveRelearnersHouse_Text_HandedOverHeartScale:
 
 FallarborTown_MoveRelearnersHouse_Text_ComeBackWithHeartScale:
 	.string "If your POKéMON needs to learn another\n"
-	.string "move, come see me again.$"
+	.string "move, come see me again brother.$"
 
 FallarborTown_MoveRelearnersHouse_Text_CantTeachEgg:
 	.string "Hunh? There isn't a single move that\n"
