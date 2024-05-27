@@ -6,7 +6,16 @@ VerdanturfTown_House_EventScript_Woman1::
 	end
 
 VerdanturfTown_House_EventScript_Woman2::
-	msgbox VerdanturfTown_House_Text_DefeatEliteFourInARow, MSGBOX_NPC
+	goto_if_unset FLAG_ROTOM_CATALOG, VerdanturfTown_House_EventScript_Woman2_GiveCatalog
+	msgbox VerdanturfTown_House_Text_Catalog2, MSGBOX_DEFAULT
+	release
+	end
+
+VerdanturfTown_House_EventScript_Woman2_GiveCatalog::
+	msgbox VerdanturfTown_House_Text_Catalog, MSGBOX_DEFAULT
+	giveitem ITEM_ROTOM_CATALOG
+	setflag FLAG_ROTOM_CATALOG
+	release
 	end
 
 VerdanturfTown_House_Text_TrainersGatherAtPokemonLeague:
@@ -23,3 +32,14 @@ VerdanturfTown_House_Text_DefeatEliteFourInARow:
 	.string "to begin your challenge again from the\l"
 	.string "first one.$"
 
+VerdanturfTown_House_Text_Catalog:
+	.string "I love reading magazines and catalogs!\p"
+	.string "I did get a strange one in the mail\n"
+	.string "the other day...\p"
+	.string "Here! Maybe you would like it!$"
+
+VerdanturfTown_House_Text_Catalog2:
+	.string "Have you taken a look at that catalog\n"
+	.string "I gave you?\p"
+	.string "I ordered it from a guy in Fallarbor,\n"
+	.string "but I haven't heard from him in a while…$"

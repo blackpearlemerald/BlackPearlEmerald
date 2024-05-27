@@ -684,7 +684,7 @@
 #define FLAG_ITEM_NEW_MAUVILLE_ULTRA_BALL_2  0x27F // Unused Flag
 #define FLAG_ITEM_NEW_MAUVILLE_ULTRA_BALL_3  0x280 // Unused Flag
 #define FLAG_ITEM_SHOAL_CAVE_ICE_ROOM_TM_HAIL_2  0x281 // Unused Flag
-#define FLAG_UNUSED_0x282  0x282 // Unused Flag
+#define FLAG_ITEM_ROUTE_123_ELIXIR_2  0x282 // Unused Flag
 #define FLAG_UNUSED_0x283  0x283 // Unused Flag
 #define FLAG_UNUSED_0x284  0x284 // Unused Flag
 #define FLAG_UNUSED_0x285  0x285 // Unused Flag
@@ -1529,11 +1529,11 @@
 #define FLAG_UNUSED_0x8FB                           (SYSTEM_FLAGS + 0x9B) // Unused Flag
 #define FLAG_UNUSED_0x8FC                           (SYSTEM_FLAGS + 0x9C) // Unused Flag
 #define FLAG_UNUSED_0x8FD                           (SYSTEM_FLAGS + 0x9D) // Unused Flag
-#define FLAG_UNUSED_0x8FE                           (SYSTEM_FLAGS + 0x9E) // Unused Flag
-#define FLAG_UNUSED_0x8FF                           (SYSTEM_FLAGS + 0x9F) // Unused Flag
-#define FLAG_UNUSED_0x900                           (SYSTEM_FLAGS + 0xA0) // Unused Flag
-#define FLAG_UNUSED_0x901                           (SYSTEM_FLAGS + 0xA1) // Unused Flag
-#define FLAG_UNUSED_0x902                           (SYSTEM_FLAGS + 0xA2) // Unused Flag
+#define FLAG_ON_THE_HOUSE                           (SYSTEM_FLAGS + 0x9E) // FREE PEARL FROM MOVE TUTOR HOUSE
+#define FLAG_ROTOM_CATALOG                          (SYSTEM_FLAGS + 0x9F) // ROTOM CATALOG LADY GIVES U ITEM
+#define FLAG_HIDE_LEGENDARY_GUARD                   (SYSTEM_FLAGS + 0xA0) // LEGENDARY GUARD HIDE
+#define FLAG_HIDE_LEGENDARY_GUARD_RAYQ              (SYSTEM_FLAGS + 0xA1) // RAYQUAZA GUARD
+#define FLAG_HIDE_SAFARI_BLOCK                      (SYSTEM_FLAGS + 0xA2) // SAFARI BLOCKER NPC
 #define FLAG_UNUSED_0x903                           (SYSTEM_FLAGS + 0xA3) // Unused Flag
 #define FLAG_UNUSED_0x904                           (SYSTEM_FLAGS + 0xA4) // Unused Flag
 #define FLAG_UNUSED_0x905                           (SYSTEM_FLAGS + 0xA5) // Unused Flag

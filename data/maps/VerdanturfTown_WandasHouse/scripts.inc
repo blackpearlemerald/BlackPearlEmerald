@@ -35,7 +35,16 @@ VerdanturfTown_WandasHouse_EventScript_WallysUncleEverGrande::
 	end
 
 VerdanturfTown_WandasHouse_EventScript_WandasBoyfriend::
-	msgbox VerdanturfTown_WandasHouse_Text_CanSeeGirlfriendEveryDay, MSGBOX_NPC
+	msgbox VerdanturfTown_WandasHouse_Text_CanSeeGirlfriendEveryDay, MSGBOX_DEFAULT
+	goto_if_unset FLAG_ON_THE_HOUSE, VerdanturfTown_WandasHouse_EventScript_OnTheHouse
+	release
+	end
+
+VerdanturfTown_WandasHouse_EventScript_OnTheHouse::
+	msgbox VerdanturfTown_WandasHouse_Text_OnTheHouse, MSGBOX_DEFAULT
+	giveitem ITEM_PEARL
+	setflag FLAG_ON_THE_HOUSE
+	release
 	end
 
 VerdanturfTown_WandasHouse_EventScript_Wanda::
@@ -144,6 +153,11 @@ VerdanturfTown_WandasHouse_Text_CanSeeGirlfriendEveryDay:
 	.string "They can even teach your Pokemon\n"
 	.string "special moves!$"
 
+VerdanturfTown_WandasHouse_Text_OnTheHouse:
+	.string "Dusclops works for free, but Ditto\n"
+	.string "demands payment...\p"
+	.string "Here… the first one is on the house!$"
+
 VerdanturfTown_WandasHouse_Text_DaughtersBoyfriendDriven:
 	.string "My daughter's boyfriend is a very\n"
 	.string "driven and passionate sort of person.\p"
@@ -247,7 +261,7 @@ General_EggTutor_Text_DontHaveMoveToTeachPokemon:
 
 General_EggTutor_Text_ThereYouGo:
 	.string "{PLAYER} handed over one PEARL\n"
-	.string "in exchange./p"
+	.string "in exchange.\p"
 	.string "There you go!$"
 
 General_EggTutor_Text_ComeBack:

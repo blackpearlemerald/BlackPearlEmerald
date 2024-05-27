@@ -1432,6 +1432,13 @@ void ItemUseOutOfBattle_RotomCatalog(u8 taskId)
     }
 }
 
+void ItemUseOutOfBattle_RotomCatalog2(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_RotomCatalog;
+    gTasks[taskId].data[0] = TRUE;
+    SetUpItemUseOnFieldCallback(taskId);
+}
+
 void ItemUseOutOfBattle_ZygardeCube(u8 taskId)
 {
     if (!gTasks[taskId].tUsingRegisteredKeyItem)

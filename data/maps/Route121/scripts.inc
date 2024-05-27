@@ -105,6 +105,11 @@ Route121_EventScript_Kate::
 	msgbox Route121_Text_KatePostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Route121_EventScript_SafariBlock::
+	msgbox Route121_Text_SafariBlock, MSGBOX_NPC
+	release
+	end
+
 Route121_EventScript_Joy::
 	trainerbattle_double TRAINER_KATE_AND_JOY, Route121_Text_JoyIntro, Route121_Text_JoyDefeat, Route121_Text_JoyNotEnoughMons
 	msgbox Route121_Text_JoyPostBattle, MSGBOX_AUTOCLOSE
@@ -224,3 +229,8 @@ Route121_Text_SafariZoneSign:
 	.string "“Filled with rare POKéMON!”\n"
 	.string "SAFARI ZONE$"
 
+Route121_Text_SafariBlock:
+	.string "Sorry, I cannot allow you inside\n"
+	.string "while playing in Nuzlocke mode.\p"
+	.string "Come back after you have conquered\n"
+	.string "the Elite Four!$"
