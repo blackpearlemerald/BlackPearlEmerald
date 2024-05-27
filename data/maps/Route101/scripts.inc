@@ -250,10 +250,16 @@ Route101_EventScript_BirchsBag::
 
 Route101_EventScript_HideMayInBedroom::
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM
+	goto_if_unset FLAG_NUZLOCKE, Route101_EventScript_HideSafariBlock
 	return
 
 Route101_EventScript_HideBrendanInBedroom::
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_BEDROOM
+	goto_if_unset FLAG_NUZLOCKE, Route101_EventScript_HideSafariBlock
+	return
+
+Route101_EventScript_HideSafariBlock::
+	setflag FLAG_HIDE_SAFARI_BLOCK
 	return
 
 Route101_Movement_BirchApproachPlayer:
