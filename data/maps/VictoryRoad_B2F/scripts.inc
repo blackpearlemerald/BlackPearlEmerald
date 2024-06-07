@@ -60,7 +60,7 @@ VictoryRoad_B2F_Text_OwenPostBattle:
 
 VictoryRoad_B2F_Text_CarolineIntro:
 	.string "Oh, wow, {PLAYER}.\n"
-	.string "I'm amazed you knoew where to find me\p"
+	.string "I'm amazed you knew where to find me\p"
 	.string "You should have a very good idea\n"
 	.string "about how good I am.\p"
 	.string "Okay, {PLAYER}, If you're going to mount\n"

@@ -377,3 +377,5 @@ const u32 gObjectEventPic_Wake[] = INCBIN_U32("graphics/object_events/pics/peopl
 const u16 gObjectEventPalette_Wake[] = INCBIN_U16("graphics/object_events/pics/people/wake.gbapal");
 const u32 gObjectEventPic_Cynthia[] = INCBIN_U32("graphics/object_events/pics/people/cynthia.4bpp");
 const u16 gObjectEventPalette_Cynthia[] = INCBIN_U16("graphics/object_events/pics/people/cynthia.gbapal");
+const u32 gObjectEventPic_Pants[] = INCBIN_U32("graphics/object_events/pics/people/pants.4bpp");
+const u16 gObjectEventPalette_Pants[] = INCBIN_U16("graphics/object_events/pics/people/pants.gbapal");
