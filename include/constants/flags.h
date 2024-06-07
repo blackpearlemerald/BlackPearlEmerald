@@ -685,7 +685,7 @@
 #define FLAG_ITEM_NEW_MAUVILLE_ULTRA_BALL_3  0x280 // Unused Flag
 #define FLAG_ITEM_SHOAL_CAVE_ICE_ROOM_TM_HAIL_2  0x281 // Unused Flag
 #define FLAG_ITEM_ROUTE_123_ELIXIR_2  0x282 // Unused Flag
-#define FLAG_UNUSED_0x283  0x283 // Unused Flag
+#define FLAG_ITEM_ROUTE_120_REVIVE_5  0x283 // Unused Flag
 #define FLAG_UNUSED_0x284  0x284 // Unused Flag
 #define FLAG_UNUSED_0x285  0x285 // Unused Flag
 #define FLAG_UNUSED_0x286  0x286 // Unused Flag
