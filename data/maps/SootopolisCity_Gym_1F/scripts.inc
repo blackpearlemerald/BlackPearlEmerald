@@ -116,14 +116,16 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 	end
 
 SootopolisCity_Gym_1F_EventScript_GiveWaterPulse::
-
+	giveitem ITEM_OLD_SEA_MAP
+	giveitem ITEM_EON_TICKET
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_WATER_PULSE
 	return
 
 SootopolisCity_Gym_1F_EventScript_GiveWaterPulse2::
-
+	giveitem ITEM_OLD_SEA_MAP
+	giveitem ITEM_EON_TICKET
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_WATER_PULSE
@@ -245,10 +247,11 @@ SootopolisCity_Gym_1F_Text_ExplainRainBadgeTakeThis:
 	.string "walls of cascading water.$"
 
 SootopolisCity_Gym_1F_Text_ExplainWaterPulse:
-	.string "You have access to all battle\n"
-	.string "items and all tms!\n"
-	.string "Please check the Lilycove\n"
-	.string "Department Store!$"
+	.string "These special items will allow you\n"
+	.string "to travel to mythical islands!\p"
+	.string "Visit the Shipyard in Lilycove\n"
+	.string "to travel to these islands.\p"
+	.string "Good luck, {PLAYER}.$"
 
 SootopolisCity_Gym_1F_Text_RegisteredJuan:
 	.string "Registered GYM LEADER JUAN\n"

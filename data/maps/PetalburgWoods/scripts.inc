@@ -474,3 +474,16 @@ PetalburgWoods_Text_TrainerTipsPP:
 	.string "If a POKéMON runs out of PP, it must be\n"
 	.string "taken to a POKéMON CENTER.$"
 
+Legendary_EventScript_BattleCelebi::
+    setwildbattle SPECIES_CELEBI, 75
+    waitse
+    playmoncry SPECIES_CELEBI, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(16)
+    setflag FLAG_HIDE_OVERWORLD_CELEBI
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end

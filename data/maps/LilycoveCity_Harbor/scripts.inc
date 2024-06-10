@@ -14,20 +14,9 @@ LilycoveCity_Harbor_OnTransition:
 LilycoveCity_Harbor_EventScript_FerryAttendant::
 	lock
 	faceplayer
-	goto_if_unset FLAG_SYS_GAME_CLEAR, LilycoveCity_Harbor_EventScript_FerryUnavailable
-	call LilycoveCity_Harbor_EventScript_GetEonTicketState
-	call LilycoveCity_Harbor_EventScript_GetAuroraTicketState
-	call LilycoveCity_Harbor_EventScript_GetOldSeaMapState
-	call LilycoveCity_Harbor_EventScript_GetMysticTicketState
-	call LilycoveCity_Harbor_EventScript_GetFirstTimeShowingTicket
-	call LilycoveCity_Harbor_EventScript_GetHasTicketsState
-	goto_if_eq VAR_TEMP_C, 2, LilycoveCity_Harbor_EventScript_OldSeaMapFirstTime
-	goto_if_eq VAR_TEMP_B, 1, LilycoveCity_Harbor_EventScript_EonTicketFirstTime
-	goto_if_eq VAR_TEMP_B, 2, LilycoveCity_Harbor_EventScript_AuroraTicketFirstTime
-	goto_if_eq VAR_TEMP_B, 4, LilycoveCity_Harbor_EventScript_OldSeaMapFirstTime
-	goto_if_eq VAR_TEMP_B, 8, LilycoveCity_Harbor_EventScript_MysticTicketFirstTime
-	goto_if_ne VAR_TEMP_B, 0, LilycoveCity_Harbor_EventScript_MultipleEventTicketsFirstTime
-	goto LilycoveCity_Harbor_EventScript_NoFirstTimeEventTickets
+	goto LilycoveCity_Harbor_EventScript_NewBPE
+
+	release
 	end
 
 @ First goto_if_eq is unnecessary; identical scripts
@@ -104,7 +93,6 @@ LilycoveCity_Harbor_EventScript_GoToBattleFrontier::
 
 LilycoveCity_Harbor_EventScript_GetEonTicketState::
 	setvar VAR_TEMP_E, 0
-	goto_if_unset FLAG_ENABLE_SHIP_SOUTHERN_ISLAND, Common_EventScript_NopReturn
 	checkitem ITEM_EON_TICKET
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_NopReturn
 	setvar VAR_TEMP_E, 1
@@ -114,7 +102,6 @@ LilycoveCity_Harbor_EventScript_GetEonTicketState::
 
 LilycoveCity_Harbor_EventScript_GetAuroraTicketState::
 	setvar VAR_TEMP_D, 0
-	goto_if_unset FLAG_ENABLE_SHIP_BIRTH_ISLAND, Common_EventScript_NopReturn
 	checkitem ITEM_AURORA_TICKET
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_NopReturn
 	setvar VAR_TEMP_D, 1
@@ -122,19 +109,115 @@ LilycoveCity_Harbor_EventScript_GetAuroraTicketState::
 	setvar VAR_TEMP_D, 2
 	return
 
-LilycoveCity_Harbor_EventScript_GetOldSeaMapState::
-	setvar VAR_TEMP_C, 0
-	goto_if_unset FLAG_ENABLE_SHIP_FARAWAY_ISLAND, Common_EventScript_NopReturn
+LilycoveCity_Harbor_EventScript_NewBPE::
+	goto_if_unset FLAG_BADGE08_GET, LilycoveCity_Harbor_EventScript_ComeBackLater
+
+	msgbox LilycoveCity_Harbor_Text_Slateport, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, LilycoveCity_Harbor_EventScript_NoFirstTimeEventTickets
+	
 	checkitem ITEM_OLD_SEA_MAP
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_NopReturn
-	setvar VAR_TEMP_C, 1
-	goto_if_set FLAG_SHOWN_OLD_SEA_MAP, Common_EventScript_NopReturn
-	setvar VAR_TEMP_C, 2
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_OldSeaMapFirstTimeCheck
+	checkitem ITEM_EON_TICKET
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_EonTicketFirstTimeCheck
+	checkitem ITEM_MYSTIC_TICKET
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_MysticTicketFirstTimeCheck
+	checkitem ITEM_AURORA_TICKET
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_AuroraTicketFirstTimeCheck
+	goto LilycoveCity_Harbor_EventScript_Depart
 	return
+
+LilycoveCity_Harbor_EventScript_ComeBackLater::
+	msgbox LilycoveCity_Harbor_Text_ComeBackLater, MSGBOX_DEFAULT
+	release
+	end
+
+LilycoveCity_Harbor_Text_ComeBackLater:
+	.string "Hello! Welcome to the Lilycove Ferry!\p"
+	.string "I'm sorry, but the Ferry service is only\n"
+	.string "available to trainers with 8 gym badges.\p"
+	.string "Come back another time!$"
+
+LilycoveCity_Harbor_EventScript_OldSeaMapFirstTimeCheck::
+	msgbox LilycoveCity_Harbor_Text_OldSeaMap, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_OldSeaMapFirstTime
+
+	checkitem ITEM_EON_TICKET
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_EonTicketFirstTimeCheck
+
+	goto LilycoveCity_Harbor_EventScript_Depart
+	return
+
+LilycoveCity_Harbor_EventScript_EonTicketFirstTimeCheck::
+	msgbox LilycoveCity_Harbor_Text_EonTicket, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_EonTicketFirstTime
+
+	checkitem ITEM_MYSTIC_TICKET
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_MysticTicketFirstTimeCheck
+
+	goto LilycoveCity_Harbor_EventScript_Depart
+	return
+
+LilycoveCity_Harbor_EventScript_MysticTicketFirstTimeCheck::
+	msgbox LilycoveCity_Harbor_Text_MysticTicket, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_MysticTicketFirstTime
+
+	checkitem ITEM_AURORA_TICKET
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_AuroraTicketFirstTimeCheck
+
+	goto LilycoveCity_Harbor_EventScript_Depart
+	return
+
+LilycoveCity_Harbor_EventScript_AuroraTicketFirstTimeCheck::
+	msgbox LilycoveCity_Harbor_Text_AuroraTicket, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_AuroraTicketFirstTime
+
+	goto LilycoveCity_Harbor_EventScript_Depart
+	return
+
+LilycoveCity_Harbor_Text_Slateport:
+	.string "Hello! Welcome to the Lilycove Ferry!\p"
+	.string "We offer a variety of trips!\n"
+	.string "Let me ask you a few questions...\p"
+	.string "Would you like to travel to Slateport?$"
+
+LilycoveCity_Harbor_Text_OldSeaMap:
+	.string "No problem. Come again...\n"
+	.string "Oh! Wait!\p"
+	.string "I see you have the Old Sea Map!\p"
+	.string "Would you like to travel to\n"
+	.string "Faraway Island?$"
+
+LilycoveCity_Harbor_Text_EonTicket:
+	.string "No problem. Come again...\n"
+	.string "Oh! Wait!\p"
+	.string "I see you have the Eon Ticket!\p"
+	.string "Would you like to travel to\n"
+	.string "Southern Island?$"
+
+LilycoveCity_Harbor_Text_MysticTicket:
+	.string "No problem. Come again...\n"
+	.string "Oh! Wait!\p"
+	.string "I see you have the Mystic Ticket!\p"
+	.string "Would you like to travel to\n"
+	.string "Navel Island?$"
+
+LilycoveCity_Harbor_Text_AuroraTicket:
+	.string "No problem. Come again...\n"
+	.string "Oh! Wait!\p"
+	.string "I see you have the Aurora Ticket!\p"
+	.string "Would you like to travel to\n"
+	.string "Birth Island?$"
+
+LilycoveCity_Harbor_EventScript_Depart::
+	msgbox LilycoveCity_Harbor_Text_Depart, MSGBOX_DEFAULT
+	release
+	end
+
+LilycoveCity_Harbor_Text_Depart:
+	.string "Come back another time!$"
 
 LilycoveCity_Harbor_EventScript_GetMysticTicketState::
 	setvar VAR_TEMP_9, 0
-	goto_if_unset FLAG_ENABLE_SHIP_NAVEL_ROCK, Common_EventScript_NopReturn
 	checkitem ITEM_MYSTIC_TICKET
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_NopReturn
 	setvar VAR_TEMP_9, 1
@@ -191,7 +274,7 @@ LilycoveCity_Harbor_EventScript_SetHasMysticTicket::
 	return
 
 LilycoveCity_Harbor_EventScript_EonTicketFirstTime::
-	setflag FLAG_SHOWN_EON_TICKET
+
 	msgbox EventTicket_Text_ThatPass, MSGBOX_DEFAULT
 	closemessage
 	call LilycoveCity_Harbor_EventScript_GetEventTicketSailor
@@ -208,7 +291,7 @@ LilycoveCity_Harbor_EventScript_GoToSouthernIslandFirstTime::
 	end
 
 LilycoveCity_Harbor_EventScript_AuroraTicketFirstTime::
-	setflag FLAG_SHOWN_AURORA_TICKET
+
 	msgbox EventTicket_Text_ThatPass, MSGBOX_DEFAULT
 	closemessage
 	call LilycoveCity_Harbor_EventScript_GetEventTicketSailor
@@ -225,7 +308,7 @@ LilycoveCity_Harbor_EventScript_GoToBirthIslandFirstTime::
 	end
 
 LilycoveCity_Harbor_EventScript_OldSeaMapFirstTime::
-	setflag FLAG_SHOWN_OLD_SEA_MAP
+
 	msgbox EventTicket_Text_ShowOldSeaMap, MSGBOX_DEFAULT
 	closemessage
 	call LilycoveCity_Harbor_EventScript_GetEventTicketSailor
@@ -266,7 +349,7 @@ LilycoveCity_Harbor_EventScript_GoToFarawayIslandFirstTime::
 	end
 
 LilycoveCity_Harbor_EventScript_MysticTicketFirstTime::
-	setflag FLAG_SHOWN_MYSTIC_TICKET
+
 	msgbox EventTicket_Text_ThatPass, MSGBOX_DEFAULT
 	closemessage
 	call LilycoveCity_Harbor_EventScript_GetEventTicketSailor
@@ -548,7 +631,6 @@ LilycoveCity_Harbor_Text_FerryUnavailable:
 	.string "available at present…$"
 
 LilycoveCity_Harbor_Text_MayISeeYourTicket:
-	.string "Hello, are you here for the ferry?\n"
 	.string "May I see your TICKET?$"
 
 LilycoveCity_Harbor_Text_NoTicket:

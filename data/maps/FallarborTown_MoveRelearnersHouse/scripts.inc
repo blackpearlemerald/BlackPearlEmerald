@@ -93,3 +93,20 @@ FallarborTown_MoveRelearnersHouse_Text_CantTeachEgg:
 	.string "Hunh? There isn't a single move that\n"
 	.string "I can teach an EGG.$"
 
+PetalburgCity_EventScript_RotomEncounter::
+	goto_if_unset FLAG_HIDE_OVERWORLD_ROTOM, Legendary_EventScript_BattleRotom
+    end
+
+Legendary_EventScript_BattleRotom::
+    setwildbattle SPECIES_ROTOM, 30
+    waitse
+    playmoncry SPECIES_ROTOM, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+	removeobject(2)
+    setflag FLAG_HIDE_OVERWORLD_ROTOM
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end

@@ -261,3 +261,17 @@ NewMauville_Inside_Text_SteppedOnSwitchGeneratorStopped:
 	.string "… … … … … … … …\p"
 	.string "The generator appears to have\n"
 	.string "stopped…$"
+
+Legendary_EventScript_BattleZapdos::
+    setwildbattle SPECIES_ZAPDOS, 75
+    waitse
+    playmoncry SPECIES_ZAPDOS, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(9)
+    setflag FLAG_HIDE_OVERWORLD_ZAPDOS
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end

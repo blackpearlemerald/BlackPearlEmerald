@@ -145,3 +145,35 @@ SouthernIsland_Interior_Movement_LatiApproach:
 	walk_down
 	walk_down
 	step_end
+
+Legendary_EventScript_BattleLatias::
+    setwildbattle SPECIES_LATIAS, 75
+    waitse
+    playmoncry SPECIES_LATIAS, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(3)
+	removeobject(4)
+    setflag FLAG_HIDE_OVERWORLD_LATIAS
+	setflag FLAG_HIDE_OVERWORLD_LATIOS
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end
+
+Legendary_EventScript_BattleLatios::
+    setwildbattle SPECIES_LATIOS, 75
+    waitse
+    playmoncry SPECIES_LATIOS, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(3)
+	removeobject(4)
+    setflag FLAG_HIDE_OVERWORLD_LATIAS
+	setflag FLAG_HIDE_OVERWORLD_LATIOS
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end
