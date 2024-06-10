@@ -208,6 +208,19 @@
       "trainer_sight_or_berry_tree_id": "ITEM_LOPUNNITE",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_PETALBURG_WOODS_ETHER"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_TRICK_HOUSE_STATUE",
+      "x": 37,
+      "y": 22,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_NONE",
+      "movement_range_x": 1,
+      "movement_range_y": 1,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Legendary_EventScript_BattleCelebi",
+      "flag": "FLAG_HIDE_OVERWORLD_CELEBI"
     }
   ],
   "warp_events": [

@@ -759,3 +759,16 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 	.string "POKéMON as soon as we arrived.\p"
 	.string "I mean, we are totally happy!$"
 
+Legendary_EventScript_BattleRaikou::
+    setwildbattle SPECIES_RAIKOU, 75
+    waitse
+    playmoncry SPECIES_RAIKOU, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(23)
+    setflag FLAG_HIDE_OVERWORLD_RAIKOU
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end

@@ -51,3 +51,16 @@ Route134_EventScript_Kelvin::
 	msgbox Route134_Text_KelvinPostBattle, MSGBOX_AUTOCLOSE
 	end
 
+Legendary_EventScript_BattleSuicune::
+    setwildbattle SPECIES_SUICUNE, 75
+    waitse
+    playmoncry SPECIES_SUICUNE, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(12)
+    setflag FLAG_HIDE_OVERWORLD_SUICUNE
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end

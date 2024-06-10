@@ -18,9 +18,21 @@ SootopolisCity_House7_Text_CityFromEruptedVolcano:
 	.string "being.$"
 
 SootopolisCity_House7_Text_CaveMadeToKeepSomething:
-	.string "The cave that links SOOTOPOLIS and\n"
-	.string "the outside world…\p"
-	.string "It seems as if the cave was made to\n"
-	.string "keep something from getting out.\p"
-	.string "Or am I just imagining things?$"
+	.string "I've been waiting for a worthy trainer.\p"
+	.string "This pokemon beside me has been handed\n"
+	.string "down for generations.\p"
+	.string "It's always been referred to as, NULL.$"
 
+Legendary_EventScript_BattleNull::
+    setwildbattle SPECIES_TYPE_NULL, 30
+    waitse
+    playmoncry SPECIES_TYPE_NULL, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(3)
+    setflag FLAG_HIDE_OVERWORLD_NULL
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end

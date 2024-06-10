@@ -266,3 +266,16 @@ JaggedPass_Text_AutumnPostBattle:
 	.string "What is that odd rock protrusion\n"
 	.string "a little up the hill from here?$"
 
+Legendary_EventScript_BattleEntei::
+    setwildbattle SPECIES_ENTEI, 75
+    waitse
+    playmoncry SPECIES_ENTEI, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(8)
+    setflag FLAG_HIDE_OVERWORLD_ENTEI
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end

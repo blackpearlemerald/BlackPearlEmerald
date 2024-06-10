@@ -1267,19 +1267,19 @@
 #define FLAG_HIDE_ROUTE121_GRUNTS                                   0x4BF // Unused Flag
 #define FLAG_HIDE_TRICKHOUSE_ENCOUNTER                              0x4C0 // HIDE TRICKHOUSE ENCOUNTER
 #define FLAG_HIDE_OVERWORLD_SNORLAX                                 0x4C1 // HIDE SNORLAX IN PETALBURG
-#define FLAG_UNUSED_0x4C2                                           0x4C2 // Unused Flag
-#define FLAG_UNUSED_0x4C3                                           0x4C3 // Unused Flag
-#define FLAG_UNUSED_0x4C4                                           0x4C4 // Unused Flag
-#define FLAG_UNUSED_0x4C5                                           0x4C5 // Unused Flag
-#define FLAG_UNUSED_0x4C6                                           0x4C6 // Unused Flag
-#define FLAG_UNUSED_0x4C7                                           0x4C7 // Unused Flag
-#define FLAG_UNUSED_0x4C8                                           0x4C8 // Unused Flag
-#define FLAG_UNUSED_0x4C9                                           0x4C9 // Unused Flag
-#define FLAG_UNUSED_0x4CA                                           0x4CA // Unused Flag
-#define FLAG_UNUSED_0x4CB                                           0x4CB // Unused Flag
-#define FLAG_UNUSED_0x4CC                                           0x4CC // Unused Flag
-#define FLAG_UNUSED_0x4CD                                           0x4CD // Unused Flag
-#define FLAG_UNUSED_0x4CE                                           0x4CE // Unused Flag
+#define FLAG_HIDE_OVERWORLD_ARTICUNO                                0x4C2 // HIDE ARTICUNO
+#define FLAG_HIDE_OVERWORLD_MOLTRES                                 0x4C3 // HIDE MOLTRES
+#define FLAG_HIDE_OVERWORLD_ENTEI                                   0x4C4 // HIDE ENTEI
+#define FLAG_HIDE_OVERWORLD_CELEBI                                  0x4C5 // HIDE CELEBI
+#define FLAG_HIDE_OVERWORLD_ZAPDOS                                  0x4C6 // HIDE ZAPDOS
+#define FLAG_HIDE_OVERWORLD_RAIKOU                                  0x4C7 // HIDE RAIKOU
+#define FLAG_HIDE_OVERWORLD_SUICUNE                                 0x4C8 // HIDE SUICUNE
+#define FLAG_HIDE_OVERWORLD_JIRACHI                                 0x4C9 // HIDE JIRACHI
+#define FLAG_HIDE_OVERWORLD_SPIRITOMB                               0x4CA // HIDE SPIRITOMB
+#define FLAG_HIDE_OVERWORLD_LATIOS                                  0x4CB // Unused Flag
+#define FLAG_HIDE_OVERWORLD_LATIAS                                  0x4CC // Unused Flag
+#define FLAG_HIDE_OVERWORLD_ROTOM                                   0x4CD // Unused Flag
+#define FLAG_HIDE_OVERWORLD_NULL                                    0x4CE // Unused Flag
 #define FLAG_UNUSED_0x4CF                                           0x4CF // Unused Flag
 #define FLAG_UNUSED_0x4D0                                           0x4D0 // Unused Flag
 #define FLAG_UNUSED_0x4D1                                           0x4D1 // Unused Flag

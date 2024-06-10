@@ -845,3 +845,17 @@ MtChimney_Text_SawyerPostRematch:
 	.string "Actually, it really is hot here.\n"
 	.string "I'm overdressed for these parts.$"
 
+Legendary_EventScript_BattleMoltres::
+    setwildbattle SPECIES_MOLTRES, 75
+    waitse
+    playmoncry SPECIES_MOLTRES, CRY_MODE_ENCOUNTER
+    delay 40
+    waitmoncry
+    dowildbattle
+    fadescreenswapbuffers FADE_TO_BLACK
+    removeobject(32)
+    setflag FLAG_HIDE_OVERWORLD_MOLTRES
+    fadescreenswapbuffers FADE_FROM_BLACK
+    release
+    end
+

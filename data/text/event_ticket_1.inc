@@ -6,7 +6,6 @@ EventTicket_Text_ShowOldSeaMap:
 	.string "Please wait.$"
 
 EventTicket_Text_ThatPass:
-	.string "The ferry to SLATEPORT is…\p"
 	.string "Oh?\n"
 	.string "That PASS…$"
 
