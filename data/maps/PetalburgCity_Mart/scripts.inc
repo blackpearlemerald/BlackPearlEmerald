@@ -42,7 +42,6 @@ PetalburgCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_RARE_CANDY
 	.2byte ITEM_POMEG_BERRY
 	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_METAL_COAT
 	.2byte ITEM_NONE
 	release
 	end

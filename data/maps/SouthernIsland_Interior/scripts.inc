@@ -156,6 +156,8 @@ Legendary_EventScript_BattleLatias::
     fadescreenswapbuffers FADE_TO_BLACK
     removeobject(3)
 	removeobject(4)
+	setvar VAR_PREE4_LEGENDARY 11
+	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
     setflag FLAG_HIDE_OVERWORLD_LATIAS
 	setflag FLAG_HIDE_OVERWORLD_LATIOS
     fadescreenswapbuffers FADE_FROM_BLACK
@@ -172,6 +174,8 @@ Legendary_EventScript_BattleLatios::
     fadescreenswapbuffers FADE_TO_BLACK
     removeobject(3)
 	removeobject(4)
+	setvar VAR_PREE4_LEGENDARY 10
+	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
     setflag FLAG_HIDE_OVERWORLD_LATIAS
 	setflag FLAG_HIDE_OVERWORLD_LATIOS
     fadescreenswapbuffers FADE_FROM_BLACK

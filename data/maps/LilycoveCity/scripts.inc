@@ -768,6 +768,8 @@ Legendary_EventScript_BattleRaikou::
     dowildbattle
     fadescreenswapbuffers FADE_TO_BLACK
     removeobject(23)
+	setvar VAR_PREE4_LEGENDARY 6
+	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
     setflag FLAG_HIDE_OVERWORLD_RAIKOU
     fadescreenswapbuffers FADE_FROM_BLACK
     release
