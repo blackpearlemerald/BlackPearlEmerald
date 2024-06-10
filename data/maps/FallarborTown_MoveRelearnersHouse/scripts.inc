@@ -106,6 +106,8 @@ Legendary_EventScript_BattleRotom::
     dowildbattle
     fadescreenswapbuffers FADE_TO_BLACK
 	removeobject(2)
+	setvar VAR_PREE4_LEGENDARY 12
+	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
     setflag FLAG_HIDE_OVERWORLD_ROTOM
     fadescreenswapbuffers FADE_FROM_BLACK
     release

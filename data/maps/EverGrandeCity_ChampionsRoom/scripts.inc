@@ -138,10 +138,88 @@ EverGrandeCity_ChampionsRoom_EventScript_BirchArrivesExitForHoF::
 	setflag FLAG_HIDE_LEGENDARY_GUARD_RAYQ
 	setflag FLAG_HIDE_LEGENDARY_GUARD
 	setflag FLAG_HIDE_SAFARI_BLOCK
+	clearflag FLAG_HIDE_OVERWORLD_ARTICUNO
+	clearflag FLAG_HIDE_OVERWORLD_MOLTRES
+	clearflag FLAG_HIDE_OVERWORLD_ENTEI
+	clearflag FLAG_HIDE_OVERWORLD_CELEBI
+	clearflag FLAG_HIDE_OVERWORLD_ZAPDOS
+	clearflag FLAG_HIDE_OVERWORLD_RAIKOU
+	clearflag FLAG_HIDE_OVERWORLD_SUICUNE
+	clearflag FLAG_HIDE_OVERWORLD_JIRACHI
+	clearflag FLAG_HIDE_OVERWORLD_SPIRITOMB
+	clearflag FLAG_HIDE_OVERWORLD_LATIOS
+	clearflag FLAG_HIDE_OVERWORLD_LATIAS
+	clearflag FLAG_HIDE_OVERWORLD_ROTOM
+	clearflag FLAG_HIDE_OVERWORLD_NULL
+	goto_if_eq VAR_PREE4_LEGENDARY, 1, EverGrandeCity_ChampionsRoom_EventScript_HideArticuno
+	goto_if_eq VAR_PREE4_LEGENDARY, 2, EverGrandeCity_ChampionsRoom_EventScript_HideMoltres
+	goto_if_eq VAR_PREE4_LEGENDARY, 3, EverGrandeCity_ChampionsRoom_EventScript_HideEntei
+	goto_if_eq VAR_PREE4_LEGENDARY, 4, EverGrandeCity_ChampionsRoom_EventScript_HideCelebi
+	goto_if_eq VAR_PREE4_LEGENDARY, 5, EverGrandeCity_ChampionsRoom_EventScript_HideZapdos
+	goto_if_eq VAR_PREE4_LEGENDARY, 6, EverGrandeCity_ChampionsRoom_EventScript_HideRaikou
+	goto_if_eq VAR_PREE4_LEGENDARY, 7, EverGrandeCity_ChampionsRoom_EventScript_HideSuicune
+	goto_if_eq VAR_PREE4_LEGENDARY, 8, EverGrandeCity_ChampionsRoom_EventScript_HideJirachi
+	goto_if_eq VAR_PREE4_LEGENDARY, 9, EverGrandeCity_ChampionsRoom_EventScript_HideSpiritomb
+	goto_if_eq VAR_PREE4_LEGENDARY, 10, EverGrandeCity_ChampionsRoom_EventScript_HideLatios
+	goto_if_eq VAR_PREE4_LEGENDARY, 11, EverGrandeCity_ChampionsRoom_EventScript_HideLatias
+	goto_if_eq VAR_PREE4_LEGENDARY, 12, EverGrandeCity_ChampionsRoom_EventScript_HideRotom
+	goto_if_eq VAR_PREE4_LEGENDARY, 13, EverGrandeCity_ChampionsRoom_EventScript_HideNull
 	warp MAP_EVER_GRANDE_CITY_HALL_OF_FAME, 7, 16
 	waitstate
 	releaseall
 	end
+
+EverGrandeCity_ChampionsRoom_EventScript_HideArticuno::
+    setflag FLAG_HIDE_OVERWORLD_ARTICUNO
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideMoltres::
+    setflag FLAG_HIDE_OVERWORLD_MOLTRES
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideEntei::
+    setflag FLAG_HIDE_OVERWORLD_ENTEI
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideCelebi::
+    setflag FLAG_HIDE_OVERWORLD_CELEBI
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideZapdos::
+    setflag FLAG_HIDE_OVERWORLD_ZAPDOS
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideRaikou::
+    setflag FLAG_HIDE_OVERWORLD_RAIKOU
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideSuicune::
+    setflag FLAG_HIDE_OVERWORLD_SUICUNE
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideJirachi::
+    setflag FLAG_HIDE_OVERWORLD_JIRACHI
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideSpiritomb::
+    setflag FLAG_HIDE_OVERWORLD_SPIRITOMB
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideLatios::
+    setflag FLAG_HIDE_OVERWORLD_LATIOS
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideLatias::
+    setflag FLAG_HIDE_OVERWORLD_LATIAS
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideRotom::
+    setflag FLAG_HIDE_OVERWORLD_ROTOM
+    return
+
+EverGrandeCity_ChampionsRoom_EventScript_HideNull::
+    setflag FLAG_HIDE_OVERWORLD_NULL
+    return
 
 EverGrandeCity_ChampionsRoom_EventScript_MayCongratulations::
 	msgbox EverGrandeCity_ChampionsRoom_Text_MayCongratulations, MSGBOX_DEFAULT
