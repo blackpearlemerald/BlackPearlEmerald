@@ -458,29 +458,12 @@ PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV::
 	msgbox PlayersHouse_1F_Text_DadShouldStayLonger, MSGBOX_DEFAULT
 	call_if_set FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_NuzlockeOver
 	closemessage
-	setflag FLAG_SYS_TV_LATIAS_LATIOS
-	special TurnOnTVScreen
-	delay 60
-	call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_MomNoticesLatiBroadcastMale
-	call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_MomNoticesLatiBroadcastFemale
-	msgbox PlayersHouse_1F_Text_IsThatABreakingStory, MSGBOX_DEFAULT
+
+	msgbox PlayersHouse_1F_Text_TakeThese, MSGBOX_DEFAULT
+	giveitem ITEM_MYSTIC_TICKET
+	giveitem ITEM_AURORA_TICKET
 	closemessage
-	call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_PlayerApproachTVForLatiMale
-	call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_PlayerApproachTVForLatiFemale
-	msgbox PlayersHouse_1F_Text_LatiEmergencyNewsFlash, MSGBOX_DEFAULT
-	closemessage
-	clearflag FLAG_SYS_TV_LATIAS_LATIOS
-	setflag FLAG_LATIOS_OR_LATIAS_ROAMING
-	special TurnOffTVScreen
-	call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_MomApproachPlayerAfterTVMale
-	call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_MomApproachPlayerAfterTVFemale
-	msgbox PlayersHouse_1F_Text_WhatColorDidTheySay, MSGBOX_DEFAULT
-	multichoice 22, 8, MULTI_TV_LATI, TRUE
-	copyvar VAR_0x8004, VAR_RESULT
-	special InitRoamer
-	copyvar VAR_ROAMER_POKEMON, VAR_RESULT
-	msgbox PlayersHouse_1F_Text_StillUnknownPokemon, MSGBOX_DEFAULT
-	closemessage
+
 	setvar VAR_LITTLEROOT_HOUSES_STATE_MAY, 4
 	setvar VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 4
 	releaseall
