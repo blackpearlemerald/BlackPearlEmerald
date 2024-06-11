@@ -420,6 +420,10 @@ PlayersHouse_1F_Text_NuzlockeIsOver:
 	.string "Also, you completed the Nuzlocke\n"
 	.string "challenge. It's over. Congrats!$"
 
+PlayersHouse_1F_Text_TakeThese:
+	.string "Oh, Also! These came in the mail\n"
+	.string "for you...$"
+
 PlayersHouse_1F_Text_IsThatABreakingStory:
 	.string "MOM: Is that a breaking news story?$"
 

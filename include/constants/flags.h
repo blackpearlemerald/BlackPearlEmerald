@@ -686,8 +686,8 @@
 #define FLAG_ITEM_SHOAL_CAVE_ICE_ROOM_TM_HAIL_2  0x281 // Unused Flag
 #define FLAG_ITEM_ROUTE_123_ELIXIR_2  0x282 // Unused Flag
 #define FLAG_ITEM_ROUTE_120_REVIVE_5  0x283 // Unused Flag
-#define FLAG_UNUSED_0x284  0x284 // Unused Flag
-#define FLAG_UNUSED_0x285  0x285 // Unused Flag
+#define FLAG_ITEM_MAGMA_HIDEOUT_1F_RARE_CANDY_2  0x284 // Unused Flag
+#define FLAG_ITEM_MAGMA_HIDEOUT_1F_RARE_CANDY_3  0x285 // Unused Flag
 #define FLAG_UNUSED_0x286  0x286 // Unused Flag
 #define FLAG_UNUSED_0x287  0x287 // Unused Flag
 #define FLAG_UNUSED_0x288  0x288 // Unused Flag

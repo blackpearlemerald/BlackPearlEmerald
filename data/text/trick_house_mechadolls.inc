@@ -1,134 +1,134 @@
 gTrickHouse_Mechadoll_Oddish::
-	.string "ODDISH$"
+	.string "THUNDERBOLT$"
 
 gTrickHouse_Mechadoll_Poochyena::
-	.string "POOCHYENA$"
+	.string "HYDRO PUMP$"
 
 gTrickHouse_Mechadoll_Taillow::
-	.string "TAILLOW$"
+	.string "SUCKER PUNCH$"
 
 gTrickHouse_Mechadoll_Azurill::
-	.string "AZURILL$"
+	.string "PRESSURE$"
 
 gTrickHouse_Mechadoll_Lotad::
-	.string "LOTAD$"
+	.string "TERAVOLT$"
 
 gTrickHouse_Mechadoll_Wingull::
-	.string "WINGULL$"
+	.string "TURBOBLAZE$"
 
 gTrickHouse_Mechadoll_Dustox::
-	.string "DUSTOX$"
+	.string "30$"
 
 gTrickHouse_Mechadoll_Zubat::
-	.string "ZUBAT$"
+	.string "35$"
 
 gTrickHouse_Mechadoll_Nincada::
-	.string "NINCADA$"
+	.string "25$"
 
 gTrickHouse_Mechadoll_Ralts::
-	.string "RALTS$"
-
-gTrickHouse_Mechadoll_Zigzagoon::
-	.string "ZIGZAGOON$"
-
-gTrickHouse_Mechadoll_Slakoth::
-	.string "SLAKOTH$"
-
-gTrickHouse_Mechadoll_Poochyena2::
-	.string "POOCHYENA$"
-
-gTrickHouse_Mechadoll_Shroomish::
-	.string "SHROOMISH$"
-
-gTrickHouse_Mechadoll_Zigzagoon2::
-	.string "ZIGZAGOON$"
-
-gTrickHouse_Mechadoll_Poochyena3::
-	.string "POOCHYENA$"
-
-gTrickHouse_Mechadoll_Zubat2::
-	.string "ZUBAT$"
-
-gTrickHouse_Mechadoll_Carvanha::
-	.string "CARVANHA$"
-
-gTrickHouse_Mechadoll_BurnHeal::
-	.string "BURN HEAL$"
-
-gTrickHouse_Mechadoll_HarborMail::
-	.string "HARBOR MAIL$"
-
-gTrickHouse_Mechadoll_SamePrice::
-	.string "Same price$"
-
-gTrickHouse_Mechadoll_60Yen::
-	.string "¥60$"
-
-gTrickHouse_Mechadoll_55Yen::
-	.string "¥55$"
-
-gTrickHouse_Mechadoll_Nothing::
-	.string "Nothing$"
-
-gTrickHouse_Mechadoll_CostMore::
-	.string "They will cost more.$"
-
-gTrickHouse_Mechadoll_CostLess::
-	.string "They will cost less.$"
-
-gTrickHouse_Mechadoll_SamePrice2::
-	.string "Same price$"
-
-gTrickHouse_Mechadoll_Male::
-	.string "Male$"
-
-gTrickHouse_Mechadoll_Female::
-	.string "Female$"
-
-gTrickHouse_Mechadoll_Neither::
-	.string "Neither$"
-
-gTrickHouse_Mechadoll_ElderlyMen::
-	.string "Elderly men$"
-
-gTrickHouse_Mechadoll_ElderlyLadies::
-	.string "Elderly ladies$"
-
-gTrickHouse_Mechadoll_SameNumber::
-	.string "Same number$"
-
-gTrickHouse_Mechadoll_None::
-	.string "None$"
-
-gTrickHouse_Mechadoll_One::
 	.string "1$"
 
-gTrickHouse_Mechadoll_Two::
+gTrickHouse_Mechadoll_Zigzagoon::
 	.string "2$"
 
-gTrickHouse_Mechadoll_Two2::
-	.string "2$"
+gTrickHouse_Mechadoll_Slakoth::
+	.string "0$"
 
-gTrickHouse_Mechadoll_Three::
+gTrickHouse_Mechadoll_Poochyena2::
+	.string "1$"
+
+gTrickHouse_Mechadoll_Shroomish::
 	.string "3$"
 
+gTrickHouse_Mechadoll_Zigzagoon2::
+	.string "2$"
+
+gTrickHouse_Mechadoll_Poochyena3::
+	.string "INSTRUCT$"
+
+gTrickHouse_Mechadoll_Zubat2::
+	.string "TORMENT$"
+
+gTrickHouse_Mechadoll_Carvanha::
+	.string "TAUNT$"
+
+gTrickHouse_Mechadoll_BurnHeal::
+	.string "MAGNEZONE$"
+
+gTrickHouse_Mechadoll_HarborMail::
+	.string "JIGGLYBUFF$"
+
+gTrickHouse_Mechadoll_SamePrice::
+	.string "DELIBIRD$"
+
+gTrickHouse_Mechadoll_60Yen::
+	.string "MOUNT CORONET"
+
+gTrickHouse_Mechadoll_55Yen::
+	.string "WHITE OUT CAVES"
+
+gTrickHouse_Mechadoll_Nothing::
+	.string "WAYWARD CAVE$"
+
+gTrickHouse_Mechadoll_CostMore::
+	.string "UNIQUE$"
+
+gTrickHouse_Mechadoll_CostLess::
+	.string "ANTIQUE$"
+
+gTrickHouse_Mechadoll_SamePrice2::
+	.string "PERFECT$"
+
+gTrickHouse_Mechadoll_Male::
+	.string "SLOW START$"
+
+gTrickHouse_Mechadoll_Female::
+	.string "SPEED BOOST$"
+
+gTrickHouse_Mechadoll_Neither::
+	.string "STEAM ENGINE$"
+
+gTrickHouse_Mechadoll_ElderlyMen::
+	.string "Dudunsparce$"
+
+gTrickHouse_Mechadoll_ElderlyLadies::
+	.string "Dunundsparce$"
+
+gTrickHouse_Mechadoll_SameNumber::
+	.string "Dondunsparce$"
+
+gTrickHouse_Mechadoll_None::
+	.string "250$"
+
+gTrickHouse_Mechadoll_One::
+	.string "255$"
+
+gTrickHouse_Mechadoll_Two::
+	.string "245$"
+
+gTrickHouse_Mechadoll_Two2::
+	.string "CELL BATTERY$"
+
+gTrickHouse_Mechadoll_Three::
+	.string "SHOCK DRIVE$"
+
 gTrickHouse_Mechadoll_Four::
-	.string "4$"
+	.string "ZAP DISK$"
 
 gTrickHouse_Mechadoll_Six::
-	.string "6$"
+	.string "NIMBASA$"
 
 gTrickHouse_Mechadoll_Seven::
-	.string "7$"
+	.string "DRIFTVEIL$"
 
 gTrickHouse_Mechadoll_Eight::
-	.string "8$"
+	.string "NACRENE$"
 
 gTrickHouse_Mechadoll_Six2::
-	.string "6$"
+	.string "SILVALLY$"
 
 gTrickHouse_Mechadoll_Seven2::
-	.string "7$"
+	.string "ARCEUS$"
 
 gTrickHouse_Mechadoll_Eight2::
-	.string "8$"
+	.string "KELDEO$"
