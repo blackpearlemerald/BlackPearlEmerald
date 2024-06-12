@@ -156,7 +156,7 @@ VerdanturfTown_WandasHouse_Text_CanSeeGirlfriendEveryDay:
 VerdanturfTown_WandasHouse_Text_OnTheHouse:
 	.string "Dusclops works for free, but Ditto\n"
 	.string "demands payment...\p"
-	.string "Here… the first one is on the house!$"
+	.string "Here… this Pearl is on the house!$"
 
 VerdanturfTown_WandasHouse_Text_DaughtersBoyfriendDriven:
 	.string "My daughter's boyfriend is a very\n"

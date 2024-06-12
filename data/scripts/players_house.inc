@@ -438,7 +438,8 @@ PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV::
 	call_if_eq VAR_0x8008, MALE, PlayersHouse_1F_EventScript_DadApproachPlayerMale
 	call_if_eq VAR_0x8008, FEMALE, PlayersHouse_1F_EventScript_DadApproachPlayerFemale
 	msgbox PlayersHouse_1F_Text_TicketFromBrineyCameForYou, MSGBOX_DEFAULT
-	giveitem ITEM_SS_TICKET
+	giveitem ITEM_MYSTIC_TICKET
+	giveitem ITEM_AURORA_TICKET
 	msgbox PlayersHouse_1F_Text_PortsInSlateportLilycove, MSGBOX_DEFAULT
 	closemessage
 	delay 20
@@ -460,8 +461,6 @@ PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV::
 	closemessage
 
 	msgbox PlayersHouse_1F_Text_TakeThese, MSGBOX_DEFAULT
-	giveitem ITEM_MYSTIC_TICKET
-	giveitem ITEM_AURORA_TICKET
 	closemessage
 
 	setvar VAR_LITTLEROOT_HOUSES_STATE_MAY, 4

@@ -396,12 +396,12 @@ PlayersHouse_1F_Text_TicketFromBrineyCameForYou:
 	.string "but you look…stronger, somehow.\p"
 	.string "That's the impression I get.\n"
 	.string "But your old man hasn't given up yet!\p"
-	.string "Oh, yes, I have something for you.\n"
-	.string "This came to you from someone named\l"
+	.string "Oh, yes, I have a couple gifts for you.\n"
+	.string "These came to you from someone named\l"
 	.string "MR. BRINEY.$"
 
 PlayersHouse_1F_Text_PortsInSlateportLilycove:
-	.string "DAD: Hm, a TICKET for a ferry?\p"
+	.string "DAD: Hm, special TICKETS for the ferry?\p"
 	.string "If I recall, there are ferry ports in\n"
 	.string "SLATEPORT and LILYCOVE.$"
 
@@ -421,8 +421,11 @@ PlayersHouse_1F_Text_NuzlockeIsOver:
 	.string "challenge. It's over. Congrats!$"
 
 PlayersHouse_1F_Text_TakeThese:
-	.string "Oh, Also! These came in the mail\n"
-	.string "for you...$"
+	.string "You've grown so much. I'm so proud\n"
+	.string "of you!\p"
+	.string "You are always welcome back at home.\p"
+	.string "Now then, go run along. Onto your\n"
+	.string "next adventure!$"
 
 PlayersHouse_1F_Text_IsThatABreakingStory:
 	.string "MOM: Is that a breaking news story?$"

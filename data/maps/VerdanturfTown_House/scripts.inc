@@ -15,6 +15,7 @@ VerdanturfTown_House_EventScript_Woman2_GiveCatalog::
 	msgbox VerdanturfTown_House_Text_Catalog, MSGBOX_DEFAULT
 	giveitem ITEM_ROTOM_CATALOG
 	setflag FLAG_ROTOM_CATALOG
+	msgbox VerdanturfTown_House_Text_Catalog3, MSGBOX_DEFAULT
 	release
 	end
 
@@ -41,5 +42,9 @@ VerdanturfTown_House_Text_Catalog:
 VerdanturfTown_House_Text_Catalog2:
 	.string "Have you taken a look at that catalog\n"
 	.string "I gave you?\p"
+	.string "I ordered it from a guy in Fallarbor,\n"
+	.string "but I haven't heard from him in a while…$"
+
+VerdanturfTown_House_Text_Catalog3:
 	.string "I ordered it from a guy in Fallarbor,\n"
 	.string "but I haven't heard from him in a while…$"
