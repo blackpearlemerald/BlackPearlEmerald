@@ -1529,7 +1529,7 @@
 #define FLAG_UNUSED_0x8FB                           (SYSTEM_FLAGS + 0x9B) // Unused Flag
 #define FLAG_UNUSED_0x8FC                           (SYSTEM_FLAGS + 0x9C) // Unused Flag
 #define FLAG_UNUSED_0x8FD                           (SYSTEM_FLAGS + 0x9D) // Unused Flag
-#define FLAG_ON_THE_HOUSE                           (SYSTEM_FLAGS + 0x9E) // FREE PEARL FROM MOVE TUTOR HOUSE
+#define FLAG_UNUSED_0x8FE                           (SYSTEM_FLAGS + 0x9E) // Unused Flag
 #define FLAG_ROTOM_CATALOG                          (SYSTEM_FLAGS + 0x9F) // ROTOM CATALOG LADY GIVES U ITEM
 #define FLAG_HIDE_LEGENDARY_GUARD                   (SYSTEM_FLAGS + 0xA0) // LEGENDARY GUARD HIDE
 #define FLAG_HIDE_LEGENDARY_GUARD_RAYQ              (SYSTEM_FLAGS + 0xA1) // RAYQUAZA GUARD
@@ -1590,7 +1590,7 @@
 #define FLAG_UNUSED_0x933                           (DAILY_FLAGS_START + 0x13) // Unused Flag
 #define FLAG_DAILY_APPRENTICE_LEAVES                (DAILY_FLAGS_START + 0x14)
 
-#define FLAG_UNUSED_0x935                           (DAILY_FLAGS_START + 0x15) // Unused Flag
+#define FLAG_ON_THE_HOUSE                           (DAILY_FLAGS_START + 0x15) // FREE PEARL FROM MOVE TUTOR HOUSE
 #define FLAG_UNUSED_0x936                           (DAILY_FLAGS_START + 0x16) // Unused Flag
 #define FLAG_UNUSED_0x937                           (DAILY_FLAGS_START + 0x17) // Unused Flag
 #define FLAG_UNUSED_0x938                           (DAILY_FLAGS_START + 0x18) // Unused Flag

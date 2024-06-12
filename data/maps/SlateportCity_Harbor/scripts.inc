@@ -163,10 +163,23 @@ SlateportCity_Harbor_Movement_PlayerWalkUp:
 SlateportCity_Harbor_EventScript_FerryAttendant::
 	lock
 	faceplayer
-	goto_if_set FLAG_SYS_GAME_CLEAR, SlateportCity_Harbor_EventScript_AskForTicket
-	msgbox SlateportCity_Harbor_Text_FerryServiceUnavailable, MSGBOX_DEFAULT
+	goto SlateportCity_Harbor_EventScript_NewBPE
 	release
 	end
+
+SlateportCity_Harbor_EventScript_NewBPE::
+	goto_if_unset FLAG_BADGE08_GET, LilycoveCity_Harbor_EventScript_ComeBackLater
+
+	msgbox SlateportCity_Harbor_Text_Lilycove, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, YES, SlateportCity_Harbor_EventScript_ChooseNewDestination
+	
+	goto LilycoveCity_Harbor_EventScript_NewBPE2
+	return
+
+SlateportCity_Harbor_Text_Lilycove:
+	.string "Hello! Welcome to the Black Pearl Ferry!\p"
+	.string "We offer a variety of trips!\n"
+	.string "Would you like to travel with us today?$"
 
 SlateportCity_Harbor_EventScript_AskForTicket::
 	msgbox SlateportCity_Harbor_Text_MayISeeYourTicket, MSGBOX_DEFAULT
@@ -200,8 +213,7 @@ SlateportCity_Harbor_EventScript_NoTicket::
 	end
 
 SlateportCity_Harbor_EventScript_Lilycove::
-	msgbox SlateportCity_Harbor_Text_LilycoveItIs, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, SlateportCity_Harbor_EventScript_ChooseNewDestination
+
 	setvar VAR_SS_TIDAL_STATE, SS_TIDAL_BOARD_SLATEPORT
 	call SlateportCity_Harbor_EventScript_BoardFerry
 	warp MAP_SS_TIDAL_CORRIDOR, 1, 10

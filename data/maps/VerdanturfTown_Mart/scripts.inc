@@ -4,7 +4,7 @@ VerdanturfTown_Mart_MapScripts::
 VerdanturfTown_Mart_EventScript_Clerk::
 	lock
 	faceplayer
-	message gText_HowMayIServeYou
+	message gText_Beans_HowMayIServeYou
 	waitmessage
 	goto_if_set FLAG_BADGE04_GET, VerdanturfTown_Mart_EventScript_PokemartExpanded4
 	goto_if_set FLAG_BADGE03_GET, VerdanturfTown_Mart_EventScript_PokemartExpanded3
@@ -224,4 +224,3 @@ VerdanturfTown_Mart_Text_NestBallOnWeakenedPokemon:
 	.string "weakened POKéMON.\p"
 	.string "VERDANTURF is the only place you can\n"
 	.string "buy it.$"
-

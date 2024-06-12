@@ -21,8 +21,6 @@ LilycoveCity_Harbor_EventScript_FerryAttendant::
 
 @ First goto_if_eq is unnecessary; identical scripts
 LilycoveCity_Harbor_EventScript_NoFirstTimeEventTickets::
-	goto_if_eq VAR_TEMP_A, 0, LilycoveCity_Harbor_EventScript_NoEventTickets
-	msgbox LilycoveCity_Harbor_Text_MayISeeYourTicket, MSGBOX_DEFAULT
 	message LilycoveCity_Harbor_Text_FlashTicketWhereTo
 	waitmessage
 	goto LilycoveCity_Harbor_EventScript_FerryRegularLocationSelect
@@ -115,6 +113,10 @@ LilycoveCity_Harbor_EventScript_NewBPE::
 	msgbox LilycoveCity_Harbor_Text_Slateport, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, YES, LilycoveCity_Harbor_EventScript_NoFirstTimeEventTickets
 	
+	goto LilycoveCity_Harbor_EventScript_NewBPE2
+	return
+
+LilycoveCity_Harbor_EventScript_NewBPE2::
 	checkitem ITEM_OLD_SEA_MAP
 	goto_if_eq VAR_RESULT, TRUE, LilycoveCity_Harbor_EventScript_OldSeaMapFirstTimeCheck
 	checkitem ITEM_EON_TICKET
@@ -132,7 +134,7 @@ LilycoveCity_Harbor_EventScript_ComeBackLater::
 	end
 
 LilycoveCity_Harbor_Text_ComeBackLater:
-	.string "Hello! Welcome to the Lilycove Ferry!\p"
+	.string "Hello! Welcome to the Black Pearl Ferry!\p"
 	.string "I'm sorry, but the Ferry service is only\n"
 	.string "available to trainers with 8 gym badges.\p"
 	.string "Come back another time!$"
@@ -175,10 +177,9 @@ LilycoveCity_Harbor_EventScript_AuroraTicketFirstTimeCheck::
 	return
 
 LilycoveCity_Harbor_Text_Slateport:
-	.string "Hello! Welcome to the Lilycove Ferry!\p"
+	.string "Hello! Welcome to the Black Pearl Ferry!\p"
 	.string "We offer a variety of trips!\n"
-	.string "Let me ask you a few questions...\p"
-	.string "Would you like to travel to Slateport?$"
+	.string "Would you like to travel with us today?$"
 
 LilycoveCity_Harbor_Text_OldSeaMap:
 	.string "No problem. Come again...\n"
@@ -640,9 +641,7 @@ LilycoveCity_Harbor_Text_NoTicket:
 	.string "the ferry.$"
 
 LilycoveCity_Harbor_Text_FlashTicketWhereTo:
-	.string "{PLAYER} flashed the TICKET.\p"
-	.string "Perfect! That's all you need!\p"
-	.string "And where would you like to go?$"
+	.string "Where would you like to go?$"
 
 LilycoveCity_Harbor_Text_SailAnotherTime:
 	.string "Please sail with us another time!$"

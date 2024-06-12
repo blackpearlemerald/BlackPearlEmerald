@@ -664,6 +664,10 @@ Common_EventScript_ShowPokemartSign::
 	msgbox gText_PokemartSign, MSGBOX_SIGN
 	end
 
+Common_EventScript_BeansShowPokemartSign::
+	msgbox gText_BeansPokemartSign, MSGBOX_SIGN
+	end
+
 Common_EventScript_ShowPokemonCenterSign::
 	msgbox gText_PokemonCenterSign, MSGBOX_SIGN
 	end
@@ -842,6 +846,10 @@ Common_EventScript_PlayerHandedOverTheItem::
 gText_PokemartSign::
 	.string "“Selected items for your convenience!”\n"
 	.string "POKéMON MART$"
+
+gText_BeansPokemartSign::
+	.string "“A place for winners!”\n"
+	.string "THE BEANS SHOP$"
 
 gText_PokemonCenterSign::
 	.string "“Rejuvenate your tired partners!”\n"
