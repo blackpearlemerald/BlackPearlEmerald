@@ -1055,32 +1055,38 @@ static bool32 UpdateMatchCallMinutesCounter(void)
 
 static bool32 CheckMatchCallChance(void)
 {
-    int callChance = 1;
-    if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG) && GetMonAbility(&gPlayerParty[0]) == ABILITY_LIGHTNING_ROD)
-        callChance = 2;
+    // int callChance = 1;
+    // if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG) && GetMonAbility(&gPlayerParty[0]) == ABILITY_LIGHTNING_ROD)
+    //     callChance = 2;
 
-    if (Random() % 10 < callChance * 3)
-        return TRUE;
-    else
-        return FALSE;
+    // if (Random() % 10 < callChance * 3)
+    //     return TRUE;
+    // else
+    //     return FALSE;
+
+    //UNCOMMENT EVERYTHING ABOVE IF POKENAV IS GRIEFED
+    return FALSE;
 }
 
 static bool32 MapAllowsMatchCall(void)
 {
-    if (!Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) || gMapHeader.regionMapSectionId == MAPSEC_SAFARI_ZONE)
-        return FALSE;
+    // if (!Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) || gMapHeader.regionMapSectionId == MAPSEC_SAFARI_ZONE)
+    //     return FALSE;
 
-    if (gMapHeader.regionMapSectionId == MAPSEC_SOOTOPOLIS_CITY
-     && FlagGet(FLAG_HIDE_SOOTOPOLIS_CITY_RAYQUAZA) == TRUE
-     && FlagGet(FLAG_NEVER_SET_0x0DC) == FALSE)
-        return FALSE;
+    // if (gMapHeader.regionMapSectionId == MAPSEC_SOOTOPOLIS_CITY
+    //  && FlagGet(FLAG_HIDE_SOOTOPOLIS_CITY_RAYQUAZA) == TRUE
+    //  && FlagGet(FLAG_NEVER_SET_0x0DC) == FALSE)
+    //     return FALSE;
 
-    if (gMapHeader.regionMapSectionId == MAPSEC_MT_CHIMNEY
-     && FlagGet(FLAG_MET_ARCHIE_METEOR_FALLS) == TRUE
-     && FlagGet(FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY) == FALSE)
-        return FALSE;
+    // if (gMapHeader.regionMapSectionId == MAPSEC_MT_CHIMNEY
+    //  && FlagGet(FLAG_MET_ARCHIE_METEOR_FALLS) == TRUE
+    //  && FlagGet(FLAG_DEFEATED_EVIL_TEAM_MT_CHIMNEY) == FALSE)
+    //     return FALSE;
 
-    return TRUE;
+    // return TRUE;
+
+    //UNCOMMENT EVERYTHING ABOVE IF POKENAV IS GRIEFED
+    return FALSE;
 }
 
 static bool32 UpdateMatchCallStepCounter(void)
@@ -1155,16 +1161,17 @@ static u32 GetActiveMatchCallTrainerId(u32 activeMatchCallId)
 */
 bool32 TryStartMatchCall(void)
 {
-    if (FlagGet(FLAG_HAS_MATCH_CALL)
-        && UpdateMatchCallStepCounter()
-        && UpdateMatchCallMinutesCounter()
-        && CheckMatchCallChance()
-        && MapAllowsMatchCall()
-        && SelectMatchCallTrainer())
-    {
-        StartMatchCall();
-        return TRUE;
-    }
+    // UNCOMMENT ALL THIS IF POKENAV CALLS ARE BUGGED
+    // if (FlagGet(FLAG_HAS_MATCH_CALL)
+    //     && UpdateMatchCallStepCounter()
+    //     && UpdateMatchCallMinutesCounter()
+    //     && CheckMatchCallChance()
+    //     && MapAllowsMatchCall()
+    //     && SelectMatchCallTrainer())
+    // {
+    //     StartMatchCall();
+    //     return TRUE;
+    // }
 
     return FALSE;
 }

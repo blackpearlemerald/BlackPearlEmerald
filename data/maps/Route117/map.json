@@ -349,6 +349,19 @@
       "trainer_sight_or_berry_tree_id": "ITEM_TWISTED_SPOON",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_117_GREAT_BALL_2"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_BARD",
+      "x": 51,
+      "y": 6,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "0",
+      "script": "Route121_EventScript_SafariBlock",
+      "flag": "FLAG_HIDE_SAFARI_BLOCK"
     }
   ],
   "warp_events": [

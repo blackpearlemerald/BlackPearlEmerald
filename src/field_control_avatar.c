@@ -619,8 +619,12 @@ static bool8 TryStartStepCountScript(u16 metatileBehavior)
         }
         if (UpdateVsSeekerStepCounter())
         {
-            ScriptContext_SetupScript(EventScript_VsSeekerChargingDone);
-            return TRUE;
+            // ScriptContext_SetupScript(EventScript_VsSeekerChargingDone);
+            // return TRUE;
+
+            //uncomment out the above if pokenav is griefed
+            return FALSE;
+
         }
     }
 

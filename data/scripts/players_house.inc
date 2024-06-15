@@ -458,7 +458,6 @@ PlayersHouse_1F_EventScript_GetSSTicketAndSeeLatiTV::
 	delay 20
 	msgbox PlayersHouse_1F_Text_DadShouldStayLonger, MSGBOX_DEFAULT
 	call_if_set FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_NuzlockeOver
-	closemessage
 
 	msgbox PlayersHouse_1F_Text_TakeThese, MSGBOX_DEFAULT
 	closemessage
