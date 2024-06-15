@@ -214,6 +214,9 @@ LittlerootTown_EventScript_BeginDexUpgradeScene::
 	waitmovement 0
 	delay 80
 	msgbox LittlerootTown_Text_BirchSomethingToShowYouAtLab, MSGBOX_DEFAULT
+	giveitem ITEM_LATIOSITE
+	giveitem ITEM_LATIASITE
+	msgbox LittlerootTown_Text_BirchSomethingToShowYouAtLab2, MSGBOX_DEFAULT
 	closemessage
 	clearflag FLAG_HIDE_LITTLEROOT_TOWN_RIVAL
 	clearflag FLAG_HIDE_LITTLEROOT_TOWN_BIRCH
@@ -1023,6 +1026,9 @@ LittlerootTown_Text_BirchSomethingToShowYouAtLab:
 	.string "I knew there was something special\n"
 	.string "about you when I first saw you,\l"
 	.string "but I never expected this.\p"
+	.string "Please accept this reward!$"
+
+LittlerootTown_Text_BirchSomethingToShowYouAtLab2:
 	.string "Oh, yes. Do you still have the POKéDEX\n"
 	.string "I gave you?\p"
 	.string "I have something to show you.\n"

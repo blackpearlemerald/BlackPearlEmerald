@@ -3204,7 +3204,7 @@ static u32 AI_CalcMoveEffectScore(u32 battlerAtk, u32 battlerDef, u32 move)
 
     // Ai Override fixing Hazards logic, if player mon one shots enemy mon at current hp, ai will not click a hazard mon
     u32 noOfHitsToFaintHazardMon = NoOfHitsForTargetToFaintAI(battlerDef, battlerAtk);
-    u32 shouldHazard = (noOfHitsToFaintHazardMon > 1);
+    u32 shouldHazard = (noOfHitsToFaintHazardMon > 2);
     DebugPrintf(" noOfHitsToFaintHazard Mon: %d", noOfHitsToFaintHazardMon);
     DebugPrintf(" shouldHazard: %d", shouldHazard);
 
