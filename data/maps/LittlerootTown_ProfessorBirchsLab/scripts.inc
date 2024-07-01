@@ -873,7 +873,9 @@ LittlerootTown_ProfessorBirchsLab_Text_GrassyPatchWaiting2:
 	.string "There is no end to the road\n"
 	.string "that is POKéMON.\p"
 	.string "Somewhere, there is a grassy patch\n"
-	.string "that's waiting for you!$"
+	.string "that's waiting for you!/p"
+	.string "That upgraded Pokedex will give you\n"
+	.string "access to new areas with rare Pokemon!$"
 
 LittlerootTown_ProfessorBirchsLab_Text_MayTakeBreakFromFieldwork:
 	.string "CYNTHIA: I think I'll take a short break\n"

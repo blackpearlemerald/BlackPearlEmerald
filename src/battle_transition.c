@@ -2520,17 +2520,21 @@ static void Mugshots_CreateTrainerPics(struct Task *task)
     u8 trainerPicId = GetTrainerPicFromId(gTrainerBattleOpponent_A);
     s16 opponentRotationScales = 0;
 
-    gReservedSpritePaletteCount = 10;
+    //gReservedSpritePaletteCount = 10;
     task->tOpponentSpriteId = CreateTrainerSprite(trainerPicId,
                                                   gTrainerSprites[trainerPicId].mugshotCoords.x - 32,
                                                   gTrainerSprites[trainerPicId].mugshotCoords.y + 42,
                                                   0, gDecompressionBuffer);
-    gReservedSpritePaletteCount = 12;
+    //gReservedSpritePaletteCount = 12;
 
     task->tPlayerSpriteId = CreateTrainerSprite(PlayerGenderToFrontTrainerPicId(gSaveBlock2Ptr->playerGender),
                                                 DISPLAY_WIDTH + 32,
                                                 106,
                                                 0, gDecompressionBuffer);
+
+    
+    //IF PALETTES ARE GRIEFED, DELETE THE BELOW LINE
+    gReservedSpritePaletteCount = 12;
 
     opponentSprite = &gSprites[task->tOpponentSpriteId];
     playerSprite = &gSprites[task->tPlayerSpriteId];
