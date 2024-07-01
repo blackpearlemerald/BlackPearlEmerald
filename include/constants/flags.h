@@ -1506,9 +1506,9 @@
 
 #define FLAG_UNUSED_0x8E5                           (SYSTEM_FLAGS + 0x85) // Unused Flag
 #define FLAG_EGG_MOVE_TUTOR                         (SYSTEM_FLAGS + 0x86) // EGG MOVE TUTOR, If set, the move reminder will remind Egg moves instead of level moves.
-#define FLAG_UNUSED_0x8E7                           (SYSTEM_FLAGS + 0x87) // Unused Flag
-#define FLAG_UNUSED_0x8E8                           (SYSTEM_FLAGS + 0x88) // Unused Flag
-#define FLAG_UNUSED_0x8E9                           (SYSTEM_FLAGS + 0x89) // Unused Flag
+#define FLAG_CHEAT1                                 (SYSTEM_FLAGS + 0x87) // Unused Flag
+#define FLAG_CHEAT2                                 (SYSTEM_FLAGS + 0x88) // Unused Flag
+#define FLAG_CHEAT3                                 (SYSTEM_FLAGS + 0x89) // Unused Flag
 #define FLAG_UNUSED_0x8EA                           (SYSTEM_FLAGS + 0x8A) // Unused Flag
 #define FLAG_UNUSED_0x8EB                           (SYSTEM_FLAGS + 0x8B) // Unused Flag
 #define FLAG_UNUSED_0x8EC                           (SYSTEM_FLAGS + 0x8C) // Unused Flag
