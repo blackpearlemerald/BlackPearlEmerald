@@ -3371,7 +3371,7 @@ static const struct TrainerMon sParty_Shane[] = {
     }
 };
 
-static const struct TrainerMon sParty_Stevens1[] = {
+static const struct TrainerMon sParty_Steve1[] = {
     {
         .ability = ABILITY_TINTED_LENS,
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -14963,7 +14963,7 @@ static const struct TrainerMon sParty_Winston2[] = {
     }
 };
 
-static const struct TrainerMon sParty_Stevens2[] = {
+static const struct TrainerMon sParty_Steve2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
@@ -15442,7 +15442,7 @@ static const struct TrainerMon sParty_Brooke3[] = {
     }
 };
 
-static const struct TrainerMon sParty_Stevens3[] = {
+static const struct TrainerMon sParty_Steve3[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
@@ -16442,7 +16442,7 @@ static const struct TrainerMon sParty_Brooke4[] = {
     }
 };
 
-static const struct TrainerMon sParty_Stevens4[] = {
+static const struct TrainerMon sParty_Steve4[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
@@ -17290,7 +17290,7 @@ static const struct TrainerMon sParty_Winston5[] = {
     }
 };
 
-static const struct TrainerMon sParty_Stevens5[] = {
+static const struct TrainerMon sParty_Steve5[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
