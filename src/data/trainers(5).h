@@ -964,7 +964,7 @@ const struct Trainer gTrainers[] = {
     {
         .trainerClass = TRAINER_CLASS_COOLTRAINER_2,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_COOL,
-        .trainerPic = TRAINER_PIC_COOLTRAINER_F,
+        .trainerPic = TRAINER_PIC_COOLTRAINER_M,
         .trainerName = _("IRIS"),
         .items = {},
         .doubleBattle = FALSE,
@@ -1737,7 +1737,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT,
-        .party = TRAINER_PARTY(sParty_Stevens1),
+        .party = TRAINER_PARTY(sParty_Steve1),
     },
 
     [TRAINER_THALIA_1] =
@@ -1785,7 +1785,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT,
-        .party = TRAINER_PARTY(sParty_Stevens2),
+        .party = TRAINER_PARTY(sParty_Steve2),
     },
 
     [TRAINER_STEVE_3] =
@@ -1797,7 +1797,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT,
-        .party = TRAINER_PARTY(sParty_Stevens3),
+        .party = TRAINER_PARTY(sParty_Steve3),
     },
 
     [TRAINER_STEVE_4] =
@@ -1809,7 +1809,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT,
-        .party = TRAINER_PARTY(sParty_Stevens4),
+        .party = TRAINER_PARTY(sParty_Steve4),
     },
 
     [TRAINER_STEVE_5] =
@@ -1821,7 +1821,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT,
-        .party = TRAINER_PARTY(sParty_Stevens5),
+        .party = TRAINER_PARTY(sParty_Steve5),
     },
 
     [TRAINER_LUIS] =
