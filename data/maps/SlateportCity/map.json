@@ -213,7 +213,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_MAN_3",
+      "graphics_id": "OBJ_EVENT_GFX_MAN_5",
       "x": 16,
       "y": 46,
       "elevation": 3,
@@ -239,7 +239,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
       "x": 15,
       "y": 31,
       "elevation": 3,
@@ -317,7 +317,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
+      "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
       "x": 4,
       "y": 47,
       "elevation": 3,
