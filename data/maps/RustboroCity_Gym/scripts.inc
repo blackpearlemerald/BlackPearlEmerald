@@ -27,6 +27,7 @@ RustboroCity_Gym_EventScript_RoxanneDefeated::
 
 RustboroCity_Gym_EventScript_GiveRockTomb::
 	additem ITEM_TM_TAKE_DOWN
+	additem ITEM_TM_ROCK_TOMB
 	additem ITEM_TM_AGILITY
 	additem ITEM_TM_MUD_SLAP
 	additem ITEM_TM_SCARY_FACE
