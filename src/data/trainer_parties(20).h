@@ -4089,7 +4089,7 @@ static const struct TrainerMon sParty_Keegan[] = {
     }
 };
 
-static const struct TrainerMon sParty_DavidWojo[] = {
+static const struct TrainerMon sParty_DAVIDWOJO[] = {
     {
         .ability = ABILITY_SWIFT_SWIM,
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -4289,1300 +4289,6 @@ static const struct TrainerMon sParty_Mary[] = {
         .species = SPECIES_ESPEON,
         .heldItem = ITEM_BRIGHT_POWDER,
         .moves = {MOVE_MOONLIGHT,MOVE_PSYCHIC,MOVE_DOUBLE_TEAM,MOVE_SAND_ATTACK},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Lorelei[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DEWGONG,
-        .heldItem = ITEM_LEFTOVERS,
-        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_PERISH_SONG,MOVE_WHIRLPOOL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CLOYSTER,
-        .moves = {MOVE_SPIKES,MOVE_PROTECT,MOVE_HAIL,MOVE_DIVE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SLOWBRO,
-        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_YAWN,MOVE_AMNESIA},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_JYNX,
-        .moves = {MOVE_ICE_PUNCH,MOVE_DOUBLESLAP,MOVE_LOVELY_KISS,MOVE_ATTRACT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_LAPRAS,
-        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_BODY_SLAM,MOVE_CONFUSE_RAY},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Bruno[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ONIX,
-        .moves = {MOVE_EARTHQUAKE,MOVE_ROAR,MOVE_ROCK_TOMB,MOVE_IRON_TAIL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HITMONCHAN,
-        .moves = {MOVE_SKY_UPPERCUT,MOVE_MACH_PUNCH,MOVE_ROCK_SLIDE,MOVE_COUNTER},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HITMONLEE,
-        .moves = {MOVE_MEGA_KICK,MOVE_FORESIGHT,MOVE_EARTHQUAKE,MOVE_ROCK_SLIDE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ONIX,
-        .moves = {MOVE_DOUBLE_EDGE,MOVE_EARTHQUAKE,MOVE_IRON_TAIL,MOVE_SAND_TOMB},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MACHAMP,
-        .moves = {MOVE_CROSS_CHOP,MOVE_BULK_UP,MOVE_ROCK_TOMB,MOVE_SCARY_FACE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Agatha[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GENGAR,
-        .moves = {MOVE_SHADOW_PUNCH,MOVE_CONFUSE_RAY,MOVE_TOXIC,MOVE_DOUBLE_TEAM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GOLBAT,
-        .moves = {MOVE_CONFUSE_RAY,MOVE_BITE,MOVE_AIR_CUTTER,MOVE_POISON_FANG},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HAUNTER,
-        .moves = {MOVE_HYPNOSIS,MOVE_DREAM_EATER,MOVE_CURSE,MOVE_MEAN_LOOK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HAUNTER,
-        .moves = {MOVE_SLUDGE_BOMB,MOVE_IRON_TAIL,MOVE_SCREECH,MOVE_BITE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HAUNTER,
-        .moves = {MOVE_SHADOW_BALL,MOVE_SLUDGE_BOMB,MOVE_HYPNOSIS,MOVE_NIGHTMARE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Lance[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GYARADOS,
-        .moves = {MOVE_BITE,MOVE_DRAGON_RAGE,MOVE_TWISTER,MOVE_HYPER_BEAM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DRAGONAIR,
-        .moves = {MOVE_SAFEGUARD,MOVE_OUTRAGE,MOVE_DRAGON_RAGE,MOVE_HYPER_BEAM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CHARIZARD,
-        .moves = {MOVE_SHADOW_CLAW,MOVE_AIR_SLASH,MOVE_DRAGON_CLAW,MOVE_FIRE_FANG},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DRAGONITE,
-        .moves = {MOVE_HYPER_BEAM,MOVE_EARTHQUAKE,MOVE_FLAMETHROWER,MOVE_DRAGON_CLAW},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_AERODACTYL,
-        .moves = {MOVE_AERIAL_ACE,MOVE_CRUNCH,MOVE_ROCK_SLIDE,MOVE_THUNDER_FANG},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Koga[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ARIADOS,
-        .moves = {MOVE_POISON_JAB,MOVE_SPIDER_WEB,MOVE_BATON_PASS,MOVE_GIGA_DRAIN},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_VENOMOTH,
-        .moves = {MOVE_SUPERSONIC,MOVE_GUST,MOVE_PSYCHIC,MOVE_TOXIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_FORRETRESS,
-        .moves = {MOVE_PROTECT,MOVE_SWIFT,MOVE_EXPLOSION,MOVE_TOXIC_SPIKES},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MUK,
-        .heldItem = ITEM_BLACK_SLUDGE,
-        .moves = {MOVE_MINIMIZE,MOVE_SCREECH,MOVE_GUNK_SHOT,MOVE_TOXIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CROBAT,
-        .heldItem = ITEM_SITRUS_BERRY,
-        .moves = {MOVE_DOUBLE_TEAM,MOVE_QUICK_ATTACK,MOVE_WING_ATTACK,MOVE_POISON_FANG},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Bruno2[] = {
-    {
-        .ability = ABILITY_TECHNICIAN,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HITMONTOP,
-        .moves = {MOVE_COUNTER,MOVE_QUICK_ATTACK,MOVE_DIG,MOVE_TRIPLE_KICK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HITMONLEE,
-        .moves = {MOVE_SWAGGER,MOVE_FOCUS_ENERGY,MOVE_HI_JUMP_KICK,MOVE_BLAZE_KICK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_IRON_FIST,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HITMONCHAN,
-        .moves = {MOVE_THUNDER_PUNCH,MOVE_ICE_PUNCH,MOVE_FIRE_PUNCH,MOVE_BULLET_PUNCH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_STURDY,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ONIX,
-        .moves = {MOVE_DRAGONBREATH,MOVE_EARTHQUAKE,MOVE_SANDSTORM,MOVE_ROCK_SLIDE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_NO_GUARD,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MACHAMP,
-        .heldItem = ITEM_SITRUS_BERRY,
-        .moves = {MOVE_ROCK_SLIDE,MOVE_FORESIGHT,MOVE_REVENGE,MOVE_CROSS_CHOP},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Will[] = {
-    {
-        .ability = ABILITY_MAGIC_BOUNCE,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_XATU,
-        .moves = {MOVE_U_TURN,MOVE_ME_FIRST,MOVE_CONFUSE_RAY,MOVE_PSYCHIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_JYNX,
-        .moves = {MOVE_DOUBLESLAP,MOVE_LOVELY_KISS,MOVE_ICE_PUNCH,MOVE_PSYCHIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_EXEGGUTOR,
-        .moves = {MOVE_REFLECT,MOVE_HYPNOSIS,MOVE_EGG_BOMB,MOVE_PSYCHIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SLOWBRO,
-        .moves = {MOVE_CURSE,MOVE_AMNESIA,MOVE_WATER_PULSE,MOVE_PSYCHIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_XATU,
-        .heldItem = ITEM_SITRUS_BERRY,
-        .moves = {MOVE_AERIAL_ACE,MOVE_OMINOUS_WIND,MOVE_CONFUSE_RAY,MOVE_PSYCHIC},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_KarenE4[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_UMBREON,
-        .moves = {MOVE_DOUBLE_TEAM,MOVE_CONFUSE_RAY,MOVE_FAINT_ATTACK,MOVE_PAYBACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_VILEPLUME,
-        .moves = {MOVE_STUN_SPORE,MOVE_ACID,MOVE_MOONLIGHT,MOVE_PETAL_DANCE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GENGAR,
-        .moves = {MOVE_LICK,MOVE_SPITE,MOVE_FOCUS_BLAST,MOVE_DESTINY_BOND},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MURKROW,
-        .moves = {MOVE_PLUCK,MOVE_SUCKER_PUNCH,MOVE_WHIRLWIND,MOVE_FAINT_ATTACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HOUNDOOM,
-        .moves = {MOVE_NASTY_PLOT,MOVE_DARK_PULSE,MOVE_FLAMETHROWER,MOVE_CRUNCH},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Drake[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ALTARIA,
-        .moves = {MOVE_AERIAL_ACE,MOVE_COTTON_GUARD,MOVE_DRAGON_PULSE,MOVE_MOONBLAST},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_FLYGON,
-        .moves = {MOVE_EARTHQUAKE,MOVE_DRAGON_CLAW,MOVE_ROCK_SLIDE,MOVE_SUPERSONIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_KINGDRA,
-        .moves = {MOVE_SMOKESCREEN,MOVE_DRAGON_DANCE,MOVE_SURF,MOVE_BODY_SLAM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_FLYGON,
-        .moves = {MOVE_FLAMETHROWER,MOVE_BOOMBURST,MOVE_DRAGON_PULSE,MOVE_SCREECH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SALAMENCE,
-        .moves = {MOVE_DRAGON_CLAW,MOVE_ZEN_HEADBUTT,MOVE_CRUNCH,MOVE_THUNDER_FANG},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Sydney[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MIGHTYENA,
-        .moves = {MOVE_SWAGGER,MOVE_TAKE_DOWN,MOVE_SUCKER_PUNCH,MOVE_CRUNCH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SHIFTRY,
-        .moves = {MOVE_FAKE_OUT,MOVE_FEINT_ATTACK,MOVE_EXTRASENSORY,MOVE_LEAF_BLADE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CACTURNE,
-        .moves = {MOVE_NEEDLE_ARM,MOVE_LEECH_SEED,MOVE_PAYBACK,MOVE_SPIKY_SHIELD},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SHARPEDO,
-        .moves = {MOVE_CRUNCH,MOVE_POISON_FANG,MOVE_AQUA_JET,MOVE_SLASH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ABSOL,
-        .moves = {MOVE_AERIAL_ACE,MOVE_NIGHT_SLASH,MOVE_PSYCHO_CUT,MOVE_SLASH},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Phoebe[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DUSCLOPS,
-        .moves = {MOVE_SHADOW_PUNCH,MOVE_CONFUSE_RAY,MOVE_CURSE,MOVE_FUTURE_SIGHT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BANETTE,
-        .moves = {MOVE_SHADOW_BALL,MOVE_SPITE,MOVE_WILL_O_WISP,MOVE_FEINT_ATTACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SABLEYE,
-        .moves = {MOVE_SHADOW_CLAW,MOVE_FOUL_PLAY,MOVE_POWER_GEM,MOVE_FAKE_OUT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BANETTE,
-        .moves = {MOVE_SHADOW_BALL,MOVE_GRUDGE,MOVE_TOXIC,MOVE_PSYCHIC},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DUSKNOIR,
-        .moves = {MOVE_HEX,MOVE_FIRE_PUNCH,MOVE_THUNDER_PUNCH,MOVE_ICE_PUNCH},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Glacia[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SEALEO,
-        .moves = {MOVE_ENCORE,MOVE_ICE_BALL,MOVE_BODY_SLAM,MOVE_HAIL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GLALIE,
-        .moves = {MOVE_CRUNCH,MOVE_ICY_WIND,MOVE_ICE_BEAM,MOVE_LIGHT_SCREEN},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SEALEO,
-        .moves = {MOVE_BLIZZARD,MOVE_DOUBLE_EDGE,MOVE_ATTRACT,MOVE_HAIL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GLALIE,
-        .moves = {MOVE_EXPLOSION,MOVE_ICE_BEAM,MOVE_SHADOW_BALL,MOVE_HAIL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_WALREIN,
-        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_BODY_SLAM,MOVE_SHEER_COLD},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Bertha[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_WHISCASH,
-        .moves = {MOVE_EARTH_POWER,MOVE_AQUA_TAIL,MOVE_ZEN_HEADBUTT,MOVE_SANDSTORM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GLISCOR,
-        .moves = {MOVE_EARTHQUAKE,MOVE_ICE_FANG,MOVE_FIRE_FANG,MOVE_THUNDER_FANG},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HIPPOWDON,
-        .moves = {MOVE_EARTHQUAKE,MOVE_STONE_EDGE,MOVE_CRUNCH,MOVE_YAWN},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GOLEM,
-        .moves = {MOVE_EARTHQUAKE,MOVE_FIRE_PUNCH,MOVE_THUNDER_PUNCH,MOVE_SANDSTORM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_RHYPERIOR,
-        .moves = {MOVE_EARTHQUAKE,MOVE_ROCK_WRECKER,MOVE_MEGAHORN,MOVE_AVALANCHE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_AaronE4[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_YANMEGA,
-        .moves = {MOVE_AIR_SLASH,MOVE_BUG_BUZZ,MOVE_U_TURN,MOVE_DOUBLE_TEAM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SCIZOR,
-        .moves = {MOVE_IRON_HEAD,MOVE_X_SCISSOR,MOVE_NIGHT_SLASH,MOVE_QUICK_ATTACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_VESPIQUEN,
-        .moves = {MOVE_ATTACK_ORDER,MOVE_DEFEND_ORDER,MOVE_HEAL_ORDER,MOVE_POWER_GEM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HERACROSS,
-        .moves = {MOVE_DRAGONBREATH,MOVE_FLAMETHROWER,MOVE_CRUNCH,MOVE_EARTHQUAKE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DRAPION,
-        .moves = {MOVE_X_SCISSOR,MOVE_CROSS_POISON,MOVE_ICE_FANG,MOVE_AERIAL_ACE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Lucian[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MR_MIME,
-        .moves = {MOVE_PSYCHIC,MOVE_THUNDERBOLT,MOVE_REFLECT,MOVE_LIGHT_SCREEN},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ESPEON,
-        .moves = {MOVE_PSYCHIC,MOVE_SHADOW_BALL,MOVE_QUICK_ATTACK,MOVE_SIGNAL_BEAM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BRONZONG,
-        .moves = {MOVE_PSYCHIC,MOVE_GYRO_BALL,MOVE_EARTHQUAKE,MOVE_CALM_MIND},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ALAKAZAM,
-        .moves = {MOVE_PSYCHIC,MOVE_ENERGY_BALL,MOVE_FOCUS_BLAST,MOVE_RECOVER},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GALLADE,
-        .moves = {MOVE_DRAIN_PUNCH,MOVE_PSYCHO_CUT,MOVE_LEAF_BLADE,MOVE_STONE_EDGE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_FlintE4[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HOUNDOOM,
-        .moves = {MOVE_FLAMETHROWER,MOVE_SLUDGE_BOMB,MOVE_SUNNY_DAY,MOVE_DARK_PULSE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_FLAREON,
-        .moves = {MOVE_OVERHEAT,MOVE_GIGA_IMPACT,MOVE_QUICK_ATTACK,MOVE_WILL_O_WISP},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_RAPIDASH,
-        .moves = {MOVE_FLARE_BLITZ,MOVE_SOLAR_BEAM,MOVE_WILL_O_WISP,MOVE_BOUNCE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_INFERNAPE,
-        .moves = {MOVE_FLARE_BLITZ,MOVE_THUNDER_PUNCH,MOVE_MACH_PUNCH,MOVE_EARTHQUAKE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MAGMORTAR,
-        .moves = {MOVE_FLAMETHROWER,MOVE_THUNDERBOLT,MOVE_SOLAR_BEAM,MOVE_HYPER_BEAM},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Shauntal[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_COFAGRIGUS,
-        .moves = {MOVE_WILL_O_WISP,MOVE_GRASS_KNOT,MOVE_PSYCHIC,MOVE_SHADOW_BALL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DRIFBLIM,
-        .moves = {MOVE_PSYCHIC,MOVE_THUNDERBOLT,MOVE_ACROBATICS,MOVE_SHADOW_BALL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GOLURK,
-        .moves = {MOVE_HEAVY_SLAM,MOVE_EARTHQUAKE,MOVE_BRICK_BREAK,MOVE_SHADOW_PUNCH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CHANDELURE,
-        .moves = {MOVE_ENERGY_BALL,MOVE_FIRE_BLAST,MOVE_PSYCHIC,MOVE_SHADOW_BALL},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Marshal[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_THROH,
-        .moves = {MOVE_STORM_THROW,MOVE_BULLDOZE,MOVE_ROCK_TOMB,MOVE_PAYBACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SAWK,
-        .moves = {MOVE_BRICK_BREAK,MOVE_RETALIATE,MOVE_ROCK_SLIDE,MOVE_PAYBACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MIENSHAO,
-        .moves = {MOVE_HI_JUMP_KICK,MOVE_U_TURN,MOVE_BOUNCE,MOVE_RETALIATE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CONKELDURR,
-        .moves = {MOVE_HAMMER_ARM,MOVE_BULK_UP,MOVE_STONE_EDGE,MOVE_RETALIATE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Caitlin[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MUSHARNA,
-        .moves = {MOVE_CHARGE_BEAM,MOVE_DREAM_EATER,MOVE_YAWN,MOVE_REFLECT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_REUNICLUS,
-        .moves = {MOVE_PSYCHIC,MOVE_ENERGY_BALL,MOVE_FOCUS_BLAST,MOVE_RECOVER},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SIGILYPH,
-        .moves = {MOVE_PSYCHIC,MOVE_SHADOW_BALL,MOVE_ICE_BEAM,MOVE_AIR_SLASH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GOTHITELLE,
-        .moves = {MOVE_PSYCHIC,MOVE_SHADOW_BALL,MOVE_THUNDERBOLT,MOVE_CALM_MIND},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Grimsley[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_LIEPARD,
-        .moves = {MOVE_NIGHT_SLASH,MOVE_FAKE_OUT,MOVE_AERIAL_ACE,MOVE_ATTRACT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SCRAFTY,
-        .moves = {MOVE_BRICK_BREAK,MOVE_POISON_JAB,MOVE_ROCK_TOMB,MOVE_CRUNCH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_KROOKODILE,
-        .moves = {MOVE_CRUNCH,MOVE_DRAGON_CLAW,MOVE_EARTHQUAKE,MOVE_ROCK_TOMB},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BISHARP,
-        .moves = {MOVE_NIGHT_SLASH,MOVE_X_SCISSOR,MOVE_METAL_CLAW,MOVE_AERIAL_ACE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Drasna[] = {
-    {
-        .ability = ABILITY_POISON_POINT,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DRAGALGE,
-        .moves = {MOVE_SLUDGE_BOMB,MOVE_SURF,MOVE_THUNDERBOLT,MOVE_DRAGON_PULSE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ALTARIA,
-        .moves = {MOVE_DRAGON_PULSE,MOVE_MOONBLAST,MOVE_SING,MOVE_COTTON_GUARD},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DRUDDIGON,
-        .moves = {MOVE_DRAGON_TAIL,MOVE_REVENGE,MOVE_RETALIATE,MOVE_CHIP_AWAY},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_NOIVERN,
-        .moves = {MOVE_FLAMETHROWER,MOVE_BOOMBURST,MOVE_AIR_SLASH,MOVE_DRAGON_PULSE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Malva[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_PYROAR,
-        .moves = {MOVE_HYPER_VOICE,MOVE_NOBLE_ROAR,MOVE_FLAMETHROWER,MOVE_WILD_CHARGE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_TORKOAL,
-        .moves = {MOVE_CURSE,MOVE_FLAME_WHEEL,MOVE_STONE_EDGE,MOVE_EARTHQUAKE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CHANDELURE,
-        .moves = {MOVE_FLAMETHROWER,MOVE_CONFUSE_RAY,MOVE_CONFIDE,MOVE_SHADOW_BALL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_TALONFLAME,
-        .moves = {MOVE_QUICK_ATTACK,MOVE_BRAVE_BIRD,MOVE_FLARE_BLITZ,MOVE_FLAIL},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Wikstrom[] = {
-    {
-        .ability = ABILITY_PRANKSTER,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_KLEFKI,
-        .moves = {MOVE_SPIKES,MOVE_TORMENT,MOVE_DAZZLING_GLEAM,MOVE_FLASH_CANNON},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_STURDY,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_PROBOPASS,
-        .moves = {MOVE_POWER_GEM,MOVE_EARTH_POWER,MOVE_FLASH_CANNON,MOVE_DISCHARGE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SCIZOR,
-        .moves = {MOVE_X_SCISSOR,MOVE_IRON_HEAD,MOVE_BULLET_PUNCH,MOVE_NIGHT_SLASH},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_AEGISLASH,
-        .moves = {MOVE_SACRED_SWORD,MOVE_IRON_HEAD,MOVE_KINGS_SHIELD,MOVE_SHADOW_CLAW},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Hala[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HARIYAMA,
-        .moves = {MOVE_FAKE_OUT,MOVE_CLOSE_COMBAT,MOVE_KNOCK_OFF},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_PRIMEAPE,
-        .moves = {MOVE_CROSS_CHOP,MOVE_OUTRAGE,MOVE_PUNISHMENT,MOVE_PURSUIT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BEWEAR,
-        .moves = {MOVE_HAMMER_ARM,MOVE_BRUTAL_SWING},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_POLIWRATH,
-        .moves = {MOVE_WATERFALL,MOVE_SUBMISSION},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CRABOMINABLE,
-        .moves = {MOVE_ICE_HAMMER,MOVE_CLOSE_COMBAT},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_OliviaE4[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_RELICANTH,
-        .moves = {MOVE_HYDRO_PUMP,MOVE_ANCIENT_POWER,MOVE_YAWN},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CARBINK,
-        .moves = {MOVE_POWER_GEM,MOVE_MOONBLAST,MOVE_REFLECT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GOLEM_ALOLAN,
-        .moves = {MOVE_THUNDER_PUNCH,MOVE_ROCK_BLAST,MOVE_STEAMROLLER},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_PROBOPASS,
-        .moves = {MOVE_EARTH_POWER,MOVE_POWER_GEM,MOVE_THUNDER_WAVE,MOVE_SANDSTORM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_LYCANROC,
-        .moves = {MOVE_CRUNCH,MOVE_STONE_EDGE,MOVE_COUNTER,MOVE_ROCK_CLIMB},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Hop[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DUBWOOL,
-        .moves = {MOVE_COTTON_GUARD,MOVE_REVERSAL,MOVE_BODY_SLAM,MOVE_ZEN_HEADBUTT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CORVIKNIGHT,
-        .moves = {MOVE_STEEL_WING,MOVE_DRILL_PECK,MOVE_SCARY_FACE,MOVE_SWAGGER},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_PINCURCHIN,
-        .moves = {MOVE_THUNDERBOLT,MOVE_POISON_JAB,MOVE_CURSE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SNORLAX,
-        .moves = {MOVE_HEAVY_SLAM,MOVE_HIGH_HORSEPOWER,MOVE_HAMMER_ARM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_RILLABOOM,
-        .moves = {MOVE_DRUM_BEATING,MOVE_HIGH_HORSEPOWER,MOVE_SNARL,MOVE_UPROAR},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Nessa[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_GOLISOPOD,
-        .moves = {MOVE_FIRST_IMPRESSION,MOVE_LIQUIDATION,MOVE_SWORDS_DANCE,MOVE_SHADOW_CLAW},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_PELIPPER,
-        .moves = {MOVE_ROOST,MOVE_AIR_SLASH,MOVE_WATER_PULSE,MOVE_TAILWIND},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BARRASKEWDA,
-        .moves = {MOVE_LIQUIDATION,MOVE_THROAT_CHOP,MOVE_ICE_FANG,MOVE_DRILL_RUN},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_SEAKING,
-        .moves = {MOVE_SMART_STRIKE,MOVE_MEGAHORN,MOVE_AQUA_RING,MOVE_WATERFALL},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DREDNAW,
-        .moves = {MOVE_LIQUIDATION,MOVE_JAW_LOCK,MOVE_ROCK_TOMB,MOVE_CRUNCH},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Rika[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_WHISCASH,
-        .moves = {MOVE_MUDDY_WATER,MOVE_EARTH_POWER,MOVE_BLIZZARD,MOVE_FUTURE_SIGHT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CAMERUPT,
-        .moves = {MOVE_EARTH_POWER,MOVE_FIRE_BLAST,MOVE_FLASH_CANNON,MOVE_YAWN},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DONPHAN,
-        .moves = {MOVE_EARTHQUAKE,MOVE_STONE_EDGE,MOVE_IRON_HEAD,MOVE_POISON_JAB},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DUGTRIO,
-        .moves = {MOVE_EARTHQUAKE,MOVE_ROCK_SLIDE,MOVE_SUCKER_PUNCH,MOVE_SANDSTORM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_WATER_ABSORB,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CLODSIRE,
-        .moves = {MOVE_EARTHQUAKE,MOVE_LIQUIDATION,MOVE_TOXIC,MOVE_PROTECT},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Hassel[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_NOIVERN,
-        .moves = {MOVE_AIR_SLASH,MOVE_DRAGON_PULSE,MOVE_SUPER_FANG,MOVE_HYPER_VOICE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_HAXORUS,
-        .moves = {MOVE_DRAGON_CLAW,MOVE_CRUNCH,MOVE_IRON_HEAD,MOVE_ROCK_TOMB},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_DRAGALGE,
-        .moves = {MOVE_SLUDGE_BOMB,MOVE_DRAGON_PULSE,MOVE_HYDRO_PUMP,MOVE_THUNDERBOLT},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_FLAPPLE,
-        .moves = {MOVE_DRAGON_RUSH,MOVE_SEED_BOMB,MOVE_AERIAL_ACE,MOVE_LEECH_SEED},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BAXCALIBUR,
-        .moves = {MOVE_ICICLE_CRASH,MOVE_BRICK_BREAK,MOVE_GLAIVE_RUSH},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_Poppy[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_COPPERAJAH,
-        .moves = {MOVE_HIGH_HORSEPOWER,MOVE_PLAY_ROUGH,MOVE_LIGHT_SCREEN,MOVE_TRI_ATTACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_STURDY,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_MAGNEZONE,
-        .moves = {MOVE_DISCHARGE,MOVE_FLASH_CANNON,MOVE_LIGHT_SCREEN,MOVE_TRI_ATTACK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_BRONZONG,
-        .moves = {MOVE_IRON_HEAD,MOVE_ZEN_HEADBUTT,MOVE_ROCK_BLAST,MOVE_EARTHQUAKE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_CORVIKNIGHT,
-        .moves = {MOVE_EARTHQUAKE,MOVE_ROCK_SLIDE,MOVE_SUCKER_PUNCH,MOVE_SANDSTORM},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_MOLD_BREAKER,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_TINKATON,
-        .moves = {MOVE_PLAY_ROUGH,MOVE_GIGATON_HAMMER,MOVE_BRICK_BREAK,MOVE_STONE_EDGE},
-        .nature = NATURE_QUIRKY,
-    }
-};
-
-static const struct TrainerMon sParty_LarryE4[] = {
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_TROPIUS,
-        .moves = {MOVE_AIR_SLASH,MOVE_SOLAR_BEAM,MOVE_DRAGON_PULSE,MOVE_SUNNY_DAY},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ORICORIO,
-        .moves = {MOVE_REVELATION_DANCE,MOVE_AIR_SLASH,MOVE_TEETER_DANCE,MOVE_ICY_WIND},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_ALTARIA,
-        .moves = {MOVE_MOONBLAST,MOVE_FLAMETHROWER,MOVE_ICE_BEAM,MOVE_DRAGON_PULSE},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_STARAPTOR,
-        .moves = {MOVE_FACADE,MOVE_BRAVE_BIRD,MOVE_CLOSE_COMBAT,MOVE_THIEF},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_SCRAPPY,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
-        .species = SPECIES_FLAMIGO,
-        .moves = {MOVE_BRAVE_BIRD,MOVE_CLOSE_COMBAT,MOVE_THROAT_CHOP,MOVE_LIQUIDATION},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -9344,8 +8050,8 @@ static const struct TrainerMon sParty_AaronMosh[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 57,
         .species = SPECIES_ABSOL,
-        .heldItem = ITEM_ABSOLITE,
         .moves = {MOVE_SWORDS_DANCE,MOVE_KNOCK_OFF,MOVE_SUCKER_PUNCH,MOVE_SUPERPOWER},
+        .heldItem = ITEM_ABSOLITE,
         .nature = NATURE_QUIRKY,
     }
 };
@@ -15148,6 +13854,51 @@ static const struct TrainerMon sParty_Cindy2[] = {
     }
 };
 
+static const struct TrainerMon sParty_Paul[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ARIADOS,
+        .moves = {MOVE_POISON_JAB,MOVE_SPIDER_WEB,MOVE_BATON_PASS,MOVE_GIGA_DRAIN},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_VENOMOTH,
+        .moves = {MOVE_SUPERSONIC,MOVE_GUST,MOVE_PSYCHIC,MOVE_TOXIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_FORRETRESS,
+        .moves = {MOVE_PROTECT,MOVE_SWIFT,MOVE_EXPLOSION,MOVE_TOXIC_SPIKES},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MUK,
+        .heldItem = ITEM_BLACK_SLUDGE,
+        .moves = {MOVE_MINIMIZE,MOVE_SCREECH,MOVE_GUNK_SHOT,MOVE_TOXIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CROBAT,
+        .heldItem = ITEM_SITRUS_BERRY,
+        .moves = {MOVE_DOUBLE_TEAM,MOVE_QUICK_ATTACK,MOVE_WING_ATTACK,MOVE_POISON_FANG},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
 static const struct TrainerMon sParty_Anthony2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -15181,6 +13932,186 @@ static const struct TrainerMon sParty_AmyAndLiv1[] = {
     }
 };
 
+static const struct TrainerMon sParty_Georgia[] = {
+    {
+        .ability = ABILITY_TECHNICIAN,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HITMONTOP,
+        .moves = {MOVE_COUNTER,MOVE_QUICK_ATTACK,MOVE_DIG,MOVE_TRIPLE_KICK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HITMONLEE,
+        .moves = {MOVE_SWAGGER,MOVE_FOCUS_ENERGY,MOVE_HI_JUMP_KICK,MOVE_BLAZE_KICK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_IRON_FIST,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HITMONCHAN,
+        .moves = {MOVE_THUNDER_PUNCH,MOVE_ICE_PUNCH,MOVE_FIRE_PUNCH,MOVE_BULLET_PUNCH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_STURDY,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ONIX,
+        .moves = {MOVE_DRAGONBREATH,MOVE_EARTHQUAKE,MOVE_SANDSTORM,MOVE_ROCK_SLIDE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_NO_GUARD,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MACHAMP,
+        .heldItem = ITEM_SITRUS_BERRY,
+        .moves = {MOVE_ROCK_SLIDE,MOVE_FORESIGHT,MOVE_REVENGE,MOVE_CROSS_CHOP},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Eddie[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GENGAR,
+        .moves = {MOVE_SHADOW_PUNCH,MOVE_CONFUSE_RAY,MOVE_TOXIC,MOVE_DOUBLE_TEAM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GOLBAT,
+        .moves = {MOVE_CONFUSE_RAY,MOVE_BITE,MOVE_AIR_CUTTER,MOVE_POISON_FANG},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HAUNTER,
+        .moves = {MOVE_HYPNOSIS,MOVE_DREAM_EATER,MOVE_CURSE,MOVE_MEAN_LOOK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HAUNTER,
+        .moves = {MOVE_SLUDGE_BOMB,MOVE_IRON_TAIL,MOVE_SCREECH,MOVE_BITE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HAUNTER,
+        .moves = {MOVE_SHADOW_BALL,MOVE_SLUDGE_BOMB,MOVE_HYPNOSIS,MOVE_NIGHTMARE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Sally[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DEWGONG,
+        .heldItem = ITEM_LEFTOVERS,
+        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_PERISH_SONG,MOVE_WHIRLPOOL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CLOYSTER,
+        .moves = {MOVE_SPIKES,MOVE_PROTECT,MOVE_HAIL,MOVE_DIVE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SLOWBRO,
+        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_YAWN,MOVE_AMNESIA},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_JYNX,
+        .moves = {MOVE_ICE_PUNCH,MOVE_DOUBLESLAP,MOVE_LOVELY_KISS,MOVE_ATTRACT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_LAPRAS,
+        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_BODY_SLAM,MOVE_CONFUSE_RAY},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Ted[] = {
+    {
+        .ability = ABILITY_MAGIC_BOUNCE,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_XATU,
+        .moves = {MOVE_U_TURN,MOVE_ME_FIRST,MOVE_CONFUSE_RAY,MOVE_PSYCHIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_JYNX,
+        .moves = {MOVE_DOUBLESLAP,MOVE_LOVELY_KISS,MOVE_ICE_PUNCH,MOVE_PSYCHIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_EXEGGUTOR,
+        .moves = {MOVE_REFLECT,MOVE_HYPNOSIS,MOVE_EGG_BOMB,MOVE_PSYCHIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SLOWBRO,
+        .moves = {MOVE_CURSE,MOVE_AMNESIA,MOVE_WATER_PULSE,MOVE_PSYCHIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_XATU,
+        .heldItem = ITEM_SITRUS_BERRY,
+        .moves = {MOVE_AERIAL_ACE,MOVE_OMINOUS_WIND,MOVE_CONFUSE_RAY,MOVE_PSYCHIC},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
 static const struct TrainerMon sParty_Lung[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -15194,6 +14125,49 @@ static const struct TrainerMon sParty_Lung[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 20,
         .species = SPECIES_NINJASK,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Robin[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ONIX,
+        .moves = {MOVE_EARTHQUAKE,MOVE_ROAR,MOVE_ROCK_TOMB,MOVE_IRON_TAIL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HITMONCHAN,
+        .moves = {MOVE_SKY_UPPERCUT,MOVE_MACH_PUNCH,MOVE_ROCK_SLIDE,MOVE_COUNTER},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HITMONLEE,
+        .moves = {MOVE_MEGA_KICK,MOVE_FORESIGHT,MOVE_EARTHQUAKE,MOVE_ROCK_SLIDE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ONIX,
+        .moves = {MOVE_DOUBLE_EDGE,MOVE_EARTHQUAKE,MOVE_IRON_TAIL,MOVE_SAND_TOMB},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MACHAMP,
+        .moves = {MOVE_CROSS_CHOP,MOVE_BULK_UP,MOVE_ROCK_TOMB,MOVE_SCARY_FACE},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -15311,6 +14285,135 @@ static const struct TrainerMon sParty_Lydia2[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 23,
         .species = SPECIES_GOLDEEN,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Alan[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SEALEO,
+        .moves = {MOVE_ENCORE,MOVE_ICE_BALL,MOVE_BODY_SLAM,MOVE_HAIL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GLALIE,
+        .moves = {MOVE_CRUNCH,MOVE_ICY_WIND,MOVE_ICE_BEAM,MOVE_LIGHT_SCREEN},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SEALEO,
+        .moves = {MOVE_BLIZZARD,MOVE_DOUBLE_EDGE,MOVE_ATTRACT,MOVE_HAIL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GLALIE,
+        .moves = {MOVE_EXPLOSION,MOVE_ICE_BEAM,MOVE_SHADOW_BALL,MOVE_HAIL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_WALREIN,
+        .moves = {MOVE_SURF,MOVE_ICE_BEAM,MOVE_BODY_SLAM,MOVE_SHEER_COLD},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Martha[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DUSCLOPS,
+        .moves = {MOVE_SHADOW_PUNCH,MOVE_CONFUSE_RAY,MOVE_CURSE,MOVE_FUTURE_SIGHT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BANETTE,
+        .moves = {MOVE_SHADOW_BALL,MOVE_SPITE,MOVE_WILL_O_WISP,MOVE_FEINT_ATTACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SABLEYE,
+        .moves = {MOVE_SHADOW_CLAW,MOVE_FOUL_PLAY,MOVE_POWER_GEM,MOVE_FAKE_OUT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BANETTE,
+        .moves = {MOVE_SHADOW_BALL,MOVE_GRUDGE,MOVE_TOXIC,MOVE_PSYCHIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DUSKNOIR,
+        .moves = {MOVE_HEX,MOVE_FIRE_PUNCH,MOVE_THUNDER_PUNCH,MOVE_ICE_PUNCH},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Justin[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MIGHTYENA,
+        .moves = {MOVE_SWAGGER,MOVE_TAKE_DOWN,MOVE_SUCKER_PUNCH,MOVE_CRUNCH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SHIFTRY,
+        .moves = {MOVE_FAKE_OUT,MOVE_FEINT_ATTACK,MOVE_EXTRASENSORY,MOVE_LEAF_BLADE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CACTURNE,
+        .moves = {MOVE_NEEDLE_ARM,MOVE_LEECH_SEED,MOVE_PAYBACK,MOVE_SPIKY_SHIELD},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SHARPEDO,
+        .moves = {MOVE_CRUNCH,MOVE_POISON_FANG,MOVE_AQUA_JET,MOVE_SLASH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ABSOL,
+        .moves = {MOVE_AERIAL_ACE,MOVE_NIGHT_SLASH,MOVE_PSYCHO_CUT,MOVE_SLASH},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -15593,6 +14696,49 @@ static const struct TrainerMon sParty_Brooke2[] = {
     }
 };
 
+static const struct TrainerMon sParty_Yuji[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_YANMEGA,
+        .moves = {MOVE_AIR_SLASH,MOVE_BUG_BUZZ,MOVE_U_TURN,MOVE_DOUBLE_TEAM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SCIZOR,
+        .moves = {MOVE_IRON_HEAD,MOVE_X_SCISSOR,MOVE_NIGHT_SLASH,MOVE_QUICK_ATTACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_VESPIQUEN,
+        .moves = {MOVE_ATTACK_ORDER,MOVE_DEFEND_ORDER,MOVE_HEAL_ORDER,MOVE_POWER_GEM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HERACROSS,
+        .moves = {MOVE_DRAGONBREATH,MOVE_FLAMETHROWER,MOVE_CRUNCH,MOVE_EARTHQUAKE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DRAPION,
+        .moves = {MOVE_X_SCISSOR,MOVE_CROSS_POISON,MOVE_ICE_FANG,MOVE_AERIAL_ACE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
 static const struct TrainerMon sParty_Bernie2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -15871,6 +15017,49 @@ static const struct TrainerMon sParty_Elliot2[] = {
     }
 };
 
+static const struct TrainerMon sParty_Cora[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_WHISCASH,
+        .moves = {MOVE_EARTH_POWER,MOVE_AQUA_TAIL,MOVE_ZEN_HEADBUTT,MOVE_SANDSTORM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GLISCOR,
+        .moves = {MOVE_EARTHQUAKE,MOVE_ICE_FANG,MOVE_FIRE_FANG,MOVE_THUNDER_FANG},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HIPPOWDON,
+        .moves = {MOVE_EARTHQUAKE,MOVE_STONE_EDGE,MOVE_CRUNCH,MOVE_YAWN},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GOLEM,
+        .moves = {MOVE_EARTHQUAKE,MOVE_FIRE_PUNCH,MOVE_THUNDER_PUNCH,MOVE_SANDSTORM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_RHYPERIOR,
+        .moves = {MOVE_EARTHQUAKE,MOVE_ROCK_WRECKER,MOVE_MEGAHORN,MOVE_AVALANCHE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
 static const struct TrainerMon sParty_AmyAndLiv2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -16003,6 +15192,49 @@ static const struct TrainerMon sParty_Maria2[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 36,
         .species = SPECIES_DODUO,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Paula[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HOUNDOOM,
+        .moves = {MOVE_FLAMETHROWER,MOVE_SLUDGE_BOMB,MOVE_SUNNY_DAY,MOVE_DARK_PULSE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_FLAREON,
+        .moves = {MOVE_OVERHEAT,MOVE_GIGA_IMPACT,MOVE_QUICK_ATTACK,MOVE_WILL_O_WISP},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_RAPIDASH,
+        .moves = {MOVE_FLARE_BLITZ,MOVE_SOLAR_BEAM,MOVE_WILL_O_WISP,MOVE_BOUNCE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_INFERNAPE,
+        .moves = {MOVE_FLARE_BLITZ,MOVE_THUNDER_PUNCH,MOVE_MACH_PUNCH,MOVE_EARTHQUAKE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MAGMORTAR,
+        .moves = {MOVE_FLAMETHROWER,MOVE_THUNDERBOLT,MOVE_SOLAR_BEAM,MOVE_HYPER_BEAM},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -19238,6 +18470,42 @@ static const struct TrainerMon sParty_Nicolas1[] = {
     }
 };
 
+static const struct TrainerMon sParty_Benny[] = {
+    {
+        .ability = ABILITY_POISON_POINT,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DRAGALGE,
+        .moves = {MOVE_SLUDGE_BOMB,MOVE_SURF,MOVE_THUNDERBOLT,MOVE_DRAGON_PULSE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ALTARIA,
+        .moves = {MOVE_DRAGON_PULSE,MOVE_MOONBLAST,MOVE_SING,MOVE_COTTON_GUARD},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DRUDDIGON,
+        .moves = {MOVE_DRAGON_TAIL,MOVE_REVENGE,MOVE_RETALIATE,MOVE_CHIP_AWAY},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_NOIVERN,
+        .moves = {MOVE_FLAMETHROWER,MOVE_BOOMBURST,MOVE_AIR_SLASH,MOVE_DRAGON_PULSE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
 static const struct TrainerMon sParty_Robert4[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -19261,6 +18529,41 @@ static const struct TrainerMon sParty_Jenny2[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 57,
         .species = SPECIES_WAILMER,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Sophia[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_PYROAR,
+        .moves = {MOVE_HYPER_VOICE,MOVE_NOBLE_ROAR,MOVE_FLAMETHROWER,MOVE_WILD_CHARGE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_TORKOAL,
+        .moves = {MOVE_CURSE,MOVE_FLAME_WHEEL,MOVE_STONE_EDGE,MOVE_EARTHQUAKE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CHANDELURE,
+        .moves = {MOVE_FLAMETHROWER,MOVE_CONFUSE_RAY,MOVE_CONFIDE,MOVE_SHADOW_BALL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_TALONFLAME,
+        .moves = {MOVE_QUICK_ATTACK,MOVE_BRAVE_BIRD,MOVE_FLARE_BLITZ,MOVE_FLAIL},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -19407,6 +18710,43 @@ static const struct TrainerMon sParty_Ernest3[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 59,
         .species = SPECIES_MACHOKE,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Sebastian[] = {
+    {
+        .ability = ABILITY_PRANKSTER,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_KLEFKI,
+        .moves = {MOVE_SPIKES,MOVE_TORMENT,MOVE_DAZZLING_GLEAM,MOVE_FLASH_CANNON},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_STURDY,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_PROBOPASS,
+        .moves = {MOVE_POWER_GEM,MOVE_EARTH_POWER,MOVE_FLASH_CANNON,MOVE_DISCHARGE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SCIZOR,
+        .moves = {MOVE_X_SCISSOR,MOVE_IRON_HEAD,MOVE_BULLET_PUNCH,MOVE_NIGHT_SLASH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_AEGISLASH,
+        .moves = {MOVE_SACRED_SWORD,MOVE_IRON_HEAD,MOVE_KINGS_SHIELD,MOVE_SHADOW_CLAW},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -19657,6 +18997,49 @@ static const struct TrainerMon sParty_Thalia5[] = {
     }
 };
 
+static const struct TrainerMon sParty_Patricia[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_RELICANTH,
+        .moves = {MOVE_HYDRO_PUMP,MOVE_ANCIENT_POWER,MOVE_YAWN},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CARBINK,
+        .moves = {MOVE_POWER_GEM,MOVE_MOONBLAST,MOVE_REFLECT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GOLEM_ALOLAN,
+        .moves = {MOVE_THUNDER_PUNCH,MOVE_ROCK_BLAST,MOVE_STEAMROLLER},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_PROBOPASS,
+        .moves = {MOVE_EARTH_POWER,MOVE_POWER_GEM,MOVE_THUNDER_WAVE,MOVE_SANDSTORM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_LYCANROC,
+        .moves = {MOVE_CRUNCH,MOVE_STONE_EDGE,MOVE_COUNTER,MOVE_ROCK_CLIMB},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
 static const struct TrainerMon sParty_Jessica4[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -19670,6 +19053,49 @@ static const struct TrainerMon sParty_Jessica4[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 62,
         .species = SPECIES_SEVIPER,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Joshua[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HARIYAMA,
+        .moves = {MOVE_FAKE_OUT,MOVE_CLOSE_COMBAT,MOVE_KNOCK_OFF},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_PRIMEAPE,
+        .moves = {MOVE_CROSS_CHOP,MOVE_OUTRAGE,MOVE_PUNISHMENT,MOVE_PURSUIT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BEWEAR,
+        .moves = {MOVE_HAMMER_ARM,MOVE_BRUTAL_SWING},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_POLIWRATH,
+        .moves = {MOVE_WATERFALL,MOVE_SUBMISSION},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CRABOMINABLE,
+        .moves = {MOVE_ICE_HAMMER,MOVE_CLOSE_COMBAT},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -19862,6 +19288,92 @@ static const struct TrainerMon sParty_Fernando5[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 62,
         .species = SPECIES_EXPLOUD,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Mariela[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DUBWOOL,
+        .moves = {MOVE_COTTON_GUARD,MOVE_REVERSAL,MOVE_BODY_SLAM,MOVE_ZEN_HEADBUTT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CORVIKNIGHT,
+        .moves = {MOVE_STEEL_WING,MOVE_DRILL_PECK,MOVE_SCARY_FACE,MOVE_SWAGGER},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_PINCURCHIN,
+        .moves = {MOVE_THUNDERBOLT,MOVE_POISON_JAB,MOVE_CURSE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SNORLAX,
+        .moves = {MOVE_HEAVY_SLAM,MOVE_HIGH_HORSEPOWER,MOVE_HAMMER_ARM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_RILLABOOM,
+        .moves = {MOVE_DRUM_BEATING,MOVE_HIGH_HORSEPOWER,MOVE_SNARL,MOVE_UPROAR},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Everett[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GOLISOPOD,
+        .moves = {MOVE_FIRST_IMPRESSION,MOVE_LIQUIDATION,MOVE_SWORDS_DANCE,MOVE_SHADOW_CLAW},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_PELIPPER,
+        .moves = {MOVE_ROOST,MOVE_AIR_SLASH,MOVE_WATER_PULSE,MOVE_TAILWIND},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BARRASKEWDA,
+        .moves = {MOVE_LIQUIDATION,MOVE_THROAT_CHOP,MOVE_ICE_FANG,MOVE_DRILL_RUN},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SEAKING,
+        .moves = {MOVE_SMART_STRIKE,MOVE_MEGAHORN,MOVE_AQUA_RING,MOVE_WATERFALL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DREDNAW,
+        .moves = {MOVE_LIQUIDATION,MOVE_JAW_LOCK,MOVE_ROCK_TOMB,MOVE_CRUNCH},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -20192,6 +19704,51 @@ static const struct TrainerMon sParty_Koji5[] = {
     }
 };
 
+static const struct TrainerMon sParty_Vincent[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_COPPERAJAH,
+        .moves = {MOVE_HIGH_HORSEPOWER,MOVE_PLAY_ROUGH,MOVE_LIGHT_SCREEN,MOVE_TRI_ATTACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_STURDY,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MAGNEZONE,
+        .moves = {MOVE_DISCHARGE,MOVE_FLASH_CANNON,MOVE_LIGHT_SCREEN,MOVE_TRI_ATTACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BRONZONG,
+        .moves = {MOVE_IRON_HEAD,MOVE_ZEN_HEADBUTT,MOVE_ROCK_BLAST,MOVE_EARTHQUAKE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CORVIKNIGHT,
+        .moves = {MOVE_EARTHQUAKE,MOVE_ROCK_SLIDE,MOVE_SUCKER_PUNCH,MOVE_SANDSTORM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_MOLD_BREAKER,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_TINKATON,
+        .moves = {MOVE_PLAY_ROUGH,MOVE_GIGATON_HAMMER,MOVE_BRICK_BREAK,MOVE_STONE_EDGE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
 static const struct TrainerMon sParty_Jessica5[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -20256,6 +19813,50 @@ static const struct TrainerMon sParty_Phillip[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 68,
         .species = SPECIES_MACHOKE,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Keira[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_WHISCASH,
+        .moves = {MOVE_MUDDY_WATER,MOVE_EARTH_POWER,MOVE_BLIZZARD,MOVE_FUTURE_SIGHT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CAMERUPT,
+        .moves = {MOVE_EARTH_POWER,MOVE_FIRE_BLAST,MOVE_FLASH_CANNON,MOVE_YAWN},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DONPHAN,
+        .moves = {MOVE_EARTHQUAKE,MOVE_STONE_EDGE,MOVE_IRON_HEAD,MOVE_POISON_JAB},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DUGTRIO,
+        .moves = {MOVE_EARTHQUAKE,MOVE_ROCK_SLIDE,MOVE_SUCKER_PUNCH,MOVE_SANDSTORM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_WATER_ABSORB,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CLODSIRE,
+        .moves = {MOVE_EARTHQUAKE,MOVE_LIQUIDATION,MOVE_TOXIC,MOVE_PROTECT},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -20405,6 +20006,50 @@ static const struct TrainerMon sParty_LilaAndRoy3[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 67,
         .species = SPECIES_CARVANHA,
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Leroy[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_TROPIUS,
+        .moves = {MOVE_AIR_SLASH,MOVE_SOLAR_BEAM,MOVE_DRAGON_PULSE,MOVE_SUNNY_DAY},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ORICORIO,
+        .moves = {MOVE_REVELATION_DANCE,MOVE_AIR_SLASH,MOVE_TEETER_DANCE,MOVE_ICY_WIND},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ALTARIA,
+        .moves = {MOVE_MOONBLAST,MOVE_FLAMETHROWER,MOVE_ICE_BEAM,MOVE_DRAGON_PULSE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_STARAPTOR,
+        .moves = {MOVE_FACADE,MOVE_BRAVE_BIRD,MOVE_CLOSE_COMBAT,MOVE_THIEF},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .ability = ABILITY_SCRAPPY,
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_FLAMIGO,
+        .moves = {MOVE_BRAVE_BIRD,MOVE_CLOSE_COMBAT,MOVE_THROAT_CHOP,MOVE_LIQUIDATION},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -20624,11 +20269,323 @@ static const struct TrainerMon sParty_Steven[] = {
     }
 };
 
-static const struct TrainerMon sParty_Siebold[] = {
+static const struct TrainerMon sParty_Eddie2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
+        .lvl = 50,
+        .species = SPECIES_GYARADOS,
+        .moves = {MOVE_BITE,MOVE_DRAGON_RAGE,MOVE_TWISTER,MOVE_HYPER_BEAM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DRAGONAIR,
+        .moves = {MOVE_SAFEGUARD,MOVE_OUTRAGE,MOVE_DRAGON_RAGE,MOVE_HYPER_BEAM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CHARIZARD,
+        .moves = {MOVE_SHADOW_CLAW,MOVE_AIR_SLASH,MOVE_DRAGON_CLAW,MOVE_FIRE_FANG},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DRAGONITE,
+        .moves = {MOVE_HYPER_BEAM,MOVE_EARTHQUAKE,MOVE_FLAMETHROWER,MOVE_DRAGON_CLAW},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_AERODACTYL,
+        .moves = {MOVE_AERIAL_ACE,MOVE_CRUNCH,MOVE_ROCK_SLIDE,MOVE_THUNDER_FANG},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Georgia2[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_UMBREON,
+        .moves = {MOVE_DOUBLE_TEAM,MOVE_CONFUSE_RAY,MOVE_FAINT_ATTACK,MOVE_PAYBACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_VILEPLUME,
+        .moves = {MOVE_STUN_SPORE,MOVE_ACID,MOVE_MOONLIGHT,MOVE_PETAL_DANCE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GENGAR,
+        .moves = {MOVE_LICK,MOVE_SPITE,MOVE_FOCUS_BLAST,MOVE_DESTINY_BOND},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MURKROW,
+        .moves = {MOVE_PLUCK,MOVE_SUCKER_PUNCH,MOVE_WHIRLWIND,MOVE_FAINT_ATTACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HOUNDOOM,
+        .moves = {MOVE_NASTY_PLOT,MOVE_DARK_PULSE,MOVE_FLAMETHROWER,MOVE_CRUNCH},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Alan2[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ALTARIA,
+        .moves = {MOVE_AERIAL_ACE,MOVE_COTTON_GUARD,MOVE_DRAGON_PULSE,MOVE_MOONBLAST},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_FLYGON,
+        .moves = {MOVE_EARTHQUAKE,MOVE_DRAGON_CLAW,MOVE_ROCK_SLIDE,MOVE_SUPERSONIC},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_KINGDRA,
+        .moves = {MOVE_SMOKESCREEN,MOVE_DRAGON_DANCE,MOVE_SURF,MOVE_BODY_SLAM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_FLYGON,
+        .moves = {MOVE_FLAMETHROWER,MOVE_BOOMBURST,MOVE_DRAGON_PULSE,MOVE_SCREECH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SALAMENCE,
+        .moves = {MOVE_DRAGON_CLAW,MOVE_ZEN_HEADBUTT,MOVE_CRUNCH,MOVE_THUNDER_FANG},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Yuji2[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MR_MIME,
+        .moves = {MOVE_PSYCHIC,MOVE_THUNDERBOLT,MOVE_REFLECT,MOVE_LIGHT_SCREEN},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ESPEON,
+        .moves = {MOVE_PSYCHIC,MOVE_SHADOW_BALL,MOVE_QUICK_ATTACK,MOVE_SIGNAL_BEAM},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BRONZONG,
+        .moves = {MOVE_PSYCHIC,MOVE_GYRO_BALL,MOVE_EARTHQUAKE,MOVE_CALM_MIND},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_ALAKAZAM,
+        .moves = {MOVE_PSYCHIC,MOVE_ENERGY_BALL,MOVE_FOCUS_BLAST,MOVE_RECOVER},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GALLADE,
+        .moves = {MOVE_DRAIN_PUNCH,MOVE_PSYCHO_CUT,MOVE_LEAF_BLADE,MOVE_STONE_EDGE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Yuji3[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_COFAGRIGUS,
+        .moves = {MOVE_WILL_O_WISP,MOVE_GRASS_KNOT,MOVE_PSYCHIC,MOVE_SHADOW_BALL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DRIFBLIM,
+        .moves = {MOVE_PSYCHIC,MOVE_THUNDERBOLT,MOVE_ACROBATICS,MOVE_SHADOW_BALL},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GOLURK,
+        .moves = {MOVE_HEAVY_SLAM,MOVE_EARTHQUAKE,MOVE_BRICK_BREAK,MOVE_SHADOW_PUNCH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CHANDELURE,
+        .moves = {MOVE_ENERGY_BALL,MOVE_FIRE_BLAST,MOVE_PSYCHIC,MOVE_SHADOW_BALL},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Yuji4[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_THROH,
+        .moves = {MOVE_STORM_THROW,MOVE_BULLDOZE,MOVE_ROCK_TOMB,MOVE_PAYBACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SAWK,
+        .moves = {MOVE_BRICK_BREAK,MOVE_RETALIATE,MOVE_ROCK_SLIDE,MOVE_PAYBACK},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MIENSHAO,
+        .moves = {MOVE_HI_JUMP_KICK,MOVE_U_TURN,MOVE_BOUNCE,MOVE_RETALIATE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_CONKELDURR,
+        .moves = {MOVE_HAMMER_ARM,MOVE_BULK_UP,MOVE_STONE_EDGE,MOVE_RETALIATE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Yuji5[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_LIEPARD,
+        .moves = {MOVE_NIGHT_SLASH,MOVE_FAKE_OUT,MOVE_AERIAL_ACE,MOVE_ATTRACT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SCRAFTY,
+        .moves = {MOVE_BRICK_BREAK,MOVE_POISON_JAB,MOVE_ROCK_TOMB,MOVE_CRUNCH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_KROOKODILE,
+        .moves = {MOVE_CRUNCH,MOVE_DRAGON_CLAW,MOVE_EARTHQUAKE,MOVE_ROCK_TOMB},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BISHARP,
+        .moves = {MOVE_NIGHT_SLASH,MOVE_X_SCISSOR,MOVE_METAL_CLAW,MOVE_AERIAL_ACE},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Yuji6[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_MUSHARNA,
+        .moves = {MOVE_CHARGE_BEAM,MOVE_DREAM_EATER,MOVE_YAWN,MOVE_REFLECT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_REUNICLUS,
+        .moves = {MOVE_PSYCHIC,MOVE_ENERGY_BALL,MOVE_FOCUS_BLAST,MOVE_RECOVER},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_SIGILYPH,
+        .moves = {MOVE_PSYCHIC,MOVE_SHADOW_BALL,MOVE_ICE_BEAM,MOVE_AIR_SLASH},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_GOTHITELLE,
+        .moves = {MOVE_PSYCHIC,MOVE_SHADOW_BALL,MOVE_THUNDERBOLT,MOVE_CALM_MIND},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Benny2[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
         .species = SPECIES_CLAWITZER,
         .moves = {MOVE_DRAGON_PULSE,MOVE_WATER_PULSE,MOVE_AURA_SPHERE,MOVE_DARK_PULSE},
         .nature = NATURE_QUIRKY,
@@ -20636,7 +20593,7 @@ static const struct TrainerMon sParty_Siebold[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
+        .lvl = 50,
         .species = SPECIES_STARMIE,
         .moves = {MOVE_PSYCHIC,MOVE_LIGHT_SCREEN,MOVE_SURF,MOVE_DAZZLING_GLEAM},
         .nature = NATURE_QUIRKY,
@@ -20644,7 +20601,7 @@ static const struct TrainerMon sParty_Siebold[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
+        .lvl = 50,
         .species = SPECIES_GYARADOS,
         .moves = {MOVE_WATERFALL,MOVE_ICE_FANG,MOVE_DRAGON_DANCE,MOVE_EARTHQUAKE},
         .nature = NATURE_QUIRKY,
@@ -20652,9 +20609,52 @@ static const struct TrainerMon sParty_Siebold[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 48,
+        .lvl = 50,
         .species = SPECIES_BARBARACLE,
         .moves = {MOVE_STONE_EDGE,MOVE_RAZOR_SHELL,MOVE_CROSS_CHOP,MOVE_X_SCISSOR},
+        .nature = NATURE_QUIRKY,
+    }
+};
+
+static const struct TrainerMon sParty_Keira2[] = {
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_NOIVERN,
+        .moves = {MOVE_AIR_SLASH,MOVE_DRAGON_PULSE,MOVE_SUPER_FANG,MOVE_HYPER_VOICE},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_HAXORUS,
+        .moves = {MOVE_DRAGON_CLAW,MOVE_CRUNCH,MOVE_IRON_HEAD,MOVE_ROCK_TOMB},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_DRAGALGE,
+        .moves = {MOVE_SLUDGE_BOMB,MOVE_DRAGON_PULSE,MOVE_HYDRO_PUMP,MOVE_THUNDERBOLT},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_FLAPPLE,
+        .moves = {MOVE_DRAGON_RUSH,MOVE_SEED_BOMB,MOVE_AERIAL_ACE,MOVE_LEECH_SEED},
+        .nature = NATURE_QUIRKY,
+    },
+    {
+        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
+        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
+        .lvl = 50,
+        .species = SPECIES_BAXCALIBUR,
+        .moves = {MOVE_ICICLE_CRASH,MOVE_BRICK_BREAK,MOVE_GLAIVE_RUSH},
         .nature = NATURE_QUIRKY,
     }
 };

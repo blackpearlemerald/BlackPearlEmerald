@@ -9344,8 +9344,8 @@ static const struct TrainerMon sParty_AaronMosh[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 57,
         .species = SPECIES_ABSOL,
-        .heldItem = ITEM_ABSOLITE,
         .moves = {MOVE_SWORDS_DANCE,MOVE_KNOCK_OFF,MOVE_SUCKER_PUNCH,MOVE_SUPERPOWER},
+        .heldItem = ITEM_ABSOLITE,
         .nature = NATURE_QUIRKY,
     }
 };
@@ -15148,6 +15148,8 @@ static const struct TrainerMon sParty_Cindy2[] = {
     }
 };
 
+
+
 static const struct TrainerMon sParty_Anthony2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -15181,6 +15183,14 @@ static const struct TrainerMon sParty_AmyAndLiv1[] = {
     }
 };
 
+
+
+
+
+
+
+
+
 static const struct TrainerMon sParty_Lung[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -15197,6 +15207,8 @@ static const struct TrainerMon sParty_Lung[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
 static const struct TrainerMon sParty_Sawyer1[] = {
     {
@@ -15314,6 +15326,12 @@ static const struct TrainerMon sParty_Lydia2[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
+
+
+
+
 
 static const struct TrainerMon sParty_Trent2[] = {
     {
@@ -15593,6 +15611,8 @@ static const struct TrainerMon sParty_Brooke2[] = {
     }
 };
 
+
+
 static const struct TrainerMon sParty_Bernie2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -15871,6 +15891,8 @@ static const struct TrainerMon sParty_Elliot2[] = {
     }
 };
 
+
+
 static const struct TrainerMon sParty_AmyAndLiv2[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -16006,6 +16028,8 @@ static const struct TrainerMon sParty_Maria2[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
 static const struct TrainerMon sParty_Diana3[] = {
     {
@@ -19238,6 +19262,8 @@ static const struct TrainerMon sParty_Nicolas1[] = {
     }
 };
 
+
+
 static const struct TrainerMon sParty_Robert4[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -19264,6 +19290,8 @@ static const struct TrainerMon sParty_Jenny2[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
 static const struct TrainerMon sParty_Thalia4[] = {
     {
@@ -19410,6 +19438,8 @@ static const struct TrainerMon sParty_Ernest3[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
 static const struct TrainerMon sParty_Jackson5[] = {
     {
@@ -19657,6 +19687,8 @@ static const struct TrainerMon sParty_Thalia5[] = {
     }
 };
 
+
+
 static const struct TrainerMon sParty_Jessica4[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -19673,6 +19705,8 @@ static const struct TrainerMon sParty_Jessica4[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
 static const struct TrainerMon sParty_Cameron4[] = {
     {
@@ -19865,6 +19899,10 @@ static const struct TrainerMon sParty_Fernando5[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
+
+
 
 static const struct TrainerMon sParty_Valerie5[] = {
     {
@@ -20192,6 +20230,8 @@ static const struct TrainerMon sParty_Koji5[] = {
     }
 };
 
+
+
 static const struct TrainerMon sParty_Jessica5[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -20259,6 +20299,8 @@ static const struct TrainerMon sParty_Phillip[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
 static const struct TrainerMon sParty_Naomi[] = {
     {
@@ -20408,6 +20450,8 @@ static const struct TrainerMon sParty_LilaAndRoy3[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
 static const struct TrainerMon sParty_Nicolas4[] = {
     {
@@ -20624,6 +20668,22 @@ static const struct TrainerMon sParty_Steven[] = {
     }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 static const struct TrainerMon sParty_Siebold[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -20658,4 +20718,6 @@ static const struct TrainerMon sParty_Siebold[] = {
         .nature = NATURE_QUIRKY,
     }
 };
+
+
 
