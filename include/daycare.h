@@ -32,14 +32,13 @@ void SetDaycareCompatibilityString(void);
 bool8 NameHasGenderSymbol(const u8 *name, u8 genderRatio);
 void ShowDaycareLevelMenu(void);
 void ChooseSendDaycareMon(void);
-//UPDATE TO 1.8.6 CHANGED THIS BELOW
+
 u16 GetEggSpecies(u16 species);
 u16 GetEggMovesArraySize(void);
 // to support gEggMoves being referenced by pokemon.c
 extern const u16 gEggMoves[];
 
-u8 GetEggMovesBySpecies(u16 species, u16 *eggMoves);
-// CHANGED THIS ABOVE
+u8 GetEggMovesSpecies(u16 species, u16 *eggMoves);
 bool8 SpeciesCanLearnEggMove(u16 species, u16 move);
 
 #endif // GUARD_DAYCARE_H
