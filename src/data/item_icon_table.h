@@ -1005,6 +1005,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_CANDY_JAR] = {gItemIcon_CandyJar, gItemIconPalette_CandyJar},
     [ITEM_TAXI_TICKET] = {gItemIcon_EonTicket, gItemIconPalette_EonTicket},
     [ITEM_POCKET_WATCH] = {gItemIcon_PocketWatch, gItemIconPalette_PocketWatch},
+    [ITEM_EVO_CHARM] = {gItemIcon_FloatStone, gItemIconPalette_FloatStone},
     [ITEM_METAL_ALLOY] =  {gItemIcon_MetalAlloy, gItemIconPalette_MetalAlloy},
     [ITEM_STELLAR_TERA_SHARD] = {gItemIcon_StellarTeraShard, gItemIconPalette_StellarTeraShard},
     [ITEM_JUBILIFE_MUFFIN] = {gItemIcon_JubilifeMuffin, gItemIconPalette_JubilifeMuffin},

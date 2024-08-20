@@ -436,23 +436,22 @@ DewfordTown_Gym_Text_CristianPostBattle:
 
 DewfordTown_Gym_Text_BrawlyIntro:
 	.string "Boom, Waddup?\p"
-	.string "I'm CONNOR!\n"
+	.string "I'm Connor!\n"
 	.string "DEWFORD's GYM LEADER!\p"
+	.string "AKA, CMT.\p"
+	.string "AKA, Connor Money Time.\p"
 	.string "Simply put, I'm the greatest\n"
 	.string "of all time.\p"
 	.string "You want to challenge me?\n"
 	.string "Let me see what you're made of!$"
 
 DewfordTown_Gym_Text_BrawlyDefeat:
-	.string "Whoah, wow! You made a much bigger\n"
-	.string "splash than I expected!\p"
-	.string "You swamped me!\p"
-	.string "Okay, you've got me.\n"
+	.string "Alright champ...\n"
 	.string "Take this GYM BADGE!$"
 
 DewfordTown_Gym_Text_ReceivedKnuckleBadge:
 	.string "{PLAYER} received the KNUCKLE BADGE\n"
-	.string "from CONNOR.$"
+	.string "from CMT.$"
 
 DewfordTown_Gym_Text_KnuckleBadgeInfoTakeThis:
 	.string "The KNUCKLE BADGE makes all POKéMON\n"

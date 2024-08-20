@@ -343,7 +343,9 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         FOOTPRINT(Charmander)
         .levelUpLearnset = sCharmanderLevelUpLearnset,
         .teachableLearnset = sCharmanderTeachableLearnset,
-        .evolutions = EVOLUTION({EVO_LEVEL, 16, SPECIES_CHARMELEON}),
+        //.evolutions = EVOLUTION({EVO_LEVEL, 16, SPECIES_CHARMELEON}),
+        .evolutions = EVOLUTION({EVO_LEVEL, 16, SPECIES_CHARMELEON},
+                                {EVO_LEVEL_AND_EVO_CHARM, 16, SPECIES_CHARMELEON}),
     },
 
     [SPECIES_CHARMELEON] =

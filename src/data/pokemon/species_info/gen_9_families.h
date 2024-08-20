@@ -5727,7 +5727,6 @@ const struct SpeciesInfo gSpeciesInfoGen9[] =
         .iconPalIndex = 0,
         FOOTPRINT(Koraidon)
         .isLegendary = TRUE,
-        .isParadoxForm = TRUE,
         .levelUpLearnset = sKoraidonLevelUpLearnset,
         .teachableLearnset = sKoraidonTeachableLearnset,
     },
@@ -5783,7 +5782,6 @@ const struct SpeciesInfo gSpeciesInfoGen9[] =
         .iconPalIndex = 2,
         FOOTPRINT(Miraidon)
         .isLegendary = TRUE,
-        .isParadoxForm = TRUE,
         .levelUpLearnset = sMiraidonLevelUpLearnset,
         .teachableLearnset = sMiraidonTeachableLearnset,
     },

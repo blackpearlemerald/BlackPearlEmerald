@@ -2406,6 +2406,10 @@ u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc) {
         varToCheck = 5;
         bitToCheck = 5;
         break;
+    case MAPSEC_STEVENS_ROOM:
+        varToCheck = 5;
+        bitToCheck = 6;
+        break;
     default:
         return 0;
     }

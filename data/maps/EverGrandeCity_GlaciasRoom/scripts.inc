@@ -59,25 +59,23 @@ EverGrandeCity_GlaciasRoom_EventScript_Defeated::
 	end
 
 EverGrandeCity_GlaciasRoom_Text_IntroSpeech:
-	.string "Welcome, my name is GLACIA\n"
-	.string "of the ELITE FOUR.\p"
-	.string "I've traveled from afar to HOENN\n"
-	.string "so that I may hone my ice skills.\p"
-	.string "But all I have seen are challenges by\n"
-	.string "weak TRAINERS and their POKéMON.\p"
-	.string "What about you?\p"
-	.string "It would please me to no end if I could\n"
-	.string "go all out against you!$"
+	.string "Greetings challenger.\p"
+	.string "I am Wake of the ELITE FOUR.\p"
+	.string "I extend my congratulations to you\n"
+	.string "for making it this far!\p"
+	.string "Have you experience glory, loss,\n"
+	.string "and maybe some fun on your way here?\p"
+	.string "...\p"
+	.string "It all ends here though!\p"
+	.string "It's time to go back to the truck!\p"
+	.string "I wont hold back!$"
 
 EverGrandeCity_GlaciasRoom_Text_Defeat:
-	.string "You and your POKéMON…\n"
-	.string "How hot your spirits burn!\p"
-	.string "The all-consuming heat overwhelms.\p"
-	.string "It's no surprise that my icy skills\n"
-	.string "failed to harm you.$"
+	.string "Wow, that's crazy.$"
 
 EverGrandeCity_GlaciasRoom_Text_PostBattleSpeech:
-	.string "Advance to the next room.\p"
-	.string "And there, confirm the truly fearsome\n"
-	.string "side of the POKéMON LEAGUE.$"
+	.string "I see you've prepared well,\n"
+	.string "or gotten extremely lucky.\p"
+	.string "You'll need both going forward,\n"
+	.string "the real challenge begins up ahead.$"
 

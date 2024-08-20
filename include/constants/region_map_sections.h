@@ -225,6 +225,7 @@
 #define MAPSEC_TRICK_HOUSE_8                0xDD
 #define MAPSEC_VICTORY_ROAD_2               0xDE
 #define MAPSEC_VICTORY_ROAD_3               0xDF
+#define MAPSEC_STEVENS_ROOM                 0xE0
 
 #define METLOC_SPECIAL_EGG                  0xFD
 #define METLOC_IN_GAME_TRADE                0xFE

@@ -1143,11 +1143,12 @@
 #define ITEM_POKEVIAL 971
 #define ITEM_TAXI_TICKET 972
 #define ITEM_POCKET_WATCH 973
+#define ITEM_EVO_CHARM 974
 
 // HOPO BERRY
 // LEGEND PLATE
 
-#define ITEMS_COUNT 974
+#define ITEMS_COUNT 975
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations
