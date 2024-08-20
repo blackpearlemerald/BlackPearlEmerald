@@ -18536,10 +18536,10 @@ const struct MoveInfo gMovesInfo[MOVES_COUNT_DYNAMAX] =
     {
         .name = COMPOUND_STRING("Order Up"),
         .description = COMPOUND_STRING(
-            "Boosts a user's stats\n"
-            "depending on Tatsugiri."),
-        .effect = EFFECT_PLACEHOLDER, // EFFECT_ORDER_UP
-        .power = 80,
+            "A huge smack with\n"
+            "a large tail."),
+        .effect = EFFECT_HIT, // EFFECT_ORDER_UP
+        .power = 100,
         .type = TYPE_DRAGON,
         .accuracy = 100,
         .pp = 10,

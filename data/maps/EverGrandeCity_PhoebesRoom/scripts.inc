@@ -60,25 +60,21 @@ EverGrandeCity_PhoebesRoom_EventScript_Defeated::
 
 EverGrandeCity_PhoebesRoom_Text_IntroSpeech:
 	.string "Ahahaha!\p"
-	.string "I'm PHOEBE of the ELITE FOUR.\n"
-	.string "I did my training on MT. PYRE.\p"
-	.string "While I trained, I gained the ability\n"
-	.string "to commune with GHOST-type POKéMON.\p"
-	.string "Yes, the bond I developed with POKéMON\n"
-	.string "is extremely tight.\p"
-	.string "So, come on, just try and see if you can\n"
-	.string "even inflict damage on my POKéMON!$"
+	.string "I'm CAPTAIN COLE of the ELITE FOUR!\p"
+	.string "But I am better known as...\n"
+	.string "The founder of the Black Pearl!\p"
+	.string "Remember, not all treasure is silver\n"
+	.string "and gold, mate.\p"
+	.string "The real prize here is the journey and\n"
+	.string "the strength you find within.\p"
+	.string "Let's see if you have what it takes\n"
+	.string "to claim it!$"
 
 EverGrandeCity_PhoebesRoom_Text_Defeat:
-	.string "Oh, darn.\n"
-	.string "I've gone and lost.$"
+	.string "Close your eyes and pretend it's all\n"
+	.string "a bad dream. That's how I get by.$"
 
 EverGrandeCity_PhoebesRoom_Text_PostBattleSpeech:
-	.string "There's a definite bond between you\n"
-	.string "and your POKéMON, too.\p"
-	.string "I didn't recognize it, so it's only\n"
-	.string "natural that I lost.\p"
-	.string "Yup, I'd like to see how far your bond\n"
-	.string "will carry you.\p"
+	.string "Congrats, {PLAYER}, and good luck!\p"
 	.string "Go ahead, move on to the next room.$"
 

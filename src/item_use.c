@@ -692,8 +692,15 @@ static void Task_OpenRegisteredPokeblockCase(u8 taskId)
 
 void ItemUseOutOfBattle_PokemonBoxLink(u8 taskId)
 {
-    sItemUseOnFieldCB = Task_AccessPokemonBoxLink;
-    SetUpItemUseOnFieldCallback(taskId);
+    if (FlagGet(FLAG_ENTERED_ELITE_4) == FALSE)
+    {
+        sItemUseOnFieldCB = Task_AccessPokemonBoxLink;
+        SetUpItemUseOnFieldCallback(taskId);
+    }
+    else
+    {
+        DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
+    }
 }
 
 static void Task_AccessPokemonBoxLink(u8 taskId)
@@ -1572,6 +1579,13 @@ void ItemUseOutOfBattle_PocketWatch(u8 taskId)
     StartWallClock();
     DestroyTask(taskId);
 }
+
+// void ItemUseOutOfBattle_EvolutionCharm(u8 taskId)
+// {
+//     // CODE HERE FOR EVOLUTION CHARM
+//     gItemUseCB = ItemUseCB_EvolutionCharm;
+//     SetUpItemUseCallback(taskId);
+// }
 
 void ItemUseOutOfBattle_Fly(u8 taskId)
 {

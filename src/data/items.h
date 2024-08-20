@@ -14254,6 +14254,21 @@ const struct Item gItemsInfo[] =
         .flingPower = 30,
     },
 
+    [ITEM_EVO_CHARM] =
+    {
+        .name = _("Evo Charm"),
+        .price = 0,
+        .importance = 1,
+        .description = COMPOUND_STRING(
+            "A special charm that\n"
+            "will help overleveled\n"
+            "Pokémon evolve."),
+        .pocket = POCKET_KEY_ITEMS,
+        .type = ITEM_USE_PARTY_MENU,
+        .fieldUseFunc = ItemUseOutOfBattle_EvolutionStone,
+        .flingPower = 30,
+    },
+
     [ITEM_METAL_ALLOY] =
     {
         .name = _("Metal Alloy"),

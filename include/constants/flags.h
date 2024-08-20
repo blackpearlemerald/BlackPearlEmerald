@@ -1263,7 +1263,7 @@
 #define FLAG_UNUSED_0x4BB                                           0x4BB // Unused Flag
 #define FLAG_UNUSED_0x4BC                                           0x4BC // Unused Flag
 #define FLAG_UNUSED_0x4BD                                           0x4BD // Unused Flag
-#define FLAG_UNUSED_0x4BE                                           0x4BE // Unused Flag
+#define FLAG_ENTERED_ELITE_4                                        0x4BE // ENTER E4, REMOVING POCKET PC
 #define FLAG_HIDE_ROUTE121_GRUNTS                                   0x4BF // Unused Flag
 #define FLAG_HIDE_TRICKHOUSE_ENCOUNTER                              0x4C0 // HIDE TRICKHOUSE ENCOUNTER
 #define FLAG_HIDE_OVERWORLD_SNORLAX                                 0x4C1 // HIDE SNORLAX IN PETALBURG
