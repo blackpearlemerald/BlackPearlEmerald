@@ -532,21 +532,28 @@ LittlerootTown_ProfessorBirchsLab_EventScript_GivePokedex::
 
 LittlerootTown_ProfessorBirchsLab_EventScript_MayGivePokeBalls::
 	msgbox LittlerootTown_ProfessorBirchsLab_Text_MayGotPokedexTooTakeThese, MSGBOX_DEFAULT
-	giveitem ITEM_POKE_BALL, 100
-	giveitem ITEM_RARE_CANDY, 100
-	giveitem ITEM_MAX_REPEL, 100
-	giveitem ITEM_POMEG_BERRY, 100
+	call_if_set FLAG_NUZLOCKE, LittlerootTown_ProfessorBirchsLab_EventScript_MayGiveExtra
+	call_if_unset FLAG_NUZLOCKE, LittlerootTown_ProfessorBirchsLab_EventScript_MayGiveBalls
 	call_if_eq VAR_RESULT, FALSE, LittlerootTown_ProfessorBirchsLab_EventScript_MayNoRoomForPokeBalls
 	msgbox LittlerootTown_ProfessorBirchsLab_Text_CatchCutePokemonWithPokeBalls, MSGBOX_DEFAULT
 	setvar VAR_RESULT, 0
 	return
 
-LittlerootTown_ProfessorBirchsLab_EventScript_BrendanGivePokeBalls::
-	msgbox LittlerootTown_ProfessorBirchsLab_Text_BrendanGotPokedexTooTakeThese, MSGBOX_DEFAULT
+LittlerootTown_ProfessorBirchsLab_EventScript_MayGiveExtra::
 	giveitem ITEM_POKE_BALL, 100
 	giveitem ITEM_RARE_CANDY, 100
 	giveitem ITEM_MAX_REPEL, 100
 	giveitem ITEM_POMEG_BERRY, 100
+	return
+
+LittlerootTown_ProfessorBirchsLab_EventScript_MayGiveBalls::
+	giveitem ITEM_POKE_BALL, 10
+	return
+
+LittlerootTown_ProfessorBirchsLab_EventScript_BrendanGivePokeBalls::
+	msgbox LittlerootTown_ProfessorBirchsLab_Text_BrendanGotPokedexTooTakeThese, MSGBOX_DEFAULT
+	call_if_set FLAG_NUZLOCKE, LittlerootTown_ProfessorBirchsLab_EventScript_MayGiveExtra
+	call_if_unset FLAG_NUZLOCKE, LittlerootTown_ProfessorBirchsLab_EventScript_MayGiveBalls
 	call_if_eq VAR_RESULT, FALSE, LittlerootTown_ProfessorBirchsLab_EventScript_BrendanNoRoomForPokeBalls
 	msgbox LittlerootTown_ProfessorBirchsLab_Text_CatchCoolPokemonWithPokeBalls, MSGBOX_DEFAULT
 	setvar VAR_RESULT, 1
@@ -834,16 +841,7 @@ LittlerootTown_ProfessorBirchsLab_Text_OtherRegionsUpgradeToNational:
 	.string "of you help me study POKéMON.\p"
 	.string "Thanks to your help, new facts\n"
 	.string "are coming to light.\p"
-	.string "It appears that in the HOENN region,\n"
-	.string "there are also POKéMON from other\l"
-	.string "regions.\p"
-	.string "It goes to show how rich and varied\n"
-	.string "the natural environments of HOENN\l"
-	.string "happen to be.\p"
-	.string "That's why I think it's necessary for\n"
-	.string "me to upgrade your POKéDEX to\l"
-	.string "the NATIONAL Mode.\p"
-	.string "Here, let me see your POKéDEX units.$"
+	.string "Please, let me see your POKéDEX units.$"
 
 LittlerootTown_ProfessorBirchsLab_Text_MayUpgradeSoCool:
 	.string "CYNTHIA: Eheheh!\p"
@@ -855,16 +853,14 @@ LittlerootTown_ProfessorBirchsLab_Text_MayUpgradeSoCool:
 LittlerootTown_ProfessorBirchsLab_Text_BrendanYouCanThankMe:
 	.string "CYNTHIA: I went out all over HOENN\n"
 	.string "and checked out POKéMON.\p"
-	.string "You can thank me for getting\n"
-	.string "the NATIONAL Mode POKéDEX.\p"
-	.string "Yep, you're lucky, {PLAYER}!$"
+	.string "Surely, I found more than you.$"
 
 LittlerootTown_ProfessorBirchsLab_Text_OkayAllDone:
-	.string "PROF. BIRCH: Okay, all done!$"
+	.string "PROF. BIRCH: That should do it!$"
 
 LittlerootTown_ProfessorBirchsLab_Text_PokedexUpgradedToNational:
-	.string "{PLAYER}'s POKéDEX was upgraded\n"
-	.string "to the NATIONAL Mode!$"
+	.string "{PLAYER} shared POKéDEX data\n"
+	.string "with PROF. BIRCH wirelessly!$"
 
 LittlerootTown_ProfessorBirchsLab_Text_GrassyPatchWaiting2:
 	.string "PROF. BIRCH: But listen.\n"
@@ -873,7 +869,7 @@ LittlerootTown_ProfessorBirchsLab_Text_GrassyPatchWaiting2:
 	.string "There is no end to the road\n"
 	.string "that is POKéMON.\p"
 	.string "Somewhere, there is a grassy patch\n"
-	.string "that's waiting for you!/p"
+	.string "that's waiting for you!\p"
 	.string "That upgraded Pokedex will give you\n"
 	.string "access to new areas with rare Pokemon!$"
 
