@@ -761,7 +761,7 @@ PetalburgCity_Text_FullPartyExplanation:
 
 PetalburgCity_Text_GymSign:
 	.string "PETALBURG CITY POKéMON GYM\n"
-	.string "LEADER: NORMAN\l"
+	.string "LEADER: JORDAN\l"
 	.string "“A man in pursuit of power!”$"
 
 PetalburgCity_Text_CitySign:
@@ -790,4 +790,7 @@ PetalburgCity_Text_ImLookingForTalentedTrainers:
 
 SnorlaxSleep_Text_Petalburg:
 	.string "The wild pokemon is fast asleep...\n"
-	.string "(A special flute might wake it up)$"
+	.string "(A special flute might wake it up)\p"
+	.string "(A familiar voice in your head says)\n"
+	.string "(you should visit the TRICK HOUSE)\l"
+	.string "(located on Route 110.)$"

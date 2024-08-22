@@ -171,7 +171,17 @@ void NewGameInitData(void)
     ResetGabbyAndTy();
     ClearSecretBases();
     ClearBerryTrees();
-    SetMoney(&gSaveBlock1Ptr->money, 9999999);
+
+    //SETTING STARTING MONEY
+    if (nuzlockePrev == TRUE)
+    {
+        SetMoney(&gSaveBlock1Ptr->money, 9999999);
+    }
+    else
+    {
+        SetMoney(&gSaveBlock1Ptr->money, 5000);
+    }
+
     SetCoins(0);
     ResetLinkContestBoolean();
     ResetGameStats();

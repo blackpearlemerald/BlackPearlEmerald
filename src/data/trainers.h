@@ -1917,7 +1917,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT,
-        .party = TRAINER_PARTY(sParty_David),
+        .party = TRAINER_PARTY(sParty_DavidWojo),
     },
 
     [TRAINER_SPENCER] =
@@ -4105,13 +4105,13 @@ const struct Trainer gTrainers[] = {
         .trainerClass = TRAINER_CLASS_CHAMPION,
         .encounterMusic_gender = TRAINER_ENCOUNTER_MUSIC_MALE,
         .trainerPic = TRAINER_PIC_PANTS,
-        .trainerName = _("PANTS"),
+        .trainerName = _("PANTELIS"),
         .items = {},
         .doubleBattle = FALSE,
         .mugshotEnabled = TRUE,
         .mugshotColor = MUGSHOT_COLOR_YELLOW,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT | AI_FLAG_ACE_POKEMON,
-        .party = TRAINER_PARTY(sParty_Pants),
+        .party = TRAINER_PARTY(sParty_Pantelis),
     },
 
     [TRAINER_ANDREW] =

@@ -1048,15 +1048,6 @@ static const struct TrainerMon sParty_Edmond[] = {
         .heldItem = ITEM_IRON_PLATE,
         .moves = {MOVE_ROCK_SLIDE,MOVE_SAND_TOMB,MOVE_CRUNCH},
         .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_TECHNICIAN,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 30,
-        .species = SPECIES_PERSIAN,
-        .moves = {MOVE_FAKE_OUT,MOVE_QUICK_ATTACK,MOVE_COVET,MOVE_SLASH},
-        .nature = NATURE_QUIRKY,
     }
 };
 
@@ -1079,15 +1070,6 @@ static const struct TrainerMon sParty_Ricky1[] = {
         .species = SPECIES_LYCANROC,
         .moves = {MOVE_ACCELEROCK,MOVE_BULLDOZE,MOVE_ROCK_THROW},
         .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_RECKLESS,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 30,
-        .species = SPECIES_BOUFFALANT,
-        .moves = {MOVE_HORN_ATTACK,MOVE_COTTON_GUARD},
-        .nature = NATURE_QUIRKY,
     }
 };
 
@@ -1108,16 +1090,6 @@ static const struct TrainerMon sParty_Hailey[] = {
         .lvl = 30,
         .species = SPECIES_HITMONTOP,
         .moves = {MOVE_FAKE_OUT,MOVE_MACH_PUNCH,MOVE_LOW_KICK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_UNNERVE,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 30,
-        .species = SPECIES_VESPIQUEN,
-        .heldItem = ITEM_LEFTOVERS,
-        .moves = {MOVE_SLASH,MOVE_STRUGGLE_BUG,MOVE_AIR_SLASH},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -1140,15 +1112,6 @@ static const struct TrainerMon sParty_Chandler[] = {
         .species = SPECIES_COMFEY,
         .moves = {MOVE_DRAINING_KISS,MOVE_GIGA_DRAIN},
         .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_TECHNICIAN,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 30,
-        .species = SPECIES_CINCCINO,
-        .moves = {MOVE_TAIL_SLAP,MOVE_BULLET_SEED},
-        .nature = NATURE_QUIRKY,
     }
 };
 
@@ -1170,15 +1133,6 @@ static const struct TrainerMon sParty_Lola1[] = {
         .species = SPECIES_GLACEON,
         .moves = {MOVE_ICY_WIND,MOVE_ICE_SHARD,MOVE_BITE,MOVE_SWIFT},
         .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_SLUSH_RUSH,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 30,
-        .species = SPECIES_SANDSLASH_ALOLAN,
-        .moves = {MOVE_ICICLE_SPEAR,MOVE_METAL_CLAW,MOVE_CRUSH_CLAW},
-        .nature = NATURE_QUIRKY,
     }
 };
 
@@ -1199,16 +1153,6 @@ static const struct TrainerMon sParty_Huey[] = {
         .lvl = 30,
         .species = SPECIES_CRABOMINABLE,
         .moves = {MOVE_BUBBLE_BEAM,MOVE_BRICK_BREAK},
-        .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_AFTERMATH,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 30,
-        .species = SPECIES_STUNKY,
-        .heldItem = ITEM_LEFTOVERS,
-        .moves = {MOVE_VENOSHOCK,MOVE_BITE},
         .nature = NATURE_QUIRKY,
     }
 };
@@ -4089,7 +4033,7 @@ static const struct TrainerMon sParty_Keegan[] = {
     }
 };
 
-static const struct TrainerMon sParty_DavidWojo[] = {
+static const struct TrainerMon sParty_Wojo[] = {
     {
         .ability = ABILITY_SWIFT_SWIM,
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
@@ -6582,7 +6526,7 @@ static const struct TrainerMon sParty_Alice[] = {
     }
 };
 
-static const struct TrainerMon sParty_David[] = {
+static const struct TrainerMon sParty_DavidWojo[] = {
     {
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
@@ -14741,7 +14685,7 @@ static const struct TrainerMon sParty_CD[] = {
     }
 };
 
-static const struct TrainerMon sParty_Pants[] = {
+static const struct TrainerMon sParty_Pantelis[] = {
     {
         .ability = ABILITY_BAD_DREAMS,
         .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),

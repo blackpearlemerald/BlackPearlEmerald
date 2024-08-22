@@ -139,5 +139,7 @@ EverGrandeCity_PokemonLeague_1F_Text_HaventObtainedAllBadges:
 
 EverGrandeCity_PokemonLeague_1F_Text_GoForth:
 	.string "TRAINER! Believe in yourself and your\n"
-	.string "POKéMON, and go forth!$"
+	.string "POKéMON, and go forth!\p"
+	.string "Please be aware! You will be unable\n"
+	.string "to use the Portable PC past this point!$"
 

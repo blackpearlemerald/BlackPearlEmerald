@@ -378,7 +378,7 @@ LavaridgeTown_Gym_1F_Text_FlanneryIntro:
 	.string "Let's just say, you aren't the only\n"
 	.string "trainer who has been hustling...\p"
 	.string "The streets know me as Frodo,\n"
-	.string "but you can call me David.\p"
+	.string "but you can call me DAVID.\p"
 	.string "Real knows real, and I know what\n"
 	.string "I see here today.\p"
 	.string "Good luck buddy, lets see what\n"
@@ -391,7 +391,7 @@ LavaridgeTown_Gym_1F_Text_FlanneryDefeat:
 
 LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge:
 	.string "{PLAYER} received the HEAT BADGE\n"
-	.string "from DavidWojo.$"
+	.string "from DAVID.$"
 
 LavaridgeTown_Gym_1F_Text_ExplainHeatBadgeTakeThis:
 	.string "If you have a HEAT BADGE, all POKéMON\n"
@@ -414,7 +414,7 @@ LavaridgeTown_Gym_1F_Text_ExplainOverheat:
 	.string "for new items and TMs!$"
 
 LavaridgeTown_Gym_1F_Text_RegisteredFlannery:
-	.string "Registered GYM LEADER DavidWojo\n"
+	.string "Registered GYM LEADER DAVID\n"
 	.string "in the POKéNAV.$"
 
 LavaridgeTown_Gym_1F_Text_FlanneryPostBattle:

@@ -212,7 +212,7 @@ SootopolisCity_Gym_1F_Text_GymGuidePostVictory:
 SootopolisCity_Gym_1F_Text_JuanIntro:
 	.string "I'm superior to everyone.\p"
 	.string "Don't you know?\p"
-	.string "Huh, since I guess somehow you don't"
+	.string "Huh, since I guess somehow you don't\n"
 	.string "know... my name is Rea.\p"
 	.string "The rumors are true, I was once so\n"
 	.string "strong, the government had to take\l"

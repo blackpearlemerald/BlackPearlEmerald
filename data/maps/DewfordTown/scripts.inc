@@ -650,8 +650,8 @@ DewfordTown_Text_TownSign:
 
 DewfordTown_Text_GymSign:
 	.string "DEWFORD TOWN POKéMON GYM\n"
-	.string "LEADER: BRAWLY\l"
-	.string "“A big wave in fighting!”$"
+	.string "LEADER: CMT\l"
+	.string "“A big wave in POISON!”$"
 
 DewfordTown_Text_HallSign:
 	.string "DEWFORD HALL\n"
