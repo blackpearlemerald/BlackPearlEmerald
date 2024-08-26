@@ -62,10 +62,10 @@ gTrickHouse_Mechadoll_SamePrice::
 	.string "DELIBIRD$"
 
 gTrickHouse_Mechadoll_60Yen::
-	.string "MOUNT CORONET"
+	.string "MOUNT CORONET$"
 
 gTrickHouse_Mechadoll_55Yen::
-	.string "WHITE OUT CAVES"
+	.string "WHITE OUT CAVES$"
 
 gTrickHouse_Mechadoll_Nothing::
 	.string "WAYWARD CAVE$"

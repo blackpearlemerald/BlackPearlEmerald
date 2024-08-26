@@ -1917,7 +1917,7 @@ const struct Trainer gTrainers[] = {
         .items = {},
         .doubleBattle = FALSE,
         .aiFlags = AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY | AI_FLAG_SMART_MON_CHOICES | AI_FLAG_SMART_SWITCHING | AI_FLAG_OMNISCIENT,
-        .party = TRAINER_PARTY(sParty_DavidWojo),
+        .party = TRAINER_PARTY(sParty_David),
     },
 
     [TRAINER_SPENCER] =

@@ -326,11 +326,11 @@ RivalsHouse_1F_Text_OhYoureTheNewNeighbor:
 	.string "… … … … … … … … …\p"
 	.string "Oh, you're {PLAYER}{KUN}, our new next-door\n"
 	.string "neighbor! Hi!\p"
-	.string "We have a {STR_VAR_1} about the same\n"
+	.string "We have a daughter about the same\n"
 	.string "age as you.\p"
-	.string "Our {STR_VAR_1} was excited about making\n"
+	.string "Our daughter was excited about making\n"
 	.string "a new friend.\p"
-	.string "Our {STR_VAR_1} is upstairs, I think.$"
+	.string "Our daughter is upstairs, I think.$"
 
 RivalsHouse_1F_Text_LikeChildLikeFather:
 	.string "Like child, like father.\p"

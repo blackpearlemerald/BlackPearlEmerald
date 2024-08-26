@@ -911,19 +911,20 @@ LittlerootTown_EventScript_GiveRunningShoes::
 	giveitem ITEM_POKEMON_BOX_LINK
 	giveitem ITEM_TAXI_TICKET
 
-	call_if_set FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveCandyJar
+	giveitem ITEM_CANDY_JAR
+	giveitem ITEM_EXP_SHARE
 
 	giveitem ITEM_OLD_ROD
 	giveitem ITEM_ESCAPE_ROPE
 	giveitem ITEM_POCKET_WATCH
 	setflag FLAG_RECEIVED_OLD_ROD
+	setflag FLAG_V1PATCH
 	msgbox LittlerootTown_Text_ComeHomeIfAnythingHappens, MSGBOX_DEFAULT
 	closemessage
 	delay 30
 	return
 
 LittlerootTown_EventScript_GiveCandyJar::
-	giveitem ITEM_CANDY_JAR
 	return
 
 LittlerootTown_Text_OurNewHomeLetsGoInside:

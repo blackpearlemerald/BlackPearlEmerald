@@ -25,6 +25,7 @@ VerdanturfTown_Mart_Pokemart_Basic:
 	.2byte ITEM_RARE_CANDY
 	.2byte ITEM_POMEG_BERRY
 	.2byte ITEM_MAX_REPEL
+	.2byte ITEM_MAX_POTION
 	.2byte ITEM_FIRE_STONE
 	.2byte ITEM_WATER_STONE
 	.2byte ITEM_THUNDER_STONE
@@ -64,6 +65,7 @@ VerdanturfTown_Mart_Pokemart_Expanded3:
 	.2byte ITEM_RARE_CANDY
 	.2byte ITEM_POMEG_BERRY
 	.2byte ITEM_MAX_REPEL
+	.2byte ITEM_MAX_POTION
 	.2byte ITEM_FIRE_STONE
 	.2byte ITEM_WATER_STONE
 	.2byte ITEM_THUNDER_STONE
@@ -112,6 +114,7 @@ VerdanturfTown_Mart_Pokemart_Expanded4:
 	.2byte ITEM_RARE_CANDY
 	.2byte ITEM_POMEG_BERRY
 	.2byte ITEM_MAX_REPEL
+	.2byte ITEM_MAX_POTION
 	.2byte ITEM_FIRE_STONE
 	.2byte ITEM_WATER_STONE
 	.2byte ITEM_THUNDER_STONE
