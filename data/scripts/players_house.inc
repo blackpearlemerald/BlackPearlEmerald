@@ -306,6 +306,7 @@ PlayersHouse_1F_Movement_MomReturnToSeatFemale:
 PlayersHouse_1F_EventScript_Mom::
 	lock
 	faceplayer
+	goto_if_unset FLAG_V1PATCH, PlayersHouse_1F_EventScript_V1PATCH
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_MAY, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_set FLAG_HAS_MATCH_CALL, PlayersHouse_1F_EventScript_TryRegisterMom
@@ -313,6 +314,13 @@ PlayersHouse_1F_EventScript_Mom::
 	goto_if_eq VAR_TEMP_1, 1, PlayersHouse_1F_EventScript_SeeYouHoney
 	goto_if_eq VAR_LITTLEROOT_INTRO_STATE, 7, PlayersHouse_1F_EventScript_DidYouMeetProfBirch
 	msgbox PlayersHouse_1F_Text_IsntItNiceInHere, MSGBOX_DEFAULT
+	release
+	end
+
+PlayersHouse_1F_EventScript_V1PATCH::
+	giveitem ITEM_CANDY_JAR
+	giveitem ITEM_EXP_SHARE
+	setflag FLAG_V1PATCH
 	release
 	end
 

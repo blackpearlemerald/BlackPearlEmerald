@@ -1221,8 +1221,8 @@
 #define FLAG_ITEM_SAFARI_ZONE_SOUTH_EAST_BIG_PEARL                  0x492
 
 #define FLAG_NUZLOCKE                                               0x493 // NUZLOCKE MODE
-#define FLAG_UNUSED_0x494                                           0x494 // Unused Flag
-#define FLAG_UNUSED_0x495                                           0x495 // Unused Flag
+#define FLAG_EXP_SHARE_FLAG                                         0x494 // EXP SHARE
+#define FLAG_V1PATCH                                                0x495 // USED FOR V0.9.9.3 to v1.0 PATCH!
 #define FLAG_UNUSED_0x496                                           0x496 // Unused Flag
 #define FLAG_UNUSED_0x497                                           0x497 // Unused Flag
 #define FLAG_UNUSED_0x498                                           0x498 // Unused Flag

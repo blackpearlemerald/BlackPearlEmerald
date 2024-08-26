@@ -96,7 +96,9 @@ EverGrandeCity_ChampionsRoom_EventScript_BirchArrivesExitForHoF::
 
 
 
-
+	waitmovement 0
+	delay 20
+	
 	applymovement LOCALID_WALLACE, EverGrandeCity_ChampionsRoom_Movement_WallaceExit
 	applymovement OBJ_EVENT_ID_PLAYER, EverGrandeCity_ChampionsRoom_Movement_PlayerExit
 	waitmovement 0

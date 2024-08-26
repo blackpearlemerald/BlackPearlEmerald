@@ -56,6 +56,7 @@ RustboroCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_THUNDER_STONE
 	.2byte ITEM_LEAF_STONE
 	.2byte ITEM_ORAN_BERRY
+	.2byte ITEM_RAWST_BERRY
 	.2byte ITEM_PECHA_BERRY
 	.2byte ITEM_ASPEAR_BERRY
 	.2byte ITEM_CHERI_BERRY

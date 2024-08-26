@@ -42,6 +42,7 @@ DewfordTown_EventScript_ChoosePetalburg::
 DewfordTown_EventScript_ChooseSlateport::
 	msgbox DewfordTown_Text_SlateportWereSettingSail, MSGBOX_DEFAULT
 	closemessage
+	setflag FLAG_VISITED_SLATEPORT_CITY
 	goto DewfordTown_EventScript_SailToSlateport
 	release
 	end
