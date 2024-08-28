@@ -96,9 +96,7 @@ EverGrandeCity_ChampionsRoom_EventScript_BirchArrivesExitForHoF::
 
 
 
-	waitmovement 0
-	delay 20
-	
+
 	applymovement LOCALID_WALLACE, EverGrandeCity_ChampionsRoom_Movement_WallaceExit
 	applymovement OBJ_EVENT_ID_PLAYER, EverGrandeCity_ChampionsRoom_Movement_PlayerExit
 	waitmovement 0
@@ -119,6 +117,7 @@ EverGrandeCity_ChampionsRoom_EventScript_BirchArrivesExitForHoF::
 	clearflag FLAG_HIDE_OVERWORLD_LATIAS
 	clearflag FLAG_HIDE_OVERWORLD_ROTOM
 	clearflag FLAG_HIDE_OVERWORLD_NULL
+	clearflag FLAG_HIDE_MEW
 	goto_if_eq VAR_PREE4_LEGENDARY, 1, EverGrandeCity_ChampionsRoom_EventScript_HideArticuno
 	goto_if_eq VAR_PREE4_LEGENDARY, 2, EverGrandeCity_ChampionsRoom_EventScript_HideMoltres
 	goto_if_eq VAR_PREE4_LEGENDARY, 3, EverGrandeCity_ChampionsRoom_EventScript_HideEntei
@@ -132,61 +131,84 @@ EverGrandeCity_ChampionsRoom_EventScript_BirchArrivesExitForHoF::
 	goto_if_eq VAR_PREE4_LEGENDARY, 11, EverGrandeCity_ChampionsRoom_EventScript_HideLatias
 	goto_if_eq VAR_PREE4_LEGENDARY, 12, EverGrandeCity_ChampionsRoom_EventScript_HideRotom
 	goto_if_eq VAR_PREE4_LEGENDARY, 13, EverGrandeCity_ChampionsRoom_EventScript_HideNull
-	warp MAP_EVER_GRANDE_CITY_HALL_OF_FAME, 7, 16
-	waitstate
-	releaseall
+	goto_if_eq VAR_PREE4_LEGENDARY, 14, EverGrandeCity_ChampionsRoom_EventScript_HideMew
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
 	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideArticuno::
     setflag FLAG_HIDE_OVERWORLD_ARTICUNO
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideMoltres::
     setflag FLAG_HIDE_OVERWORLD_MOLTRES
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideEntei::
     setflag FLAG_HIDE_OVERWORLD_ENTEI
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideCelebi::
     setflag FLAG_HIDE_OVERWORLD_CELEBI
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideZapdos::
     setflag FLAG_HIDE_OVERWORLD_ZAPDOS
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideRaikou::
     setflag FLAG_HIDE_OVERWORLD_RAIKOU
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideSuicune::
     setflag FLAG_HIDE_OVERWORLD_SUICUNE
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideJirachi::
     setflag FLAG_HIDE_OVERWORLD_JIRACHI
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideSpiritomb::
     setflag FLAG_HIDE_OVERWORLD_SPIRITOMB
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideLatios::
     setflag FLAG_HIDE_OVERWORLD_LATIOS
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideLatias::
     setflag FLAG_HIDE_OVERWORLD_LATIAS
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideRotom::
     setflag FLAG_HIDE_OVERWORLD_ROTOM
-    return
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
 
 EverGrandeCity_ChampionsRoom_EventScript_HideNull::
     setflag FLAG_HIDE_OVERWORLD_NULL
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
+
+EverGrandeCity_ChampionsRoom_EventScript_HideMew::
+    setflag FLAG_HIDE_MEW
+	goto EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
+	end
+
+EverGrandeCity_ChampionsRoom_EventScript_HOFWarp::
+    warp MAP_EVER_GRANDE_CITY_HALL_OF_FAME, 7, 16
+	waitstate
+	releaseall
     return
 
 EverGrandeCity_ChampionsRoom_EventScript_MayCongratulations::

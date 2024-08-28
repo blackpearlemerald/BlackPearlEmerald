@@ -395,7 +395,7 @@ LavaridgeTown_Gym_1F_Text_ReceivedHeatBadge:
 
 LavaridgeTown_Gym_1F_Text_ExplainHeatBadgeTakeThis:
 	.string "If you have a HEAT BADGE, all POKéMON\n"
-	.string "up to Level 50, even those you get in\l"
+	.string "up to Level 51, even those you get in\l"
 	.string "trades from other people, will obey\l"
 	.string "you completely.\p"
 	.string "And, it lets POKéMON use the HM move\n"
@@ -411,7 +411,7 @@ LavaridgeTown_Gym_1F_Text_ExplainOverheat:
 	.string "on your journey!\p" 
 	.string "One last thing...\p"  
 	.string "Go check the Lavaridge Mart\n" 
-	.string "for new items and TMs!$"
+	.string "for new items!$"
 
 LavaridgeTown_Gym_1F_Text_RegisteredFlannery:
 	.string "Registered GYM LEADER DAVID\n"
@@ -419,7 +419,7 @@ LavaridgeTown_Gym_1F_Text_RegisteredFlannery:
 
 LavaridgeTown_Gym_1F_Text_FlanneryPostBattle:
 	.string "Please check the Lavaridge Mart for\n" 
-	.string "new items and TMs!$"
+	.string "new items!$"
 
 LavaridgeTown_Gym_1F_Text_GymStatue:
 	.string "LAVARIDGE TOWN POKéMON GYM$"

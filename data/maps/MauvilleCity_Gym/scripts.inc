@@ -424,7 +424,7 @@ MauvilleCity_Gym_Text_ExplainShockWave:
 	.string "on your journey!\p" 
 	.string "One last thing...\p"  
 	.string "Please check the Mauville Mart for\n" 
-	.string "new items and TMs!$"
+	.string "new items!$"
 
 MauvilleCity_Gym_Text_RegisteredWattson:
 	.string "Registered GYM LEADER DHill\n"
@@ -432,7 +432,7 @@ MauvilleCity_Gym_Text_RegisteredWattson:
 
 MauvilleCity_Gym_Text_WattsonPostBattle:
 	.string "Please check the Mauville Mart for\n" 
-	.string "new items and TMs!$"
+	.string "new items!$"
 
 MauvilleCity_Gym_Text_WattsonGoForthAndEndeavor:
 	.string "Wahahahah!\n"

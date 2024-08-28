@@ -222,6 +222,7 @@ SlateportCity_Harbor_EventScript_Lilycove::
 	end
 
 SlateportCity_Harbor_EventScript_BattleFrontier::
+	goto_if_unset FLAG_SYS_GAME_CLEAR, LilycoveCity_Harbor_EventScript_ComeBackLater2
 	msgbox SlateportCity_Harbor_Text_BattleFrontierItIs, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, SlateportCity_Harbor_EventScript_ChooseNewDestination
 	call SlateportCity_Harbor_EventScript_BoardFerry
