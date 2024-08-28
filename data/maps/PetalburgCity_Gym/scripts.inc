@@ -1419,7 +1419,7 @@ PetalburgCity_Gym_Text_ExplainFacade:
 	.string "on your journey!\p" 
 	.string "One last thing...\p"  
 	.string "Please check the Petalburg Mart for\n" 
-	.string "new items and TMs!$"
+	.string "new items!$"
 
 PetalburgCity_Gym_Text_DadHappyAndSad:
 	.string "DAD: As the GYM LEADER, I can't\n"

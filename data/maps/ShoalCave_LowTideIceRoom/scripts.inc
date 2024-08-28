@@ -31,6 +31,7 @@ Global_EventScript_HideLegendariesPreE4::
 	setflag FLAG_HIDE_OVERWORLD_LATIAS
 	setflag FLAG_HIDE_OVERWORLD_ROTOM
 	setflag FLAG_HIDE_OVERWORLD_NULL
+	setflag FLAG_HIDE_MEW
 
 	fadescreenswapbuffers FADE_FROM_BLACK
 	release

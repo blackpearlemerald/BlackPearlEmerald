@@ -81,6 +81,7 @@ LilycoveCity_Harbor_EventScript_GoToSlateport::
 	end
 
 LilycoveCity_Harbor_EventScript_GoToBattleFrontier::
+	goto_if_unset FLAG_SYS_GAME_CLEAR, LilycoveCity_Harbor_EventScript_ComeBackLater2
 	msgbox LilycoveCity_Harbor_Text_BattleFrontierItIs, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, LilycoveCity_Harbor_EventScript_FerryDestinationChangeMind
 	call LilycoveCity_Harbor_EventScript_BoardFerry
@@ -133,11 +134,21 @@ LilycoveCity_Harbor_EventScript_ComeBackLater::
 	release
 	end
 
+LilycoveCity_Harbor_EventScript_ComeBackLater2::
+	msgbox LilycoveCity_Harbor_Text_ComeBackLater2, MSGBOX_DEFAULT
+	release
+	end
+
 LilycoveCity_Harbor_Text_ComeBackLater:
 	.string "Hello! Welcome to the Black Pearl Ferry!\p"
 	.string "I'm sorry, but the Ferry service is only\n"
 	.string "available to trainers with 8 gym badges.\p"
 	.string "Come back another time!$"
+
+LilycoveCity_Harbor_Text_ComeBackLater2:
+	.string "I'm sorry, but the Ferry service is only\n"
+	.string "available to Champions!\p"
+	.string "Come back after beating the Elite4!$"
 
 LilycoveCity_Harbor_EventScript_OldSeaMapFirstTimeCheck::
 	msgbox LilycoveCity_Harbor_Text_OldSeaMap, MSGBOX_YESNO

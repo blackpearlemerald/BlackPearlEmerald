@@ -1257,16 +1257,6 @@ static const struct TrainerMon sParty_Dwayne[] = {
         .species = SPECIES_URSARING,
         .moves = {MOVE_PLAY_ROUGH,MOVE_SLASH,MOVE_PAYBACK,MOVE_DIG},
         .nature = NATURE_QUIRKY,
-    },
-    {
-        .ability = ABILITY_WONDER_GUARD,
-        .iv = TRAINER_PARTY_IVS(15, 15, 15, 15, 15, 15),
-        .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
-        .lvl = 30,
-        .species = SPECIES_SHEDINJA,
-        .heldItem = ITEM_HEAVY_DUTY_BOOTS,
-        .moves = {MOVE_SHADOW_CLAW,MOVE_X_SCISSOR,MOVE_WILL_O_WISP,MOVE_CONFUSE_RAY},
-        .nature = NATURE_QUIRKY,
     }
 };
 
@@ -4882,7 +4872,7 @@ static const struct TrainerMon sParty_AaronE4[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 48,
         .species = SPECIES_HERACROSS,
-        .moves = {MOVE_DRAGONBREATH,MOVE_FLAMETHROWER,MOVE_CRUNCH,MOVE_EARTHQUAKE},
+        .moves = {MOVE_EARTHQUAKE,MOVE_ROCK_SLIDE,MOVE_FACADE,MOVE_CLOSE_COMBAT},
         .nature = NATURE_QUIRKY,
     },
     {
@@ -14826,7 +14816,7 @@ static const struct TrainerMon sParty_CaptainCole[] = {
         .ev = TRAINER_PARTY_EVS(0, 0, 0, 0, 0, 0),
         .lvl = 90,
         .species = SPECIES_ALTARIA,
-        .heldItem = ITEM_FOCUS_BAND,
+        .heldItem = ITEM_FOCUS_SASH,
         .moves = {MOVE_DRAGON_DANCE,MOVE_OUTRAGE,MOVE_BRAVE_BIRD,MOVE_EARTHQUAKE},
         .nature = NATURE_QUIRKY,
     },

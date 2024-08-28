@@ -179,7 +179,7 @@ void NewGameInitData(void)
     }
     else
     {
-        SetMoney(&gSaveBlock1Ptr->money, 5000);
+        SetMoney(&gSaveBlock1Ptr->money, 10000);
     }
 
     SetCoins(0);

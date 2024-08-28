@@ -242,11 +242,11 @@ RustboroCity_Gym_Text_ExplainRockTomb:
 	.string "on your journey!\p" 
 	.string "One last thing...\p"  
 	.string "Please check the Rustboro Mart for\n" 
-	.string "new items and TMs!$"
+	.string "new items!$"
 
 RustboroCity_Gym_Text_RoxannePostBattle:
 	.string "Please check the Rustboro Mart for\n" 
-	.string "new items and TMs!$"
+	.string "new items!$"
 
 RustboroCity_Gym_Text_GymStatue:
 	.string "RUSTBORO CITY POKéMON GYM$"
