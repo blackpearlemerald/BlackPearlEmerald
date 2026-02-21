@@ -92,6 +92,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/SabataLunar"><img src="https://avatars.githubusercontent.com/u/26584469?v=4?s=100" width="100px;" alt="SabataLunar"/><br /><sub><b>SabataLunar</b></sub></a><br /><a href="#design-SabataLunar" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/PacFire"><img src="https://avatars.githubusercontent.com/u/108960850?v=4?s=100" width="100px;" alt="PacFire"/><br /><sub><b>PacFire</b></sub></a><br /><a href="#design-PacFire" title="Design">🎨</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/BlackPearlEmerald"><img src="https://avatars.githubusercontent.com/u/328855025?v=4?s=100" width="100px;" alt="BlackPearlEmerald"/><br /><sub><b>BlackPearlEmerald</b></sub></a><br /><a href="https://github.com/rh-hideout/pokeemerald-expansion/commits?author=BlackPearlEmerald" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/LogicalLlama"><img src="https://avatars.githubusercontent.com/u/248230900?v=4?s=100" width="100px;" alt="LogicalLlama"/><br /><sub><b>LogicalLlama</b></sub></a><br /><a href="https://github.com/rh-hideout/pokeemerald-expansion/issues?q=author%3ALogicalLlama" title="Bug reports">🐛</a></td>
     </tr>
   </tbody>
   <tfoot>
