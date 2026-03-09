@@ -561,3 +561,9 @@ void Script_SetStatus1(struct ScriptContext *ctx)
         SetMonData(&gPlayerParty[slot], MON_DATA_STATUS, &status1);
     }
 }
+
+// BPE: Give the starter mon to the first party slot (used by the Birch Case UI)
+u32 BirchCase_GiveMonParameterized(u16 species, u8 level, u16 item, u8 ball, u8 nature, u8 abilityNum, u8 gender, u8 *evs, u8 *ivs, u16 *moves, bool8 ggMaxFactor, u8 teraType, bool8 isShinyExpansion)
+{
+    return ScriptGiveMonParameterized(0, 0, species, level, item, ball, nature, abilityNum, gender, evs, ivs, moves, isShinyExpansion, ggMaxFactor, teraType);
+}

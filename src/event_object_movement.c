@@ -507,6 +507,10 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Lugia,                 OBJ_EVENT_PAL_TAG_LUGIA},
     {gObjectEventPal_RubySapphireBrendan,   OBJ_EVENT_PAL_TAG_RS_BRENDAN},
     {gObjectEventPal_RubySapphireMay,       OBJ_EVENT_PAL_TAG_RS_MAY},
+    // BPE custom NPC palettes
+    {gObjectEventPalette_Wake,              OBJ_EVENT_PAL_TAG_WAKE},
+    {gObjectEventPalette_Cynthia,           OBJ_EVENT_PAL_TAG_CYNTHIA},
+    {gObjectEventPalette_Pants,             OBJ_EVENT_PAL_TAG_PANTS},
 #if OW_FOLLOWERS_POKEBALLS
     {gObjectEventPal_MasterBall,            OBJ_EVENT_PAL_TAG_BALL_MASTER},
     {gObjectEventPal_UltraBall,             OBJ_EVENT_PAL_TAG_BALL_ULTRA},

@@ -3621,11 +3621,8 @@ static u32 IncreaseStatUpScoreInternal(u32 battlerAtk, u32 battlerDef, u32 statI
     // if (Random() % 5 == 0)
     //     return;
 
-    if (!shouldSetUp) 
-    {
-        ADJUST_SCORE_PTR(-10);
-        return;
-    }
+    if (!shouldSetUp)
+        return NO_INCREASE;
 
     // Don't increase stat if AI is at +4
     if (gBattleMons[battlerAtk].statStages[statId] >= MAX_STAT_STAGE - 2)

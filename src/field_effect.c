@@ -3968,7 +3968,7 @@ bool8 FieldEffectCmd_loadfadedpaldaynight_callnative(u8** script, u32* val)
 void FieldEffectScript_LoadFadedPaletteDayNight(u8** script)
 {
     struct SpritePalette* palette = (struct SpritePalette*)FieldEffectScript_ReadWord(script);
-    LoadSpritePaletteDayNight(palette);
+    LoadPaletteDayNight(palette->data, OBJ_PLTT_ID(AllocSpritePalette(palette->tag)), PLTT_SIZE_4BPP);
     UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
     (*script) += 4;
 }
@@ -3976,7 +3976,7 @@ void FieldEffectScript_LoadFadedPaletteDayNight(u8** script)
 void FieldEffectScript_LoadPaletteDayNight(u8** script)
 {
     struct SpritePalette* palette = (struct SpritePalette*)FieldEffectScript_ReadWord(script);
-    LoadSpritePaletteDayNight(palette);
+    LoadPaletteDayNight(palette->data, OBJ_PLTT_ID(AllocSpritePalette(palette->tag)), PLTT_SIZE_4BPP);
     (*script) += 4;
 }
 

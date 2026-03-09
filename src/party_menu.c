@@ -229,6 +229,9 @@ struct PartyMenuBox
     u8 statusSpriteId;
 };
 
+// BPE custom strings
+const u8 gText_WontHaveEffectNuzlocke[] = _("Can't do that in Nuzlocke mode!{PAUSE_UNTIL_PRESS}");
+
 // EWRAM vars
 static EWRAM_DATA struct PartyMenuInternal *sPartyMenuInternal = NULL;
 EWRAM_DATA struct PartyMenu gPartyMenu = {0};

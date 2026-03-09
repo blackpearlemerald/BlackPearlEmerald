@@ -5634,30 +5634,18 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
 	if (FlagGet(FLAG_EGG_MOVE_TUTOR))
 	{
 		// Species to pull egg moves from.
+		const u16 *eggMoveLearnset;
 		species = GetEggSpecies(species);
-
-		k = GetEggMovesArraySize() - 1;
-
-		// Here, j is being used as the offset into gEggMoves.
-		for (i = 0; i < k; i++)
-		{
-			if (gEggMoves[i] == species + EGG_MOVES_SPECIES_OFFSET)
-			{
-				j = i + 1;
-				break;
-			}
-		}
+		eggMoveLearnset = GetSpeciesEggMoves(species);
 
 		// Validates the move not being learned already, as normal.
-		for (i = 0; i < EGG_MOVES_ARRAY_COUNT; i++)
+		for (i = 0; eggMoveLearnset[i] != MOVE_UNAVAILABLE; i++)
 		{
-			if (gEggMoves[j + i] > EGG_MOVES_SPECIES_OFFSET)
-				break;
-			for (k = 0; k < MAX_MON_MOVES && learnedMoves[k] != gEggMoves[j + i]; k++)
-						;
+			for (k = 0; k < MAX_MON_MOVES && learnedMoves[k] != eggMoveLearnset[i]; k++)
+				;
 
 			if (k == MAX_MON_MOVES)
-				moves[numMoves++] = gEggMoves[j + i];
+				moves[numMoves++] = eggMoveLearnset[i];
 		}
 
 		return numMoves;
@@ -5743,30 +5731,18 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
 	if (FlagGet(FLAG_EGG_MOVE_TUTOR))
 	{
 		// Species to pull egg moves from.
+		const u16 *eggMoveLearnset;
 		species = GetEggSpecies(species);
-
-		k = GetEggMovesArraySize() - 1;
-
-		// Here, j is being used as the offset into gEggMoves.
-		for (i = 0; i < k; i++)
-		{
-			if (gEggMoves[i] == species + EGG_MOVES_SPECIES_OFFSET)
-			{
-				j = i + 1;
-				break;
-			}
-		}
+		eggMoveLearnset = GetSpeciesEggMoves(species);
 
 		// Validates the move not being learned already, as normal.
-		for (i = 0; i < EGG_MOVES_ARRAY_COUNT; i++)
+		for (i = 0; eggMoveLearnset[i] != MOVE_UNAVAILABLE; i++)
 		{
-			if (gEggMoves[j + i] > EGG_MOVES_SPECIES_OFFSET)
-				break;
-			for (k = 0; k < numMoves && learnedMoves[k] != gEggMoves[j + i]; k++)
-						;
+			for (k = 0; k < numMoves && learnedMoves[k] != eggMoveLearnset[i]; k++)
+				;
 
 			if (k == numMoves)
-				moves[numMoves++] = gEggMoves[j + i];
+				moves[numMoves++] = eggMoveLearnset[i];
 		}
 
 		return numMoves;

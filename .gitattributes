@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Build-critical files must always use LF (WSL build tools require this)
+charmap.txt text eol=lf
+*.s text eol=lf
+*.inc text eol=lf

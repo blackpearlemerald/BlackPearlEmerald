@@ -242,11 +242,15 @@
 #define OBJ_EVENT_GFX_HOOH                       238
 #define OBJ_EVENT_GFX_POKE_BALL                  239
 #define OBJ_EVENT_GFX_OW_MON                     240
+// BPE custom NPC sprites
+#define OBJ_EVENT_GFX_WAKE                       241
+#define OBJ_EVENT_GFX_CYNTHIA                    242
+#define OBJ_EVENT_GFX_PANTS                      243
 
 // NOTE: The maximum amount of object events has been expanded from 255 to 65535.
 // Since dynamic graphics ids still require at least 16 free values, the actual limit
 // is 65519, but even considering follower Pokémon, this should be more than enough :)
-#define NUM_OBJ_EVENT_GFX                        241
+#define NUM_OBJ_EVENT_GFX                        244
 
 
 // These are dynamic object gfx ids.
@@ -377,6 +381,10 @@
 #define OBJ_EVENT_PAL_TAG_RS_BRENDAN              0x1122
 #define OBJ_EVENT_PAL_TAG_RS_MAY                  0x1123
 #define OBJ_EVENT_PAL_TAG_DYNAMIC                 0x1124
+// BPE custom NPC palette tags
+#define OBJ_EVENT_PAL_TAG_WAKE                    0x1125
+#define OBJ_EVENT_PAL_TAG_CYNTHIA                 0x1126
+#define OBJ_EVENT_PAL_TAG_PANTS                   0x1127
 
 #if OW_FOLLOWERS_POKEBALLS
 // Vanilla

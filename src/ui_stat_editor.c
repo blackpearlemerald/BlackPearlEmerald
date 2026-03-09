@@ -1,5 +1,6 @@
 #include "global.h"
 #include "ui_stat_editor.h"
+#include "pokemon.h"
 #include "strings.h"
 #include "bg.h"
 #include "data.h"
@@ -40,10 +41,13 @@
 #include "field_effect.h"
 #include "field_screen_effect.h"
 
+// BPE custom strings
+const u8 gText_StatEditor[] = _("STAT EDITOR");
+
 /*
- * 
+ *
  */
- 
+
 //==========DEFINES==========//
 struct StatEditorResources
 {
@@ -724,7 +728,7 @@ static void PrintMonStats()
     }
 
     nature = GetNature(ReturnPartyMon());
-    StringCopy(gStringVar2, gNatureNamePointers[nature]);
+    StringCopy(gStringVar2, gNaturesInfo[nature].name);
     AddTextPrinterParameterized4(WINDOW_3, FONT_SMALL_NARROW, 4, 50, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar2);
 
     StringCopy(gStringVar2, gAbilitiesInfo[gSpeciesInfo[sStatEditorDataPtr->speciesID].abilities[GetMonData(ReturnPartyMon(), MON_DATA_ABILITY_NUM)]].name);
