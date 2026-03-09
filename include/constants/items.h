@@ -1144,11 +1144,12 @@
 #define ITEM_TAXI_TICKET 972
 #define ITEM_POCKET_WATCH 973
 #define ITEM_EVO_CHARM 974
+#define ITEM_STRANGE_BALL 975 // PLA ball used when Pokémon is transferred from Legends: Arceus
 
 // HOPO BERRY
 // LEGEND PLATE
 
-#define ITEMS_COUNT 975
+#define ITEMS_COUNT 976
 #define ITEM_FIELD_ARROW ITEMS_COUNT
 
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations
@@ -1225,6 +1226,7 @@
 #define EFFECT_ITEM_REVIVE                  9
 #define EFFECT_ITEM_RESTORE_PP              10
 #define EFFECT_ITEM_INCREASE_ALL_STATS      11
+#define EFFECT_ITEM_USE_POKE_FLUTE          12
 
 // Enigma Berry dummy constant
 #define EFFECT_ITEM_ENIGMA_BERRY_EREADER    1

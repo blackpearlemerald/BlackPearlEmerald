@@ -49,7 +49,6 @@ SINGLE_BATTLE_TEST("Razor Wind needs a charging turn")
 
 SINGLE_BATTLE_TEST("Razor Wind doesn't need to charge with Power Herb")
 {
-    KNOWN_FAILING;
     GIVEN {
         PLAYER(SPECIES_WOBBUFFET) { Item(ITEM_POWER_HERB); }
         OPPONENT(SPECIES_WOBBUFFET);
@@ -69,7 +68,6 @@ SINGLE_BATTLE_TEST("Razor Wind doesn't need to charge with Power Herb")
         MESSAGE("Wobbuffet became fully charged due to its Power Herb!");
         if (B_UPDATED_MOVE_DATA < GEN_5)
             MESSAGE("Wobbuffet used Razor Wind!");
-        // For some reason, this breaks with and only with Razor Wind...
         ANIMATION(ANIM_TYPE_MOVE, MOVE_RAZOR_WIND, player);
         HP_BAR(opponent);
     }
@@ -208,29 +206,29 @@ SINGLE_BATTLE_TEST("Solar Beam and Solar Blade can be used instantly in Sunlight
         TURN { SKIP_TURN(player); }
     } SCENE {
         if (move1 == MOVE_SUNNY_DAY) {
-            NOT MESSAGE("Wobbuffet took in sunlight!");
+            NOT MESSAGE("Wobbuffet absorbed light!");
         } else {
             if (move2 == MOVE_SOLAR_BEAM) {
                 if (B_UPDATED_MOVE_DATA >= GEN_5)
                 {
                     MESSAGE("Wobbuffet used Solar Beam!");
-                    MESSAGE("Wobbuffet took in sunlight!");
+                    MESSAGE("Wobbuffet absorbed light!");
                     ANIMATION(ANIM_TYPE_MOVE, move2, player);
                 } else {
                     NOT MESSAGE("Wobbuffet used Solar Beam!");
                     ANIMATION(ANIM_TYPE_MOVE, move2, player);
-                    MESSAGE("Wobbuffet took in sunlight!");
+                    MESSAGE("Wobbuffet absorbed light!");
                 }
                 MESSAGE("Wobbuffet used Solar Beam!");
             } else {
                 if (B_UPDATED_MOVE_DATA >= GEN_5) {
                     MESSAGE("Wobbuffet used Solar Blade!");
-                    MESSAGE("Wobbuffet took in sunlight!");
+                    MESSAGE("Wobbuffet absorbed light!");
                     ANIMATION(ANIM_TYPE_MOVE, move2, player);
                 } else {
                     NOT MESSAGE("Wobbuffet used Solar Blade!");
                     ANIMATION(ANIM_TYPE_MOVE, move2, player);
-                    MESSAGE("Wobbuffet took in sunlight!");
+                    MESSAGE("Wobbuffet absorbed light!");
                 }
                 MESSAGE("Wobbuffet used Solar Blade!");
             }

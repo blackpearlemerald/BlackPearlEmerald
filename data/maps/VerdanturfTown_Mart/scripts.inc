@@ -4,154 +4,27 @@ VerdanturfTown_Mart_MapScripts::
 VerdanturfTown_Mart_EventScript_Clerk::
 	lock
 	faceplayer
-	message gText_Beans_HowMayIServeYou
+	message gText_HowMayIServeYou
 	waitmessage
-	goto_if_set FLAG_BADGE04_GET, VerdanturfTown_Mart_EventScript_PokemartExpanded4
-	goto_if_set FLAG_BADGE03_GET, VerdanturfTown_Mart_EventScript_PokemartExpanded3
-	goto VerdanturfTown_Mart_EventScript_PokemartBasic
-	end
-
-VerdanturfTown_Mart_EventScript_PokemartBasic::
-	pokemart VerdanturfTown_Mart_Pokemart_Basic
+	pokemart VerdanturfTown_Mart_Pokemart
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end
 
 	.align 2
-VerdanturfTown_Mart_Pokemart_Basic:
-	.2byte ITEM_POKE_BALL
+VerdanturfTown_Mart_Pokemart:
 	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_MAX_POTION
-	.2byte ITEM_FIRE_STONE
-	.2byte ITEM_WATER_STONE
-	.2byte ITEM_THUNDER_STONE
-	.2byte ITEM_LEAF_STONE
-	.2byte ITEM_MOON_STONE
-	.2byte ITEM_SUN_STONE
-	.2byte ITEM_SHINY_STONE
-	.2byte ITEM_DUSK_STONE
-	.2byte ITEM_DAWN_STONE
-	.2byte ITEM_ICE_STONE
-	.2byte ITEM_LINKING_CORD
-	.2byte ITEM_SWEET_APPLE
-	.2byte ITEM_TART_APPLE
-	.2byte ITEM_SYRUPY_APPLE
-	.2byte ITEM_UPGRADE
-	.2byte ITEM_CRACKED_POT
-	.2byte ITEM_CHIPPED_POT
-	.2byte ITEM_UNREMARKABLE_TEACUP
-	.2byte ITEM_MASTERPIECE_TEACUP
-	.2byte ITEM_PRISM_SCALE
-	.2byte ITEM_KINGS_ROCK
-	.2byte ITEM_NONE
-	release
-	end
-
-VerdanturfTown_Mart_EventScript_PokemartExpanded3::
-	pokemart VerdanturfTown_Mart_Pokemart_Expanded3
-	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-	.align 2
-VerdanturfTown_Mart_Pokemart_Expanded3:
-	.2byte ITEM_POKE_BALL
-	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_MAX_POTION
-	.2byte ITEM_FIRE_STONE
-	.2byte ITEM_WATER_STONE
-	.2byte ITEM_THUNDER_STONE
-	.2byte ITEM_LEAF_STONE
-	.2byte ITEM_MOON_STONE
-	.2byte ITEM_SUN_STONE
-	.2byte ITEM_SHINY_STONE
-	.2byte ITEM_DUSK_STONE
-	.2byte ITEM_DAWN_STONE
-	.2byte ITEM_ICE_STONE
-	.2byte ITEM_LINKING_CORD
-	.2byte ITEM_SWEET_APPLE
-	.2byte ITEM_TART_APPLE
-	.2byte ITEM_SYRUPY_APPLE
-	.2byte ITEM_UPGRADE
-	.2byte ITEM_CRACKED_POT
-	.2byte ITEM_CHIPPED_POT
-	.2byte ITEM_UNREMARKABLE_TEACUP
-	.2byte ITEM_MASTERPIECE_TEACUP
-	.2byte ITEM_DUBIOUS_DISC
-	.2byte ITEM_PROTECTOR
-	.2byte ITEM_ELECTIRIZER
-	.2byte ITEM_MAGMARIZER
-	.2byte ITEM_REAPER_CLOTH
-	.2byte ITEM_DRAGON_SCALE
-	.2byte ITEM_METAL_COAT
-	.2byte ITEM_DEEPSEATOOTH
-	.2byte ITEM_DEEPSEASCALE
-	.2byte ITEM_PRISM_SCALE
-	.2byte ITEM_KINGS_ROCK
-	.2byte ITEM_NONE
-	release
-	end
-
-VerdanturfTown_Mart_EventScript_PokemartExpanded4::
-	pokemart VerdanturfTown_Mart_Pokemart_Expanded4
-	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-	.align 2
-VerdanturfTown_Mart_Pokemart_Expanded4:
-	.2byte ITEM_POKE_BALL
-	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_MAX_POTION
-	.2byte ITEM_FIRE_STONE
-	.2byte ITEM_WATER_STONE
-	.2byte ITEM_THUNDER_STONE
-	.2byte ITEM_LEAF_STONE
-	.2byte ITEM_MOON_STONE
-	.2byte ITEM_SUN_STONE
-	.2byte ITEM_SHINY_STONE
-	.2byte ITEM_DUSK_STONE
-	.2byte ITEM_DAWN_STONE
-	.2byte ITEM_ICE_STONE
-	.2byte ITEM_LINKING_CORD
-	.2byte ITEM_SWEET_APPLE
-	.2byte ITEM_TART_APPLE
-	.2byte ITEM_SYRUPY_APPLE
-	.2byte ITEM_UPGRADE
-	.2byte ITEM_CRACKED_POT
-	.2byte ITEM_CHIPPED_POT
-	.2byte ITEM_UNREMARKABLE_TEACUP
-	.2byte ITEM_MASTERPIECE_TEACUP
-	.2byte ITEM_DUBIOUS_DISC
-	.2byte ITEM_PROTECTOR
-	.2byte ITEM_ELECTIRIZER
-	.2byte ITEM_MAGMARIZER
-	.2byte ITEM_REAPER_CLOTH
-	.2byte ITEM_DRAGON_SCALE
-	.2byte ITEM_METAL_COAT
-	.2byte ITEM_DEEPSEATOOTH
-	.2byte ITEM_DEEPSEASCALE
-	.2byte ITEM_PRISM_SCALE
-	.2byte ITEM_KINGS_ROCK
-	.2byte ITEM_AUSPICIOUS_ARMOR
-	.2byte ITEM_MALICIOUS_ARMOR
-	.2byte ITEM_PEAT_BLOCK
-	.2byte ITEM_METAL_ALLOY
-	.2byte ITEM_NONE
-	release
-	end
+	.2byte ITEM_NEST_BALL
+	.2byte ITEM_SUPER_POTION
+	.2byte ITEM_ANTIDOTE
+	.2byte ITEM_PARALYZE_HEAL
+	.2byte ITEM_AWAKENING
+	.2byte ITEM_BURN_HEAL
+	.2byte ITEM_ICE_HEAL
+	.2byte ITEM_REPEL
+	.2byte ITEM_X_SP_ATK
+	.2byte ITEM_FLUFFY_TAIL
+	pokemartlistend
 
 VerdanturfTown_Mart_EventScript_Boy::
 	msgbox VerdanturfTown_Mart_Text_XSpecialIsCrucial, MSGBOX_NPC
@@ -182,3 +55,4 @@ VerdanturfTown_Mart_Text_NestBallOnWeakenedPokemon:
 	.string "weakened POKéMON.\p"
 	.string "VERDANTURF is the only place you can\n"
 	.string "buy it.$"
+

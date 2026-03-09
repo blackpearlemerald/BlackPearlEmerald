@@ -6,52 +6,23 @@ LavaridgeTown_Mart_EventScript_Clerk::
 	faceplayer
 	message gText_HowMayIServeYou
 	waitmessage
-	goto_if_unset FLAG_DEFEATED_LAVARIDGE_GYM, LavaridgeCity_Mart_EventScript_PokemartBasic
-	goto_if_set FLAG_DEFEATED_LAVARIDGE_GYM, LavaridgeCity_Mart_EventScript_PokemartExpanded
-	end
-
-LavaridgeCity_Mart_EventScript_PokemartBasic::
-	pokemart MauvilleCity_Mart_Pokemart_Basic
+	pokemart LavaridgeTown_Mart_Pokemart
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end
 
 	.align 2
-LavaridgeCity_Mart_Pokemart_Basic:
-	.2byte ITEM_POKE_BALL
+LavaridgeTown_Mart_Pokemart:
 	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_NONE
-	release
-	end
-
-LavaridgeCity_Mart_EventScript_PokemartExpanded::
-	pokemart LavaridgeCity_Mart_Pokemart_Expanded
-	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-	.align 2
-LavaridgeCity_Mart_Pokemart_Expanded:
-	.2byte ITEM_POKE_BALL
-	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_AUSPICIOUS_ARMOR
-	.2byte ITEM_MALICIOUS_ARMOR
-	.2byte ITEM_PEAT_BLOCK
-	.2byte ITEM_METAL_ALLOY
-	.2byte ITEM_SITRUS_BERRY
-	.2byte ITEM_CUSTAP_BERRY
-	.2byte ITEM_LUM_BERRY
-	.2byte ITEM_NONE
-	release
-	end
+	.2byte ITEM_SUPER_POTION
+	.2byte ITEM_ANTIDOTE
+	.2byte ITEM_PARALYZE_HEAL
+	.2byte ITEM_AWAKENING
+	.2byte ITEM_BURN_HEAL
+	.2byte ITEM_REVIVE
+	.2byte ITEM_SUPER_REPEL
+	.2byte ITEM_X_SPEED
+	pokemartlistend
 
 LavaridgeTown_Mart_EventScript_ExpertM::
 	msgbox LavaridgeTown_Mart_Text_XSpeedFirstStrike, MSGBOX_NPC

@@ -25,32 +25,18 @@ LilycoveCity_DepartmentStore_2F_EventScript_ClerkLeft::
 
 	.align 2
 LilycoveCity_DepartmentStore_2F_Pokemart1:
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_SITRUS_BERRY
-	.2byte ITEM_CUSTAP_BERRY
-	.2byte ITEM_LUM_BERRY
-	.2byte ITEM_CHESTO_BERRY
-	.2byte ITEM_OCCA_BERRY
-	.2byte ITEM_PASSHO_BERRY
-	.2byte ITEM_WACAN_BERRY
-	.2byte ITEM_RINDO_BERRY
-	.2byte ITEM_YACHE_BERRY
-	.2byte ITEM_CHOPLE_BERRY
-	.2byte ITEM_KEBIA_BERRY
-	.2byte ITEM_SHUCA_BERRY
-	.2byte ITEM_COBA_BERRY
-	.2byte ITEM_PAYAPA_BERRY
-	.2byte ITEM_TANGA_BERRY
-	.2byte ITEM_CHARTI_BERRY
-	.2byte ITEM_KASIB_BERRY
-	.2byte ITEM_HABAN_BERRY
-	.2byte ITEM_COLBUR_BERRY
-	.2byte ITEM_BABIRI_BERRY
-	.2byte ITEM_CHILAN_BERRY
-	.2byte ITEM_ROSELI_BERRY
-	.2byte ITEM_NONE
-	release
-	end
+	.2byte ITEM_POKE_BALL
+	.2byte ITEM_GREAT_BALL
+	.2byte ITEM_ULTRA_BALL
+	.2byte ITEM_ESCAPE_ROPE
+	.2byte ITEM_FULL_HEAL
+	.2byte ITEM_ANTIDOTE
+	.2byte ITEM_PARALYZE_HEAL
+	.2byte ITEM_BURN_HEAL
+	.2byte ITEM_ICE_HEAL
+	.2byte ITEM_AWAKENING
+	.2byte ITEM_FLUFFY_TAIL
+	pokemartlistend
 
 LilycoveCity_DepartmentStore_2F_EventScript_ClerkRight::
 	lock
@@ -64,32 +50,17 @@ LilycoveCity_DepartmentStore_2F_EventScript_ClerkRight::
 
 	.align 2
 LilycoveCity_DepartmentStore_2F_Pokemart2:
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_SITRUS_BERRY
-	.2byte ITEM_CUSTAP_BERRY
-	.2byte ITEM_LUM_BERRY
-	.2byte ITEM_CHESTO_BERRY
-	.2byte ITEM_OCCA_BERRY
-	.2byte ITEM_PASSHO_BERRY
-	.2byte ITEM_WACAN_BERRY
-	.2byte ITEM_RINDO_BERRY
-	.2byte ITEM_YACHE_BERRY
-	.2byte ITEM_CHOPLE_BERRY
-	.2byte ITEM_KEBIA_BERRY
-	.2byte ITEM_SHUCA_BERRY
-	.2byte ITEM_COBA_BERRY
-	.2byte ITEM_PAYAPA_BERRY
-	.2byte ITEM_TANGA_BERRY
-	.2byte ITEM_CHARTI_BERRY
-	.2byte ITEM_KASIB_BERRY
-	.2byte ITEM_HABAN_BERRY
-	.2byte ITEM_COLBUR_BERRY
-	.2byte ITEM_BABIRI_BERRY
-	.2byte ITEM_CHILAN_BERRY
-	.2byte ITEM_ROSELI_BERRY
-	.2byte ITEM_NONE
-	release
-	end
+	.2byte ITEM_POTION
+	.2byte ITEM_SUPER_POTION
+	.2byte ITEM_HYPER_POTION
+	.2byte ITEM_MAX_POTION
+	.2byte ITEM_REVIVE
+	.2byte ITEM_REPEL
+	.2byte ITEM_SUPER_REPEL
+	.2byte ITEM_MAX_REPEL
+	.2byte ITEM_WAVE_MAIL
+	.2byte ITEM_MECH_MAIL
+	pokemartlistend
 
 LilycoveCity_DepartmentStore_2F_Text_LearnToUseItemsProperly:
 	.string "Learn to use items properly.\n"

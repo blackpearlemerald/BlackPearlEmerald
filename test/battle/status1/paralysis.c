@@ -1,14 +1,16 @@
 #include "global.h"
 #include "test/battle.h"
 
-SINGLE_BATTLE_TEST("Paralysis reduces Speed by 50%")
+SINGLE_BATTLE_TEST("Paralysis reduces Speed by 50% (Gen 7+) or 75% (Gen 1-6)")
 {
-    u16 playerSpeed;
+    u32 playerSpeed, genConfig;
     bool32 playerFirst;
-    PARAMETRIZE { playerSpeed = 98; playerFirst = FALSE; }
-    PARAMETRIZE { playerSpeed = 102; playerFirst = TRUE; }
+    PARAMETRIZE { playerSpeed = 196; playerFirst = FALSE; genConfig = GEN_6; }
+    PARAMETRIZE { playerSpeed = 204; playerFirst = TRUE;  genConfig = GEN_6; }
+    PARAMETRIZE { playerSpeed = 98;  playerFirst = FALSE; genConfig = GEN_7; }
+    PARAMETRIZE { playerSpeed = 102; playerFirst = TRUE;  genConfig = GEN_7; }
     GIVEN {
-        ASSUME(B_PARALYSIS_SPEED >= GEN_7);
+        WITH_CONFIG(GEN_CONFIG_PARALYSIS_SPEED, genConfig);
         PLAYER(SPECIES_WOBBUFFET) { Status1(STATUS1_PARALYSIS); Speed(playerSpeed); }
         OPPONENT(SPECIES_WOBBUFFET) { Speed(50); }
     } WHEN {
@@ -17,14 +19,14 @@ SINGLE_BATTLE_TEST("Paralysis reduces Speed by 50%")
         if (playerFirst) {
             ONE_OF {
                 MESSAGE("Wobbuffet used Celebrate!");
-                MESSAGE("Wobbuffet is paralyzed! It can't move!");
+                MESSAGE("Wobbuffet is paralyzed, so it may be unable to move!");
             }
-            MESSAGE("Foe Wobbuffet used Celebrate!");
+            MESSAGE("The opposing Wobbuffet used Celebrate!");
         } else {
-            MESSAGE("Foe Wobbuffet used Celebrate!");
+            MESSAGE("The opposing Wobbuffet used Celebrate!");
             ONE_OF {
                 MESSAGE("Wobbuffet used Celebrate!");
-                MESSAGE("Wobbuffet is paralyzed! It can't move!");
+                MESSAGE("Wobbuffet is paralyzed, so it may be unable to move!");
             }
         }
     }
@@ -39,7 +41,7 @@ SINGLE_BATTLE_TEST("Paralysis has a 25% chance of skipping the turn")
     } WHEN {
         TURN { MOVE(player, MOVE_CELEBRATE); }
     } SCENE {
-        MESSAGE("Wobbuffet is paralyzed! It can't move!");
+        MESSAGE("Wobbuffet couldn't move because it's paralyzed!");
     }
 }
 

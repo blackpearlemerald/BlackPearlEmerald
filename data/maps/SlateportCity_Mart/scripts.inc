@@ -6,56 +6,23 @@ SlateportCity_Mart_EventScript_Clerk::
 	faceplayer
 	message gText_HowMayIServeYou
 	waitmessage
-	goto_if_unset FLAG_DEFEATED_DEWFORD_GYM, SlateportCity_Mart_EventScript_PokemartBasic
-	goto_if_set FLAG_DEFEATED_DEWFORD_GYM, SlateportCity_Mart_EventScript_PokemartExpanded
-	end
-
-SlateportCity_Mart_EventScript_PokemartBasic::
-	pokemart SlateportCity_Mart_Pokemart_Basic
+	pokemart SlateportCity_Mart_Pokemart
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end
 
 	.align 2
-SlateportCity_Mart_Pokemart_Basic:
+SlateportCity_Mart_Pokemart:
 	.2byte ITEM_POKE_BALL
 	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_NONE
-	release
-	end
-
-SlateportCity_Mart_EventScript_PokemartExpanded::
-	pokemart SlateportCity_Mart_Pokemart_Expanded
-	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-	.align 2
-SlateportCity_Mart_Pokemart_Expanded:
-	.2byte ITEM_POKE_BALL
-	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_MOON_STONE
-	.2byte ITEM_SUN_STONE
-	.2byte ITEM_SHINY_STONE
-	.2byte ITEM_DUSK_STONE
-	.2byte ITEM_DAWN_STONE
-	.2byte ITEM_ICE_STONE
-	.2byte ITEM_SITRUS_BERRY
-	.2byte ITEM_CUSTAP_BERRY
-	.2byte ITEM_LUM_BERRY
-	.2byte ITEM_PRISM_SCALE
-	.2byte ITEM_KINGS_ROCK
-	.2byte ITEM_NONE
-	release
-	end
+	.2byte ITEM_POTION
+	.2byte ITEM_SUPER_POTION
+	.2byte ITEM_ANTIDOTE
+	.2byte ITEM_PARALYZE_HEAL
+	.2byte ITEM_ESCAPE_ROPE
+	.2byte ITEM_REPEL
+	.2byte ITEM_HARBOR_MAIL
+	pokemartlistend
 
 SlateportCity_Mart_EventScript_BlackBelt::
 	msgbox SlateportCity_Mart_Text_SomeItemsOnlyAtMart, MSGBOX_NPC

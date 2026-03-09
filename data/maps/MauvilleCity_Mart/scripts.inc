@@ -6,75 +6,26 @@ MauvilleCity_Mart_EventScript_Clerk::
 	faceplayer
 	message gText_HowMayIServeYou
 	waitmessage
-	goto_if_unset FLAG_DEFEATED_MAUVILLE_GYM, MauvilleCity_Mart_EventScript_PokemartBasic
-	goto_if_set FLAG_DEFEATED_MAUVILLE_GYM, MauvilleCity_Mart_EventScript_PokemartExpanded
-	end
-
-MauvilleCity_Mart_EventScript_PokemartBasic::
-	pokemart MauvilleCity_Mart_Pokemart_Basic
+	pokemart MauvilleCity_Mart_Pokemart
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end
 
 	.align 2
-MauvilleCity_Mart_Pokemart_Basic:
+MauvilleCity_Mart_Pokemart:
 	.2byte ITEM_POKE_BALL
 	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_NONE
-	release
-	end
-
-MauvilleCity_Mart_EventScript_PokemartExpanded::
-	pokemart MauvilleCity_Mart_Pokemart_Expanded
-	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-	.align 2
-MauvilleCity_Mart_Pokemart_Expanded:
-	.2byte ITEM_POKE_BALL
-	.2byte ITEM_GREAT_BALL
-	.2byte ITEM_ULTRA_BALL
-	.2byte ITEM_RARE_CANDY
-	.2byte ITEM_POMEG_BERRY
-	.2byte ITEM_MAX_REPEL
-	.2byte ITEM_DUBIOUS_DISC
-	.2byte ITEM_PROTECTOR
-	.2byte ITEM_ELECTIRIZER
-	.2byte ITEM_MAGMARIZER
-	.2byte ITEM_REAPER_CLOTH
-	.2byte ITEM_DRAGON_SCALE
-	.2byte ITEM_METAL_COAT
-	.2byte ITEM_DEEPSEATOOTH
-	.2byte ITEM_DEEPSEASCALE
-	.2byte ITEM_SITRUS_BERRY
-	.2byte ITEM_CUSTAP_BERRY
-	.2byte ITEM_LUM_BERRY
-	.2byte ITEM_OCCA_BERRY
-	.2byte ITEM_PASSHO_BERRY
-	.2byte ITEM_WACAN_BERRY
-	.2byte ITEM_RINDO_BERRY
-	.2byte ITEM_YACHE_BERRY
-	.2byte ITEM_CHOPLE_BERRY
-	.2byte ITEM_KEBIA_BERRY
-	.2byte ITEM_SHUCA_BERRY
-	.2byte ITEM_COBA_BERRY
-	.2byte ITEM_PAYAPA_BERRY
-	.2byte ITEM_TANGA_BERRY
-	.2byte ITEM_CHARTI_BERRY
-	.2byte ITEM_KASIB_BERRY
-	.2byte ITEM_HABAN_BERRY
-	.2byte ITEM_COLBUR_BERRY
-	.2byte ITEM_BABIRI_BERRY
-	.2byte ITEM_CHILAN_BERRY
-	.2byte ITEM_ROSELI_BERRY
-	.2byte ITEM_NONE
-	release
-	end
+	.2byte ITEM_SUPER_POTION
+	.2byte ITEM_ANTIDOTE
+	.2byte ITEM_PARALYZE_HEAL
+	.2byte ITEM_AWAKENING
+	.2byte ITEM_X_SPEED
+	.2byte ITEM_X_ATTACK
+	.2byte ITEM_X_DEFENSE
+	.2byte ITEM_GUARD_SPEC
+	.2byte ITEM_DIRE_HIT
+	.2byte ITEM_X_ACCURACY
+	pokemartlistend
 
 MauvilleCity_Mart_EventScript_ExpertM::
 	msgbox MauvilleCity_Mart_Text_ItemsToTemporarilyElevateStats, MSGBOX_NPC
