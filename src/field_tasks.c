@@ -20,7 +20,6 @@
 #include "constants/items.h"
 #include "constants/songs.h"
 #include "constants/metatile_labels.h"
-#include "day_night.h"
 
 /*  This file handles some persistent tasks that run in the overworld.
  *  - Task_RunTimeBasedEvents: Periodically updates local time and RTC events. Also triggers ambient cries.
@@ -170,8 +169,6 @@ static void RunTimeBasedEvents(s16 *data)
 static void Task_RunTimeBasedEvents(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
-
-    ProcessImmediateTimeEvents();
 
     if (!ArePlayerFieldControlsLocked())
     {

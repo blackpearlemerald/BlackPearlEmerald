@@ -34,7 +34,6 @@
 #include "constants/metatile_behaviors.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
-#include "day_night.h"
 #include "constants/map_types.h"
 
 #define subsprite_table(ptr) {.subsprites = ptr, .subspriteCount = (sizeof ptr) / (sizeof(struct Subsprite))}
@@ -3968,7 +3967,7 @@ bool8 FieldEffectCmd_loadfadedpaldaynight_callnative(u8** script, u32* val)
 void FieldEffectScript_LoadFadedPaletteDayNight(u8** script)
 {
     struct SpritePalette* palette = (struct SpritePalette*)FieldEffectScript_ReadWord(script);
-    LoadPaletteDayNight(palette->data, OBJ_PLTT_ID(AllocSpritePalette(palette->tag)), PLTT_SIZE_4BPP);
+    LoadSpritePalette(palette);
     UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
     (*script) += 4;
 }
@@ -3976,7 +3975,7 @@ void FieldEffectScript_LoadFadedPaletteDayNight(u8** script)
 void FieldEffectScript_LoadPaletteDayNight(u8** script)
 {
     struct SpritePalette* palette = (struct SpritePalette*)FieldEffectScript_ReadWord(script);
-    LoadPaletteDayNight(palette->data, OBJ_PLTT_ID(AllocSpritePalette(palette->tag)), PLTT_SIZE_4BPP);
+    LoadSpritePalette(palette);
     (*script) += 4;
 }
 
