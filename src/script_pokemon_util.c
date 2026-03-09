@@ -7,6 +7,7 @@
 #include "decompress.h"
 #include "event_data.h"
 #include "international_string_util.h"
+#include "item.h"
 #include "link.h"
 #include "link_rfu.h"
 #include "main.h"
@@ -31,59 +32,17 @@ static void CB2_ReturnFromChooseHalfParty(void);
 static void CB2_ReturnFromChooseBattleFrontierParty(void);
 static void HealPlayerBoxes(void);
 
-// void HealPlayerParty(void)
-// {
-//     u32 i;
-//     for (i = 0; i < gPlayerPartyCount; i++) {
-//         if (GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0) {
-//             if (!FlagGet(FLAG_NUZLOCKE) || !FlagGet(FLAG_SYS_POKEDEX_GET)) {
-//                 bool8 dead = FALSE;
-//                 SetMonData(&gPlayerParty[i], MON_DATA_DEAD, &dead);
-//             }
-//             else {
-//                 continue;
-//             }
-//         }
-//         HealPokemon(&gPlayerParty[i]);
-//     }
-//     // don't want to heal in boxes for nuzlocke
-//     // if (OW_PC_HEAL >= GEN_8)
-//     //     HealPlayerBoxes();
-// }
-
-// static void HealPlayerBoxes(void)
-// {
-//     int boxId, boxPosition;
-//     struct BoxPokemon *boxMon;
-
-//     for (boxId = 0; boxId < TOTAL_BOXES_COUNT; boxId++)
-//     {
-//         for (boxPosition = 0; boxPosition < IN_BOX_COUNT; boxPosition++)
-//         {
-//             boxMon = &gPokemonStoragePtr->boxes[boxId][boxPosition];
-//             //if (GetBoxMonData(boxMon, MON_DATA_SANITY_HAS_SPECIES))
-//             //    HealBoxPokemon(boxMon);
-//         }
-//     }
-// }
-
 void HealPlayerParty(void)
 {
     u32 i;
-    for (i = 0; i < gPlayerPartyCount; i++) {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0) {
-            if (!FlagGet(FLAG_NUZLOCKE) || !FlagGet(FLAG_SYS_POKEDEX_GET)) {
-                bool8 dead = FALSE;
-                SetMonData(&gPlayerParty[i], MON_DATA_DEAD, &dead);
-            }
-            else {
-                continue;
-            }
-        }
+    for (i = 0; i < gPlayerPartyCount; i++)
         HealPokemon(&gPlayerParty[i]);
-        if (OW_PC_HEAL <= GEN_8)
-            HealPlayerBoxes();
-    }
+    if (OW_PC_HEAL >= GEN_8)
+        HealPlayerBoxes();
+
+    // Recharge Tera Orb, if possible.
+    if (B_FLAG_TERA_ORB_CHARGED != 0 && CheckBagHasItem(ITEM_TERA_ORB, 1))
+        FlagSet(B_FLAG_TERA_ORB_CHARGED);
 }
 
 static void HealPlayerBoxes(void)
@@ -96,8 +55,8 @@ static void HealPlayerBoxes(void)
         for (boxPosition = 0; boxPosition < IN_BOX_COUNT; boxPosition++)
         {
             boxMon = &gPokemonStoragePtr->boxes[boxId][boxPosition];
-            // if (GetBoxMonData(boxMon, MON_DATA_SANITY_HAS_SPECIES))
-                // HealBoxPokemon(boxMon);
+            if (GetBoxMonData(boxMon, MON_DATA_SANITY_HAS_SPECIES))
+                HealBoxPokemon(boxMon);
         }
     }
 }
@@ -277,146 +236,6 @@ void ReducePlayerPartyToSelectedMons(void)
     CalculatePlayerPartyCount();
 }
 
-u32 BirchCase_GiveMonParameterized(u16 species, u8 level, u16 item, u8 ball, u8 nature, u8 abilityNum, u8 gender, u8* evs, u8* ivs, u16* moves, bool8 ggMaxFactor, u8 teraType, bool8 isShinyExpansion)
-{
-    //
-    //  This function is created by Lunos and Ghoulslash as part of the custom givemon script in Expansion. I had to port it and rename it so that - 
-    //  I could have it working in pokeemerald and Expansion with #ifdefs without clashing with any changes Expansion makes to the old one
-    u16 nationalDexNum;
-    int sentToPc;
-    struct Pokemon mon;
-    u32 i;
-    u8 genderRatio = gSpeciesInfo[species].genderRatio;
-    u16 targetSpecies;
-
-    // check whether to use a specific nature or a random one
-    if (nature >= NUM_NATURES)
-    {
-#ifdef POKEMON_EXPANSION
-        if (OW_SYNCHRONIZE_NATURE >= GEN_6
-            && (gSpeciesInfo[species].eggGroups[0] == EGG_GROUP_NO_EGGS_DISCOVERED || OW_SYNCHRONIZE_NATURE == GEN_7))
-            nature = PickWildMonNature();
-        else
-            nature = Random() % NUM_NATURES;
-#else
-        if ((gSpeciesInfo[species].eggGroups[0] == EGG_GROUP_NO_EGGS_DISCOVERED))
-            nature = PickWildMonNature();
-        else
-            nature = Random() % NUM_NATURES;
-#endif
-    }
-
-    // create a Pokémon with basic data
-    if ((gender == MON_MALE && genderRatio != MON_FEMALE && genderRatio != MON_GENDERLESS)
-        || (gender == MON_FEMALE && genderRatio != MON_MALE && genderRatio != MON_GENDERLESS)
-        || (gender == MON_GENDERLESS && genderRatio == MON_GENDERLESS))
-        CreateMonWithGenderNatureLetter(&mon, species, level, 32, gender, nature, 0);
-    else
-        CreateMonWithNature(&mon, species, level, 32, nature);
-
-#ifdef POKEMON_EXPANSION // the Expansion shiny code doesn't work in vanilla
-    // shininess
-    if (P_FLAG_FORCE_SHINY != 0 && FlagGet(P_FLAG_FORCE_SHINY))
-        isShinyExpansion = TRUE;
-    else if (P_FLAG_FORCE_NO_SHINY != 0 && FlagGet(P_FLAG_FORCE_NO_SHINY))
-        isShinyExpansion = FALSE;
-    SetMonData(&mon, MON_DATA_IS_SHINY, &isShinyExpansion);
-
-    // gigantamax factor
-    SetMonData(&mon, MON_DATA_GIGANTAMAX_FACTOR, &ggMaxFactor);
-
-    // tera type
-    if (teraType >= NUMBER_OF_MON_TYPES)
-        teraType = gSpeciesInfo[species].types[0];
-    SetMonData(&mon, MON_DATA_TERA_TYPE, &teraType);
-#endif
-
-    // EV and IV
-    for (i = 0; i < NUM_STATS; i++)
-    {
-        // EV
-        if (evs[i] <= MAX_PER_STAT_EVS)
-            SetMonData(&mon, MON_DATA_HP_EV + i, &evs[i]);
-
-        // IV
-        if (ivs[i] <= MAX_PER_STAT_IVS)
-            SetMonData(&mon, MON_DATA_HP_IV + i, &ivs[i]);
-    }
-    CalculateMonStats(&mon);
-
-    // moves
-    for (i = 0; i < MAX_MON_MOVES; i++)
-    {
-        if (moves[i] == MOVE_NONE || moves[i] >= MOVES_COUNT)
-            continue;
-        SetMonMoveSlot(&mon, moves[i], i);
-    }
-
-    // ability
-    if (abilityNum == NUM_ABILITY_PERSONALITY)
-    {
-        abilityNum = GetMonData(&mon, MON_DATA_PERSONALITY) & 1;
-    }
-    else if (abilityNum > NUM_NORMAL_ABILITY_SLOTS || GetAbilityBySpecies(species, abilityNum) == ABILITY_NONE)
-    {
-        do {
-            abilityNum = Random() % NUM_ABILITY_SLOTS; // includes hidden abilities
-        } while (GetAbilityBySpecies(species, abilityNum) == ABILITY_NONE);
-    }
-    SetMonData(&mon, MON_DATA_ABILITY_NUM, &abilityNum);
-
-    // ball
-    if (ball >= POKEBALL_COUNT)
-        ball = ITEM_POKE_BALL;
-    SetMonData(&mon, MON_DATA_POKEBALL, &ball);
-
-    // held item
-    SetMonData(&mon, MON_DATA_HELD_ITEM, &item);
-
-#ifdef POKEMON_EXPANSION
-    // In case a mon with a form changing item is given. Eg: SPECIES_ARCEUS_NORMAL with ITEM_SPLASH_PLATE will transform into SPECIES_ARCEUS_WATER upon gifted.
-    targetSpecies = GetFormChangeTargetSpecies(&mon, FORM_CHANGE_ITEM_HOLD, 0);
-    if (targetSpecies != SPECIES_NONE)
-        SetMonData(&mon, MON_DATA_SPECIES, &targetSpecies);
-#endif
-
-    // assign OT name and gender
-    SetMonData(&mon, MON_DATA_OT_NAME, gSaveBlock2Ptr->playerName);
-    SetMonData(&mon, MON_DATA_OT_GENDER, &gSaveBlock2Ptr->playerGender);
-
-    // find empty party slot to decide whether the Pokémon goes to the Player's party or the storage system.
-    for (i = 0; i < PARTY_SIZE; i++)
-    {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) == SPECIES_NONE)
-            break;
-    }
-    if (i >= PARTY_SIZE)
-    {
-        sentToPc = CopyMonToPC(&mon);
-    }
-    else
-    {
-        sentToPc = MON_GIVEN_TO_PARTY;
-        CopyMon(&gPlayerParty[i], &mon, sizeof(mon));
-        gPlayerPartyCount = i + 1;
-    }
-
-    // set pokédex flags
-    nationalDexNum = SpeciesToNationalPokedexNum(species);
-    switch (sentToPc)
-    {
-    case MON_GIVEN_TO_PARTY:
-    case MON_GIVEN_TO_PC:
-        GetSetPokedexFlag(nationalDexNum, FLAG_SET_SEEN);
-        GetSetPokedexFlag(nationalDexNum, FLAG_SET_CAUGHT);
-        break;
-    case MON_CANT_GIVE:
-        break;
-    }
-
-    return sentToPc;
-}
-
 void CanHyperTrain(struct ScriptContext *ctx)
 {
     u32 stat = ScriptReadByte(ctx);
@@ -475,7 +294,30 @@ void ToggleGigantamaxFactor(struct ScriptContext *ctx)
     }
 }
 
-u32 ScriptGiveMonParameterized(u16 species, u8 level, u16 item, u8 ball, u8 nature, u8 abilityNum, u8 gender, u8 *evs, u8 *ivs, u16 *moves, bool8 isShiny, bool8 ggMaxFactor, u8 teraType)
+void CheckTeraType(struct ScriptContext *ctx)
+{
+    u32 partyIndex = VarGet(ScriptReadHalfword(ctx));
+
+    gSpecialVar_Result = TYPE_NONE;
+
+    if (partyIndex < PARTY_SIZE)
+        gSpecialVar_Result = GetMonData(&gPlayerParty[partyIndex], MON_DATA_TERA_TYPE);
+}
+
+void SetTeraType(struct ScriptContext *ctx)
+{
+    u32 type = ScriptReadByte(ctx);
+    u32 partyIndex = VarGet(ScriptReadHalfword(ctx));
+
+    if (type < NUMBER_OF_MON_TYPES && partyIndex < PARTY_SIZE)
+        SetMonData(&gPlayerParty[partyIndex], MON_DATA_TERA_TYPE, &type);
+}
+
+/* Creates a Pokemon via script
+ * if side/slot are assigned, it will create the mon at the assigned party location
+ * if slot == PARTY_SIZE, it will give the mon to first available party or storage slot
+ */
+static u32 ScriptGiveMonParameterized(u8 side, u8 slot, u16 species, u8 level, u16 item, u8 ball, u8 nature, u8 abilityNum, u8 gender, u8 *evs, u8 *ivs, u16 *moves, bool8 isShiny, bool8 ggMaxFactor, u8 teraType)
 {
     u16 nationalDexNum;
     int sentToPc;
@@ -514,7 +356,7 @@ u32 ScriptGiveMonParameterized(u16 species, u8 level, u16 item, u8 ball, u8 natu
 
     // tera type
     if (teraType >= NUMBER_OF_MON_TYPES)
-        teraType = gSpeciesInfo[species].types[0];
+        teraType = TYPE_NONE;
     SetMonData(&mon, MON_DATA_TERA_TYPE, &teraType);
 
     // EV and IV
@@ -570,34 +412,43 @@ u32 ScriptGiveMonParameterized(u16 species, u8 level, u16 item, u8 ball, u8 natu
     SetMonData(&mon, MON_DATA_OT_NAME, gSaveBlock2Ptr->playerName);
     SetMonData(&mon, MON_DATA_OT_GENDER, &gSaveBlock2Ptr->playerGender);
 
-    // find empty party slot to decide whether the Pokémon goes to the Player's party or the storage system.
-    for (i = 0; i < PARTY_SIZE; i++)
+    if (slot < PARTY_SIZE)
     {
-        if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) == SPECIES_NONE)
-            break;
-    }
-    if (i >= PARTY_SIZE)
-    {
-        sentToPc = CopyMonToPC(&mon);
+        if (side == 0)
+            CopyMon(&gPlayerParty[slot], &mon, sizeof(struct Pokemon));
+        else
+            CopyMon(&gEnemyParty[slot], &mon, sizeof(struct Pokemon));
+        sentToPc = MON_GIVEN_TO_PARTY;
     }
     else
     {
-        sentToPc = MON_GIVEN_TO_PARTY;
-        CopyMon(&gPlayerParty[i], &mon, sizeof(mon));
-        gPlayerPartyCount = i + 1;
+        // find empty party slot to decide whether the Pokémon goes to the Player's party or the storage system.
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL) == SPECIES_NONE)
+                break;
+        }
+        if (i >= PARTY_SIZE)
+        {
+            sentToPc = CopyMonToPC(&mon);
+        }
+        else
+        {
+            sentToPc = MON_GIVEN_TO_PARTY;
+            CopyMon(&gPlayerParty[i], &mon, sizeof(mon));
+            gPlayerPartyCount = i + 1;
+        }
     }
 
-    // set pokédex flags
-    nationalDexNum = SpeciesToNationalPokedexNum(species);
-    switch (sentToPc)
+    if (side == 0)
     {
-    case MON_GIVEN_TO_PARTY:
-    case MON_GIVEN_TO_PC:
-        GetSetPokedexFlag(nationalDexNum, FLAG_SET_SEEN);
-        GetSetPokedexFlag(nationalDexNum, FLAG_SET_CAUGHT);
-        break;
-    case MON_CANT_GIVE:
-        break;
+        // set pokédex flags
+        nationalDexNum = SpeciesToNationalPokedexNum(species);
+        if (sentToPc != MON_CANT_GIVE)
+        {
+            GetSetPokedexFlag(nationalDexNum, FLAG_SET_SEEN);
+            GetSetPokedexFlag(nationalDexNum, FLAG_SET_CAUGHT);
+        }
     }
 
     return sentToPc;
@@ -610,13 +461,17 @@ u32 ScriptGiveMon(u16 species, u8 level, u16 item)
                                 MAX_PER_STAT_IVS + 1, MAX_PER_STAT_IVS + 1, MAX_PER_STAT_IVS + 1};  // ScriptGiveMonParameterized won't touch the stats' IV.
     u16 moves[MAX_MON_MOVES] = {MOVE_NONE, MOVE_NONE, MOVE_NONE, MOVE_NONE};
 
-    return ScriptGiveMonParameterized(species, level, item, ITEM_POKE_BALL, NUM_NATURES, NUM_ABILITY_PERSONALITY, MON_GENDERLESS, evs, ivs, moves, FALSE, FALSE, NUMBER_OF_MON_TYPES);
+    return ScriptGiveMonParameterized(0, PARTY_SIZE, species, level, item, ITEM_POKE_BALL, NUM_NATURES, NUM_ABILITY_PERSONALITY, MON_GENDERLESS, evs, ivs, moves, FALSE, FALSE, NUMBER_OF_MON_TYPES);
 }
 
 #define PARSE_FLAG(n, default_) (flags & (1 << (n))) ? VarGet(ScriptReadHalfword(ctx)) : (default_)
 
-void ScrCmd_givemon(struct ScriptContext *ctx)
+/* Give or create a mon to either player or opponent
+ */
+void ScrCmd_createmon(struct ScriptContext *ctx)
 {
+    u8 side           = ScriptReadByte(ctx);
+    u8 slot           = ScriptReadByte(ctx);
     u16 species       = VarGet(ScriptReadHalfword(ctx));
     u8 level          = VarGet(ScriptReadHalfword(ctx));
 
@@ -650,7 +505,7 @@ void ScrCmd_givemon(struct ScriptContext *ctx)
     u8 ivs[NUM_STATS]        = {hpIv, atkIv, defIv, speedIv, spAtkIv, spDefIv};
     u16 moves[MAX_MON_MOVES] = {move1, move2, move3, move4};
 
-    gSpecialVar_Result = ScriptGiveMonParameterized(species, level, item, ball, nature, abilityNum, gender, evs, ivs, moves, isShiny, ggMaxFactor, teraType);
+    gSpecialVar_Result = ScriptGiveMonParameterized(side, slot, species, level, item, ball, nature, abilityNum, gender, evs, ivs, moves, isShiny, ggMaxFactor, teraType);
 }
 
 #undef PARSE_FLAG

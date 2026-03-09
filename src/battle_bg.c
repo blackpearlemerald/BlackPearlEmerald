@@ -27,7 +27,6 @@
 #include "constants/trainers.h"
 #include "constants/battle_anim.h"
 #include "constants/battle_partner.h"
-#include "day_night.h"
 
 // .rodata
 
@@ -187,7 +186,7 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .bg = 0,
         .tilemapLeft = 2,
         .tilemapTop = 55,
-        .width = 8,    //for z move names
+        .width = 16,    //for z move names
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0300,
@@ -199,16 +198,16 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .width = 8,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x0310,
+        .baseBlock = 0x0318,
     },
     [B_WIN_MOVE_NAME_3] = {
         .bg = 0,
         .tilemapLeft = 2,
         .tilemapTop = 57,
-        .width = 8,    //for z effect descriptions
+        .width = 16,    //for z effect descriptions
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x0320,
+        .baseBlock = 0x0328,
     },
     [B_WIN_MOVE_NAME_4] = {
         .bg = 0,
@@ -217,13 +216,13 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .width = 8,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x0330,
+        .baseBlock = 0x0340,
     },
     [B_WIN_PP] = {
         .bg = 0,
-        .tilemapLeft = 23,  
+        .tilemapLeft = 21,
         .tilemapTop = 55,
-        .width = 2, 
+        .width = 4,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0290,
@@ -231,11 +230,11 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
     [B_WIN_DUMMY] = {
         .bg = 0,
         .tilemapLeft = 21,
-        .tilemapTop = 55,
-        .width = 2,
-        .height = 2,
-        .paletteNum = 10,
-        .baseBlock = 0x0294,
+        .tilemapTop = 57,
+        .width = 0,
+        .height = 0,
+        .paletteNum = 5,
+        .baseBlock = 0x0298,
     },
     [B_WIN_PP_REMAINING] = {
         .bg = 0,
@@ -372,41 +371,14 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 0,
         .baseBlock = 0x00b0,
     },
-    [B_WIN_TYPE_SUPER_EFF] = {
-    .bg = 0,
-    .tilemapLeft = 21,
-    .tilemapTop = 57,
-    .width = 8,
-    .height = 2,
-    .paletteNum = 5,
-    .baseBlock = 0x02a0,
-    },
-    [B_WIN_TYPE_NOT_VERY_EFF] = {
+    [B_WIN_MOVE_DESCRIPTION] = {
         .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 57,
-        .width = 8,
-        .height = 2,
+        .tilemapLeft = 1,
+        .tilemapTop = 47,
+        .width = 18,
+        .height = 6,
         .paletteNum = 5,
-        .baseBlock = 0x02a0,
-    },
-    [B_WIN_TYPE_NO_EFF] = {
-        .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 57,
-        .width = 8,
-        .height = 2,
-        .paletteNum = 5,
-        .baseBlock = 0x02a0,
-    },
-    [B_WIN_STAB_SYMBOL] = {
-    .bg = 0,
-    .tilemapLeft = 28,
-    .tilemapTop = 57,
-    .width = 1,
-    .height = 2,
-    .paletteNum = 5,
-    .baseBlock = 0x02b4,
+        .baseBlock = 0x0350,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -478,9 +450,9 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
     },
     [B_WIN_PP] = {
         .bg = 0,
-        .tilemapLeft = 23,
+        .tilemapLeft = 21,
         .tilemapTop = 55,
-        .width = 2,
+        .width = 4,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x0290,
@@ -488,11 +460,11 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
     [B_WIN_DUMMY] = {
         .bg = 0,
         .tilemapLeft = 21,
-        .tilemapTop = 55,
-        .width = 2,
-        .height = 2,
-        .paletteNum = 10,
-        .baseBlock = 0x0294,
+        .tilemapTop = 57,
+        .width = 0,
+        .height = 0,
+        .paletteNum = 5,
+        .baseBlock = 0x0298,
     },
     [B_WIN_PP_REMAINING] = {
         .bg = 0,
@@ -620,41 +592,14 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .paletteNum = 7,
         .baseBlock = 0x0090,
     },
-    [B_WIN_TYPE_SUPER_EFF] = {
-    .bg = 0,
-    .tilemapLeft = 21,
-    .tilemapTop = 57,
-    .width = 8,
-    .height = 2,
-    .paletteNum = 5,
-    .baseBlock = 0x02a0,
-    },
-    [B_WIN_TYPE_NOT_VERY_EFF] = {
+    [B_WIN_MOVE_DESCRIPTION] = {
         .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 57,
-        .width = 8,
-        .height = 2,
+        .tilemapLeft = 1,
+        .tilemapTop = 47,
+        .width = 18,
+        .height = 6,
         .paletteNum = 5,
-        .baseBlock = 0x02a0,
-    },
-    [B_WIN_TYPE_NO_EFF] = {
-        .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 57,
-        .width = 8,
-        .height = 2,
-        .paletteNum = 5,
-        .baseBlock = 0x02a0,
-    },
-    [B_WIN_STAB_SYMBOL] = {
-    .bg = 0,
-    .tilemapLeft = 28,
-    .tilemapTop = 57,
-    .width = 1,
-    .height = 2,
-    .paletteNum = 5,
-    .baseBlock = 0x02b4,
+        .baseBlock = 0x0350,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -884,7 +829,7 @@ void DrawMainBattleBackground(void)
         case MAP_BATTLE_SCENE_NORMAL:
             LZDecompressVram(sBattleTerrainTable[gBattleTerrain].tileset, (void *)(BG_CHAR_ADDR(2)));
             LZDecompressVram(sBattleTerrainTable[gBattleTerrain].tilemap, (void *)(BG_SCREEN_ADDR(26)));
-            LoadCompressedPaletteDayNight(sBattleTerrainTable[gBattleTerrain].palette, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
+            LoadCompressedPalette(sBattleTerrainTable[gBattleTerrain].palette, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
             break;
         case MAP_BATTLE_SCENE_GYM:
             LZDecompressVram(gBattleTerrainTiles_Building, (void *)(BG_CHAR_ADDR(2)));
