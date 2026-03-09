@@ -15627,6 +15627,8 @@ const struct Item gItemsInfo[] =
         .type = ITEM_USE_FIELD,
         .fieldUseFunc = ItemUseOutOfBattle_PokeVial,
         .flingPower = 30,
+        .iconPic = gItemIcon_PicnicBasket,
+        .iconPalette = gItemIconPalette_PicnicBasket,
     },
 
     [ITEM_CANDY_JAR] =
@@ -15644,6 +15646,8 @@ const struct Item gItemsInfo[] =
         .fieldUseFunc = ItemUseOutOfBattle_RareCandy,
         .effect = gItemEffect_RareCandy,
         .flingPower = 30,
+        .iconPic = gItemIcon_CandyJar,
+        .iconPalette = gItemIconPalette_CandyJar,
     },
 
     [ITEM_TAXI_TICKET] =
@@ -15659,6 +15663,8 @@ const struct Item gItemsInfo[] =
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_Fly,
         .flingPower = 30,
+        .iconPic = gItemIcon_EonTicket,
+        .iconPalette = gItemIconPalette_EonTicket,
     },
 
     [ITEM_POCKET_WATCH] =
@@ -15674,6 +15680,8 @@ const struct Item gItemsInfo[] =
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_PocketWatch,
         .flingPower = 30,
+        .iconPic = gItemIcon_PocketWatch,
+        .iconPalette = gItemIconPalette_PocketWatch,
     },
 
     [ITEM_EVO_CHARM] =
@@ -15689,6 +15697,8 @@ const struct Item gItemsInfo[] =
         .type = ITEM_USE_PARTY_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_EvolutionStone,
         .flingPower = 30,
+        .iconPic = gItemIcon_FloatStone,
+        .iconPalette = gItemIconPalette_FloatStone,
     },
 
     [ITEM_METAL_ALLOY] =
