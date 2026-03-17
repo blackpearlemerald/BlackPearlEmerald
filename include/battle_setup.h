@@ -101,15 +101,12 @@ bool8 ShouldTryRematchBattle(void);
 bool8 IsTrainerReadyForRematch(void);
 void ShouldTryGetTrainerScript(void);
 u16 CountBattledRematchTeams(u16 trainerId);
-<<<<<<< HEAD
 u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc);
 u8 currLocConvertForNuzlocke(u8 currLocation);
-=======
 void TrainerBattleLoadArgs(const u8 *data);
 void TrainerBattleLoadArgsTrainerA(const u8 *data);
 void TrainerBattleLoadArgsTrainerB(const u8 *data);
 void TrainerBattleLoadArgsSecondTrainer(const u8 *data);
->>>>>>> expansion/1.11.3
 
 void DoStandardWildBattle_Debug(void);
 void BattleSetup_StartTrainerBattle_Debug(void);

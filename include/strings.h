@@ -882,7 +882,6 @@ extern const u8 gText_SomeonesPC[];
 extern const u8 gText_PlayersPC[];
 extern const u8 gText_WhichPCShouldBeAccessed[];
 
-<<<<<<< HEAD
 extern const u8 gText_Pokenav_ClearButtonList[];
 extern const u8 gText_PokenavMap_ZoomedOutButtons[];
 extern const u8 gText_PokenavMap_ZoomedInButtons[];
@@ -899,8 +898,6 @@ extern const u8 gText_PokenavRibbons_RibbonCheckButtons[];
 extern const u8 gText_Petalburg[];
 extern const u8 gText_Slateport[];
 extern const u8 gText_Enter2[];
-=======
->>>>>>> expansion/1.11.3
 extern const u8 gText_Info2[];
 extern const u8 gText_Decoration2[];
 extern const u8 gText_PackUp[];
@@ -908,7 +905,6 @@ extern const u8 gText_Registry[];
 extern const u8 gText_Information[];
 extern const u8 gText_Yes[];
 extern const u8 gText_No[];
-<<<<<<< HEAD
 extern const u8 gText_Challenge[];
 extern const u8 gText_Info3[];
 extern const u8 gTrickHouse_Mechadoll_Oddish[];
@@ -956,8 +952,6 @@ extern const u8 gTrickHouse_Mechadoll_Eight[];
 extern const u8 gTrickHouse_Mechadoll_Six2[];
 extern const u8 gTrickHouse_Mechadoll_Seven2[];
 extern const u8 gTrickHouse_Mechadoll_Eight2[];
-=======
->>>>>>> expansion/1.11.3
 
 // Pokédex strings
 extern const u8 gText_SearchForPkmnBasedOnParameters[];
