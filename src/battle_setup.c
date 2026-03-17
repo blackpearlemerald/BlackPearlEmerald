@@ -87,18 +87,8 @@ static const u8 *GetTrainerCantBattleSpeech(void);
 
 EWRAM_DATA TrainerBattleParameter gTrainerBattleParameter = {0};
 EWRAM_DATA u16 gPartnerTrainerId = 0;
-<<<<<<< HEAD
 EWRAM_DATA bool8 gNuzlockeCannotCatch = 0;
 EWRAM_DATA bool8 gNuzlockeCannotCatch2 = 0;
-EWRAM_DATA static u16 sTrainerObjectEventLocalId = 0;
-EWRAM_DATA static u8 *sTrainerAIntroSpeech = NULL;
-EWRAM_DATA static u8 *sTrainerBIntroSpeech = NULL;
-EWRAM_DATA static u8 *sTrainerADefeatSpeech = NULL;
-EWRAM_DATA static u8 *sTrainerBDefeatSpeech = NULL;
-EWRAM_DATA static u8 *sTrainerVictorySpeech = NULL;
-EWRAM_DATA static u8 *sTrainerCannotBattleSpeech = NULL;
-=======
->>>>>>> expansion/1.11.3
 EWRAM_DATA static u8 *sTrainerBattleEndScript = NULL;
 EWRAM_DATA static bool8 sShouldCheckTrainerBScript = FALSE;
 EWRAM_DATA static u8 sNoOfPossibleTrainerRetScripts = 0;
