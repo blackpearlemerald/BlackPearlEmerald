@@ -14,6 +14,7 @@
 #include "event_data.h"
 #include "field_door.h"
 #include "field_effect.h"
+#include "field_move.h"
 #include "event_object_lock.h"
 #include "event_object_movement.h"
 #include "event_scripts.h"
@@ -667,7 +668,7 @@ bool8 ScrCmd_checkitemtype(struct ScriptContext *ctx)
 
     Script_RequestEffects(SCREFF_V1);
 
-    gSpecialVar_Result = GetPocketByItemId(itemId);
+    gSpecialVar_Result = GetItemPocket(itemId);
     return FALSE;
 }
 
@@ -2287,15 +2288,20 @@ bool8 ScrCmd_setmonmove(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
+bool8 ScrCmd_checkfieldmove(struct ScriptContext *ctx)
 {
-    u8 i;
-    u16 move = ScriptReadHalfword(ctx);
+    enum FieldMove fieldMove = ScriptReadByte(ctx);
+    bool32 doUnlockedCheck = ScriptReadByte(ctx);
+    u16 move;
 
     Script_RequestEffects(SCREFF_V1);
 
     gSpecialVar_Result = PARTY_SIZE;
-    for (i = 0; i < PARTY_SIZE; i++)
+    if (doUnlockedCheck && !IsFieldMoveUnlocked(fieldMove))
+        return FALSE;
+
+    move = FieldMove_GetMoveId(fieldMove);
+    for (u32 i = 0; i < PARTY_SIZE; i++)
     {
         u16 species = GetMonData(&gPlayerParty[i], MON_DATA_SPECIES, NULL);
         if (!species)
@@ -2309,12 +2315,11 @@ bool8 ScrCmd_checkpartymove(struct ScriptContext *ctx)
             break;
         }
     }
-    //MODERN HM BELOW
-    if (gSpecialVar_Result == PARTY_SIZE && PlayerHasMove(move)) {  // If no mon have the move, but the player has the HM in bag, use the first mon
+    //MODERN HM: If no mon has the move but the player has the HM in bag, use the first mon
+    if (gSpecialVar_Result == PARTY_SIZE && PlayerHasMove(move)) {
             gSpecialVar_Result = 0;
             gSpecialVar_0x8004 = GetMonData(&gPlayerParty[0], MON_DATA_SPECIES, NULL);
     }
-    //MODERN HM ABOVE
     return FALSE;
 }
 
@@ -3008,7 +3013,7 @@ static void CloseBrailleWindow(void)
 bool8 ScrCmd_buffertrainerclassname(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
-    u16 trainerClassId = VarGet(ScriptReadHalfword(ctx));
+    enum TrainerClassID trainerClassId = VarGet(ScriptReadHalfword(ctx));
 
     Script_RequestEffects(SCREFF_V1);
 
@@ -3019,7 +3024,7 @@ bool8 ScrCmd_buffertrainerclassname(struct ScriptContext *ctx)
 bool8 ScrCmd_buffertrainername(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
-    u16 trainerClassId = VarGet(ScriptReadHalfword(ctx));
+    enum TrainerClassID trainerClassId = VarGet(ScriptReadHalfword(ctx));
 
     Script_RequestEffects(SCREFF_V1);
 
@@ -3088,8 +3093,8 @@ bool8 ScrCmd_getobjectxy(struct ScriptContext *ctx)
 
 bool8 ScrCmd_checkobjectat(struct ScriptContext *ctx)
 {
-    u32 x = VarGet(ScriptReadHalfword(ctx)) + 7;
-    u32 y = VarGet(ScriptReadHalfword(ctx)) + 7;
+    u32 x = VarGet(ScriptReadHalfword(ctx)) + MAP_OFFSET;
+    u32 y = VarGet(ScriptReadHalfword(ctx)) + MAP_OFFSET;
     u32 varId = ScriptReadHalfword(ctx);
 
     Script_RequestEffects(SCREFF_V1);
@@ -3104,7 +3109,7 @@ bool8 ScrCmd_checkobjectat(struct ScriptContext *ctx)
 
 bool8 Scrcmd_getsetpokedexflag(struct ScriptContext *ctx)
 {
-    u32 speciesId = SpeciesToNationalPokedexNum(VarGet(ScriptReadHalfword(ctx)));
+    enum NationalDexOrder speciesId = SpeciesToNationalPokedexNum(VarGet(ScriptReadHalfword(ctx)));
     u32 desiredFlag = VarGet(ScriptReadHalfword(ctx));
 
     if (desiredFlag == FLAG_SET_CAUGHT || desiredFlag == FLAG_SET_SEEN)
@@ -3157,10 +3162,12 @@ bool8 Scrcmd_getobjectfacingdirection(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrFunc_hidefollower(struct ScriptContext *ctx)
+bool8 ScrCmd_hidefollower(struct ScriptContext *ctx)
 {
     bool16 wait = VarGet(ScriptReadHalfword(ctx));
     struct ObjectEvent *obj;
+
+    Script_RequestEffects(SCREFF_V1 | SCREFF_HARDWARE);
 
     if ((obj = ScriptHideFollower()) != NULL && wait)
     {

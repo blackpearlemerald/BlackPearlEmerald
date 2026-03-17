@@ -142,6 +142,7 @@ enum ItemHoldEffect
     HOLD_EFFECT_OGERPON_MASK,
     // Gen2 hold effect
     HOLD_EFFECT_BERSERK_GENE,
+    HOLD_EFFECT_COUNT
 };
 
 // BPE compatibility aliases: type-specific power hold effects were consolidated into HOLD_EFFECT_TYPE_POWER in 1.12.0
@@ -167,7 +168,6 @@ enum ItemHoldEffect
 #define HOLD_EFFECT_RESTORE_STATS  HOLD_EFFECT_RESTORE_PCT_HP
 
 #define HOLD_EFFECT_CHOICE(holdEffect) ((holdEffect == HOLD_EFFECT_CHOICE_BAND || holdEffect == HOLD_EFFECT_CHOICE_SCARF || holdEffect == HOLD_EFFECT_CHOICE_SPECS))
-
 // Terrain seed params
 #define HOLD_EFFECT_PARAM_ELECTRIC_TERRAIN  0
 #define HOLD_EFFECT_PARAM_GRASSY_TERRAIN    1
