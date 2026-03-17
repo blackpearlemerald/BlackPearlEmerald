@@ -58,12 +58,5 @@ bool8 FieldEffectCmd_loadfadedpaldaynight(u8** script, u32* val);
 bool8 FieldEffectCmd_loadpaldaynight(u8** script, u32* val);
 bool8 FieldEffectCmd_loadfadedpaldaynight_callnative(u8** script, u32* val);
 
-void FieldEffectScript_LoadFadedPaletteDayNight(u8** script);
-void FieldEffectScript_LoadPaletteDayNight(u8** script);
-
-bool8 FieldEffectCmd_loadfadedpaldaynight(u8** script, u32* val);
-bool8 FieldEffectCmd_loadpaldaynight(u8** script, u32* val);
-bool8 FieldEffectCmd_loadfadedpaldaynight_callnative(u8** script, u32* val);
-
-
+bool8 IsRockClimbActive(void);
 #endif // GUARD_FIELD_EFFECTS_H

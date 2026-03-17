@@ -2739,5 +2739,7 @@ extern const u8 gText_Rename[];
 
 // Switch Caught Mon into Party
 extern const u8 gText_CannotSendMonToBoxHM[];
+extern const u8 gText_CannotSendMonToBoxActive[];
+extern const u8 gText_CannotSendMonToBoxPartner[];
 
 #endif // GUARD_STRINGS_H
