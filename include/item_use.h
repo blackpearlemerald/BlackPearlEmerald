@@ -49,6 +49,10 @@ void Task_ItemUse_CloseMessageBoxAndReturnToField_VsSeeker(u8 taskId);
 void DisplayDadsAdviceCannotUseItemMessage(u8 taskId, bool8 isUsingRegisteredKeyItemOnField);
 void ItemUseOutOfBattle_PokeFlute(u8 taskId);
 void ItemUseOutOfBattle_TownMap(u8 taskId);
+void ItemUseOutOfBattle_PokeVial(u8 taskId);
+void ItemUseOutOfBattle_Fly(u8 taskId);
+void ItemUseOutOfBattle_PocketWatch(u8 taskId);
+void ItemUseOutOfBattle_EvolutionCharm(u8 taskId);
 
 enum {
     BALL_THROW_UNABLE_TWO_MONS,
@@ -56,6 +60,7 @@ enum {
     BALL_THROW_UNABLE_SEMI_INVULNERABLE,
     BALL_THROW_ABLE,
     BALL_THROW_UNABLE_DISABLED_FLAG,
+    BALL_THROW_UNABLE_NUZLOCKE,
 };
 
 bool32 CanThrowBall(void);

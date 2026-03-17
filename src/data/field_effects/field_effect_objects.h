@@ -1337,12 +1337,11 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_Rayquaza = {
 
 static const struct SpritePalette sSpritePalette_Unused = {gObjectEventPal_Npc3, FLDEFF_PAL_TAG_UNKNOWN};
 
-<<<<<<< HEAD
 // BPE: Arrow emotions field effect palette (restored from v1.0.1)
 const struct SpritePalette gSpritePalette_ArrowEmotionsFieldEffect = {gObjectEventPal_Brendan, FLDEFF_PAL_TAG_ARROW};
-=======
+
 // cave dust
-static const struct SpriteFrameImage sPicTable_CaveDust[] = 
+static const struct SpriteFrameImage sPicTable_CaveDust[] =
 {
     overworld_frame(gFieldEffectObjectPic_CaveDust, 2, 2, 0),
     overworld_frame(gFieldEffectObjectPic_CaveDust, 2, 2, 1),
@@ -1360,4 +1359,3 @@ const struct SpriteTemplate gFieldEffectObjectTemplate_CaveDust = {
 };
 
 const struct SpritePalette gSpritePalette_CaveDust = {gFieldEffectObjectPalette_CaveDust, FLDEFF_PAL_TAG_CAVE_DUST};
->>>>>>> expansion/1.11.3

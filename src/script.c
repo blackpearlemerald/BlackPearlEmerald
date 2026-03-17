@@ -528,12 +528,6 @@ void InitRamScript_NoObjectEvent(u8 *script, u16 scriptSize)
 #endif //FREE_MYSTERY_EVENT_BUFFERS
 }
 
-<<<<<<< HEAD
-void StartNewPokeballCaseUI(void)
-{
-    FadeScreen(FADE_TO_BLACK, 0);
-    CreateTask(Task_OpenBirchCase, 0);
-=======
 bool8 LoadTrainerObjectScript(void)
 {
     sGlobalScriptContext.scriptPtr = gApproachingTrainers[gNoOfApproachingTrainers - 1].trainerScriptPtr;
@@ -645,5 +639,10 @@ void Script_RequestWriteVar_Internal(u32 varId)
     if (SPECIAL_VARS_START <= varId && varId <= SPECIAL_VARS_END)
         return;
     Script_RequestEffects(SCREFF_V1 | SCREFF_SAVE);
->>>>>>> expansion/1.11.3
+}
+
+void StartNewPokeballCaseUI(void)
+{
+    FadeScreen(FADE_TO_BLACK, 0);
+    CreateTask(Task_OpenBirchCase, 0);
 }

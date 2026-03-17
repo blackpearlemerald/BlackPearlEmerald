@@ -114,11 +114,8 @@ static bool8 StartMenuBattlePyramidRetireCallback(void);
 static bool8 StartMenuBattlePyramidBagCallback(void);
 static bool8 StartMenuStatEditorCallback(void);
 static bool8 StartMenuDebugCallback(void);
-<<<<<<< HEAD
 static bool8 StartMenuUiMenuCallback(void);
-=======
 static bool8 StartMenuDexNavCallback(void);
->>>>>>> expansion/1.11.3
 
 // Menu callbacks
 static bool8 SaveStartCallback(void);
@@ -1600,13 +1597,12 @@ void AppendToList(u8 *list, u8 *pos, u8 newEntry)
     (*pos)++;
 }
 
-<<<<<<< HEAD
 static bool8 StartMenuStatEditorCallback(void)
 {
     CreateTask(Task_OpenStatEditorFromStartMenu, 0);
     return TRUE;
 }
-=======
+
 static bool8 StartMenuDexNavCallback(void)
 {
     CreateTask(Task_OpenDexNavFromStartMenu, 0);
@@ -1620,4 +1616,3 @@ void Script_ForceSaveGame(struct ScriptContext *ctx)
     gMenuCallback = SaveCallback;
     sSaveDialogCallback = SaveSavingMessageCallback;
 }
->>>>>>> expansion/1.11.3
