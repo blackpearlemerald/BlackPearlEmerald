@@ -38,7 +38,6 @@
 #include "pokemon_icon.h"
 #include "pokedex.h"
 #include "trainer_pokemon_sprites.h"
-#include "field_effect.h"
 #include "field_screen_effect.h"
 
 // BPE custom strings
@@ -377,16 +376,18 @@ static bool8 StatEditor_DoGfxSetup(void)
     return FALSE;
 }
 
-#define try_free(ptr) ({        \
+#define try_free(ptr) ({               \
     void ** ptr__ = (void **)&(ptr);   \
-    if (*ptr__ != NULL)                \
+    if (*ptr__ != NULL) {              \
         Free(*ptr__);                  \
+        *ptr__ = NULL;                 \
+    }                                  \
 })
 
 static void StatEditor_FreeResources(void)
 {
     DestroySelector();
-    FreeResourcesAndDestroySprite(&gSprites[sStatEditorDataPtr->monIconSpriteId], sStatEditorDataPtr->monIconSpriteId);
+    FreeAndDestroyMonPicSprite(sStatEditorDataPtr->monIconSpriteId);
     try_free(sStatEditorDataPtr);
     try_free(sBg1TilemapBuffer);
     FreeAllWindowBuffers();
@@ -502,7 +503,7 @@ static struct Pokemon *ReturnPartyMon()
 static void SampleUi_DrawMonIcon(u16 dexNum)
 {
     u16 speciesId = dexNum;
-    sStatEditorDataPtr->monIconSpriteId = CreateMonPicSprite_Affine(speciesId, 0, 0x8000, TRUE, MON_ICON_X, MON_ICON_Y, 0, TAG_NONE);
+    sStatEditorDataPtr->monIconSpriteId = CreateMonPicSprite(speciesId, 0, 0x8000, TRUE, MON_ICON_X, MON_ICON_Y, 0, TAG_NONE);
 
     gSprites[sStatEditorDataPtr->monIconSpriteId].oam.priority = 0;
 }
@@ -807,7 +808,7 @@ static void Task_DelayedSpriteLoad(u8 taskId) // wait 4 frames after changing th
 static void ReloadNewPokemon(u8 taskId)
 {
     gSprites[sStatEditorDataPtr->monIconSpriteId].invisible = TRUE;
-    FreeResourcesAndDestroySprite(&gSprites[sStatEditorDataPtr->monIconSpriteId], sStatEditorDataPtr->monIconSpriteId);
+    FreeAndDestroyMonPicSprite(sStatEditorDataPtr->monIconSpriteId);
     sStatEditorDataPtr->speciesID = GetMonData(ReturnPartyMon(), MON_DATA_SPECIES);
     gTasks[taskId].func = Task_DelayedSpriteLoad;
     gTasks[taskId].data[11] = 0;

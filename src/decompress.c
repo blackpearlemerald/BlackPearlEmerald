@@ -987,6 +987,8 @@ static void SmolDecompressData(const struct SmolHeader *header, const u32 *data,
     u32 alignedLoSize = header->loSize % 2 == 1 ? headerLoSize + 1 : headerLoSize;
     u32 alignedSymSize = header->symSize % 2 == 1 ? headerSymSize + 1 : headerSymSize;
     void *memoryAlloced = Alloc((alignedSymSize*2) + alignedLoSize);
+    if (memoryAlloced == NULL)
+        return;
     u16 *symVec = memoryAlloced;
     u8 *loVec = memoryAlloced + alignedSymSize*2;
 
