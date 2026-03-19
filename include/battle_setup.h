@@ -42,7 +42,6 @@ typedef union PACKED TrainerBattleParameter
     u8 data[sizeof(struct _TrainerBattleParameter)];
 } TrainerBattleParameter;
 
-
 extern const struct RematchTrainer gRematchTable[REMATCH_TABLE_ENTRIES];
 
 extern TrainerBattleParameter gTrainerBattleParameter;
@@ -72,6 +71,7 @@ void ResetTrainerOpponentIds(void);
 void SetMapVarsToTrainerA(void);
 void SetMapVarsToTrainerB(void);
 const u8 *BattleSetup_ConfigureTrainerBattle(const u8 *data);
+const u8* BattleSetup_ConfigureFacilityTrainerBattle(u8 facility, const u8* scriptEndPtr);
 void ConfigureAndSetUpOneTrainerBattle(u8 trainerObjEventId, const u8 *trainerScript);
 void ConfigureTwoTrainersBattle(u8 trainerObjEventId, const u8 *trainerScript);
 void SetUpTwoTrainersBattle(void);
@@ -104,6 +104,7 @@ bool8 ShouldTryRematchBattle(void);
 bool8 ShouldTryRematchBattleForTrainerId(u16 trainerId);
 bool8 IsTrainerReadyForRematch(void);
 void ShouldTryGetTrainerScript(void);
+u16 CountMaxPossibleRematch(u16 trainerId);
 u16 CountBattledRematchTeams(u16 trainerId);
 u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc);
 u8 currLocConvertForNuzlocke(u8 currLocation);
@@ -111,6 +112,7 @@ void TrainerBattleLoadArgs(const u8 *data);
 void TrainerBattleLoadArgsTrainerA(const u8 *data);
 void TrainerBattleLoadArgsTrainerB(const u8 *data);
 void TrainerBattleLoadArgsSecondTrainer(const u8 *data);
+void InitTrainerBattleParameter(void);
 
 void DoStandardWildBattle_Debug(void);
 void BattleSetup_StartTrainerBattle_Debug(void);
