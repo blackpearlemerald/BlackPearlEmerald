@@ -2,10 +2,11 @@
 
 ## Project Overview
 
-**BPE Emerald** (Black Pearl Emerald) is a Pokémon GBA ROM hack built on [pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion) v1.15.0 by RHH (Rom Hacking Hideout). It is a decompilation-based hack, not a binary patch — the full source is compiled from C/ASM into a `.gba` ROM.
+**BPE Emerald** (Black Pearl Emerald) is a Pokémon GBA ROM hack originally built on [pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion) v1.8.6 by RHH (Rom Hacking Hideout), and has since been upgraded to v1.15.0. It is a decompilation-based hack, not a binary patch — the full source is compiled from C/ASM into a `.gba` ROM.
 
 - **Version**: 1.0.1
-- **Base**: pokeemerald-expansion v1.15.0
+- **Original base**: pokeemerald-expansion v1.8.6
+- **Current expansion version**: v1.15.0
 - **Build status**: Clean build confirmed (32 MB ROM, no errors)
 - **Branch**: `main` (HEAD `58f9e1afea`)
 
