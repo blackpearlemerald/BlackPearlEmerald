@@ -1054,6 +1054,7 @@ extern u16 gBallToDisplay;
 extern bool8 gLastUsedBallMenuPresent;
 extern u8 gPartyCriticalHits[PARTY_SIZE];
 extern u8 gCategoryIconSpriteId;
+extern u8 gMoveInfoCategoryIconSpriteId;
 
 static inline bool32 IsBattlerAlive(enum BattlerId battler)
 {

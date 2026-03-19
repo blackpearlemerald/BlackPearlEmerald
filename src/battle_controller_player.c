@@ -95,6 +95,17 @@ static void ReloadMoveNames(enum BattlerId battler);
 static u32 CheckTypeEffectiveness(enum BattlerId battlerAtk, enum BattlerId battlerDef);
 static u32 CheckTargetTypeEffectiveness(enum BattlerId battler);
 static void MoveSelectionDisplayMoveEffectiveness(u32 foeEffectiveness, enum BattlerId battler);
+static void MoveSelectionUpdateCategoryIcon(enum BattlerId battler);
+
+// Order based numerically, with EFFECTIVENESS_CANNOT_VIEW at 0 to always prioritize any other effectiveness during comparison
+enum
+{
+    EFFECTIVENESS_CANNOT_VIEW,
+    EFFECTIVENESS_NO_EFFECT,
+    EFFECTIVENESS_NOT_VERY_EFFECTIVE,
+    EFFECTIVENESS_NORMAL,
+    EFFECTIVENESS_SUPER_EFFECTIVE,
+};
 
 static void (*const sPlayerBufferCommands[CONTROLLER_CMDS_COUNT])(enum BattlerId battler) =
 {
@@ -822,6 +833,7 @@ void HandleInputChooseMove(enum BattlerId battler)
                 MoveSelectionDisplayMoveEffectiveness(CheckTargetTypeEffectiveness(battler), battler);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
+            MoveSelectionUpdateCategoryIcon(battler);
             TryMoveSelectionDisplayMoveDescription(battler);
             TryChangeZTrigger(battler, gMoveSelectionCursor[battler]);
         }
@@ -839,6 +851,7 @@ void HandleInputChooseMove(enum BattlerId battler)
                 MoveSelectionDisplayMoveEffectiveness(CheckTargetTypeEffectiveness(battler), battler);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
+            MoveSelectionUpdateCategoryIcon(battler);
             TryMoveSelectionDisplayMoveDescription(battler);
             TryChangeZTrigger(battler, gMoveSelectionCursor[battler]);
         }
@@ -855,6 +868,7 @@ void HandleInputChooseMove(enum BattlerId battler)
                 MoveSelectionDisplayMoveEffectiveness(CheckTargetTypeEffectiveness(battler), battler);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
+            MoveSelectionUpdateCategoryIcon(battler);
             TryMoveSelectionDisplayMoveDescription(battler);
             TryChangeZTrigger(battler, gMoveSelectionCursor[battler]);
         }
@@ -872,6 +886,7 @@ void HandleInputChooseMove(enum BattlerId battler)
                 MoveSelectionDisplayMoveEffectiveness(CheckTargetTypeEffectiveness(battler), battler);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
+            MoveSelectionUpdateCategoryIcon(battler);
             TryMoveSelectionDisplayMoveDescription(battler);
             TryChangeZTrigger(battler, gMoveSelectionCursor[battler]);
         }
@@ -897,10 +912,11 @@ void HandleInputChooseMove(enum BattlerId battler)
         if (JOY_NEW(B_MOVE_DESCRIPTION_BUTTON) || JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
         {
             gBattleStruct->descriptionSubmenu = FALSE;
-            if (gCategoryIconSpriteId != 0xFF)
+            // Destroy the Move Info screen's category icon sprite
+            if (gMoveInfoCategoryIconSpriteId != 0xFF)
             {
-                DestroySprite(&gSprites[gCategoryIconSpriteId]);
-                gCategoryIconSpriteId = 0xFF;
+                DestroySprite(&gSprites[gMoveInfoCategoryIconSpriteId]);
+                gMoveInfoCategoryIconSpriteId = 0xFF;
             }
 
             FillWindowPixelBuffer(B_WIN_MOVE_DESCRIPTION, PIXEL_FILL(0));
@@ -911,6 +927,7 @@ void HandleInputChooseMove(enum BattlerId battler)
                 MoveSelectionDisplayMoveEffectiveness(CheckTargetTypeEffectiveness(battler), battler);
             MoveSelectionDisplayPpNumber(battler);
             MoveSelectionDisplayMoveType(battler);
+            MoveSelectionUpdateCategoryIcon(battler);
         }
     }
     else if (JOY_NEW(B_MOVE_DESCRIPTION_BUTTON) &&
@@ -951,6 +968,7 @@ static void ReloadMoveNames(enum BattlerId battler)
             MoveSelectionDisplayMoveEffectiveness(CheckTargetTypeEffectiveness(battler), battler);
         MoveSelectionDisplayPpNumber(battler);
         MoveSelectionDisplayMoveType(battler);
+        MoveSelectionUpdateCategoryIcon(battler);
     }
 }
 
@@ -1110,6 +1128,7 @@ void HandleMoveSwitching(enum BattlerId battler)
             MoveSelectionDisplayPpString(battler);
         MoveSelectionDisplayPpNumber(battler);
         MoveSelectionDisplayMoveType(battler);
+        MoveSelectionUpdateCategoryIcon(battler);
         AssignUsableZMoves(battler, moveInfo->moves);
     }
     else if (JOY_NEW(B_BUTTON | SELECT_BUTTON))
@@ -1129,6 +1148,7 @@ void HandleMoveSwitching(enum BattlerId battler)
             MoveSelectionDisplayPpString(battler);
         MoveSelectionDisplayPpNumber(battler);
         MoveSelectionDisplayMoveType(battler);
+        MoveSelectionUpdateCategoryIcon(battler);
     }
     else if (JOY_NEW(DPAD_LEFT))
     {
@@ -1684,7 +1704,8 @@ static void MoveSelectionDisplayMoveNames(enum BattlerId battler)
 
 static void MoveSelectionDisplayPpString(enum BattlerId battler)
 {
-    StringCopy(gDisplayedStringBattle, gText_MoveInterfacePP);
+    static const u8 sPpLabel[] = _("{CLEAR_TO 16}PP ");
+    StringCopy(gDisplayedStringBattle, sPpLabel);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP);
 }
 
@@ -1743,10 +1764,52 @@ static void MoveSelectionDisplayMoveType(enum BattlerId battler)
         struct Pokemon *mon = GetBattlerMon(battler);
         type = CheckDynamicMoveType(mon, move, battler, MON_IN_BATTLE);
     }
+    // Color type name by effectiveness and append "+" for STAB
+    u32 effectiveness = EFFECTIVENESS_CANNOT_VIEW;
+    bool32 isSTAB = FALSE;
+
+    if (!IsBattleMoveStatus(move))
+    {
+        effectiveness = CheckTargetTypeEffectiveness(battler);
+
+        enum Type battlerTypes[3];
+        GetBattlerTypes(battler, FALSE, battlerTypes);
+        isSTAB = (battlerTypes[0] == type || battlerTypes[1] == type || battlerTypes[2] == type);
+
+        u8 colorIndex = 0;
+        switch (effectiveness)
+        {
+        case EFFECTIVENESS_SUPER_EFFECTIVE:    colorIndex = TEXT_COLOR_GREEN; break;
+        case EFFECTIVENESS_NOT_VERY_EFFECTIVE: colorIndex = TEXT_COLOR_RED;   break;
+        default: break;
+        }
+        if (colorIndex != 0)
+        {
+            *txtPtr++ = EXT_CTRL_CODE_BEGIN;
+            *txtPtr++ = EXT_CTRL_CODE_COLOR;
+            *txtPtr++ = colorIndex;
+        }
+    }
+
     end = StringCopy(txtPtr, gTypesInfo[type].name);
+
+    if (isSTAB)
+    {
+        *end++ = CHAR_PLUS;
+        *end   = EOS;
+    }
 
     PrependFontIdToFit(txtPtr, end, FONT_NORMAL, WindowWidthPx(B_WIN_MOVE_TYPE) - 25);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_TYPE);
+}
+
+static void MoveSelectionUpdateCategoryIcon(enum BattlerId battler)
+{
+    if (gCategoryIconSpriteId == 0xFF)
+        return;
+    struct ChooseMoveStruct *mi = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
+    enum DamageCategory cat = GetMoveCategory(mi->moves[gMoveSelectionCursor[battler]]);
+    StartSpriteAnim(&gSprites[gCategoryIconSpriteId], cat);
 }
 
 static void TryMoveSelectionDisplayMoveDescription(enum BattlerId battler)
@@ -1802,10 +1865,10 @@ static void MoveSelectionDisplayMoveDescription(enum BattlerId battler)
     StringAppend(gDisplayedStringBattle, GetMoveDescription(move));
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_MOVE_DESCRIPTION);
 
-    if (gCategoryIconSpriteId == 0xFF)
-        gCategoryIconSpriteId = CreateSprite(&gSpriteTemplate_CategoryIcons, 38, 64, 1);
-
-    StartSpriteAnim(&gSprites[gCategoryIconSpriteId], cat);
+    // Create a separate sprite for the Move Info screen so the battle UI icon stays visible
+    if (gMoveInfoCategoryIconSpriteId == 0xFF)
+        gMoveInfoCategoryIconSpriteId = CreateSprite(&gSpriteTemplate_CategoryIcons, 38, 64, 1);
+    StartSpriteAnim(&gSprites[gMoveInfoCategoryIconSpriteId], cat);
 
     CopyWindowToVram(B_WIN_MOVE_DESCRIPTION, COPYWIN_FULL);
 }
@@ -2157,6 +2220,14 @@ void InitMoveSelectionsVarsAndStrings(enum BattlerId battler)
         MoveSelectionDisplayPpString(battler);
     MoveSelectionDisplayPpNumber(battler);
     MoveSelectionDisplayMoveType(battler);
+    // Show category icon to the left of PP area (always visible during move selection)
+    {
+        struct ChooseMoveStruct *mi = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
+        enum DamageCategory cat = GetMoveCategory(mi->moves[gMoveSelectionCursor[battler]]);
+        if (gCategoryIconSpriteId == 0xFF)
+            gCategoryIconSpriteId = CreateSprite(&gSpriteTemplate_CategoryIcons, 174, 128, 1);
+        StartSpriteAnim(&gSprites[gCategoryIconSpriteId], cat);
+    }
 }
 
 static void PlayerHandleChooseItem(enum BattlerId battler)
@@ -2380,15 +2451,6 @@ static void PlayerHandleBattleDebug(enum BattlerId battler)
     gBattlerControllerFuncs[battler] = Controller_WaitForDebug;
 }
 
-// Order based numerically, with EFFECTIVENESS_CANNOT_VIEW at 0 to always prioritize any other effectiveness during comparison
-enum
-{
-    EFFECTIVENESS_CANNOT_VIEW,
-    EFFECTIVENESS_NO_EFFECT,
-    EFFECTIVENESS_NOT_VERY_EFFECTIVE,
-    EFFECTIVENESS_NORMAL,
-    EFFECTIVENESS_SUPER_EFFECTIVE,
-};
 
 static bool32 ShouldShowTypeEffectiveness(u32 targetId)
 {
@@ -2452,38 +2514,8 @@ static u32 CheckTargetTypeEffectiveness(enum BattlerId battler)
 
 static void MoveSelectionDisplayMoveEffectiveness(u32 foeEffectiveness, enum BattlerId battler)
 {
-    static const u8 noIcon[] =  _("");
-    static const u8 effectiveIcon[] =  _("{CIRCLE_HOLLOW}");
-    static const u8 superEffectiveIcon[] =  _("{CIRCLE_DOT}");
-    static const u8 notVeryEffectiveIcon[] =  _("{TRIANGLE}");
-    static const u8 immuneIcon[] =  _("{BIG_MULT_X}");
-    struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleResources->bufferA[battler][4]);
-    u8 *txtPtr;
-
-    txtPtr = StringCopy(gDisplayedStringBattle, gText_MoveInterfacePP);
-
-    if (!IsBattleMoveStatus(moveInfo->moves[gMoveSelectionCursor[battler]]))
-    {
-        switch (foeEffectiveness)
-        {
-        case EFFECTIVENESS_SUPER_EFFECTIVE:
-            StringCopy(txtPtr, superEffectiveIcon);
-            break;
-        case EFFECTIVENESS_NOT_VERY_EFFECTIVE:
-            StringCopy(txtPtr, notVeryEffectiveIcon);
-            break;
-        case EFFECTIVENESS_NO_EFFECT:
-            StringCopy(txtPtr, immuneIcon);
-            break;
-        case EFFECTIVENESS_NORMAL:
-            StringCopy(txtPtr, effectiveIcon);
-            break;
-        default:
-        case EFFECTIVENESS_CANNOT_VIEW:
-            StringCopy(txtPtr, noIcon);
-            break;
-        }
-    }
-
+    // "PP " shifted right by 16px to leave room for the category icon sprite on the left
+    static const u8 sPpLabel[] = _("{CLEAR_TO 16}PP ");
+    StringCopy(gDisplayedStringBattle, sPpLabel);
     BattlePutTextOnWindow(gDisplayedStringBattle, B_WIN_PP);
 }
