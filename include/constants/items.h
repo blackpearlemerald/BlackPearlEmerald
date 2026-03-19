@@ -645,11 +645,6 @@ enum __attribute__((packed)) Item
     ITEM_UTILITY_UMBRELLA = 513,
 
     // Berries
-    #if B_CONFUSE_BERRIES_HEAL >= GEN_8
-    #elif B_CONFUSE_BERRIES_HEAL == GEN_7
-    #else
-
-
     ITEM_CHERI_BERRY = 514,
     ITEM_CHESTO_BERRY = 515,
     ITEM_PECHA_BERRY = 516,
@@ -973,6 +968,20 @@ enum __attribute__((packed)) Item
     ITEM_HM07 = 830,
     ITEM_HM08 = 831,
 
+    /* Expands to:
+     *   ITEM_TM_FOCUS_PUNCH = ITEM_TM01,
+     *   ...
+     *   ITEM_HM_CUT = ITEM_HM01,
+     *   ... */
+    #define ENUM_TM(n, id) CAT(ITEM_TM_, id) = CAT(ITEM_TM, n),
+    #define ENUM_HM(n, id) CAT(ITEM_HM_, id) = CAT(ITEM_HM, n),
+    #define TO_TMHM_NUMS(a, ...) (__VA_ARGS__)
+    RECURSIVELY(R_ZIP(ENUM_TM, TO_TMHM_NUMS NUMBERS_256, (FOREACH_TM(APPEND_COMMA))))
+    RECURSIVELY(R_ZIP(ENUM_HM, TO_TMHM_NUMS NUMBERS_256, (FOREACH_HM(APPEND_COMMA))))
+    #undef ENUM_TM
+    #undef ENUM_HM
+    #undef TO_TMHM_NUMS
+
     // Charms
     ITEM_OVAL_CHARM = 832,
     ITEM_SHINY_CHARM = 833,
@@ -1200,6 +1209,26 @@ enum __attribute__((packed)) Item
 // A special item id associated with "Cancel"/"Exit" etc. in a list of items or decorations
 // Its icon is defined at ITEMS_COUNT as the "return to field" arrow
 #define ITEM_LIST_END 0xFFFF
+
+// Note: If moving ball IDs around, updating FIRST_BALL/LAST_BALL is not sufficient
+// (also update the sItemBallSpritesheet array in src/item.c and in src/bag.c)
+#define FIRST_BALL ITEM_POKE_BALL
+#define LAST_BALL  ITEM_CHERISH_BALL
+
+#define FIRST_MAIL_INDEX ITEM_ORANGE_MAIL
+#define LAST_MAIL_INDEX  ITEM_RETRO_MAIL
+
+#define FIRST_BERRY_INDEX ITEM_CHERI_BERRY
+#define LAST_BERRY_INDEX  ITEM_ENIGMA_BERRY_E_READER
+
+#if B_CONFUSE_BERRIES_HEAL >= GEN_8
+    #define CONFUSE_BERRY_HEAL_FRACTION 3
+#elif B_CONFUSE_BERRIES_HEAL == GEN_7
+    #define CONFUSE_BERRY_HEAL_FRACTION 2
+#else
+    #define CONFUSE_BERRY_HEAL_FRACTION 8
+#endif
+#define CONFUSE_BERRY_HP_FRACTION ((B_CONFUSE_BERRIES_HEAL >= GEN_7) ? 4 : 2)
 
 // Range of berries given out by various NPCS
 #define FIRST_BERRY_MASTER_BERRY      ITEM_POMEG_BERRY

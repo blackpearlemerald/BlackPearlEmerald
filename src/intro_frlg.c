@@ -20,6 +20,7 @@
 #include "title_screen.h"
 #include "trig.h"
 #include "util.h"
+#include "intro_frlg.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/sound.h"

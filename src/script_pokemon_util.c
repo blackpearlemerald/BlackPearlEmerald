@@ -681,3 +681,17 @@ void Script_SetKO(struct ScriptContext *ctx)
         SetMonData(&gPlayerParty[slot], MON_DATA_HP, &hp);
     }
 }
+
+// BPE: Give the starter mon to the first party slot (used by the Birch Case UI)
+u32 BirchCase_GiveMonParameterized(u16 species, u8 level, u16 item, u8 ball, u8 nature, u8 abilityNum, u8 gender, u8 *evs, u8 *ivs, u16 *moves, bool8 ggMaxFactor, u8 teraType, bool8 isShinyExpansion)
+{
+    u16 evs16[NUM_STATS], ivs16[NUM_STATS];
+    u32 i;
+    for (i = 0; i < NUM_STATS; i++)
+    {
+        evs16[i] = evs[i];
+        ivs16[i] = ivs[i];
+    }
+    enum ShinyMode shinyMode = isShinyExpansion ? SHINY_MODE_ALWAYS : SHINY_MODE_RANDOM;
+    return ScriptGiveMonParameterized(0, 0, species, level, item, ball, nature, abilityNum, gender, evs16, ivs16, (enum Move *)moves, shinyMode, ggMaxFactor, teraType, 0);
+}

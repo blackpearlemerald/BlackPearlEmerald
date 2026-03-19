@@ -230,6 +230,7 @@ extern const u8 gText_Birch_WhatsYourName[];
 extern const u8 gText_Birch_SoItsPlayer[];
 extern const u8 gText_Birch_YourePlayer[];
 extern const u8 gText_Birch_AreYouReady[];
+extern const u8 gText_Birch_Nuzlocke[];
 
 extern const u8 gText_BirchInTrouble[];
 extern const u8 gText_ConfirmStarterChoice[];
@@ -2202,5 +2203,11 @@ extern const u8 gText_OakThisIsListOfPokemon[];
 extern const u8 gText_Boy[];
 extern const u8 gText_Girl[];
 
+// BPE: Start menu clock display
+extern const u8 gText_AM[];
+extern const u8 gText_PM[];
+
+// BPE: Stat editor (defined in ui_stat_editor.c)
+extern const u8 gText_StatEditor[];
 
 #endif // GUARD_STRINGS_H

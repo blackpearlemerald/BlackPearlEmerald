@@ -5052,13 +5052,13 @@ static bool8 CalculateMoves(void)
         u16 preSpecies = species;
         while (preSpecies != SPECIES_NONE)
         {
-            numEggMoves = GetEggMovesSpecies(preSpecies, statsMovesEgg);
+            numEggMoves = GetEggMovesBySpecies(preSpecies, statsMovesEgg);
             preSpecies = GetSpeciesPreEvolution(preSpecies);
         }
     }
     else
     {
-        numEggMoves = GetEggMovesSpecies(species, statsMovesEgg);
+        numEggMoves = GetEggMovesBySpecies(species, statsMovesEgg);
     }
 
     // Level up moves

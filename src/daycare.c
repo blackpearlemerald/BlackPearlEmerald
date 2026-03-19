@@ -29,7 +29,7 @@
 #include "constants/party_menu.h"
 #include "constants/region_map_sections.h"
 
-static u8 GetEggMovesBySpecies(u16 species, u16 *eggMoves);
+u8 GetEggMovesBySpecies(u16 species, u16 *eggMoves);
 
 #define IS_DITTO(species) (gSpeciesInfo[species].eggGroups[0] == EGG_GROUP_DITTO || gSpeciesInfo[species].eggGroups[1] == EGG_GROUP_DITTO)
 
