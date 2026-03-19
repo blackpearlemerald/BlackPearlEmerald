@@ -145,7 +145,7 @@ static const struct WindowTemplate sMenuWindowTemplates[] =
         .paletteNum = 15,   // palette index to use for text
         .baseBlock = 1 + 70,     // tile start in VRAM
     },
-    [WINDOW_3] = 
+    [WINDOW_3] =
     {
         .bg = 0,            // which bg to print text on
         .tilemapLeft = 1,   // position from left (per 8 pixels)
@@ -155,6 +155,7 @@ static const struct WindowTemplate sMenuWindowTemplates[] =
         .paletteNum = 15,   // palette index to use for text
         .baseBlock = 1 + 70 + 306,     // tile start in VRAM
     },
+    DUMMY_WIN_TEMPLATE,
 };
 
 static const u32 sStatEditorBgTiles[] = INCBIN_U32("graphics/ui_menu/background_tileset.4bpp.lz");
@@ -284,11 +285,7 @@ void StatEditor_Init(MainCallback callback)
 
 static void StatEditor_RunSetup(void)
 {
-    while (1)
-    {
-        if (StatEditor_DoGfxSetup() == TRUE)
-            break;
-    }
+    StatEditor_DoGfxSetup();
 }
 
 static void StatEditor_MainCB(void)
