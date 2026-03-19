@@ -19,6 +19,7 @@
 #include "mirage_tower.h"
 #include "menu.h"
 #include "metatile_behavior.h"
+#include "oras_dowse.h"
 #include "overworld.h"
 #include "palette.h"
 #include "party_menu.h"
@@ -806,14 +807,22 @@ void FieldEffectScript_LoadTiles(u8 **script)
     (*script) += 4;
 }
 
+static bool32 ShouldFieldEffectBeFogBlended(u8 *script)
+{
+    u32 ptr = FieldEffectScript_ReadWord(&script);
+    if (ptr == (u32)FldEff_TallGrass)
+        return FALSE;
+    return TRUE;
+}
+
 void FieldEffectScript_LoadFadedPalette(u8 **script)
 {
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
     u32 paletteSlot = LoadSpritePalette(palette);
     (*script) += 4;
     SetPaletteColorMapType(paletteSlot + 16, T1_READ_8(*script));
-    UpdateSpritePaletteWithWeather(paletteSlot, TRUE);
     (*script)++;
+    UpdateSpritePaletteWithWeather(paletteSlot, ShouldFieldEffectBeFogBlended(*script));
 }
 
 void FieldEffectScript_LoadPalette(u8 **script)
@@ -1683,6 +1692,7 @@ void StartEscalatorWarp(u8 metatileBehavior, u8 priority)
     {
         gTasks[taskId].tGoingUp = TRUE;
     }
+    EndORASDowsing();
 }
 
 static void Task_EscalatorWarpOut(u8 taskId)
@@ -2069,6 +2079,7 @@ static bool8 DiveFieldEffect_TryWarp(struct Task *task)
 
 void StartLavaridgeGymB1FWarp(u8 priority)
 {
+    EndORASDowsing();
     CreateTask(Task_LavaridgeGymB1FWarp, priority);
 }
 
@@ -2277,6 +2288,7 @@ void SpriteCB_AshLaunch(struct Sprite *sprite)
 
 void StartLavaridgeGym1FWarp(u8 priority)
 {
+    EndORASDowsing();
     CreateTask(Task_LavaridgeGym1FWarp, priority);
 }
 
@@ -2399,6 +2411,7 @@ void StartEscapeRopeFieldEffect(void)
     LockPlayerFieldControls();
     FreezeObjectEvents();
     HideFollowerForFieldEffect(); // hide follower before warping
+    EndORASDowsing();
     CreateTask(Task_EscapeRopeWarpOut, 80);
 }
 
@@ -2593,6 +2606,7 @@ static void TeleportWarpOutFieldEffect_Init(struct Task *task)
     LockPlayerFieldControls();
     FreezeObjectEvents();
     CameraObjectFreeze();
+    EndORASDowsing();
     task->data[15] = GetPlayerFacingDirection();
     task->tState++;
 }
@@ -2657,7 +2671,7 @@ static void TeleportWarpOutFieldEffect_End(struct Task *task)
 
         if (BGMusicStopped() == TRUE)
         {
-            SetWarpDestinationToLastHealLocation();
+            SetWarpDestinationForTeleport();
             WarpIntoMap();
             SetMainCallback2(CB2_LoadMap);
             gFieldCallback = FieldCallback_TeleportWarpIn;

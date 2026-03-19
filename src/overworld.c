@@ -43,6 +43,7 @@
 #include "mirage_tower.h"
 #include "money.h"
 #include "new_game.h"
+#include "oras_dowse.h"
 #include "palette.h"
 #include "play_time.h"
 #include "random.h"
@@ -431,10 +432,13 @@ void Overworld_ResetBattleFlagsAndVars(void)
         VarSet(B_VAR_WILD_AI_FLAGS,0);
     #endif
 
+    #if B_VAR_NO_BAG_USE != 0
+        VarSet(B_VAR_NO_BAG_USE, 0);
+    #endif
+
     FlagClear(B_FLAG_INVERSE_BATTLE);
     FlagClear(B_FLAG_FORCE_DOUBLE_WILD);
     FlagClear(B_SMART_WILD_AI_FLAG);
-    FlagClear(B_FLAG_NO_BAG_USE);
     FlagClear(B_FLAG_NO_CATCHING);
     FlagClear(B_FLAG_NO_RUNNING);
     FlagClear(B_FLAG_DYNAMAX_BATTLE);
@@ -713,7 +717,7 @@ static bool32 IsWhiteoutCutscene(void)
 {
     if (OW_WHITEOUT_CUTSCENE < GEN_4)
         return FALSE;
-    return GetHealNpcLocalId(GetHealLocationIndexByWarpData(&gSaveBlock1Ptr->lastHealLocation)) > 0;
+    return GetHealNpcLocalId(GetHealLocationIndexByWarpData(&gSaveBlock1Ptr->lastHealLocation)) != LOCALID_NONE;
 }
 
 void SetWarpDestinationToLastHealLocation(void)
@@ -722,6 +726,11 @@ void SetWarpDestinationToLastHealLocation(void)
         SetWhiteoutRespawnWarpAndHealerNPC(&sWarpDestination);
     else
         sWarpDestination = gSaveBlock1Ptr->lastHealLocation;
+}
+
+void SetWarpDestinationForTeleport(void)
+{
+    sWarpDestination = gSaveBlock1Ptr->lastHealLocation;
 }
 
 void SetLastHealLocationWarp(u8 healLocationId)
@@ -1127,7 +1136,7 @@ static bool16 ShouldLegendaryMusicPlayAtLocation(struct WarpData *warp)
     return FALSE;
 }
 
-static bool16 NoMusicInSotopolisWithLegendaries(struct WarpData *warp)
+static bool16 NoMusicInSootopolisWithLegendaries(struct WarpData *warp)
 {
     if (VarGet(VAR_SKY_PILLAR_STATE) != 1)
         return FALSE;
@@ -1152,7 +1161,7 @@ static bool16 IsInfiltratedWeatherInstitute(struct WarpData *warp)
         return FALSE;
 }
 
-static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
+static bool16 IsInfiltratedSpaceCenter(struct WarpData *warp)
 {
     if (VarGet(VAR_MOSSDEEP_CITY_STATE) == 0)
         return FALSE;
@@ -1168,11 +1177,11 @@ static bool16 IsInflitratedSpaceCenter(struct WarpData *warp)
 
 u16 GetLocationMusic(struct WarpData *warp)
 {
-    if (NoMusicInSotopolisWithLegendaries(warp) == TRUE)
+    if (NoMusicInSootopolisWithLegendaries(warp) == TRUE)
         return MUS_NONE;
     else if (ShouldLegendaryMusicPlayAtLocation(warp) == TRUE)
         return MUS_ABNORMAL_WEATHER;
-    else if (IsInflitratedSpaceCenter(warp) == TRUE)
+    else if (IsInfiltratedSpaceCenter(warp) == TRUE)
         return MUS_ENCOUNTER_MAGMA;
     else if (IsInfiltratedWeatherInstitute(warp) == TRUE)
         return MUS_MT_CHIMNEY;
@@ -1627,7 +1636,7 @@ void UpdateTimeOfDay(void)
 #undef DEFAULT_WEIGHT
 
 // Whether a map type is naturally lit/outside
-bool32 MapHasNaturalLight(u8 mapType)
+bool32 MapHasNaturalLight(enum MapType mapType)
 {
     return (OW_ENABLE_DNS
          && (mapType == MAP_TYPE_TOWN
@@ -1718,11 +1727,12 @@ static void OverworldBasic(void)
         gTimeUpdateCounter = (SECONDS_PER_MINUTE * 60 / FakeRtc_GetSecondsRatio());
         UpdateTimeOfDay();
         FormChangeTimeUpdate();
-        if (bld0[0] != bld1[0]
+        if (MapHasNaturalLight(gMapHeader.mapType) &&
+           (bld0[0] != bld1[0]
          || bld0[1] != bld1[1]
-         || bld0[2] != bld1[2])
+         || bld0[2] != bld1[2]))
         {
-           ApplyWeatherColorMapIfIdle(gWeatherPtr->colorMapIndex);
+            ApplyWeatherColorMapIfIdle(gWeatherPtr->colorMapIndex);
         }
     }
 }
@@ -2243,6 +2253,7 @@ static bool32 ReturnToFieldLocal(u8 *state)
         InitViewGraphics();
         TryLoadTrainerHillEReaderPalette();
         FollowerNPC_BindToSurfBlobOnReloadScreen();
+        ResumeORASDowseFieldEffect();
         (*state)++;
         break;
     case 2:
@@ -3022,7 +3033,7 @@ static const u8 *TryInteractWithPlayer(struct CableClubPlayer *player)
     otherPlayerPos = player->pos;
     otherPlayerPos.x += gDirectionToVectors[player->facing].x;
     otherPlayerPos.y += gDirectionToVectors[player->facing].y;
-    otherPlayerPos.elevation = 0;
+    otherPlayerPos.elevation = ELEVATION_TRANSITION;
     linkPlayerId = GetLinkPlayerIdAt(otherPlayerPos.x, otherPlayerPos.y);
 
     if (linkPlayerId != MAX_LINK_PLAYERS)

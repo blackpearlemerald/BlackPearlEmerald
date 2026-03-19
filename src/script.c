@@ -13,6 +13,8 @@
 #include "task.h"
 #include "field_weather.h"
 
+#include "dexnav.h"
+
 #define RAM_SCRIPT_MAGIC 51
 
 enum {
@@ -202,6 +204,7 @@ u32 ScriptPeekWord(struct ScriptContext *ctx)
 void LockPlayerFieldControls(void)
 {
     sLockFieldControls = TRUE;
+    EndDexNavSearch();
 }
 
 void UnlockPlayerFieldControls(void)

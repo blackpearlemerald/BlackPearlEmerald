@@ -223,7 +223,7 @@ enum {
     MAPSEC_COUNT
 };
 
-// BPE-specific map sections (additional rooms not in vanilla region map)
+// BPE custom map sections
 #define MAPSEC_TRICK_HOUSE_1    0xD6
 #define MAPSEC_TRICK_HOUSE_2    0xD7
 #define MAPSEC_TRICK_HOUSE_3    0xD8

@@ -2280,7 +2280,7 @@ static bool8 Mugshot_SetGfx(struct Task *task)
     s16 i, j;
     u16 *tilemap, *tileset;
     const u16 *mugshotsMap = sMugshotsTilemap;
-    u8 mugshotColor = GetTrainerMugshotColorFromId(TRAINER_BATTLE_PARAM.opponentA);
+    enum MugshotColor mugshotColor = GetTrainerMugshotColorFromId(TRAINER_BATTLE_PARAM.opponentA);
 
     GetBg0TilesDst(&tilemap, &tileset);
     CpuSet(sEliteFour_Tileset, tileset, 0xF0);
@@ -2426,7 +2426,7 @@ static bool8 Mugshot_WaitPlayerSlide(struct Task *task)
     sTransitionData->BG0HOFS_Lower -= 8;
     sTransitionData->BG0HOFS_Upper += 8;
 
-    if (gPartnerTrainerId != TRAINER_PARTNER(PARTNER_NONE) && gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) 
+    if (gPartnerTrainerId != TRAINER_PARTNER(PARTNER_NONE) && gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER)
     {
         if (IsTrainerPicSlideDone(task->tPartnerSpriteId))
         {
@@ -2446,7 +2446,7 @@ static bool8 Mugshot_WaitPlayerSlide(struct Task *task)
         else
         {
             return FALSE;
-        } 
+        }
     }
     else
     {
@@ -2468,7 +2468,7 @@ static bool8 Mugshot_WaitPlayerSlide(struct Task *task)
         else
         {
             return FALSE;
-        } 
+        }
     }
     return FALSE;
 }
@@ -2630,10 +2630,6 @@ static void Mugshots_CreateTrainerPics(struct Task *task)
         CalcCenterToCornerVec(partnerSprite, SPRITE_SHAPE(64x32), SPRITE_SIZE(64x32), ST_OAM_AFFINE_DOUBLE);
         SetOamMatrixRotationScaling(partnerSprite->oam.matrixNum, -512, 512, 0);
     }
-
-
-    //IF PALETTES ARE GRIEFED, DELETE THE BELOW LINE
-    gReservedSpritePaletteCount = 12;
 
     task->tPlayerSpriteId = CreateTrainerSprite(PlayerGenderToFrontTrainerPicId(gSaveBlock2Ptr->playerGender),
                                                 DISPLAY_WIDTH + 32,
