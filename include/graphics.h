@@ -3350,5 +3350,8 @@ extern const u32 gItemIcon_CandyJar[];
 extern const u16 gItemIconPalette_CandyJar[];
 extern const u32 gItemIcon_PicnicBasket[];
 extern const u16 gItemIconPalette_PicnicBasket[];
+extern const u32 gGhostFrontPic[];
+extern const u16 gGhostPalette[];
+
 
 #endif //GUARD_GRAPHICS_H
