@@ -68,6 +68,7 @@ enum BattleTransition GetWildBattleTransition(void);
 enum BattleTransition GetTrainerBattleTransition(void);
 enum BattleTransition GetSpecialBattleTransition(enum BattleTransitionGroup id);
 void ChooseStarter(void);
+void StartFirstBattleOnly(void);
 void ResetTrainerOpponentIds(void);
 void SetMapVarsToTrainerA(void);
 void SetMapVarsToTrainerB(void);

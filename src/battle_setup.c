@@ -965,6 +965,15 @@ void ChooseStarter(void)
     gMain.savedCallback = CB2_GiveStarter;
 }
 
+void StartFirstBattleOnly(void)
+{
+    *GetVarPointer(VAR_STARTER_MON) = gSpecialVar_Result;
+    ResetTasks();
+    PlayBattleBGM();
+    SetMainCallback2(CB2_StartFirstBattle);
+    BattleTransition_Start(B_TRANSITION_BLUR);
+}
+
 static void CB2_GiveStarter(void)
 {
     u16 starterMon;
