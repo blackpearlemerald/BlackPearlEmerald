@@ -64,3 +64,6 @@ tools/aif2pcm/aif2pcm
 *.smolTM
 __pycache__
 src/data/pokemon/teachable_learnsets.h
+
+# BPE Tools
+BPETools/Resources/
