@@ -120,9 +120,9 @@ static u8 setup##_callback(struct ObjectEvent *objectEvent, struct Sprite *sprit
     return 0;\
 }
 
-static EWRAM_DATA u8 sCurrentReflectionType = 0;
-static EWRAM_DATA u16 sCurrentSpecialObjectPaletteTag = 0;
-static EWRAM_DATA struct LockedAnimObjectEvents *sLockedAnimObjectEvents = {0};
+static EWRAM_DATA u8 sCurrentReflectionType __attribute__((unused)) = 0;
+static EWRAM_DATA u16 sCurrentSpecialObjectPaletteTag __attribute__((unused)) = 0;
+static EWRAM_DATA struct LockedAnimObjectEvents *sLockedAnimObjectEvents __attribute__((unused)) = NULL;
 
 static void MoveCoordsInDirection(u32, s16 *, s16 *, s16, s16);
 static bool8 ObjectEventExecSingleMovementAction(struct ObjectEvent *, struct Sprite *);
@@ -222,7 +222,6 @@ static u16 GetUnownSpecies(struct Pokemon *mon);
 
 static const struct SpriteFrameImage sPicTable_PechaBerryTree[];
 
-static void StartSlowRunningAnim(struct ObjectEvent *objectEvent, struct Sprite *sprite, enum Direction direction);
 
 const u8 gReflectionEffectPaletteMap[16] = {
         [PALSLOT_PLAYER]                 = PALSLOT_PLAYER_REFLECTION,

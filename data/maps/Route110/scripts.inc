@@ -390,11 +390,11 @@ Route110_EventScript_RivalScene::
 	end
 
 Route110_EventScript_PlayMayMusic::
-	playbgm MUS_ENCOUNTER_MAY, TRUE
+	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
 	return
 
 Route110_EventScript_PlayBrendanMusic::
-	playbgm MUS_ENCOUNTER_BRENDAN, TRUE
+	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
 	return
 
 Route110_EventScript_MayBattle::

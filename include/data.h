@@ -263,7 +263,7 @@ static inline const struct Trainer *GetTrainerStructFromId(u16 trainerId)
         return &gTrainers[difficulty][sanitizedTrainerId];
 }
 
-static inline const enum TrainerClassID GetTrainerClassFromId(u16 trainerId)
+static inline enum TrainerClassID GetTrainerClassFromId(u16 trainerId)
 {
     const struct Trainer *trainer = GetTrainerStructFromId(trainerId);
 
@@ -289,7 +289,7 @@ static inline const u8 *GetTrainerNameFromId(u16 trainerId)
     return GetTrainerStructFromId(trainerId)->trainerName;
 }
 
-static inline const enum TrainerPicID GetTrainerPicFromId(u16 trainerId)
+static inline enum TrainerPicID GetTrainerPicFromId(u16 trainerId)
 {
     enum DifficultyLevel partnerDifficulty = GetBattlePartnerDifficultyLevel(trainerId);
 
@@ -299,7 +299,7 @@ static inline const enum TrainerPicID GetTrainerPicFromId(u16 trainerId)
     return GetTrainerStructFromId(trainerId)->trainerPic;
 }
 
-static inline const u8 GetTrainerBackPicFromId(u16 trainerId)
+static inline u8 GetTrainerBackPicFromId(u16 trainerId)
 {
     enum DifficultyLevel partnerDifficulty = GetBattlePartnerDifficultyLevel(trainerId);
 
@@ -309,27 +309,27 @@ static inline const u8 GetTrainerBackPicFromId(u16 trainerId)
     return GetTrainerStructFromId(trainerId)->trainerBackPic;
 }
 
-static inline const struct StartingStatuses GetTrainerStartingStatusFromId(u16 trainerId)
+static inline struct StartingStatuses GetTrainerStartingStatusFromId(u16 trainerId)
 {
     return GetTrainerStructFromId(trainerId)->startingStatus;
 }
 
-static inline const enum TrainerBattleType GetTrainerBattleType(u16 trainerId)
+static inline enum TrainerBattleType GetTrainerBattleType(u16 trainerId)
 {
     return GetTrainerStructFromId(trainerId)->battleType;
 }
 
-static inline const u8 GetTrainerPartySizeFromId(u16 trainerId)
+static inline u8 GetTrainerPartySizeFromId(u16 trainerId)
 {
     return GetTrainerStructFromId(trainerId)->partySize;
 }
 
-static inline const bool32 DoesTrainerHaveMugshot(u16 trainerId)
+static inline bool32 DoesTrainerHaveMugshot(u16 trainerId)
 {
     return GetTrainerStructFromId(trainerId)->mugshotColor;
 }
 
-static inline const u8 GetTrainerMugshotColorFromId(u16 trainerId)
+static inline u8 GetTrainerMugshotColorFromId(u16 trainerId)
 {
     return GetTrainerStructFromId(trainerId)->mugshotColor;
 }

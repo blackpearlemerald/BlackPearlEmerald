@@ -32,6 +32,10 @@ $(CRY_BIN_DIR)/uncomp_%.bin: $(CRY_SUBDIR)/uncomp_%.aif
 $(SOUND_BIN_DIR)/%.bin: sound/%.wav
 	$(WAV2AGB) -b $< $@
 
+# Uncompressed sounds from .aif (BW/DP expansion samples)
+$(SOUND_BIN_DIR)/%.bin: sound/%.aif
+	$(AIF) $< $@
+
 # For each line in midi.cfg, we do some trickery to convert it into a make rule for the `.mid` file described on the line
 # Data following the colon in said file corresponds to arguments passed into mid2agb
 MID_CFG_PATH := $(MID_SUBDIR)/midi.cfg

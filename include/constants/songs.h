@@ -546,6 +546,10 @@
 #define PH_NURSE_HELD               608
 #define PH_NURSE_SOLO               609
 
+// Cynthia (BW2 versions) - rival replacement music
+#define MUS_BW_VS_CYNTHIA           610 // Battle! (Cynthia)
+#define MUS_BW_ENCOUNTER_CYNTHIA    611 // Cynthia's Theme (approach jingle)
+
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 
 #define MUS_NONE                    0xFFFF

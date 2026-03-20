@@ -63,7 +63,7 @@ LittlerootTown_MaysHouse_2F_EventScript_MeetMay::
 	applymovement LOCALID_RIVALS_HOUSE_2F_RIVAL, Common_Movement_Delay48
 	waitmovement 0
 	delay 10
-	playbgm MUS_ENCOUNTER_MAY, TRUE
+	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
 	call_if_eq VAR_FACING, DIR_NORTH, LittlerootTown_MaysHouse_2F_EventScript_MeetMayNorth
 	call_if_eq VAR_FACING, DIR_SOUTH, LittlerootTown_MaysHouse_2F_EventScript_MeetMaySouth
 	call_if_eq VAR_FACING, DIR_WEST, LittlerootTown_MaysHouse_2F_EventScript_MeetMayWest

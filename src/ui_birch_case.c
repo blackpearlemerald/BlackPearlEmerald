@@ -132,17 +132,17 @@ struct MonChoiceData{ // This is the format used to define a mon, everything lef
 //
 static const struct MonChoiceData sStarterChoices[9] = 
 {
-    [BALL_TOP_FIRST]        = {SPECIES_RALTS, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
-    [BALL_TOP_SECOND]       = {SPECIES_HONEDGE, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
-    [BALL_MIDDLE_FIRST]     = {SPECIES_TORCHIC, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
+    [BALL_TOP_FIRST]        = {SPECIES_RALTS, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
+    [BALL_TOP_SECOND]       = {SPECIES_HONEDGE, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
+    [BALL_MIDDLE_FIRST]     = {SPECIES_TORCHIC, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
 
-    [BALL_TOP_THIRD]        = {SPECIES_WOOPER_PALDEAN, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
-    [BALL_TOP_FOURTH]       = {SPECIES_PORYGON, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
-    [BALL_MIDDLE_THIRD]     = {SPECIES_TREECKO, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
+    [BALL_TOP_THIRD]        = {SPECIES_WOOPER_PALDEAN, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
+    [BALL_TOP_FOURTH]       = {SPECIES_PORYGON, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
+    [BALL_MIDDLE_THIRD]     = {SPECIES_TREECKO, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
 
-    [BALL_MIDDLE_SECOND]    = {SPECIES_MUDKIP, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
-    [BALL_BOTTOM_FIRST]     = {SPECIES_EEVEE, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
-    [BALL_BOTTOM_SECOND]    = {SPECIES_VULPIX_ALOLAN, 5, 0, 0, 99, 99, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {}, 0, 0, 0},
+    [BALL_MIDDLE_SECOND]    = {SPECIES_MUDKIP, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
+    [BALL_BOTTOM_FIRST]     = {SPECIES_EEVEE, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
+    [BALL_BOTTOM_SECOND]    = {SPECIES_VULPIX_ALOLAN, 5, 0, BALL_POKE, NATURE_RANDOM, NUM_ABILITY_PERSONALITY, 0, {0, 0, 0, 0, 0, 0}, {31, 31, 31, 31, 31, 31}, {MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT, MOVE_DEFAULT}, 0, 0, 0},
 };
 
 //==========EWRAM==========//
@@ -186,9 +186,9 @@ static const struct BgTemplate sMenuBgTemplates[] =
     }
 };
 
-static const struct WindowTemplate sMenuWindowTemplates[] = 
+static const struct WindowTemplate sMenuWindowTemplates[] =
 {
-    [WINDOW_BOTTOM_BAR] = 
+    [WINDOW_BOTTOM_BAR] =
     {
         .bg = 0,            // which bg to print text on
         .tilemapLeft = 0,   // position from left (per 8 pixels)
@@ -198,6 +198,7 @@ static const struct WindowTemplate sMenuWindowTemplates[] =
         .paletteNum = 15,   // palette index to use for text
         .baseBlock = 1,     // tile start in VRAM
     },
+    DUMMY_WIN_TEMPLATE,
 };
 
 

@@ -89,11 +89,11 @@ LavaridgeTown_EventScript_RivalExit::
 	end
 
 LavaridgeTown_EventScript_PlayMayMusic::
-	playbgm MUS_ENCOUNTER_MAY, TRUE
+	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
 	return
 
 LavaridgeTown_EventScript_PlayBrendanMusic::
-	playbgm MUS_ENCOUNTER_BRENDAN, TRUE
+	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
 	return
 
 LavaridgeTown_EventScript_RivalNoticePlayer::
