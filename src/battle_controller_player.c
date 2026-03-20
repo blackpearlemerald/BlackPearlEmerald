@@ -455,6 +455,11 @@ void HandleInputChooseTarget(enum BattlerId battler)
         EndBounceEffect(gMultiUsePlayerCursor, BOUNCE_HEALTHBOX);
         TryHideLastUsedBall();
         HideGimmickTriggerSprite();
+        if (gCategoryIconSpriteId != 0xFF)
+        {
+            DestroySprite(&gSprites[gCategoryIconSpriteId]);
+            gCategoryIconSpriteId = 0xFF;
+        }
         BtlController_Complete(battler);
     }
     else if (JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)
@@ -627,6 +632,11 @@ void HandleInputShowEntireFieldTargets(enum BattlerId battler)
         else
             BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_EXEC_SCRIPT, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         HideGimmickTriggerSprite();
+        if (gCategoryIconSpriteId != 0xFF)
+        {
+            DestroySprite(&gSprites[gCategoryIconSpriteId]);
+            gCategoryIconSpriteId = 0xFF;
+        }
         BtlController_Complete(battler);
     }
     else if (JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)
@@ -656,6 +666,11 @@ void HandleInputShowTargets(enum BattlerId battler)
             BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_EXEC_SCRIPT, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
         HideGimmickTriggerSprite();
         TryHideLastUsedBall();
+        if (gCategoryIconSpriteId != 0xFF)
+        {
+            DestroySprite(&gSprites[gCategoryIconSpriteId]);
+            gCategoryIconSpriteId = 0xFF;
+        }
         BtlController_Complete(battler);
     }
     else if (JOY_NEW(B_BUTTON) || gPlayerDpadHoldFrames > 59)
@@ -780,6 +795,11 @@ void HandleInputChooseMove(enum BattlerId battler)
                 BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_EXEC_SCRIPT, gMoveSelectionCursor[battler] | (gMultiUsePlayerCursor << 8));
             HideGimmickTriggerSprite();
             TryHideLastUsedBall();
+            if (gCategoryIconSpriteId != 0xFF)
+            {
+                DestroySprite(&gSprites[gCategoryIconSpriteId]);
+                gCategoryIconSpriteId = 0xFF;
+            }
             BtlController_Complete(battler);
             break;
         case 1:
@@ -819,6 +839,11 @@ void HandleInputChooseMove(enum BattlerId battler)
             HideGimmickTriggerSprite();
             BtlController_Complete(battler);
             TryToHideMoveInfoWindow();
+            if (gCategoryIconSpriteId != 0xFF)
+            {
+                DestroySprite(&gSprites[gCategoryIconSpriteId]);
+                gCategoryIconSpriteId = 0xFF;
+            }
         }
     }
     else if (JOY_NEW(DPAD_LEFT) && !gBattleStruct->zmove.viewing)
