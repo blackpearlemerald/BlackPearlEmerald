@@ -59,15 +59,15 @@ voicegroupDrum2::
 	voice_directsound 60, 64, DirectSoundWaveData_bw_tabla_11, 255, 0, 227, 16	@ 127/127/120/126/ 64
 	voice_directsound 60, 64, DirectSoundWaveData_bw_tabla_12, 255, 0, 227, 16	@ 127/127/120/126/ 64
 	voice_directsound 60, 64, DirectSoundWaveData_bw_tabla_8, 255, 241, 0, 178	@ 127/102/  0/120/ 64
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
+	voice_directsound 36, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 59 (Bn2)
+	voice_directsound 37, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 60 (Cn3)
+	voice_directsound 38, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 61 (Cs3)
+	voice_directsound 39, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 62 (Dn3)
+	voice_directsound 40, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 63 (Ds3)
+	voice_directsound 41, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 64 (En3) ← E5 beep fix
+	voice_directsound 42, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 65 (Fn3)
+	voice_directsound 43, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 66 (Fs3)
+	voice_directsound 44, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ index 67 (Gn3)
 	voice_directsound 45, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ 127/120/120/126/ 64
 	voice_directsound 46, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ 127/120/120/126/ 64
 	voice_directsound 47, 64, DirectSoundWaveData_bw_t9_clap, 255, 197, 227, 16	@ 127/120/120/126/ 64

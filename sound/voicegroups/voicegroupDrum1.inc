@@ -1,22 +1,22 @@
 	.align 2
-voicegroupDrum1:: @ 
+voicegroupDrum1:: @
+	voice_directsound 60, 64, DirectSoundWaveData_bw_sd90_power_kick, 255, 0, 227, 208	@ Cn0 kick drum
+	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
+	voice_directsound 60, 64, DirectSoundWaveData_bw_sd90_standard_kick_b1, 255, 0, 227, 208	@ Dn0 kick drum
+	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
+	voice_directsound 60, 64, DirectSoundWaveData_bw_sd90_power_kick, 255, 0, 227, 208	@ En0 kick drum
+	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
+	voice_directsound 60, 64, DirectSoundWaveData_bw_rim_hit, 255, 0, 227, 208	@ Fs0 rim hit
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0		@ dummy
+	voice_directsound 60, 80, DirectSoundWaveData_hg_062chh, 255, 242, 0, 178	@ Bn0 closed hi-hat
+	voice_directsound 60, 64, DirectSoundWaveData_dp_808snare_16, 255, 219, 0, 178	@ Cn1 snare
+	voice_directsound 60, 80, DirectSoundWaveData_hg_062chh, 255, 242, 0, 178	@ Cs1 closed hi-hat
+	voice_directsound 60, 80, DirectSoundWaveData_hg_062chh, 255, 242, 0, 178	@ Dn1 closed hi-hat
+	voice_directsound 60, 80, DirectSoundWaveData_hg_062chh, 255, 242, 0, 178	@ Ds1 closed hi-hat
+	voice_directsound 60, 64, DirectSoundWaveData_bw_sd90_standard_kick_b1, 255, 0, 227, 208	@ En1 kick drum
 	voice_directsound 61, 64, DirectSoundWaveData_bw_drum_roll, 255, 0, 227, 88	@ 127/127/120/124/ 64
 	voice_directsound 60, 30, DirectSoundWaveData_bw_castanet, 255, 222, 227, 208	@ 127/115/120/116/ 30
 	voice_directsound 60, 40, DirectSoundWaveData_bw_short_guiro, 255, 233, 191, 208	@ 127/110/110/116/ 40

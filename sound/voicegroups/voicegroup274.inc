@@ -48,7 +48,7 @@ voicegroup274:: @ BW basic
 	voice_keysplit voicegroupInst22, KeySplitTable95	@ slap bass
 	voice_directsound 60, 0, DirectSoundWaveData_dp_timpany_as_16, 255, 249, 0, 208	@ 127/ 80/  1/116/ 64
 	voice_directsound 60, 0, DirectSoundWaveData_bw_slap_bass_g2, 255, 64, 227, 178	@ 127/125/120/120/ 64
-	voice_directsound 60, 0, DirectSoundWaveData_puresquare_50, 255, 242, 25, 0	@ 126/100/ 40/127/ 64
+	voice_keysplit voicegroup267, KeySplitTable53	@ flute 1 (BW program 48)
 	voice_keysplit voicegroupInst47, KeySplitTable90	@ piano (longer decay)
 	voice_keysplit voicegroupInst40, KeySplitTable93	@ saxophone
 	voice_directsound 60, 0, DirectSoundWaveData_bw_trombone_stab_cs2, 255, 197, 227, 208	@ 127/120/120/116/ 64
@@ -78,10 +78,10 @@ voicegroup274:: @ BW basic
 	voice_keysplit voicegroupInst43, KeySplitTable81	@ sitar
 	voice_directsound 60, 0, DirectSoundWaveData_bw_steel_drum_g4, 255, 252, 0, 208	@ 127/ 50/  1/116/ 64
 	voice_keysplit voicegroupInst65, KeySplitTable74	@ clarinet ensemble
+	voice_keysplit voicegroup265, KeySplitTable51	@ oboe (BW program 78 secondary melody)
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0	@ dummy
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0	@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0	@ dummy
-	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0	@ dummy
+	voice_keysplit voicegroup255, KeySplitTable45	@ strings pad (BW program 81)
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0	@ dummy
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0	@ dummy
 	voice_square_1 60, 0, 0, 2, 0, 0, 15, 0	@ dummy
