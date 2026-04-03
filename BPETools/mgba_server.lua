@@ -476,7 +476,7 @@ handlers.read_state = function(cmd)
     y         = py,
     in_battle = in_battle,
     party_count = party_count,
-    frame     = emu:framecount(),
+    frame     = emu:currentFrame(),
   }
 end
 
