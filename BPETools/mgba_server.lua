@@ -1,13 +1,10 @@
 --[[
-  mgba_server.lua — BPE Emerald mGBA Lua TCP server
-  Version: 1.0  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
+  mgba_server.lua — BPE Emerald mGBA Lua script (file-based IPC)
+  Version: 1.1  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
 
-  Runs inside mGBA. Opens a TCP socket on port 9001.
-  Accepts JSON commands (one per line) from bpe_test.py and returns JSON responses.
-
-  Load in mGBA: File → Load Script, or add to mGBA config:
-    [scripting]
-    autorun=<absolute path to mgba_server.lua>
+  Runs inside mGBA via Tools → Scripting (load script button).
+  Uses file-based IPC: Python writes BPETools/bpe_cmd.json, this script
+  reads it on the next frame and writes BPETools/bpe_resp.json.
 
   Memory addresses are from the compiled BPE Emerald v1.0.1 pokeemerald.map.
 --]]
@@ -15,8 +12,11 @@
 -- ============================================================
 -- CONFIG
 -- ============================================================
-local PORT = 9001
-local TABLES_PATH = nil   -- set to absolute path, or nil to auto-detect
+-- Absolute path to the BPETools directory (trailing slash)
+local TOOLS_DIR = "E:/Projects/PokemonBlackPearlEmerald/BPE Emerald V1.0.1/pokeemerald-expansion/BPETools/"
+local TABLES_PATH = TOOLS_DIR .. "lua_tables.lua"
+local CMD_FILE    = TOOLS_DIR .. "bpe_cmd.json"
+local RESP_FILE   = TOOLS_DIR .. "bpe_resp.json"
 
 -- ============================================================
 -- MEMORY ADDRESSES (from pokeemerald.map for BPE Emerald v1.0.1)
@@ -260,8 +260,8 @@ local function load_tables()
 
   local f = io.open(path, "r")
   if not f then
-    print("[BPE] WARNING: lua_tables.lua not found at: " .. tostring(path))
-    print("[BPE] Run: py BPETools/gen_lua_tables.py > BPETools/lua_tables.lua")
+    console:log("[BPE] WARNING: lua_tables.lua not found at: " .. tostring(path))
+    console:log("[BPE] Run: py BPETools/gen_lua_tables.py > BPETools/lua_tables.lua")
     return
   end
   f:close()
@@ -273,12 +273,12 @@ local function load_tables()
     if t and t.MAPS    then MAPS    = t.MAPS    end
   end)
   if not ok then
-    print("[BPE] ERROR loading lua_tables.lua: " .. tostring(err))
+    console:log("[BPE] ERROR loading lua_tables.lua: " .. tostring(err))
   else
     local ns = 0; for _ in pairs(SPECIES) do ns = ns+1 end
     local nm = 0; for _ in pairs(MOVES)   do nm = nm+1 end
     local nma= 0; for _ in pairs(MAPS)    do nma= nma+1 end
-    print(string.format("[BPE] Loaded tables: %d species, %d moves, %d maps", ns, nm, nma))
+    console:log(string.format("[BPE] Loaded tables: %d species, %d moves, %d maps", ns, nm, nma))
   end
 end
 
@@ -772,36 +772,11 @@ local function dispatch(cmd)
 end
 
 -- ============================================================
--- TCP SERVER
+-- FILE-BASED IPC
 -- ============================================================
-local socket_lib = nil
-local server_sock = nil
-local client_sock = nil
-local recv_buf = ""
 
--- pending key press state (set by press_buttons)
-pending_keys = nil
-
-local function start_server()
-  local ok, sock = pcall(require, "socket")
-  if not ok then
-    print("[BPE] ERROR: LuaSocket not available. TCP server disabled.")
-    return false
-  end
-  socket_lib = sock
-
-  server_sock = socket_lib.tcp()
-  server_sock:setoption("reuseaddr", true)
-  local bound, err = server_sock:bind("127.0.0.1", PORT)
-  if not bound then
-    print("[BPE] ERROR: could not bind port " .. PORT .. ": " .. tostring(err))
-    return false
-  end
-  server_sock:listen(1)
-  server_sock:settimeout(0)
-  print("[BPE] Server listening on 127.0.0.1:" .. PORT)
-  return true
-end
+-- pending key press state (set by press_buttons handler)
+local pending_keys = nil
 
 local function frame_callback()
   -- Handle pending key presses
@@ -815,64 +790,34 @@ local function frame_callback()
     end
   end
 
-  if not server_sock then return end
+  -- Check for a command file every frame
+  local f = io.open(CMD_FILE, "r")
+  if not f then return end
+  local content = f:read("*a")
+  f:close()
 
-  -- Accept new connections
-  if not client_sock then
-    local c = server_sock:accept()
-    if c then
-      c:settimeout(0)
-      client_sock = c
-      recv_buf = ""
-      print("[BPE] Client connected")
-    end
-  end
+  -- Delete command file immediately so we don't process it twice
+  os.remove(CMD_FILE)
 
-  -- Read from client
-  if client_sock then
-    local data, err, partial = client_sock:receive(4096)
-    local chunk = data or partial or ""
-    if chunk ~= "" then
-      recv_buf = recv_buf .. chunk
-      -- Process all complete lines
-      while true do
-        local nl = recv_buf:find("\n")
-        if not nl then break end
-        local line = recv_buf:sub(1, nl - 1)
-        recv_buf = recv_buf:sub(nl + 1)
-        line = line:gsub("\r", "")
-        if line ~= "" then
-          local cmd = json.decode(line)
-          local resp = dispatch(cmd or {})
-          local resp_str = json.encode(resp) .. "\n"
-          local s_ok, s_err = client_sock:send(resp_str)
-          if not s_ok then
-            print("[BPE] Send error: " .. tostring(s_err))
-            client_sock:close()
-            client_sock = nil
-            recv_buf = ""
-            break
-          end
-        end
-      end
-    end
-    if err == "closed" then
-      print("[BPE] Client disconnected")
-      client_sock = nil
-      recv_buf = ""
-    end
+  if not content or content == "" then return end
+
+  local cmd = json.decode(content)
+  local resp = dispatch(cmd or {})
+
+  -- Write response (atomic: write to temp then rename)
+  local tmp = RESP_FILE .. ".tmp"
+  local rf = io.open(tmp, "w")
+  if rf then
+    rf:write(json.encode(resp))
+    rf:close()
+    os.rename(tmp, RESP_FILE)
   end
 end
 
 -- ============================================================
 -- STARTUP
 -- ============================================================
-print("[BPE] mgba_server.lua starting (BPE Emerald v1.0.1)")
+console:log("[BPE] mgba_server.lua starting (BPE Emerald v1.0.1)")
 load_tables()
-
-if start_server() then
-  callbacks:add("frame", frame_callback)
-  print("[BPE] Ready. Connect with: py BPETools/bpe_test.py read_state")
-else
-  print("[BPE] Server failed to start.")
-end
+callbacks:add("frame", frame_callback)
+console:log("[BPE] Ready. Use: py BPETools/bpe_test.py read_state")

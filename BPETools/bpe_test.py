@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 bpe_test.py — BPE Emerald mGBA test CLI
-Connects to mgba_server.lua (port 9001) and sends JSON commands.
+Communicates with mgba_server.lua via file-based IPC.
 
 Usage:
   py BPETools/bpe_test.py <command> [args...]
@@ -42,45 +42,44 @@ Examples:
 """
 
 import json
-import socket
+import os
 import sys
+import time
+from pathlib import Path
 
-HOST = "127.0.0.1"
-PORT = 9001
-TIMEOUT = 5.0
-
-
-def connect():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(TIMEOUT)
-    try:
-        s.connect((HOST, PORT))
-    except ConnectionRefusedError:
-        print("ERROR: Cannot connect to mGBA server on port 9001.")
-        print("Make sure mGBA is running with mgba_server.lua loaded.")
-        sys.exit(1)
-    except TimeoutError:
-        print("ERROR: Connection timed out.")
-        sys.exit(1)
-    return s
+# IPC file paths — must match TOOLS_DIR in mgba_server.lua
+_TOOLS = Path(__file__).parent
+CMD_FILE  = _TOOLS / "bpe_cmd.json"
+RESP_FILE = _TOOLS / "bpe_resp.json"
+TIMEOUT   = 5.0  # seconds to wait for mGBA to respond
 
 
 def send_cmd(cmd: dict) -> dict:
-    s = connect()
-    try:
-        payload = json.dumps(cmd) + "\n"
-        s.sendall(payload.encode())
-        # Read response line
-        buf = b""
-        while b"\n" not in buf:
-            chunk = s.recv(65536)
-            if not chunk:
-                break
-            buf += chunk
-        line = buf.split(b"\n")[0]
-        return json.loads(line.decode())
-    finally:
-        s.close()
+    # Remove stale response file
+    RESP_FILE.unlink(missing_ok=True)
+
+    # Write command (atomic via temp file)
+    tmp = CMD_FILE.with_suffix(".tmp")
+    tmp.write_text(json.dumps(cmd), encoding="utf-8")
+    tmp.replace(CMD_FILE)
+
+    # Wait for response
+    deadline = time.monotonic() + TIMEOUT
+    while time.monotonic() < deadline:
+        if RESP_FILE.exists():
+            try:
+                data = RESP_FILE.read_text(encoding="utf-8")
+                RESP_FILE.unlink(missing_ok=True)
+                return json.loads(data)
+            except (json.JSONDecodeError, OSError):
+                pass  # file still being written, retry
+        time.sleep(0.02)
+
+    # Timeout — clean up command file if mGBA didn't read it
+    CMD_FILE.unlink(missing_ok=True)
+    print("ERROR: Timeout — mGBA did not respond.")
+    print("Make sure mGBA is running with mgba_server.lua loaded.")
+    sys.exit(1)
 
 
 def parse_int(s):
