@@ -1,6 +1,6 @@
 --[[
   mgba_server.lua — BPE Emerald mGBA Lua script (file-based IPC)
-  Version: 1.3  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
+  Version: 1.4  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
 
   Runs inside mGBA via Tools → Scripting (load script button).
   Uses file-based IPC: Python writes BPETools/bpe_cmd.json, this script
@@ -979,13 +979,37 @@ local function automation_tick()
     end
 
   -- ── step: menu_wait_ready ───────────────────────────────────
-  -- Wait AUTO_STEP_MENU_WAIT frames for Task_HandleMainMenuInput to become active.
+  -- Poll gTasks until a main_menu.o task is active AND curr_item is readable.
+  -- This replaces the old fixed-frame wait; the menu is ready when Task_HandleMainMenuInput
+  -- (or similar) is running, detectable by its func ptr being in main_menu.o range.
   elseif step == "menu_wait_ready" then
-    if step_frames == 1 then
-      console:log("[BPE] AUTO menu_wait_ready: settling " .. AUTO_STEP_MENU_WAIT .. " frames")
+    local menu_task_found = false
+    for i = 0, 15 do
+      local tbase  = ADDR.gTasks + i * TASK_SIZE
+      local active = emu:read8(tbase + TASK_ISACTIVE)
+      if active ~= 0 then
+        local fn = emu:read32(tbase) & 0xFFFFFFFE
+        if fn >= CB_MENU_LO and fn < CB_MENU_HI then
+          menu_task_found = true
+          break
+        end
+      end
     end
-    if step_frames >= AUTO_STEP_MENU_WAIT then
-      goto_step("menu_select")
+    if step_frames % 30 == 0 then
+      console:log("[BPE] AUTO menu_wait_ready: frame=" .. step_frames .. " task_found=" .. tostring(menu_task_found))
+    end
+    if menu_task_found then
+      -- Extra 10-frame buffer so the input task is fully settled
+      if step_frames > 0 and not automation.task_seen_frame then
+        automation.task_seen_frame = frame
+      end
+      if automation.task_seen_frame and (frame - automation.task_seen_frame) >= 10 then
+        goto_step("menu_select")
+      end
+    elseif step_frames > 300 then
+      write_resp_to_file({ ok=false, error="timeout: menu task never became active",
+                           seq=automation.seq })
+      automation = nil
     end
 
   -- ── step: menu_select ───────────────────────────────────────
@@ -1003,16 +1027,19 @@ local function automation_tick()
         return
       end
       -- CONTINUE is item 0 in a HAS_SAVED_GAME menu — just press A
+      console:log("[BPE] AUTO pressing A on CONTINUE")
       pending_keys = { mask=KEYS.A, frames_left=3, total=3 }
       goto_step("wait_overworld")
 
     else  -- new_game
       if has_save then
         -- NEW GAME is item 1 (CONTINUE is item 0) — navigate DOWN first
+        console:log("[BPE] AUTO pressing DOWN then A for NEW GAME")
         pending_keys = { mask=KEYS.DOWN, frames_left=3, total=3 }
         goto_step("new_game_confirm")
       else
         -- NEW GAME is item 0 — press A directly
+        console:log("[BPE] AUTO pressing A on NEW GAME (no save)")
         pending_keys = { mask=KEYS.A, frames_left=3, total=3 }
         goto_step("wait_new_game")
       end
@@ -1146,7 +1173,7 @@ end
 -- ============================================================
 -- STARTUP
 -- ============================================================
-console:log("[BPE] mgba_server.lua v1.3 starting (BPE Emerald v1.0.1)")
+console:log("[BPE] mgba_server.lua v1.4 starting (BPE Emerald v1.0.1)")
 
 -- Clean stale IPC files from previous session
 os.remove(CMD_FILE)
