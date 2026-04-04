@@ -1,6 +1,6 @@
 --[[
   mgba_server.lua — BPE Emerald mGBA Lua script (file-based IPC)
-  Version: 1.1  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
+  Version: 1.2  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
 
   Runs inside mGBA via Tools → Scripting (load script button).
   Uses file-based IPC: Python writes BPETools/bpe_cmd.json, this script
@@ -15,8 +15,10 @@
 -- Absolute path to the BPETools directory (trailing slash)
 local TOOLS_DIR = "E:/Projects/PokemonBlackPearlEmerald/BPE Emerald V1.0.1/pokeemerald-expansion/BPETools/"
 local TABLES_PATH = TOOLS_DIR .. "lua_tables.lua"
-local CMD_FILE    = TOOLS_DIR .. "bpe_cmd.json"
-local RESP_FILE   = TOOLS_DIR .. "bpe_resp.json"
+local CMD_FILE       = TOOLS_DIR .. "bpe_cmd.json"
+local RESP_FILE      = TOOLS_DIR .. "bpe_resp.json"
+local HEARTBEAT_FILE = TOOLS_DIR .. "bpe_heartbeat.json"
+local HEARTBEAT_INTERVAL = 30  -- frames between heartbeat writes (~0.5s at 60fps)
 
 -- ============================================================
 -- MEMORY ADDRESSES (from pokeemerald.map for BPE Emerald v1.0.1)
@@ -43,7 +45,56 @@ local ADDR = {
   -- Save blocks (IWRAM pointers)
   gSaveBlock1Ptr      = 0x030051BC,  -- ptr → SaveBlock1
   gSaveBlock2Ptr      = 0x030051B8,  -- ptr → SaveBlock2
+
+  -- Main game state (IWRAM)
+  gMain               = 0x030066B8,  -- struct Main
+  gSaveFileStatus     = 0x03006C00,  -- u16 (SAVE_STATUS_*)
+  gTasks              = 0x03006C1C,  -- struct Task[16]
 }
+
+-- ============================================================
+-- GAME STATE DETECTION (from pokeemerald.map v1.0.1)
+-- ============================================================
+-- gMain field addresses
+local GMAIN_CB2_ADDR   = 0x030066BC  -- gMain.callback2  (offset +0x004)
+local GMAIN_STATE_ADDR = 0x03006AF0  -- gMain.state      (offset +0x438)
+
+-- Callback address ranges for static (unexported) functions.
+-- Thumb function pointers have LSB=1; mask off before comparing.
+-- Ranges come from pokeemerald.map .text section start + size.
+local CB_TITLE_LO  = 0x0820F228  -- title_screen.o  text start
+local CB_TITLE_HI  = 0x0820FCF0  -- title_screen.o  text end  (start + 0xAC8)
+local CB_MENU_LO   = 0x0817876C  -- main_menu.o     text start
+local CB_MENU_HI   = 0x0817B470  -- main_menu.o     text end  (start + 0x2D04)
+
+-- Exact exported callback addresses (mask off LSB when comparing read value)
+local CB_OVERWORLD       = 0x08191EBC  -- CB2_Overworld
+local CB_OVERWORLD_BASIC = 0x081920B4  -- CB2_OverworldBasic
+local CB_NEW_GAME        = 0x081920D0  -- CB2_NewGame
+local CB_LOADING_SAVE    = 0x08192458  -- CB2_ContinueSavedGame
+local CB_BATTLE          = 0x080849D4  -- BattleMainCB2
+local CB_BATTLE2         = 0x080871D0  -- CB2_InitBattle
+
+-- Save file status constants (gSaveFileStatus values)
+local SAVE_STATUS_EMPTY  = 0
+local SAVE_STATUS_OK     = 1
+local SAVE_STATUS_CORRUPT= 2
+local SAVE_STATUS_ERROR  = 0xFF
+
+-- struct Task layout (task.h): func(4) isActive(1) prev(1) next(1) priority(1) data[16](32) = 0x28 bytes
+local TASK_SIZE     = 0x28
+local TASK_ISACTIVE = 0x04  -- bool8 isActive
+local TASK_DATA     = 0x08  -- s16 data[16] starts here
+
+-- Main menu task data field indices (from main_menu.c #define tMenuType / tCurrItem)
+local TASK_MENU_TYPE = 0   -- data[0]: HAS_NO_SAVED_GAME(0) / HAS_SAVED_GAME(1) / etc.
+local TASK_CURR_ITEM = 1   -- data[1]: currently highlighted item index
+
+-- Automation timeout constants
+local AUTO_TOTAL_TIMEOUT  = 1800  -- 30s total   (frames at ~60fps)
+local AUTO_STEP_MENU_WAIT =   30  -- 0.5s: let menu init tasks settle before pressing A
+local AUTO_STEP_KEY_GAP   =    8  -- frames between sequential key presses
+local AUTO_STEP_OW_WAIT   =  600  -- 10s: max wait for overworld/new-game to load
 
 -- SaveBlock1 field offsets (relative to the pointer target)
 local SB1 = {
@@ -446,9 +497,34 @@ local function read_party_pokemon(party_base, idx)
 end
 
 -- ============================================================
+-- GAME STATE HELPERS
+-- ============================================================
+
+-- Read gMain.callback2, classify into a named screen state.
+-- Returns: state_string, raw_cb2_address (with LSB masked off)
+local function get_game_state()
+  local cb2 = emu:read32(GMAIN_CB2_ADDR) & 0xFFFFFFFE  -- mask Thumb LSB
+  -- Range checks cover static (unexported) callback functions
+  if cb2 >= CB_TITLE_LO and cb2 < CB_TITLE_HI then
+    return "title_screen", cb2
+  end
+  if cb2 >= CB_MENU_LO and cb2 < CB_MENU_HI then
+    return "main_menu", cb2
+  end
+  -- Exact matches for exported callbacks
+  if cb2 == CB_OVERWORLD or cb2 == CB_OVERWORLD_BASIC then return "overworld",     cb2 end
+  if cb2 == CB_NEW_GAME      then return "new_game",      cb2 end
+  if cb2 == CB_LOADING_SAVE  then return "loading_save",  cb2 end
+  if cb2 == CB_BATTLE or cb2 == CB_BATTLE2 then return "battle", cb2 end
+  return string.format("unknown:0x%08X", cb2), cb2
+end
+
+-- ============================================================
 -- COMMAND HANDLERS
 -- ============================================================
 local handlers = {}
+local pending_keys = nil  -- shared between press_buttons handler and frame_callback
+local automation   = nil  -- set by load_save / new_game; drives multi-frame sequences
 
 -- read_state: general overworld state
 handlers.read_state = function(cmd)
@@ -478,6 +554,76 @@ handlers.read_state = function(cmd)
     party_count = party_count,
     frame     = emu:currentFrame(),
   }
+end
+
+-- read_game_state: classify the current screen by reading gMain.callback2
+handlers.read_game_state = function(cmd)
+  local state, cb2 = get_game_state()
+  local save_status = emu:read16(ADDR.gSaveFileStatus)
+  local main_state  = emu:read8(GMAIN_STATE_ADDR)
+
+  -- When in main_menu, also report which item is highlighted.
+  -- Search gTasks for the first active task whose func ptr is in main_menu.o range.
+  local menu_type, curr_item
+  if state == "main_menu" then
+    for i = 0, 15 do
+      local tbase  = ADDR.gTasks + i * TASK_SIZE
+      local active = emu:read8(tbase + TASK_ISACTIVE)
+      if active ~= 0 then
+        local fn = emu:read32(tbase) & 0xFFFFFFFE
+        if fn >= CB_MENU_LO and fn < CB_MENU_HI then
+          menu_type = emu:read16(tbase + TASK_DATA + TASK_MENU_TYPE * 2)
+          curr_item = emu:read16(tbase + TASK_DATA + TASK_CURR_ITEM * 2)
+          break
+        end
+      end
+    end
+  end
+
+  return {
+    ok          = true,
+    state       = state,
+    cb2         = cb2,
+    main_state  = main_state,
+    save_status = save_status,
+    menu_type   = menu_type,
+    curr_item   = curr_item,
+    frame       = emu:currentFrame(),
+  }
+end
+
+-- load_save: state-driven automation — title screen → main menu → CONTINUE → overworld
+-- Response is deferred until the automation completes (up to 30s).
+handlers.load_save = function(cmd)
+  if automation then
+    return { ok=false, error="automation already running: " .. automation.step }
+  end
+  local frame = emu:currentFrame()
+  automation = {
+    cmd_type    = "load_save",
+    step        = "start",
+    step_frame  = frame,
+    start_frame = frame,
+    seq         = cmd.seq,
+  }
+  return { _async = true }
+end
+
+-- new_game: state-driven automation — title screen → main menu → NEW GAME → game start
+-- Response is deferred until the automation completes (up to 30s).
+handlers.new_game = function(cmd)
+  if automation then
+    return { ok=false, error="automation already running: " .. automation.step }
+  end
+  local frame = emu:currentFrame()
+  automation = {
+    cmd_type    = "new_game",
+    step        = "start",
+    step_frame  = frame,
+    start_frame = frame,
+    seq         = cmd.seq,
+  }
+  return { _async = true }
 end
 
 -- read_battle: read active battlers from gBattleMons
@@ -653,7 +799,7 @@ handlers.press_buttons = function(cmd)
   end
 
   -- Schedule key presses over the next N frames
-  pending_keys = { mask=mask, frames_left=hold_frames }
+  pending_keys = { mask=mask, frames_left=hold_frames, total=hold_frames }
   return { ok=true, keys=keys_list, frames=hold_frames, mask=mask }
 end
 
@@ -754,6 +900,145 @@ handlers.read_mem = function(cmd)
 end
 
 -- ============================================================
+-- RESPONSE WRITER  (shared by frame_callback and automation_tick)
+-- ============================================================
+local function write_resp_to_file(resp)
+  local tmp = RESP_FILE .. ".tmp"
+  local rf = io.open(tmp, "w")
+  if rf then
+    rf:write(json.encode(resp))
+    rf:close()
+    os.remove(RESP_FILE)
+    os.rename(tmp, RESP_FILE)
+  end
+end
+
+-- ============================================================
+-- AUTOMATION ENGINE  (runs one tick per frame while active)
+-- ============================================================
+local function automation_tick()
+  if not automation then return end
+
+  local frame  = emu:currentFrame()
+  local state, cb2 = get_game_state()
+
+  -- Global timeout guard
+  if frame - automation.start_frame >= AUTO_TOTAL_TIMEOUT then
+    write_resp_to_file({ ok=false, error="automation timeout after 30s",
+                         state=state, seq=automation.seq })
+    automation = nil
+    return
+  end
+
+  local step        = automation.step
+  local step_frames = frame - automation.step_frame
+
+  -- Helper: transition to a new step
+  local function goto_step(s)
+    automation.step       = s
+    automation.step_frame = frame
+  end
+
+  -- ── step: start ─────────────────────────────────────────────
+  if step == "start" then
+    if state == "overworld" then
+      write_resp_to_file({ ok=true, state="overworld",
+                           msg="already in overworld", seq=automation.seq })
+      automation = nil
+    elseif state == "main_menu" then
+      goto_step("menu_wait_ready")
+    elseif state == "title_screen" then
+      pending_keys = { mask=KEYS.START, frames_left=3, total=3 }
+      goto_step("wait_main_menu")
+    elseif state == "loading_save" or state == "new_game" then
+      goto_step("wait_overworld")
+    elseif step_frames > 300 then
+      write_resp_to_file({ ok=false, error="cannot start automation from state: " .. state,
+                           cb2=cb2, seq=automation.seq })
+      automation = nil
+    end
+
+  -- ── step: wait_main_menu ────────────────────────────────────
+  elseif step == "wait_main_menu" then
+    if state == "main_menu" then
+      goto_step("menu_wait_ready")
+    elseif step_frames > 300 then
+      write_resp_to_file({ ok=false, error="timeout waiting for main menu",
+                           state=state, seq=automation.seq })
+      automation = nil
+    end
+
+  -- ── step: menu_wait_ready ───────────────────────────────────
+  -- Wait AUTO_STEP_MENU_WAIT frames for Task_HandleMainMenuInput to become active.
+  elseif step == "menu_wait_ready" then
+    if step_frames >= AUTO_STEP_MENU_WAIT then
+      goto_step("menu_select")
+    end
+
+  -- ── step: menu_select ───────────────────────────────────────
+  elseif step == "menu_select" then
+    local save_status = emu:read16(ADDR.gSaveFileStatus)
+    local has_save = (save_status == SAVE_STATUS_OK or save_status == SAVE_STATUS_ERROR)
+
+    if automation.cmd_type == "load_save" then
+      if not has_save then
+        write_resp_to_file({ ok=false,
+          error=string.format("no save file (gSaveFileStatus=%d)", save_status),
+          seq=automation.seq })
+        automation = nil
+        return
+      end
+      -- CONTINUE is item 0 in a HAS_SAVED_GAME menu — just press A
+      pending_keys = { mask=KEYS.A, frames_left=3, total=3 }
+      goto_step("wait_overworld")
+
+    else  -- new_game
+      if has_save then
+        -- NEW GAME is item 1 (CONTINUE is item 0) — navigate DOWN first
+        pending_keys = { mask=KEYS.DOWN, frames_left=3, total=3 }
+        goto_step("new_game_confirm")
+      else
+        -- NEW GAME is item 0 — press A directly
+        pending_keys = { mask=KEYS.A, frames_left=3, total=3 }
+        goto_step("wait_new_game")
+      end
+    end
+
+  -- ── step: new_game_confirm ──────────────────────────────────
+  -- Wait for DOWN press to register, then press A to confirm NEW GAME.
+  elseif step == "new_game_confirm" then
+    if step_frames >= AUTO_STEP_KEY_GAP then
+      pending_keys = { mask=KEYS.A, frames_left=3, total=3 }
+      goto_step("wait_new_game")
+    end
+
+  -- ── step: wait_overworld ────────────────────────────────────
+  elseif step == "wait_overworld" then
+    if state == "overworld" then
+      write_resp_to_file({ ok=true, state="overworld",
+                           msg="save loaded, in overworld", seq=automation.seq })
+      automation = nil
+    elseif step_frames > AUTO_STEP_OW_WAIT then
+      write_resp_to_file({ ok=false, error="timeout waiting for overworld after CONTINUE",
+                           state=state, seq=automation.seq })
+      automation = nil
+    end
+
+  -- ── step: wait_new_game ─────────────────────────────────────
+  elseif step == "wait_new_game" then
+    if state == "new_game" or state == "overworld" then
+      write_resp_to_file({ ok=true, state=state,
+                           msg="new game started", seq=automation.seq })
+      automation = nil
+    elseif step_frames > AUTO_STEP_OW_WAIT then
+      write_resp_to_file({ ok=false, error="timeout waiting for new game to start",
+                           state=state, seq=automation.seq })
+      automation = nil
+    end
+  end
+end
+
+-- ============================================================
 -- DISPATCH
 -- ============================================================
 local function dispatch(cmd)
@@ -775,20 +1060,44 @@ end
 -- FILE-BASED IPC
 -- ============================================================
 
--- pending key press state (set by press_buttons handler)
-local pending_keys = nil
+local heartbeat_counter = 0
+
+local function write_heartbeat()
+  -- Write directly (no temp+rename: Windows os.rename fails if target exists)
+  local hf = io.open(HEARTBEAT_FILE, "w")
+  if hf then
+    hf:write('{"frame":' .. emu:currentFrame() .. ',"time":' .. os.time() .. ',"pid":"mgba"}')
+    hf:close()
+  end
+end
 
 local function frame_callback()
+  -- Heartbeat: write liveness file periodically
+  heartbeat_counter = heartbeat_counter + 1
+  if heartbeat_counter >= HEARTBEAT_INTERVAL then
+    heartbeat_counter = 0
+    write_heartbeat()
+  end
+
   -- Handle pending key presses
   if pending_keys then
     if pending_keys.frames_left > 0 then
       emu:setKeys(pending_keys.mask)
+      if pending_keys.frames_left == pending_keys.total then
+        console:log("[BPE] KEY START: mask=" .. pending_keys.mask .. " frames=" .. pending_keys.total)
+      end
       pending_keys.frames_left = pending_keys.frames_left - 1
     else
       emu:setKeys(0)
+      console:log("[BPE] KEY END")
       pending_keys = nil
     end
   end
+
+  -- Advance multi-frame automation (load_save / new_game).
+  -- Writes its own response when done; blocks command processing while active.
+  automation_tick()
+  if automation then return end
 
   -- Check for a command file every frame
   local f = io.open(CMD_FILE, "r")
@@ -802,22 +1111,33 @@ local function frame_callback()
   if not content or content == "" then return end
 
   local cmd = json.decode(content)
+  console:log("[BPE] CMD: " .. (cmd and cmd.cmd or "nil") .. " (seq=" .. (cmd and cmd.seq or "?") .. ")")
   local resp = dispatch(cmd or {})
 
-  -- Write response (atomic: write to temp then rename)
-  local tmp = RESP_FILE .. ".tmp"
-  local rf = io.open(tmp, "w")
-  if rf then
-    rf:write(json.encode(resp))
-    rf:close()
-    os.rename(tmp, RESP_FILE)
+  -- Async handlers (load_save, new_game) return {_async=true} — response written
+  -- by automation_tick when the sequence completes. Don't write anything here.
+  if resp._async then return end
+
+  -- Echo sequence number and write response atomically
+  if cmd and cmd.seq then
+    resp.seq = cmd.seq
   end
+  write_resp_to_file(resp)
 end
 
 -- ============================================================
 -- STARTUP
 -- ============================================================
-console:log("[BPE] mgba_server.lua starting (BPE Emerald v1.0.1)")
+console:log("[BPE] mgba_server.lua v1.2 starting (BPE Emerald v1.0.1)")
+
+-- Clean stale IPC files from previous session
+os.remove(CMD_FILE)
+os.remove(RESP_FILE)
+os.remove(CMD_FILE .. ".tmp")
+os.remove(RESP_FILE .. ".tmp")
+os.remove(HEARTBEAT_FILE .. ".tmp")
+
 load_tables()
+write_heartbeat()  -- immediate heartbeat so Python can detect us right away
 callbacks:add("frame", frame_callback)
-console:log("[BPE] Ready. Use: py BPETools/bpe_test.py read_state")
+console:log("[BPE] Ready. Commands: read_game_state | load_save | new_game | read_state | ...")

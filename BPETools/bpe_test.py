@@ -7,6 +7,9 @@ Usage:
   py BPETools/bpe_test.py <command> [args...]
 
 Commands:
+  read_game_state            current screen (title_screen/main_menu/overworld/battle/…)
+  load_save                  automate title screen → CONTINUE → overworld (up to 30s)
+  new_game                   automate title screen → NEW GAME (up to 30s)
   read_state
   read_battle
   read_party
@@ -29,6 +32,9 @@ Commands:
   raw         <json>            (send raw JSON, e.g. raw '{"cmd":"read_state"}')
 
 Examples:
+  py BPETools/bpe_test.py read_game_state
+  py BPETools/bpe_test.py load_save
+  py BPETools/bpe_test.py new_game
   py BPETools/bpe_test.py read_state
   py BPETools/bpe_test.py read_battle
   py BPETools/bpe_test.py set_flag 0x500 1
@@ -49,12 +55,45 @@ from pathlib import Path
 
 # IPC file paths — must match TOOLS_DIR in mgba_server.lua
 _TOOLS = Path(__file__).parent
-CMD_FILE  = _TOOLS / "bpe_cmd.json"
-RESP_FILE = _TOOLS / "bpe_resp.json"
-TIMEOUT   = 5.0  # seconds to wait for mGBA to respond
+CMD_FILE       = _TOOLS / "bpe_cmd.json"
+RESP_FILE      = _TOOLS / "bpe_resp.json"
+HEARTBEAT_FILE = _TOOLS / "bpe_heartbeat.json"
+TIMEOUT        = 5.0   # seconds to wait for mGBA to respond (short commands)
+TIMEOUT_LONG   = 35.0  # seconds for automation commands (load_save, new_game)
+HEARTBEAT_MAX_AGE = 2.0  # seconds before heartbeat is considered stale
+
+_next_seq = 1
 
 
-def send_cmd(cmd: dict) -> dict:
+def check_server() -> None:
+    """Check that the mGBA Lua server is alive. Exit with a clear message if not."""
+    if not HEARTBEAT_FILE.exists():
+        print("ERROR: mGBA server not running.")
+        print("Load mgba_server.lua in mGBA: Tools > Scripting > File > Load Script...")
+        sys.exit(1)
+    try:
+        data = json.loads(HEARTBEAT_FILE.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        print("ERROR: Heartbeat file unreadable. The mGBA server may be starting up.")
+        sys.exit(1)
+    age = time.time() - data.get("time", 0)
+    if age > HEARTBEAT_MAX_AGE:
+        print(f"ERROR: mGBA server stopped responding (last heartbeat {age:.1f}s ago).")
+        print("The Lua script may have crashed. Reload it in mGBA: Tools > Scripting.")
+        sys.exit(1)
+
+
+def send_cmd(cmd: dict, timeout: float = TIMEOUT) -> dict:
+    global _next_seq
+
+    # Pre-flight: is the server alive?
+    check_server()
+
+    # Assign sequence number
+    seq = _next_seq
+    _next_seq += 1
+    cmd["seq"] = seq
+
     # Remove stale response file
     RESP_FILE.unlink(missing_ok=True)
 
@@ -64,21 +103,36 @@ def send_cmd(cmd: dict) -> dict:
     tmp.replace(CMD_FILE)
 
     # Wait for response
-    deadline = time.monotonic() + TIMEOUT
+    deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
         if RESP_FILE.exists():
             try:
                 data = RESP_FILE.read_text(encoding="utf-8")
+                resp = json.loads(data)
+                # Validate sequence number — discard stale responses
+                if resp.get("seq") != seq:
+                    RESP_FILE.unlink(missing_ok=True)
+                    continue
                 RESP_FILE.unlink(missing_ok=True)
-                return json.loads(data)
+                return resp
             except (json.JSONDecodeError, OSError):
                 pass  # file still being written, retry
         time.sleep(0.02)
 
-    # Timeout — clean up command file if mGBA didn't read it
+    # Timeout — check if server died during the wait
     CMD_FILE.unlink(missing_ok=True)
-    print("ERROR: Timeout — mGBA did not respond.")
-    print("Make sure mGBA is running with mgba_server.lua loaded.")
+    if HEARTBEAT_FILE.exists():
+        try:
+            hb = json.loads(HEARTBEAT_FILE.read_text(encoding="utf-8"))
+            age = time.time() - hb.get("time", 0)
+            if age > HEARTBEAT_MAX_AGE:
+                print(f"ERROR: mGBA server stopped responding during command (heartbeat {age:.1f}s stale).")
+                print("The Lua script may have crashed. Reload it in mGBA.")
+                sys.exit(1)
+        except (json.JSONDecodeError, OSError):
+            pass
+    print(f"ERROR: Timeout — mGBA did not respond within {timeout:.0f} seconds.")
+    print("The emulator may be paused, or the Lua script is not processing commands.")
     sys.exit(1)
 
 
@@ -156,8 +210,17 @@ def main():
     cmd_name = args[0].lower()
     rest = args[1:]
 
+    # Automation commands use a longer timeout (Lua side can take up to 30s)
+    use_long_timeout = cmd_name in ("load_save", "new_game")
+
     # Build command dict
-    if cmd_name == "read_state":
+    if cmd_name == "read_game_state":
+        cmd = {"cmd": "read_game_state"}
+    elif cmd_name == "load_save":
+        cmd = {"cmd": "load_save"}
+    elif cmd_name == "new_game":
+        cmd = {"cmd": "new_game"}
+    elif cmd_name == "read_state":
         cmd = {"cmd": "read_state"}
     elif cmd_name == "read_battle":
         cmd = {"cmd": "read_battle"}
@@ -239,7 +302,8 @@ def main():
         print(__doc__)
         sys.exit(1)
 
-    resp = send_cmd(cmd)
+    timeout = TIMEOUT_LONG if use_long_timeout else TIMEOUT
+    resp = send_cmd(cmd, timeout=timeout)
 
     # Always print raw JSON if --json flag or if not a tty
     if "--json" in sys.argv or not sys.stdout.isatty():
