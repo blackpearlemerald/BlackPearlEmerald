@@ -1,6 +1,6 @@
 --[[
   mgba_server.lua — BPE Emerald mGBA Lua script (file-based IPC)
-  Version: 1.2  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
+  Version: 1.3  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
 
   Runs inside mGBA via Tools → Scripting (load script button).
   Uses file-based IPC: Python writes BPETools/bpe_cmd.json, this script
@@ -940,29 +940,39 @@ local function automation_tick()
   end
 
   -- ── step: start ─────────────────────────────────────────────
+  -- Wait for a known state before acting. Unknown states (copyright screen,
+  -- fade transitions) are harmless — the global timeout handles true hangs.
   if step == "start" then
+    console:log("[BPE] AUTO start: state=" .. state)
     if state == "overworld" then
       write_resp_to_file({ ok=true, state="overworld",
                            msg="already in overworld", seq=automation.seq })
       automation = nil
     elseif state == "main_menu" then
+      console:log("[BPE] AUTO already at main_menu, skipping title screen")
       goto_step("menu_wait_ready")
     elseif state == "title_screen" then
+      console:log("[BPE] AUTO sending START from title screen")
       pending_keys = { mask=KEYS.START, frames_left=3, total=3 }
       goto_step("wait_main_menu")
     elseif state == "loading_save" or state == "new_game" then
       goto_step("wait_overworld")
-    elseif step_frames > 300 then
-      write_resp_to_file({ ok=false, error="cannot start automation from state: " .. state,
-                           cb2=cb2, seq=automation.seq })
-      automation = nil
     end
+    -- For unknown/copyright/transition states: keep waiting (global timeout guards)
 
   -- ── step: wait_main_menu ────────────────────────────────────
+  -- The title screen has two phases: Phase1 (animation) skips to Phase2 on START,
+  -- then Phase3 (press-start screen) sends START → CB2_InitMainMenu.
+  -- We may need more than one START press, so re-send every 90 frames until done.
   elseif step == "wait_main_menu" then
     if state == "main_menu" then
+      console:log("[BPE] AUTO reached main_menu")
       goto_step("menu_wait_ready")
-    elseif step_frames > 300 then
+    elseif state == "title_screen" and step_frames > 0 and step_frames % 90 == 0 then
+      -- Still on title screen after a full second — send another START
+      console:log("[BPE] AUTO re-sending START (step_frames=" .. step_frames .. ")")
+      pending_keys = { mask=KEYS.START, frames_left=3, total=3 }
+    elseif step_frames > 600 then
       write_resp_to_file({ ok=false, error="timeout waiting for main menu",
                            state=state, seq=automation.seq })
       automation = nil
@@ -971,6 +981,9 @@ local function automation_tick()
   -- ── step: menu_wait_ready ───────────────────────────────────
   -- Wait AUTO_STEP_MENU_WAIT frames for Task_HandleMainMenuInput to become active.
   elseif step == "menu_wait_ready" then
+    if step_frames == 1 then
+      console:log("[BPE] AUTO menu_wait_ready: settling " .. AUTO_STEP_MENU_WAIT .. " frames")
+    end
     if step_frames >= AUTO_STEP_MENU_WAIT then
       goto_step("menu_select")
     end
@@ -978,6 +991,7 @@ local function automation_tick()
   -- ── step: menu_select ───────────────────────────────────────
   elseif step == "menu_select" then
     local save_status = emu:read16(ADDR.gSaveFileStatus)
+    console:log("[BPE] AUTO menu_select: save_status=" .. save_status .. " cmd=" .. automation.cmd_type)
     local has_save = (save_status == SAVE_STATUS_OK or save_status == SAVE_STATUS_ERROR)
 
     if automation.cmd_type == "load_save" then
@@ -1014,7 +1028,11 @@ local function automation_tick()
 
   -- ── step: wait_overworld ────────────────────────────────────
   elseif step == "wait_overworld" then
+    if step_frames == 1 then
+      console:log("[BPE] AUTO wait_overworld: state=" .. state)
+    end
     if state == "overworld" then
+      console:log("[BPE] AUTO done: overworld reached")
       write_resp_to_file({ ok=true, state="overworld",
                            msg="save loaded, in overworld", seq=automation.seq })
       automation = nil
@@ -1128,7 +1146,7 @@ end
 -- ============================================================
 -- STARTUP
 -- ============================================================
-console:log("[BPE] mgba_server.lua v1.2 starting (BPE Emerald v1.0.1)")
+console:log("[BPE] mgba_server.lua v1.3 starting (BPE Emerald v1.0.1)")
 
 -- Clean stale IPC files from previous session
 os.remove(CMD_FILE)
