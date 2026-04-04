@@ -1,6 +1,6 @@
 --[[
   mgba_server.lua — BPE Emerald mGBA Lua script (file-based IPC)
-  Version: 1.4  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
+  Version: 1.5  (BPE Emerald v1.0.1 / pokeemerald-expansion v1.15.1)
 
   Runs inside mGBA via Tools → Scripting (load script button).
   Uses file-based IPC: Python writes BPETools/bpe_cmd.json, this script
@@ -1054,18 +1054,37 @@ local function automation_tick()
     end
 
   -- ── step: wait_overworld ────────────────────────────────────
+  -- After pressing A on CONTINUE, state goes:
+  --   main_menu → loading_save (CB2_ContinueSavedGame shows player info card)
+  --               → press A again to confirm → overworld
+  -- We press A every 60 frames during loading_save to clear any confirmation screen.
+  -- We also retry A every 60 frames if state is stuck on main_menu (first A missed).
   elseif step == "wait_overworld" then
-    if step_frames == 1 then
-      console:log("[BPE] AUTO wait_overworld: state=" .. state)
+    if step_frames % 60 == 0 then
+      console:log("[BPE] AUTO wait_overworld: state=" .. state .. " step_frames=" .. step_frames)
     end
     if state == "overworld" then
-      console:log("[BPE] AUTO done: overworld reached")
+      console:log("[BPE] AUTO done: overworld reached after " .. step_frames .. " frames")
       write_resp_to_file({ ok=true, state="overworld",
                            msg="save loaded, in overworld", seq=automation.seq })
       automation = nil
-    elseif step_frames > AUTO_STEP_OW_WAIT then
-      write_resp_to_file({ ok=false, error="timeout waiting for overworld after CONTINUE",
-                           state=state, seq=automation.seq })
+    elseif state == "loading_save" then
+      -- Info card is showing — press A every 60 frames to confirm/advance
+      if step_frames > 0 and step_frames % 60 == 0 and not pending_keys then
+        console:log("[BPE] AUTO pressing A on info card (loading_save, step_frames=" .. step_frames .. ")")
+        pending_keys = { mask=KEYS.A, frames_left=3, total=3 }
+      end
+    elseif state == "main_menu" then
+      -- A press didn't register on the menu — retry every 90 frames
+      if step_frames > 0 and step_frames % 90 == 0 and not pending_keys then
+        console:log("[BPE] AUTO retrying A on CONTINUE (still at main_menu, step_frames=" .. step_frames .. ")")
+        pending_keys = { mask=KEYS.A, frames_left=3, total=3 }
+      end
+    end
+    if step_frames > AUTO_STEP_OW_WAIT then
+      write_resp_to_file({ ok=false,
+        error="timeout waiting for overworld (final state: " .. state .. ")",
+        state=state, seq=automation.seq })
       automation = nil
     end
 
@@ -1173,7 +1192,7 @@ end
 -- ============================================================
 -- STARTUP
 -- ============================================================
-console:log("[BPE] mgba_server.lua v1.4 starting (BPE Emerald v1.0.1)")
+console:log("[BPE] mgba_server.lua v1.5 starting (BPE Emerald v1.0.1)")
 
 -- Clean stale IPC files from previous session
 os.remove(CMD_FILE)
