@@ -5579,6 +5579,9 @@ static void HandleEndTurn_FinishBattle(void)
             TryPutPokemonTodayOnAir();
         }
 
+        if (gIsFishingEncounter && IsMonShiny(&gEnemyParty[0]))
+            gChainFishingDexNavStreak = 0;
+
         if (!(gBattleTypeFlags & (BATTLE_TYPE_LINK
                                   | BATTLE_TYPE_EREADER_TRAINER
                                   | BATTLE_TYPE_RECORDED_LINK
