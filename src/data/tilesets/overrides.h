@@ -1,6 +1,6 @@
-static const u16 sTilesetPalOverride_General01_05[] = INCBIN_U16("data/tilesets/primary/general/override_palettes/01_05.gbapal");
+static const u16 sTilesetPalOverride_General01_05[] = INCGFX_U16("data/tilesets/primary/general/override_palettes/01_05.pal", ".gbapal");
 
-static const u16 sTilesetPalOverride_Petalburg06_08[] = INCBIN_U16("data/tilesets/secondary/petalburg/override_palettes/06_08.gbapal");
+static const u16 sTilesetPalOverride_Petalburg06_08[] = INCGFX_U16("data/tilesets/secondary/petalburg/override_palettes/06_08.pal", ".gbapal");
 
 #define OVERRIDES_END { .slot = 0xFF, }
 
