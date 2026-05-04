@@ -1630,6 +1630,39 @@
       "y": 4,
       "width": 1,
       "height": 1
+    },
+    {
+      "id": "MAPSEC_VICTORY_ROAD_2"
+    },
+    {
+      "id": "MAPSEC_VICTORY_ROAD_3"
+    },
+    {
+      "id": "MAPSEC_STEVENS_ROOM"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_1"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_2"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_3"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_4"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_5"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_6"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_7"
+    },
+    {
+      "id": "MAPSEC_TRICK_HOUSE_8"
     }
   ]
 }
