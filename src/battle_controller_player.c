@@ -1808,10 +1808,15 @@ static void MoveSelectionDisplayMoveType(enum BattlerId battler)
         {
         case EFFECTIVENESS_SUPER_EFFECTIVE:    colorIndex = TEXT_COLOR_GREEN; break;
         case EFFECTIVENESS_NOT_VERY_EFFECTIVE: colorIndex = TEXT_COLOR_RED;   break;
+        case EFFECTIVENESS_NO_EFFECT:          colorIndex = TEXT_COLOR_RED;   break;
         default: break;
         }
         if (colorIndex != 0)
         {
+            // The default gBattleWindowTextPalette has brown at idx 4 (TEXT_COLOR_RED),
+            // so override it with a saturated red for the not-very-effective indicator.
+            gPlttBufferUnfaded[BG_PLTT_ID(5) + TEXT_COLOR_RED] = RGB(31, 6, 6);
+            gPlttBufferFaded[BG_PLTT_ID(5) + TEXT_COLOR_RED]   = RGB(31, 6, 6);
             *txtPtr++ = EXT_CTRL_CODE_BEGIN;
             *txtPtr++ = EXT_CTRL_CODE_COLOR;
             *txtPtr++ = colorIndex;
