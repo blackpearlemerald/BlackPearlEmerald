@@ -89,11 +89,11 @@ LavaridgeTown_EventScript_RivalExit::
 	end
 
 LavaridgeTown_EventScript_PlayMayMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	return
 
 LavaridgeTown_EventScript_PlayBrendanMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	return
 
 LavaridgeTown_EventScript_RivalNoticePlayer::

@@ -64,7 +64,7 @@ LittlerootTown_BrendansHouse_2F_EventScript_MeetBrendan::
 	applymovement LOCALID_RIVALS_HOUSE_2F_RIVAL, Common_Movement_Delay48
 	waitmovement 0
 	delay 10
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	call_if_eq VAR_FACING, DIR_NORTH, LittlerootTown_BrendansHouse_2F_EventScript_MeetBrendanNorth
 	call_if_eq VAR_FACING, DIR_SOUTH, LittlerootTown_BrendansHouse_2F_EventScript_MeetBrendanSouth
 	call_if_eq VAR_FACING, DIR_WEST, LittlerootTown_BrendansHouse_2F_EventScript_MeetBrendanWest

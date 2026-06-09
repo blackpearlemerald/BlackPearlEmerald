@@ -684,11 +684,11 @@ RustboroCity_EventScript_PlayRivalMusic::
 	return
 
 RustboroCity_EventScript_PlayMayMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	return
 
 RustboroCity_EventScript_PlayBrendanMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	return
 
 RustboroCity_EventScript_RivalTrigger0::

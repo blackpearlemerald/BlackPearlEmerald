@@ -77,11 +77,11 @@ Route104_EventScript_PlayRivalMusic::
 	return
 
 Route104_EventScript_PlayMayMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	return
 
 Route104_EventScript_PlayBrendanMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, TRUE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	return
 
 Route104_EventScript_RivalEncounter::

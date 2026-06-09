@@ -58,11 +58,11 @@ EverGrandeCity_ChampionsRoom_EventScript_Defeated::
 	end
 
 EverGrandeCity_ChampionsRoom_EventScript_PlayMayMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, FALSE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, FALSE
 	return
 
 EverGrandeCity_ChampionsRoom_EventScript_PlayBrendanMusic::
-	playbgm MUS_BW_ENCOUNTER_CYNTHIA, FALSE
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, FALSE
 	return
 
 EverGrandeCity_ChampionsRoom_EventScript_MayAdvice::
