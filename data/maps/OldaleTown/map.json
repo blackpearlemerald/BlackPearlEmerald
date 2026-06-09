@@ -73,6 +73,7 @@
       "flag": "0"
     },
     {
+      "local_id": "LOCALID_OLDALE_RIVAL",
       "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
       "x": 11,
       "y": 19,

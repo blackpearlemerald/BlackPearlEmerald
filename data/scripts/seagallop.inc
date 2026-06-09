@@ -1,3 +1,5 @@
+.set LOCALID_VERMILION_FERRY_SAILOR, 6 @ BPE: FRLG map removed, value from upstream VermilionCity_Frlg
+
 @ Separate selection menus for before the Rainbow Pass is obtained
 EventScript_ChooseDestFromOneIsland::
 	goto_if_ge VAR_MAP_SCENE_ONE_ISLAND_POKEMON_CENTER_1F, 5, EventScript_SeviiDestinationsPage1

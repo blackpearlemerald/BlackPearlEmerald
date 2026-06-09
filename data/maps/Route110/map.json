@@ -384,6 +384,7 @@
       "flag": "0"
     },
     {
+      "local_id": "LOCALID_ROUTE110_RIVAL",
       "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
       "x": 34,
       "y": 54,
@@ -397,6 +398,7 @@
       "flag": "FLAG_HIDE_ROUTE_110_RIVAL"
     },
     {
+      "local_id": "LOCALID_ROUTE110_RIVAL_ON_BIKE",
       "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
       "x": 34,
       "y": 54,

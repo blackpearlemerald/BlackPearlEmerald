@@ -100,6 +100,7 @@
       "flag": "0"
     },
     {
+      "local_id": "LOCALID_LAVARIDGE_RIVAL_ON_BIKE",
       "graphics_id": "OBJ_EVENT_GFX_CYNTHIA",
       "x": 6,
       "y": 16,

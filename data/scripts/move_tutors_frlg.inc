@@ -1,3 +1,5 @@
+.set LOCALID_CAPE_BRINK_TUTOR, 1 @ BPE: FRLG map removed, value from upstream TwoIsland_CapeBrink_House_Frlg
+
 VictoryRoad_2F_EventScript_DoubleEdgeTutor::
 	lock
 	faceplayer
