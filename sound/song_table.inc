@@ -616,8 +616,6 @@ gSongTable::
 	song ph_nurse_blend, MUSIC_PLAYER_SE2, 2
 	song ph_nurse_held, MUSIC_PLAYER_SE2, 2
 	song ph_nurse_solo, MUSIC_PLAYER_SE2, 2
-	song mus_bw_vs_cynthia, MUSIC_PLAYER_BGM, 0
-	song mus_bw_encounter_cynthia, MUSIC_PLAYER_BGM, 0
 	song mus_dp_vs_champion, MUSIC_PLAYER_BGM, 0
 	song mus_dp_encounter_champion, MUSIC_PLAYER_BGM, 0
 

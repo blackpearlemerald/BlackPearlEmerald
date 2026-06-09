@@ -546,11 +546,9 @@
 #define PH_NURSE_HELD               608
 #define PH_NURSE_SOLO               609
 
-// Cynthia (BW2 versions) - rival replacement music
-#define MUS_BW_VS_CYNTHIA           610 // Battle! (Cynthia)
-#define MUS_BW_ENCOUNTER_CYNTHIA    611 // Cynthia's Theme (approach jingle)
-#define MUS_DP_VS_CHAMPION          612 // Battle! (Champion) - DPPt/Platinum Cynthia battle theme
-#define MUS_DP_ENCOUNTER_CHAMPION   613 // Champion Cynthia (encounter) - DPPt/Platinum
+// Cynthia (DPPt/Platinum) - rival replacement music
+#define MUS_DP_VS_CHAMPION          610 // Battle! (Champion) - DPPt/Platinum Cynthia battle theme
+#define MUS_DP_ENCOUNTER_CHAMPION   611 // Champion Cynthia (encounter) - DPPt/Platinum
 
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 
