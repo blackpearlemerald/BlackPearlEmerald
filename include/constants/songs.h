@@ -549,6 +549,7 @@
 // Cynthia (BW2 versions) - rival replacement music
 #define MUS_BW_VS_CYNTHIA           610 // Battle! (Cynthia)
 #define MUS_BW_ENCOUNTER_CYNTHIA    611 // Cynthia's Theme (approach jingle)
+#define MUS_DP_VS_CHAMPION          612 // Battle! (Champion) - DPPt/Platinum Cynthia battle theme
 
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 

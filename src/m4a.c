@@ -73,9 +73,9 @@ void m4aSoundInit(void)
     SoundInit(&gSoundInfo);
     MPlayExtender(gCgbChans);
     m4aSoundMode(SOUND_MODE_DA_BIT_8
-               | SOUND_MODE_FREQ_13379
+               | SOUND_MODE_FREQ_18157
                | (12 << SOUND_MODE_MASVOL_SHIFT)
-               | (12 << SOUND_MODE_MAXCHN_SHIFT)); // THIS 12 WAS A 5 BEFORE IF SOMETHING IS GRIEFED
+               | (15 << SOUND_MODE_MAXCHN_SHIFT)); // 18157 Hz / 15 channels to match the NDS music expansion ports (vanilla: 13379 / 5)
 
     for (i = 0; i < NUM_MUSIC_PLAYERS; i++)
     {
