@@ -225,7 +225,6 @@ Route101_EventScript_BirchsBag::
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
 	waitmovement 0
 	special StartFirstBattleOnly
-	waitstate
 	removeobject LOCALID_ROUTE101_ZIGZAGOON
 	applymovement LOCALID_ROUTE101_BIRCH, Route101_Movement_BirchApproachPlayer
 	waitmovement 0

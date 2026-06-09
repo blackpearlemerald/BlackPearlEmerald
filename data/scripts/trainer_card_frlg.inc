@@ -1,3 +1,5 @@
+.set LOCALID_STICKER_MAN, 1 @ BPE: FRLG map removed, value from upstream FourIsland_House2_Frlg
+
 CeladonCity_GameCorner_EventScript_PhotoPrinter::
 	lockall
 	showmoneybox 0, 0

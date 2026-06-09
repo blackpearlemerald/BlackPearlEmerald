@@ -3,6 +3,7 @@
   "name": "LilycoveCity_ContestHall",
   "layout": "LAYOUT_LILYCOVE_CITY_CONTEST_HALL",
   "music": "MUS_CONTEST_LOBBY",
+  "region": "REGION_HOENN",
   "region_map_section": "MAPSEC_LILYCOVE_CITY",
   "requires_flash": false,
   "weather": "WEATHER_NONE",
@@ -151,6 +152,7 @@
       "flag": "0"
     },
     {
+      "local_id": "LOCALID_SMART_AUDIENCE_4",
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_3",
       "x": 18,
       "y": 24,
