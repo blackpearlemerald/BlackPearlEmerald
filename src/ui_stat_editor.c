@@ -492,7 +492,7 @@ static void Task_StatEditorTurnOff(u8 taskId)
 //
 static struct Pokemon *ReturnPartyMon()
 {
-    return &gPlayerParty[sStatEditorDataPtr->partyid];
+    return &gParties[B_TRAINER_PLAYER][sStatEditorDataPtr->partyid];
 }
 
 #define MON_ICON_X     32 + 8
