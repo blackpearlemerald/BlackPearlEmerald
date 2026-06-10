@@ -1161,7 +1161,7 @@ void ItemUseOutOfBattle_EvolutionStone(u8 taskId)
 static u32 GetBallThrowableState(void)
 {
     //bool8 isWildShiny = GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)]], MON_DATA_IS_SHINY);
-    u32 isWildShiny = GetMonData(&gEnemyParty[gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_IS_SHINY);
+    u32 isWildShiny = GetMonData(&gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_IS_SHINY);
     DebugPrintf(" isWildShiny: %d", isWildShiny);
     DebugPrintf(" gNuzlockeCannotCatch: %d", gNuzlockeCannotCatch);
     //bool8 isWildShiny = GetMonData(&gEnemyParty[0], MON_DATA_IS_SHINY, NULL);

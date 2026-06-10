@@ -2525,7 +2525,7 @@ u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc) {
     }
 
     //u16 species_enemy = GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)]], MON_DATA_SPECIES2);
-    u16 species_enemy = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
+    u16 species_enemy = GetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_SPECIES, NULL);
     DebugPrintf("An encounter detected...");
     DebugPrintf(" species num: %d", species_enemy);
     //if (!(GetSetPokedexFlag(SpeciesToNationalPokedexNum(species_enemy), FLAG_GET_CAUGHT))){
