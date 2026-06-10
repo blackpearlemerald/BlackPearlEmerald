@@ -5362,6 +5362,17 @@ static void HandleEndTurn_BattleWon(void)
     gBattleMainFunc = HandleEndTurn_FinishBattle;
 }
 
+// BPE Nuzlocke: a lost battle ends the challenge
+static void BattleLostNuzlocke(void)
+{
+    if (gBattleControllerExecFlags == 0)
+    {
+        gBattleMainFunc = HandleEndTurn_FinishBattle;
+        PrepareStringBattle(STRINGID_NUZLOCKELOST, 0);
+        FlagClear(FLAG_NUZLOCKE);
+    }
+}
+
 static void HandleEndTurn_BattleLost(void)
 {
     gCurrentActionFuncId = 0;
@@ -5403,6 +5414,13 @@ static void HandleEndTurn_BattleLost(void)
         else
         {
             gBattleCommunication[MULTISTRING_CHOOSER] = 0;
+            // BPE Nuzlocke: losing a battle fails the challenge (scripted early-rival losses excluded above)
+            if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET))
+            {
+                gBattlescriptCurrInstr = BattleScript_LocalBattleLost;
+                gBattleMainFunc = BattleLostNuzlocke;
+                return;
+            }
         }
         gBattlescriptCurrInstr = BattleScript_LocalBattleLost;
     }

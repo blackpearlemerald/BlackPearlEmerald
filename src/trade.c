@@ -3105,6 +3105,10 @@ static void TradeMons(u8 playerPartyIdx, u8 partnerPartyIdx)
     if (!GetMonData(playerMon, MON_DATA_IS_EGG))
         SetMonData(playerMon, MON_DATA_FRIENDSHIP, &friendship);
 
+    // BPE Nuzlocke: a mon received in a trade is never dead
+    bool8 dead = FALSE;
+    SetMonData(playerMon, MON_DATA_DEAD, &dead);
+
     if (partnerMail != MAIL_NONE)
     {
         if (playerPartyIdx == PC_MON_CHOSEN)

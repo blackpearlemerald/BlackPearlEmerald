@@ -39,7 +39,22 @@ void HealPlayerParty(void)
 {
     u32 i;
     for (i = 0; i < gPartiesCount[B_TRAINER_PLAYER]; i++)
+    {
+        // BPE Nuzlocke: fainted mons stay dead and are not healed
+        if (GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_HP) == 0)
+        {
+            if (!FlagGet(FLAG_NUZLOCKE) || !FlagGet(FLAG_SYS_POKEDEX_GET))
+            {
+                bool8 dead = FALSE;
+                SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_DEAD, &dead);
+            }
+            else
+            {
+                continue;
+            }
+        }
         HealPokemon(&gParties[B_TRAINER_PLAYER][i]);
+    }
     if (OW_PC_HEAL >= GEN_8)
         HealPlayerBoxes();
 

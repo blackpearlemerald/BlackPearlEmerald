@@ -3642,6 +3642,11 @@ static void Cmd_tryfaintmon(void)
             gBattlescriptCurrInstr = BattleScript_FaintBattler;
             if (IsOnPlayerSide(battler))
             {
+                if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET)) // BPE Nuzlocke: fainted mons are marked dead
+                {
+                    bool8 dead = TRUE;
+                    SetMonData(GetBattlerMon(battler), MON_DATA_DEAD, &dead);
+                }
                 gHitMarker |= HITMARKER_PLAYER_FAINTED;
                 if (gBattleResults.playerFaintCounter < 255)
                     gBattleResults.playerFaintCounter++;
@@ -10071,6 +10076,8 @@ static void Cmd_handleballthrow(void)
     {
         gBallToDisplay = gLastThrownBall = gLastUsedItem;
         u32 odds = ComputeCaptureOdds(gBattlerTarget, gBattlerAttacker);
+        if (FlagGet(FLAG_NUZLOCKE)) // BPE Nuzlocke: 100% catch rate
+            odds = CAPTURE_GUARANTEED;
         if (gTestRunnerEnabled)
             TestRunner_Battle_RecordCatchChance(odds);
 

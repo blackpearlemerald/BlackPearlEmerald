@@ -160,6 +160,7 @@ void ResetMenuAndMonGlobals(void)
 
 void NewGameInitData(void)
 {
+    bool8 nuzlockePrev = FlagGet(FLAG_NUZLOCKE); // BPE: chosen during Birch speech; InitEventData clears it, so retain and restore at the end
 #if IS_FRLG
     u8 rivalName[PLAYER_NAME_LENGTH + 1];
 #endif
@@ -234,6 +235,7 @@ void NewGameInitData(void)
     ResetItemFlags();
     ResetDexNav();
     ClearFollowerNPCData();
+    nuzlockePrev ? FlagSet(FLAG_NUZLOCKE) : FlagClear(FLAG_NUZLOCKE); // BPE: restore Nuzlocke mode choice
 }
 
 static void ResetMiniGamesRecords(void)
