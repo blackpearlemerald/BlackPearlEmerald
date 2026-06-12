@@ -6087,10 +6087,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_YUJI ===
 Name: LUCIAN
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Lucian
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -6141,10 +6141,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_YUJI2 ===
 Name: AARON
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Aaron
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -13474,10 +13474,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_CORA ===
 Name: BERTHA
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Bertha
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -13528,10 +13528,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_PAULA ===
 Name: FLINT
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Flint
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 

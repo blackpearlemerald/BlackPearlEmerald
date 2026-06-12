@@ -419,6 +419,10 @@ enum
     OBJ_EVENT_GFX_PANTS,
     OBJ_EVENT_GFX_WILL,
     OBJ_EVENT_GFX_KAREN,
+    OBJ_EVENT_GFX_AARON,
+    OBJ_EVENT_GFX_BERTHA,
+    OBJ_EVENT_GFX_FLINT,
+    OBJ_EVENT_GFX_LUCIAN,
     NUM_OBJ_EVENT_GFX,
 };
 
@@ -576,6 +580,10 @@ enum
 #define OBJ_EVENT_PAL_TAG_SS_ANNE                 0x1133
 #define OBJ_EVENT_PAL_TAG_WILL                    0x1134
 #define OBJ_EVENT_PAL_TAG_KAREN                   0x1135
+#define OBJ_EVENT_PAL_TAG_AARON                   0x1136
+#define OBJ_EVENT_PAL_TAG_BERTHA                  0x1137
+#define OBJ_EVENT_PAL_TAG_FLINT                   0x1138
+#define OBJ_EVENT_PAL_TAG_LUCIAN                  0x1139
 
 #if OW_FOLLOWERS_POKEBALLS
 // Vanilla

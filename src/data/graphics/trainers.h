@@ -391,6 +391,18 @@ const u16 gTrainerPalette_EliteFourWill[] = INCGFX_U16("graphics/trainers/palett
 const u32 gTrainerFrontPic_EliteFourKaren[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_karen.png", ".4bpp.smol");
 const u16 gTrainerPalette_EliteFourKaren[] = INCGFX_U16("graphics/trainers/palettes/elite_four_karen.pal", ".gbapal");
 
+const u32 gTrainerFrontPic_EliteFourBertha[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_bertha.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourBertha[] = INCGFX_U16("graphics/trainers/palettes/elite_four_bertha.pal", ".gbapal");
+
+const u32 gTrainerFrontPic_EliteFourLucian[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_lucian.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourLucian[] = INCGFX_U16("graphics/trainers/palettes/elite_four_lucian.pal", ".gbapal");
+
+const u32 gTrainerFrontPic_EliteFourAaron[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_aaron.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourAaron[] = INCGFX_U16("graphics/trainers/palettes/elite_four_aaron.pal", ".gbapal");
+
+const u32 gTrainerFrontPic_EliteFourFlint[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_flint.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourFlint[] = INCGFX_U16("graphics/trainers/palettes/elite_four_flint.pal", ".gbapal");
+
 const u32 gTrainerFrontPic_LeaderBrockFrlg[] = INCGFX_U32("graphics/trainers/front_pics/leader_brock_frlg.png", ".4bpp.smol");
 const u16 gTrainerPalette_LeaderBrockFrlg[] = INCGFX_U16("graphics/trainers/palettes/leader_brock_frlg.pal", ".gbapal");
 
@@ -1262,5 +1274,21 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_ELITE_FOUR_KAREN] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourKaren, gTrainerPalette_EliteFourKaren),
+    },
+    [TRAINER_PIC_ELITE_FOUR_BERTHA] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourBertha, gTrainerPalette_EliteFourBertha),
+    },
+    [TRAINER_PIC_ELITE_FOUR_LUCIAN] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourLucian, gTrainerPalette_EliteFourLucian),
+    },
+    [TRAINER_PIC_ELITE_FOUR_AARON] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourAaron, gTrainerPalette_EliteFourAaron),
+    },
+    [TRAINER_PIC_ELITE_FOUR_FLINT] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourFlint, gTrainerPalette_EliteFourFlint),
     },
 };

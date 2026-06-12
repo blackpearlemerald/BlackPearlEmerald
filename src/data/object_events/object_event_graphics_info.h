@@ -4659,6 +4659,32 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Karen = {
     .affineAnims = gDummySpriteAffineAnimTable,
 };
 
+// Sinnoh E4 cameos (Trick House Puzzle 4) - Platinum-style 32x32 overworlds
+#define SINNOH_E4_OW_GRAPHICS_INFO(name, palTag)        \
+{                                                       \
+    .tileTag = TAG_NONE,                                \
+    .paletteTag = palTag,                               \
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,     \
+    .size = 512,                                        \
+    .width = 32,                                        \
+    .height = 32,                                       \
+    .paletteSlot = PALSLOT_NPC_4,                       \
+    .shadowSize = SHADOW_SIZE_M,                        \
+    .inanimate = FALSE,                                 \
+    .compressed = FALSE,                                \
+    .tracks = TRACKS_FOOT,                              \
+    .oam = &gObjectEventBaseOam_32x32,                  \
+    .subspriteTables = sOamTables_32x32,                \
+    .anims = sAnimTable_Standard,                       \
+    .images = sPicTable_##name,                         \
+    .affineAnims = gDummySpriteAffineAnimTable,         \
+}
+
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Aaron = SINNOH_E4_OW_GRAPHICS_INFO(Aaron, OBJ_EVENT_PAL_TAG_AARON);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bertha = SINNOH_E4_OW_GRAPHICS_INFO(Bertha, OBJ_EVENT_PAL_TAG_BERTHA);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Flint = SINNOH_E4_OW_GRAPHICS_INFO(Flint, OBJ_EVENT_PAL_TAG_FLINT);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lucian = SINNOH_E4_OW_GRAPHICS_INFO(Lucian, OBJ_EVENT_PAL_TAG_LUCIAN);
+
 
 #if IS_FRLG
 

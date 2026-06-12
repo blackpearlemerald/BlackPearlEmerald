@@ -314,6 +314,10 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bill;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lance;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Will;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Karen;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Aaron;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bertha;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Flint;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lucian;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Agatha;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Daisy;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lorelei;
@@ -663,6 +667,10 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_LANCE]                    = &gObjectEventGraphicsInfo_Lance,
     [OBJ_EVENT_GFX_WILL]                     = &gObjectEventGraphicsInfo_Will,
     [OBJ_EVENT_GFX_KAREN]                    = &gObjectEventGraphicsInfo_Karen,
+    [OBJ_EVENT_GFX_AARON]                    = &gObjectEventGraphicsInfo_Aaron,
+    [OBJ_EVENT_GFX_BERTHA]                   = &gObjectEventGraphicsInfo_Bertha,
+    [OBJ_EVENT_GFX_FLINT]                    = &gObjectEventGraphicsInfo_Flint,
+    [OBJ_EVENT_GFX_LUCIAN]                   = &gObjectEventGraphicsInfo_Lucian,
 #if IS_FRLG
     [OBJ_EVENT_GFX_RED_NORMAL] =               &gObjectEventGraphicsInfo_RedNormal,
     [OBJ_EVENT_GFX_RED_BIKE] =                 &gObjectEventGraphicsInfo_RedBike,

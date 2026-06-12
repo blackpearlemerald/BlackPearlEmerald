@@ -5321,6 +5321,15 @@ u16 GetBattleBGM(void)
                 return MUS_VS_TRAINER;
             return MUS_DP_VS_CHAMPION;
         case TRAINER_CLASS_ELITE_FOUR:
+            // The Trick House Sinnoh E4 cameos get the authentic DPPt theme
+            switch (TRAINER_BATTLE_PARAM.opponentA)
+            {
+            case TRAINER_CORA:
+            case TRAINER_YUJI:
+            case TRAINER_YUJI2:
+            case TRAINER_PAULA:
+                return MUS_DP_VS_ELITE_FOUR;
+            }
             return MUS_VS_ELITE_FOUR;
         case TRAINER_CLASS_CHAMPION_FRLG:
             return MUS_RG_VS_CHAMPION;

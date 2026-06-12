@@ -498,6 +498,15 @@ const u16 gObjectEventPic_Will[] = INCGFX_U16("graphics/object_events/pics/peopl
 const u16 gObjectEventPic_Karen[] = INCGFX_U16("graphics/object_events/pics/people/karen.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPal_Will[] = INCGFX_U16("graphics/object_events/palettes/will.pal", ".gbapal");
 const u16 gObjectEventPal_Karen[] = INCGFX_U16("graphics/object_events/palettes/karen.pal", ".gbapal");
+// Sinnoh E4 cameos (Trick House Puzzle 4) - Platinum-style 32x32 overworlds
+const u16 gObjectEventPic_Aaron[] = INCGFX_U16("graphics/object_events/pics/people/aaron.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Bertha[] = INCGFX_U16("graphics/object_events/pics/people/bertha.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Flint[] = INCGFX_U16("graphics/object_events/pics/people/flint.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Lucian[] = INCGFX_U16("graphics/object_events/pics/people/lucian.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPal_Aaron[] = INCGFX_U16("graphics/object_events/palettes/aaron.pal", ".gbapal");
+const u16 gObjectEventPal_Bertha[] = INCGFX_U16("graphics/object_events/palettes/bertha.pal", ".gbapal");
+const u16 gObjectEventPal_Flint[] = INCGFX_U16("graphics/object_events/palettes/flint.pal", ".gbapal");
+const u16 gObjectEventPal_Lucian[] = INCGFX_U16("graphics/object_events/palettes/lucian.pal", ".gbapal");
 
 #if IS_FRLG
 

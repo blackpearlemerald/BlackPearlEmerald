@@ -1482,6 +1482,22 @@ static const struct SpriteFrameImage sPicTable_Karen[] = {
     overworld_frame(gObjectEventPic_Karen, 2, 4, 2),
 };
 
+static const struct SpriteFrameImage sPicTable_Aaron[] = {
+    overworld_ascending_frames(gObjectEventPic_Aaron, 4, 4),
+};
+
+static const struct SpriteFrameImage sPicTable_Bertha[] = {
+    overworld_ascending_frames(gObjectEventPic_Bertha, 4, 4),
+};
+
+static const struct SpriteFrameImage sPicTable_Flint[] = {
+    overworld_ascending_frames(gObjectEventPic_Flint, 4, 4),
+};
+
+static const struct SpriteFrameImage sPicTable_Lucian[] = {
+    overworld_ascending_frames(gObjectEventPic_Lucian, 4, 4),
+};
+
 
 #if IS_FRLG
 
