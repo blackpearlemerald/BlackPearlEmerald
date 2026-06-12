@@ -534,11 +534,9 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPalette_Wake,              OBJ_EVENT_PAL_TAG_WAKE},
     {gObjectEventPalette_Cynthia,           OBJ_EVENT_PAL_TAG_CYNTHIA},
     {gObjectEventPalette_Pants,             OBJ_EVENT_PAL_TAG_PANTS},
-#if IS_FRLG
-    {gObjectEventPal_PlayerFrlg,            OBJ_EVENT_PAL_TAG_PLAYER_RED},
-    {gObjectEventPal_PlayerReflectionFrlg,  OBJ_EVENT_PAL_TAG_PLAYER_RED_REFLECTION},
-    {gObjectEventPal_PlayerFrlg,            OBJ_EVENT_PAL_TAG_PLAYER_GREEN},
-    {gObjectEventPal_PlayerReflectionFrlg,  OBJ_EVENT_PAL_TAG_PLAYER_GREEN_REFLECTION},
+    {gObjectEventPal_Will,                  OBJ_EVENT_PAL_TAG_WILL},
+    {gObjectEventPal_Karen,                 OBJ_EVENT_PAL_TAG_KAREN},
+    // FRLG NPC palettes, needed in the Emerald build for FRLG character cameos
     {gObjectEventPal_NpcBlue,               OBJ_EVENT_PAL_TAG_NPC_BLUE},
     {gObjectEventPal_NpcPink,               OBJ_EVENT_PAL_TAG_NPC_PINK},
     {gObjectEventPal_NpcGreen,              OBJ_EVENT_PAL_TAG_NPC_GREEN},
@@ -547,6 +545,11 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_NpcPinkReflection,     OBJ_EVENT_PAL_TAG_NPC_PINK_REFLECTION},
     {gObjectEventPal_NpcGreenReflection,    OBJ_EVENT_PAL_TAG_NPC_GREEN_REFLECTION},
     {gObjectEventPal_NpcWhiteReflection,    OBJ_EVENT_PAL_TAG_NPC_WHITE_REFLECTION},
+#if IS_FRLG
+    {gObjectEventPal_PlayerFrlg,            OBJ_EVENT_PAL_TAG_PLAYER_RED},
+    {gObjectEventPal_PlayerReflectionFrlg,  OBJ_EVENT_PAL_TAG_PLAYER_RED_REFLECTION},
+    {gObjectEventPal_PlayerFrlg,            OBJ_EVENT_PAL_TAG_PLAYER_GREEN},
+    {gObjectEventPal_PlayerReflectionFrlg,  OBJ_EVENT_PAL_TAG_PLAYER_GREEN_REFLECTION},
     {gObjectEventPal_Meteorite,             OBJ_EVENT_PAL_TAG_METEORITE},
     {gObjectEventPal_SSAnne,                OBJ_EVENT_PAL_TAG_SS_ANNE},
     {gObjectEventPal_Seagallop,             OBJ_EVENT_PAL_TAG_SEAGALLOP},

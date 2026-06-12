@@ -312,6 +312,8 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_ProfOak;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Blue;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bill;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lance;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Will;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Karen;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Agatha;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Daisy;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lorelei;
@@ -653,6 +655,14 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_WAKE] =                     &gObjectEventGraphicsInfo_Wake,
     [OBJ_EVENT_GFX_CYNTHIA] =                  &gObjectEventGraphicsInfo_Cynthia,
     [OBJ_EVENT_GFX_PANTS] =                    &gObjectEventGraphicsInfo_Pants,
+    // FRLG/Johto cameo NPC sprites, needed in the Emerald build (Trick House celebrity trainers)
+    [OBJ_EVENT_GFX_LORELEI]                  = &gObjectEventGraphicsInfo_Lorelei,
+    [OBJ_EVENT_GFX_KOGA]                     = &gObjectEventGraphicsInfo_Koga,
+    [OBJ_EVENT_GFX_BRUNO]                    = &gObjectEventGraphicsInfo_Bruno,
+    [OBJ_EVENT_GFX_AGATHA]                   = &gObjectEventGraphicsInfo_Agatha,
+    [OBJ_EVENT_GFX_LANCE]                    = &gObjectEventGraphicsInfo_Lance,
+    [OBJ_EVENT_GFX_WILL]                     = &gObjectEventGraphicsInfo_Will,
+    [OBJ_EVENT_GFX_KAREN]                    = &gObjectEventGraphicsInfo_Karen,
 #if IS_FRLG
     [OBJ_EVENT_GFX_RED_NORMAL] =               &gObjectEventGraphicsInfo_RedNormal,
     [OBJ_EVENT_GFX_RED_BIKE] =                 &gObjectEventGraphicsInfo_RedBike,
@@ -724,17 +734,12 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_PROF_OAK]                 = &gObjectEventGraphicsInfo_ProfOak,
     [OBJ_EVENT_GFX_BLUE]                     = &gObjectEventGraphicsInfo_Blue,
     [OBJ_EVENT_GFX_BILL]                     = &gObjectEventGraphicsInfo_Bill,
-    [OBJ_EVENT_GFX_LANCE]                    = &gObjectEventGraphicsInfo_Lance,
-    [OBJ_EVENT_GFX_AGATHA]                   = &gObjectEventGraphicsInfo_Agatha,
     [OBJ_EVENT_GFX_DAISY]                    = &gObjectEventGraphicsInfo_Daisy,
-    [OBJ_EVENT_GFX_LORELEI]                  = &gObjectEventGraphicsInfo_Lorelei,
     [OBJ_EVENT_GFX_MR_FUJI]                  = &gObjectEventGraphicsInfo_MrFuji,
-    [OBJ_EVENT_GFX_BRUNO]                    = &gObjectEventGraphicsInfo_Bruno,
     [OBJ_EVENT_GFX_BROCK]                    = &gObjectEventGraphicsInfo_Brock,
     [OBJ_EVENT_GFX_MISTY]                    = &gObjectEventGraphicsInfo_Misty,
     [OBJ_EVENT_GFX_LT_SURGE]                 = &gObjectEventGraphicsInfo_LtSurge,
     [OBJ_EVENT_GFX_ERIKA]                    = &gObjectEventGraphicsInfo_Erika,
-    [OBJ_EVENT_GFX_KOGA]                     = &gObjectEventGraphicsInfo_Koga,
     [OBJ_EVENT_GFX_SABRINA]                  = &gObjectEventGraphicsInfo_Sabrina,
     [OBJ_EVENT_GFX_BLAINE]                   = &gObjectEventGraphicsInfo_Blaine,
     [OBJ_EVENT_GFX_GIOVANNI]                 = &gObjectEventGraphicsInfo_Giovanni,

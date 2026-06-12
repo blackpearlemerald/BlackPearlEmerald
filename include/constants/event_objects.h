@@ -417,6 +417,8 @@ enum
     OBJ_EVENT_GFX_WAKE,
     OBJ_EVENT_GFX_CYNTHIA,
     OBJ_EVENT_GFX_PANTS,
+    OBJ_EVENT_GFX_WILL,
+    OBJ_EVENT_GFX_KAREN,
     NUM_OBJ_EVENT_GFX,
 };
 
@@ -572,6 +574,8 @@ enum
 #define OBJ_EVENT_PAL_TAG_METEORITE               0x1131
 #define OBJ_EVENT_PAL_TAG_SEAGALLOP               0x1132
 #define OBJ_EVENT_PAL_TAG_SS_ANNE                 0x1133
+#define OBJ_EVENT_PAL_TAG_WILL                    0x1134
+#define OBJ_EVENT_PAL_TAG_KAREN                   0x1135
 
 #if OW_FOLLOWERS_POKEBALLS
 // Vanilla

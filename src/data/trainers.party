@@ -9239,10 +9239,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_TED ===
 Name: WILL
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four Frlg
+Pic: Elite Four Will
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -9294,10 +9294,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_PAUL ===
 Name: KOGA
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four Frlg
+Pic: Leader Koga Frlg
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -9458,10 +9458,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_GEORGIA ===
 Name: BRUNO
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four Frlg
+Pic: Elite Four Bruno Frlg
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -9516,10 +9516,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_GEORGIA2 ===
 Name: KAREN
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four Frlg
+Pic: Elite Four Karen
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -10833,10 +10833,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_EDDIE ===
 Name: AGATHA
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four Frlg
+Pic: Elite Four Agatha Frlg
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -10887,10 +10887,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_EDDIE2 ===
 Name: LANCE
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four Frlg
+Pic: Elite Four Lance Frlg
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -19470,10 +19470,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_SALLY ===
 Name: LORELEI
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four Frlg
+Pic: Elite Four Lorelei Frlg
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -19524,10 +19524,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_ROBIN ===
 Name: BRUNO
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four Frlg
+Pic: Elite Four Bruno Frlg
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
