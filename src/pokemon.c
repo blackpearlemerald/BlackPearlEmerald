@@ -5325,7 +5325,18 @@ u16 GetBattleBGM(void)
         case TRAINER_CLASS_CHAMPION_FRLG:
             return MUS_RG_VS_CHAMPION;
         case TRAINER_CLASS_LEADER_FRLG:
+            return MUS_RG_VS_GYM_LEADER;
         case TRAINER_CLASS_ELITE_FOUR_FRLG:
+            // The Trick House Johto E4 cameos get the HGSS theme (GSC/HGSS used
+            // the Kanto Gym Leader theme for the Johto Elite Four)
+            switch (TRAINER_BATTLE_PARAM.opponentA)
+            {
+            case TRAINER_TED:
+            case TRAINER_PAUL:
+            case TRAINER_GEORGIA:
+            case TRAINER_GEORGIA2:
+                return MUS_HG_VS_GYM_LEADER_KANTO;
+            }
             return MUS_RG_VS_GYM_LEADER;
         case TRAINER_CLASS_SALON_MAIDEN:
         case TRAINER_CLASS_DOME_ACE:

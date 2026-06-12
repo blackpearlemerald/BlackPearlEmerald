@@ -547,6 +547,9 @@
 #define MUS_DP_VS_CHAMPION          610 // Battle! (Champion) - DPPt/Platinum Cynthia battle theme
 #define MUS_DP_ENCOUNTER_CHAMPION   611 // Champion Cynthia (encounter) - DPPt/Platinum
 
+// Johto Elite Four (Trick House Puzzle 2 cameo) battle music
+#define MUS_HG_VS_GYM_LEADER_KANTO  612 // Battle! (Kanto Gym Leader) - HGSS; used by GSC/HGSS for the Johto Elite Four
+
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 
 #define MUS_NONE                    0xFFFF
