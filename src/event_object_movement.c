@@ -540,6 +540,10 @@ static const struct SpritePalette sObjectEventSpritePalettes[] = {
     {gObjectEventPal_Bertha,                OBJ_EVENT_PAL_TAG_BERTHA},
     {gObjectEventPal_Flint,                 OBJ_EVENT_PAL_TAG_FLINT},
     {gObjectEventPal_Lucian,                OBJ_EVENT_PAL_TAG_LUCIAN},
+    {gObjectEventPal_Shauntal,          OBJ_EVENT_PAL_TAG_SHAUNTAL},
+    {gObjectEventPal_Grimsley,          OBJ_EVENT_PAL_TAG_GRIMSLEY},
+    {gObjectEventPal_Caitlin,           OBJ_EVENT_PAL_TAG_CAITLIN},
+    {gObjectEventPal_Marshal,           OBJ_EVENT_PAL_TAG_MARSHAL},
     // FRLG NPC palettes, needed in the Emerald build for FRLG character cameos
     {gObjectEventPal_NpcBlue,               OBJ_EVENT_PAL_TAG_NPC_BLUE},
     {gObjectEventPal_NpcPink,               OBJ_EVENT_PAL_TAG_NPC_PINK},

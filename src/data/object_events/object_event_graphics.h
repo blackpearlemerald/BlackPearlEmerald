@@ -507,6 +507,15 @@ const u16 gObjectEventPal_Aaron[] = INCGFX_U16("graphics/object_events/palettes/
 const u16 gObjectEventPal_Bertha[] = INCGFX_U16("graphics/object_events/palettes/bertha.pal", ".gbapal");
 const u16 gObjectEventPal_Flint[] = INCGFX_U16("graphics/object_events/palettes/flint.pal", ".gbapal");
 const u16 gObjectEventPal_Lucian[] = INCGFX_U16("graphics/object_events/palettes/lucian.pal", ".gbapal");
+// Unova E4 cameos (Trick House Puzzle 5) - BW-style 32x32 overworlds
+const u16 gObjectEventPic_Shauntal[] = INCGFX_U16("graphics/object_events/pics/people/shauntal.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Grimsley[] = INCGFX_U16("graphics/object_events/pics/people/grimsley.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Caitlin[] = INCGFX_U16("graphics/object_events/pics/people/caitlin.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Marshal[] = INCGFX_U16("graphics/object_events/pics/people/marshal.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPal_Shauntal[] = INCGFX_U16("graphics/object_events/palettes/shauntal.pal", ".gbapal");
+const u16 gObjectEventPal_Grimsley[] = INCGFX_U16("graphics/object_events/palettes/grimsley.pal", ".gbapal");
+const u16 gObjectEventPal_Caitlin[] = INCGFX_U16("graphics/object_events/palettes/caitlin.pal", ".gbapal");
+const u16 gObjectEventPal_Marshal[] = INCGFX_U16("graphics/object_events/palettes/marshal.pal", ".gbapal");
 
 #if IS_FRLG
 

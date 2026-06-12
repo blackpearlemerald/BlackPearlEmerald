@@ -5329,6 +5329,12 @@ u16 GetBattleBGM(void)
             case TRAINER_YUJI2:
             case TRAINER_PAULA:
                 return MUS_DP_VS_ELITE_FOUR;
+            // The Trick House Unova E4 cameos get the authentic BW theme
+            case TRAINER_YUJI3:
+            case TRAINER_YUJI4:
+            case TRAINER_YUJI5:
+            case TRAINER_YUJI6:
+                return MUS_BW_VS_ELITE_FOUR;
             }
             return MUS_VS_ELITE_FOUR;
         case TRAINER_CLASS_CHAMPION_FRLG:

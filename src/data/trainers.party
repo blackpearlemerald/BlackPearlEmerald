@@ -6195,10 +6195,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_YUJI3 ===
 Name: SHAUNTAL
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Shauntal
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -6240,10 +6240,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_YUJI4 ===
 Name: MARSHAL
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Marshal
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -6285,10 +6285,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_YUJI5 ===
 Name: GRIMSLEY
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Grimsley
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -6330,10 +6330,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_YUJI6 ===
 Name: CAITLIN
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Caitlin
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 

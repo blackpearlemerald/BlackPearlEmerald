@@ -4659,8 +4659,8 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Karen = {
     .affineAnims = gDummySpriteAffineAnimTable,
 };
 
-// Sinnoh E4 cameos (Trick House Puzzle 4) - Platinum-style 32x32 overworlds
-#define SINNOH_E4_OW_GRAPHICS_INFO(name, palTag)        \
+// Sinnoh/Unova E4 cameos (Trick House Puzzles 4-5) - DS-style 32x32 overworlds
+#define DS_STYLE_OW_GRAPHICS_INFO(name, palTag)        \
 {                                                       \
     .tileTag = TAG_NONE,                                \
     .paletteTag = palTag,                               \
@@ -4680,10 +4680,14 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Karen = {
     .affineAnims = gDummySpriteAffineAnimTable,         \
 }
 
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Aaron = SINNOH_E4_OW_GRAPHICS_INFO(Aaron, OBJ_EVENT_PAL_TAG_AARON);
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bertha = SINNOH_E4_OW_GRAPHICS_INFO(Bertha, OBJ_EVENT_PAL_TAG_BERTHA);
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Flint = SINNOH_E4_OW_GRAPHICS_INFO(Flint, OBJ_EVENT_PAL_TAG_FLINT);
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lucian = SINNOH_E4_OW_GRAPHICS_INFO(Lucian, OBJ_EVENT_PAL_TAG_LUCIAN);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Aaron = DS_STYLE_OW_GRAPHICS_INFO(Aaron, OBJ_EVENT_PAL_TAG_AARON);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Bertha = DS_STYLE_OW_GRAPHICS_INFO(Bertha, OBJ_EVENT_PAL_TAG_BERTHA);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Flint = DS_STYLE_OW_GRAPHICS_INFO(Flint, OBJ_EVENT_PAL_TAG_FLINT);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lucian = DS_STYLE_OW_GRAPHICS_INFO(Lucian, OBJ_EVENT_PAL_TAG_LUCIAN);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Shauntal = DS_STYLE_OW_GRAPHICS_INFO(Shauntal, OBJ_EVENT_PAL_TAG_SHAUNTAL);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Grimsley = DS_STYLE_OW_GRAPHICS_INFO(Grimsley, OBJ_EVENT_PAL_TAG_GRIMSLEY);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Caitlin = DS_STYLE_OW_GRAPHICS_INFO(Caitlin, OBJ_EVENT_PAL_TAG_CAITLIN);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Marshal = DS_STYLE_OW_GRAPHICS_INFO(Marshal, OBJ_EVENT_PAL_TAG_MARSHAL);
 
 
 #if IS_FRLG
