@@ -413,6 +413,12 @@ const u16 gTrainerPalette_EliteFourCaitlin[] = INCGFX_U16("graphics/trainers/pal
 
 const u32 gTrainerFrontPic_EliteFourMarshal[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_marshal.png", ".4bpp.smol");
 const u16 gTrainerPalette_EliteFourMarshal[] = INCGFX_U16("graphics/trainers/palettes/elite_four_marshal.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourMalva[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_malva.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourMalva[] = INCGFX_U16("graphics/trainers/palettes/elite_four_malva.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourSiebold[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_siebold.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourSiebold[] = INCGFX_U16("graphics/trainers/palettes/elite_four_siebold.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourWikstrom[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_wikstrom.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourWikstrom[] = INCGFX_U16("graphics/trainers/palettes/elite_four_wikstrom.pal", ".gbapal");
 
 const u32 gTrainerFrontPic_LeaderBrockFrlg[] = INCGFX_U32("graphics/trainers/front_pics/leader_brock_frlg.png", ".4bpp.smol");
 const u16 gTrainerPalette_LeaderBrockFrlg[] = INCGFX_U16("graphics/trainers/palettes/leader_brock_frlg.pal", ".gbapal");
@@ -1317,5 +1323,17 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_ELITE_FOUR_MARSHAL] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourMarshal, gTrainerPalette_EliteFourMarshal),
+    },
+    [TRAINER_PIC_ELITE_FOUR_MALVA] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourMalva, gTrainerPalette_EliteFourMalva),
+    },
+    [TRAINER_PIC_ELITE_FOUR_SIEBOLD] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourSiebold, gTrainerPalette_EliteFourSiebold),
+    },
+    [TRAINER_PIC_ELITE_FOUR_WIKSTROM] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourWikstrom, gTrainerPalette_EliteFourWikstrom),
     },
 };

@@ -5335,6 +5335,12 @@ u16 GetBattleBGM(void)
             case TRAINER_YUJI5:
             case TRAINER_YUJI6:
                 return MUS_BW_VS_ELITE_FOUR;
+            // The Trick House Kalos E4 cameos get the authentic XY theme
+            case TRAINER_SOPHIA:
+            case TRAINER_BENNY:
+            case TRAINER_BENNY2:
+            case TRAINER_SEBASTIAN:
+                return MUS_XY_VS_ELITE_FOUR;
             }
             return MUS_VS_ELITE_FOUR;
         case TRAINER_CLASS_CHAMPION_FRLG:

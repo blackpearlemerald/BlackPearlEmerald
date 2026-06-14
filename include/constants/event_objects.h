@@ -427,6 +427,10 @@ enum
     OBJ_EVENT_GFX_GRIMSLEY,
     OBJ_EVENT_GFX_CAITLIN,
     OBJ_EVENT_GFX_MARSHAL,
+    OBJ_EVENT_GFX_MALVA,
+    OBJ_EVENT_GFX_DRASNA,
+    OBJ_EVENT_GFX_SIEBOLD,
+    OBJ_EVENT_GFX_WIKSTROM,
     NUM_OBJ_EVENT_GFX,
 };
 
@@ -592,6 +596,10 @@ enum
 #define OBJ_EVENT_PAL_TAG_GRIMSLEY                0x113B
 #define OBJ_EVENT_PAL_TAG_CAITLIN                 0x113C
 #define OBJ_EVENT_PAL_TAG_MARSHAL                 0x113D
+#define OBJ_EVENT_PAL_TAG_MALVA                   0x113E
+#define OBJ_EVENT_PAL_TAG_DRASNA                  0x113F
+#define OBJ_EVENT_PAL_TAG_SIEBOLD                 0x1140
+#define OBJ_EVENT_PAL_TAG_WIKSTROM                0x1141
 
 #if OW_FOLLOWERS_POKEBALLS
 // Vanilla

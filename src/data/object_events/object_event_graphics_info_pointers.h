@@ -322,6 +322,10 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Shauntal;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Grimsley;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Caitlin;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Marshal;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Malva;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Drasna;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Siebold;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wikstrom;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Agatha;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Daisy;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lorelei;
@@ -679,6 +683,10 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_GRIMSLEY]             = &gObjectEventGraphicsInfo_Grimsley,
     [OBJ_EVENT_GFX_CAITLIN]              = &gObjectEventGraphicsInfo_Caitlin,
     [OBJ_EVENT_GFX_MARSHAL]              = &gObjectEventGraphicsInfo_Marshal,
+    [OBJ_EVENT_GFX_MALVA]                = &gObjectEventGraphicsInfo_Malva,
+    [OBJ_EVENT_GFX_DRASNA]               = &gObjectEventGraphicsInfo_Drasna,
+    [OBJ_EVENT_GFX_SIEBOLD]              = &gObjectEventGraphicsInfo_Siebold,
+    [OBJ_EVENT_GFX_WIKSTROM]             = &gObjectEventGraphicsInfo_Wikstrom,
 #if IS_FRLG
     [OBJ_EVENT_GFX_RED_NORMAL] =               &gObjectEventGraphicsInfo_RedNormal,
     [OBJ_EVENT_GFX_RED_BIKE] =                 &gObjectEventGraphicsInfo_RedBike,

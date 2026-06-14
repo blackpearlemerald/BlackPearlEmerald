@@ -1512,6 +1512,50 @@ static const struct SpriteFrameImage sPicTable_Caitlin[] = {
 static const struct SpriteFrameImage sPicTable_Marshal[] = {
     overworld_ascending_frames(gObjectEventPic_Marshal, 4, 4),
 };
+static const struct SpriteFrameImage sPicTable_Malva[] = {
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+};
+static const struct SpriteFrameImage sPicTable_Drasna[] = {
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Drasna, 2, 4, 0),
+};
+static const struct SpriteFrameImage sPicTable_Siebold[] = {
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Siebold, 2, 4, 0),
+};
+static const struct SpriteFrameImage sPicTable_Wikstrom[] = {
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+};
 
 
 #if IS_FRLG

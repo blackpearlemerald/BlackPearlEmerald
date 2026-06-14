@@ -516,6 +516,15 @@ const u16 gObjectEventPal_Shauntal[] = INCGFX_U16("graphics/object_events/palett
 const u16 gObjectEventPal_Grimsley[] = INCGFX_U16("graphics/object_events/palettes/grimsley.pal", ".gbapal");
 const u16 gObjectEventPal_Caitlin[] = INCGFX_U16("graphics/object_events/palettes/caitlin.pal", ".gbapal");
 const u16 gObjectEventPal_Marshal[] = INCGFX_U16("graphics/object_events/palettes/marshal.pal", ".gbapal");
+// Kalos E4 cameos (Trick House Puzzle 6) - single-frame front-facing OW sprites
+const u16 gObjectEventPic_Malva[] = INCGFX_U16("graphics/object_events/pics/people/malva.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Drasna[] = INCGFX_U16("graphics/object_events/pics/people/drasna.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Siebold[] = INCGFX_U16("graphics/object_events/pics/people/siebold.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Wikstrom[] = INCGFX_U16("graphics/object_events/pics/people/wikstrom.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Malva[] = INCGFX_U16("graphics/object_events/palettes/malva.pal", ".gbapal");
+const u16 gObjectEventPal_Drasna[] = INCGFX_U16("graphics/object_events/palettes/drasna.pal", ".gbapal");
+const u16 gObjectEventPal_Siebold[] = INCGFX_U16("graphics/object_events/palettes/siebold.pal", ".gbapal");
+const u16 gObjectEventPal_Wikstrom[] = INCGFX_U16("graphics/object_events/palettes/wikstrom.pal", ".gbapal");
 
 #if IS_FRLG
 

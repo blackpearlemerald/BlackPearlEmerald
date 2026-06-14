@@ -551,6 +551,7 @@
 #define MUS_HG_VS_GYM_LEADER_KANTO  612 // Battle! (Kanto Gym Leader) - HGSS; used by GSC/HGSS for the Johto Elite Four
 #define MUS_DP_VS_ELITE_FOUR        613 // Battle! (Elite Four) - DPPt; Sinnoh Elite Four (Trick House Puzzle 4 cameo)
 #define MUS_BW_VS_ELITE_FOUR        614 // Battle! (Elite Four) - BW; Unova Elite Four (Trick House Puzzle 5 cameo)
+#define MUS_XY_VS_ELITE_FOUR        615 // Battle! (Elite Four) - XY; Kalos Elite Four (Trick House Puzzle 6 cameo)
 
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 

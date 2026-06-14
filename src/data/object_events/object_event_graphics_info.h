@@ -4688,6 +4688,80 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Shauntal = DS_STYL
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Grimsley = DS_STYLE_OW_GRAPHICS_INFO(Grimsley, OBJ_EVENT_PAL_TAG_GRIMSLEY);
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Caitlin = DS_STYLE_OW_GRAPHICS_INFO(Caitlin, OBJ_EVENT_PAL_TAG_CAITLIN);
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Marshal = DS_STYLE_OW_GRAPHICS_INFO(Marshal, OBJ_EVENT_PAL_TAG_MARSHAL);
+// Kalos E4 cameos (Trick House Puzzle 6) - 16x32 single-frame
+
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Malva = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_MALVA,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 256,
+    .width = 16,
+    .height = 32,
+    .paletteSlot = PALSLOT_NPC_4,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .compressed = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_16x32,
+    .subspriteTables = sOamTables_16x32,
+    .anims = sAnimTable_Standard,
+    .images = sPicTable_Malva,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Drasna = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_DRASNA,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 256,
+    .width = 16,
+    .height = 32,
+    .paletteSlot = PALSLOT_NPC_4,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .compressed = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_16x32,
+    .subspriteTables = sOamTables_16x32,
+    .anims = sAnimTable_Standard,
+    .images = sPicTable_Drasna,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Siebold = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_SIEBOLD,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 256,
+    .width = 16,
+    .height = 32,
+    .paletteSlot = PALSLOT_NPC_4,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .compressed = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_16x32,
+    .subspriteTables = sOamTables_16x32,
+    .anims = sAnimTable_Standard,
+    .images = sPicTable_Siebold,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wikstrom = {
+    .tileTag = TAG_NONE,
+    .paletteTag = OBJ_EVENT_PAL_TAG_WIKSTROM,
+    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
+    .size = 256,
+    .width = 16,
+    .height = 32,
+    .paletteSlot = PALSLOT_NPC_4,
+    .shadowSize = SHADOW_SIZE_M,
+    .inanimate = FALSE,
+    .compressed = FALSE,
+    .tracks = TRACKS_FOOT,
+    .oam = &gObjectEventBaseOam_16x32,
+    .subspriteTables = sOamTables_16x32,
+    .anims = sAnimTable_Standard,
+    .images = sPicTable_Wikstrom,
+    .affineAnims = gDummySpriteAffineAnimTable,
+};
 
 
 #if IS_FRLG

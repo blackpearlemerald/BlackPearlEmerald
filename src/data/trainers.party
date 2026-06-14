@@ -12793,10 +12793,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_BENNY ===
 Name: DRASNA
-Class: Cooltrainer 2
+Class: Elite Four
 Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -12839,10 +12839,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_BENNY2 ===
 Name: SIEBOLD
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Siebold
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -17553,10 +17553,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_SEBASTIAN ===
 Name: WIKSTROM
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Wikstrom
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -17739,10 +17739,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_SOPHIA ===
 Name: MALVA
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Malva
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
