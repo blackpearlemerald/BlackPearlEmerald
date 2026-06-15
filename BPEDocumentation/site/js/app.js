@@ -127,10 +127,13 @@ async function main() {
 
   function trainerAt(x, y) {
     if (!map.hasLayer(trainerLayer)) return null;
+    // among sprite rects under the click, prefer the one whose foot position
+    // (tile centre) is nearest -- sprites are tall and overlap neighbours above
     let best = null, bestD = Infinity;
     for (const t of trainerHits) {
       if (x >= t.x0 && x <= t.x1 && y >= t.yTop && y <= t.yBot) {
-        const cx = (t.x0 + t.x1) / 2, d = Math.abs(x - cx);
+        const dx = x - t.stack.gx, dy = y - t.stack.gy;
+        const d = dx * dx + dy * dy;
         if (d < bestD) { bestD = d; best = t; }
       }
     }
@@ -148,17 +151,46 @@ async function main() {
     return best;
   }
 
+  // show a trainer stack's current member; cycle via the marker or the button
+  let openStack = null;
+  function showStack(st) {
+    const t = st.trainers[st.idx];
+    renderStack(st);                          // map sprite matches the popup
+    const sp = spriteFor(t);
+    const n = st.trainers.length;
+    const nav = n > 1
+      ? `<div class="stack-nav">Trainer ${st.idx + 1} / ${n}` +
+        `<button type="button" class="stack-cycle">Next ▸</button></div>`
+      : "";
+    objPopup.setLatLng(W2LL(t.gx, sp.yTop))
+      .setContent(nav + trainerPopup(world.trainerData[t.trainerId]))
+      .openOn(map);
+    if (n > 1) {
+      const el = objPopup.getElement();
+      const btn = el && el.querySelector(".stack-cycle");
+      if (btn) L.DomEvent.on(btn, "click", (ev) => {
+        L.DomEvent.stop(ev);
+        st.idx = (st.idx + 1) % n;
+        showStack(st);
+      });
+    }
+  }
+
   map.on("click", (e) => {
     // priority: warp endpoint -> trainer sprite -> item -> map encounters
     const target = warpEndAt(e.latlng);
     if (target) { flyTarget(target); return; }
     const x = e.latlng.lng, y = -e.latlng.lat;
-    const t = trainerAt(x, y);
-    if (t) {
-      objPopup.setLatLng(W2LL(t.gxTop[0], t.gxTop[1]))
-        .setContent(trainerPopup(world.trainerData[t.trainerId])).openOn(map);
+    const hit = trainerAt(x, y);
+    if (hit) {
+      const st = hit.stack;
+      if (st === openStack)                  // tapping the same marker cycles
+        st.idx = (st.idx + 1) % st.trainers.length;
+      openStack = st;
+      showStack(st);
       return;
     }
+    openStack = null;
     const it = itemAt(e.latlng);
     if (it) {
       objPopup.setLatLng(e.latlng).setContent(itemPopup(it)).openOn(map);
@@ -240,30 +272,65 @@ async function main() {
   }
 
   // ---- trainers (overworld sprites, world-anchored so they scale with the
-  // map and stay game-accurate size; clicks resolved in the map handler) ----
+  // map). Trainers sharing a tile (Winstrate family, rival variants, ...)
+  // collapse into one cycling marker with a "xN" badge; clicking cycles. ----
   const trainerLayer = L.layerGroup();
-  for (const t of world.trainers) {
+
+  function spriteFor(t) {
     const s = world.sprites[t.gfx];
-    const sw = s ? s.w : TILE;
-    const sh = s ? s.h : TILE;
-    // sprite stands on its tile: bottom at the tile's bottom edge, centred in x
-    const yBot = t.gy + TILE / 2;        // tile bottom (world y, +down)
-    const yTop = yBot - sh;
-    const x0 = t.gx - sw / 2;
-    const x1 = t.gx + sw / 2;
-    if (s) {
-      L.imageOverlay("img/sprites/" + s.file,
-        [W2LL(x0, yBot), W2LL(x1, yTop)],
+    const sw = s ? s.w : TILE, sh = s ? s.h : TILE;
+    const yBot = t.gy + TILE / 2, yTop = yBot - sh;
+    const file = s ? ((s.dirs && (s.dirs[t.dir] || s.dirs.down)) || s.file)
+                   : null;
+    return { file, sw, sh, yTop,
+             bounds: [W2LL(t.gx - sw / 2, yBot), W2LL(t.gx + sw / 2, yTop)] };
+  }
+
+  // group trainers by tile
+  const stackMap = new Map();
+  for (const t of world.trainers) {
+    const key = t.gx + "," + t.gy;
+    let st = stackMap.get(key);
+    if (!st) stackMap.set(key, st = { trainers: [], idx: 0, gx: t.gx, gy: t.gy });
+    st.trainers.push(t);
+  }
+
+  function renderStack(st) {           // point the overlay at the current trainer
+    const sp = spriteFor(st.trainers[st.idx]);
+    if (st.overlay && sp.file) {
+      st.overlay.setUrl("img/sprites/" + sp.file);
+      st.overlay.setBounds(sp.bounds);
+    }
+  }
+
+  for (const st of stackMap.values()) {
+    const sp = spriteFor(st.trainers[0]);
+    if (sp.file) {
+      st.overlay = L.imageOverlay("img/sprites/" + sp.file, sp.bounds,
         { className: "sprite", interactive: false }).addTo(trainerLayer);
     } else {
-      // fallback marker for unresolved sprites
-      L.circleMarker(W2LL(t.gx, t.gy), {
+      L.circleMarker(W2LL(st.gx, st.gy), {
         radius: 5, color: "#5a0000", weight: 1, fillColor: "#e23b3b",
         fillOpacity: 0.95, interactive: false, renderer: canvas,
       }).addTo(trainerLayer);
     }
-    trainerHits.push({ x0, x1, yTop, yBot,
-                       gxTop: [t.gx, yTop], trainerId: t.trainerId });
+    // hit rect spans the largest sprite in the stack
+    let maxW = TILE, maxH = TILE;
+    for (const t of st.trainers) {
+      const s = world.sprites[t.gfx];
+      if (s) { maxW = Math.max(maxW, s.w); maxH = Math.max(maxH, s.h); }
+    }
+    const yBot = st.gy + TILE / 2;
+    trainerHits.push({ x0: st.gx - maxW / 2, x1: st.gx + maxW / 2,
+                       yTop: yBot - maxH, yBot, stack: st });
+    if (st.trainers.length > 1) {
+      L.marker(W2LL(st.gx + maxW / 2, yBot - maxH), {
+        interactive: false,
+        icon: L.divIcon({ className: "stack-badge",
+                          html: "×" + st.trainers.length,
+                          iconSize: [0, 0] }),
+      }).addTo(trainerLayer);
+    }
   }
 
   // ---- items (visible + hidden split into two layers) ----

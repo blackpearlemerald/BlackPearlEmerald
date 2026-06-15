@@ -161,6 +161,22 @@ def resolve_trainer(script_label, scripts, _seen=None):
 TRAINERBATTLE_RE = re.compile(r"\btrainerbattle\w*\s+(TRAINER_[A-Z0-9_]+)")
 LOCALID_RE = re.compile(r"\bLOCALID_[A-Z0-9_]+")
 
+# direction keyword -> facing; the first one found in the movement_type wins
+_DIR_KEYS = [("DOWN", "down"), ("SOUTH", "down"), ("UP", "up"),
+             ("NORTH", "up"), ("LEFT", "left"), ("WEST", "left"),
+             ("RIGHT", "right"), ("EAST", "right")]
+
+
+def facing_dir(movement_type):
+    """Facing direction implied by an object's movement_type (default down)."""
+    s = (movement_type or "").upper()
+    best, best_pos = "down", None
+    for key, d in _DIR_KEYS:
+        p = s.find(key)
+        if p != -1 and (best_pos is None or p < best_pos):
+            best, best_pos = d, p
+    return best
+
 
 def _name_tokens(symbol):
     drop = {"TRAINER", "LOCALID", "OBJ", "EVENT", "GFX", ""}
@@ -191,7 +207,8 @@ def scripted_battles(object_events, scripts, claimed):
     def place(lid, tid):
         ev = by_localid[lid]
         out.append({"x": int(ev.get("x", 0)), "y": int(ev.get("y", 0)),
-                    "trainerId": tid, "gfx": ev.get("graphics_id")})
+                    "trainerId": tid, "gfx": ev.get("graphics_id"),
+                    "dir": facing_dir(ev.get("movement_type"))})
         used.add(lid)
         claimed.add(tid)
 
@@ -255,7 +272,8 @@ def load_maps(dims):
                 tid = resolve_trainer(ev.get("script"), scripts)
                 if tid:
                     trainers.append({"x": x, "y": y, "trainerId": tid,
-                                     "gfx": ev.get("graphics_id")})
+                                     "gfx": ev.get("graphics_id"),
+                                     "dir": facing_dir(ev.get("movement_type"))})
             if ev.get("graphics_id") == "OBJ_EVENT_GFX_ITEM_BALL":
                 items.append({"x": x, "y": y,
                               "item": ev.get("trainer_sight_or_berry_tree_id"),
@@ -479,7 +497,8 @@ def build():
             out_trainers.append({"mapId": mid,
                                  "gx": ox + t["x"] * TILE + TILE // 2,
                                  "gy": oy + t["y"] * TILE + TILE // 2,
-                                 "trainerId": tid, "gfx": t.get("gfx")})
+                                 "trainerId": tid, "gfx": t.get("gfx"),
+                                 "dir": t.get("dir", "down")})
         for it in m["items"]:
             out_items.append({"mapId": mid,
                               "gx": ox + it["x"] * TILE + TILE // 2,

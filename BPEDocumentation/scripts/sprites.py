@@ -64,25 +64,33 @@ def build_index():
     return pointers, info, pictbl, pics
 
 
-def _extract_frame0(png_rel, w, h):
-    img = Image.open(C.src(*png_rel.split("/")))
-    src = img.crop((0, 0, w, h))
-    pal = img.getpalette()
-    if src.mode != "P" or pal is None:
+# Standard overworld people frame order: 0 = south(down), 1 = north(up),
+# 2 = west(left); east(right) is west flipped horizontally.
+DIR_FRAME = {"down": 0, "up": 1, "left": 2}
+
+
+def _extract_frame(img, pal, i, w, h):
+    """Frame i of a horizontal sprite strip, index 0 transparent -> RGBA."""
+    src = img.crop((i * w, 0, i * w + w, h))
+    if img.mode != "P" or pal is None:
         return src.convert("RGBA")
     out = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     sp, op = src.load(), out.load()
     for y in range(h):
         for x in range(w):
-            i = sp[x, y]
-            if i == 0:               # index 0 = transparent
+            c = sp[x, y]
+            if c == 0:               # index 0 = transparent
                 continue
-            op[x, y] = (pal[i * 3], pal[i * 3 + 1], pal[i * 3 + 2], 255)
+            op[x, y] = (pal[c * 3], pal[c * 3 + 1], pal[c * 3 + 2], 255)
     return out
 
 
 def extract_sprites(gfx_ids, out_dir):
-    """Render frame 0 for each graphics id. Returns gfx_id -> {file, w, h}."""
+    """Render the four facing frames (down/up/left/right) per graphics id.
+
+    Returns gfx_id -> {w, h, dirs: {down, up, left, right: filename}}.
+    Sprites with fewer frames fall back to frame 0 for missing directions.
+    """
     os.makedirs(out_dir, exist_ok=True)
     pointers, info, pictbl, pics = build_index()
     result = {}
@@ -96,11 +104,25 @@ def extract_sprites(gfx_ids, out_dir):
         if not png:
             continue
         try:
-            frame = _extract_frame0(png, w, h)
+            img = Image.open(C.src(*png.split("/")))
+            pal = img.getpalette()
+            nframes = max(1, img.width // w)
+            base = gfx.replace("OBJ_EVENT_GFX_", "")
+            dirs = {}
+            for d, idx in DIR_FRAME.items():
+                frame = _extract_frame(img, pal, idx if idx < nframes else 0,
+                                       w, h)
+                fname = f"{base}_{d}.png"
+                frame.save(os.path.join(out_dir, fname))
+                dirs[d] = fname
+            # east = west flipped (or frame 0 flipped if no west frame)
+            east_src = _extract_frame(img, pal, 2 if 2 < nframes else 0, w, h)
+            east = east_src.transpose(Image.FLIP_LEFT_RIGHT)
+            fname = f"{base}_right.png"
+            east.save(os.path.join(out_dir, fname))
+            dirs["right"] = fname
         except Exception as e:
             print(f"  ! sprite {gfx}: {e}")
             continue
-        fname = gfx.replace("OBJ_EVENT_GFX_", "") + ".png"
-        frame.save(os.path.join(out_dir, fname))
-        result[gfx] = {"file": fname, "w": w, "h": h}
+        result[gfx] = {"w": w, "h": h, "dirs": dirs}
     return result
