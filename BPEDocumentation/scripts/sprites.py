@@ -21,7 +21,9 @@ OEDIR = ("src", "data", "object_events")
 PTR_RE = re.compile(r"\[(OBJ_EVENT_GFX_\w+)\]\s*=\s*&(gObjectEventGraphicsInfo_\w+)")
 INFO_RE = re.compile(
     r"gObjectEventGraphicsInfo_(\w+)\s*=\s*\{(.*?)\};", re.DOTALL)
-PICTBL_RE = re.compile(r"(sPicTable_\w+)\[\]\s*=\s*\{(.*?)\};", re.DOTALL)
+# pic tables are named sPicTable_X (vanilla) or gObjectEventPicTable_X
+# (custom/expansion); both contain "PicTable".
+PICTBL_RE = re.compile(r"(\w*PicTable\w*)\[\]\s*=\s*\{(.*?)\};", re.DOTALL)
 PIC_RE = re.compile(r"(gObjectEventPic_\w+)\[\]\s*=\s*INCGFX_\w+\(\"([^\"]+)\"")
 
 
@@ -35,13 +37,21 @@ def build_index():
     pointers = dict(PTR_RE.findall(_read(*OEDIR, "object_event_graphics_info_pointers.h")))
 
     info = {}  # 'gObjectEventGraphicsInfo_X' -> (w, h, picTableSymbol)
-    for name, body in INFO_RE.findall(_read(*OEDIR, "object_event_graphics_info.h")):
+    info_text = _read(*OEDIR, "object_event_graphics_info.h")
+    for name, body in INFO_RE.findall(info_text):
         w = re.search(r"\.width\s*=\s*(\d+)", body)
         h = re.search(r"\.height\s*=\s*(\d+)", body)
         img = re.search(r"\.images\s*=\s*(\w+)", body)
         if w and h and img:
             info["gObjectEventGraphicsInfo_" + name] = (
                 int(w.group(1)), int(h.group(1)), img.group(1))
+    # macro form (Sinnoh/Unova E4 cameos etc.): expands to a 32x32 info whose
+    # .images = sPicTable_<name>
+    for name in re.findall(
+            r"gObjectEventGraphicsInfo_(\w+)\s*=\s*DS_STYLE_OW_GRAPHICS_INFO\("
+            r"\s*(\w+)", info_text):
+        info["gObjectEventGraphicsInfo_" + name[0]] = (32, 32,
+                                                       "sPicTable_" + name[1])
 
     pictbl = {}  # 'sPicTable_X' -> 'gObjectEventPic_X'
     for sym, body in PICTBL_RE.findall(_read(*OEDIR, "object_event_pic_tables.h")):

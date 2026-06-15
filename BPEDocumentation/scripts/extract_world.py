@@ -119,21 +119,117 @@ def parse_scripts_inc(path):
     return out
 
 
-def resolve_trainer(script_label, scripts, depth=0):
-    """Follow a trainer object's script to the first TRAINER_* id."""
-    if not script_label or depth > 4:
+def resolve_trainer(script_label, scripts, _seen=None):
+    """Resolve an object's script to the TRAINER_* it battles, if any.
+
+    Keys on the `trainerbattle*` macro (and `vsseeker_rematchid`, which names a
+    rematchable trainer directly) so it works for both line-of-sight trainers
+    and talk-to-battle NPCs (gym leaders, rivals) whose trainer_type is NONE,
+    without false-positiving ordinary NPCs. Battle scripts are often reached via
+    goto/call or switch/case, so all referenced local labels are followed.
+    """
+    if not script_label:
         return None
+    if _seen is None:
+        _seen = set()
+    if script_label in _seen or len(_seen) > 64:
+        return None
+    _seen.add(script_label)
     body = scripts.get(script_label)
     if body is None:
         return None
-    m = TRAINER_TOK_RE.search(body)
-    if m and m.group(0) not in ("TRAINER_TYPE_NORMAL", "TRAINER_TYPE_NONE"):
-        return m.group(0)
-    # follow a goto/call to another local script
-    g = re.search(r"\b(?:goto|call)\s+(\w+)", body)
-    if g:
-        return resolve_trainer(g.group(1), scripts, depth + 1)
+    m = re.search(r"\btrainerbattle\w*\s+(TRAINER_[A-Z0-9_]+)", body)
+    if m:
+        return m.group(1)
+    m = re.search(r"\bvsseeker_rematchid\s+(TRAINER_[A-Z0-9_]+)", body)
+    if m:
+        return m.group(1)
+    # follow control flow into other local scripts: goto/call/case and their
+    # conditional variants (goto_if_eq, call_if_set, ...). The branch target is
+    # the last label argument on the line.
+    for line in body.splitlines():
+        if not re.match(r"\s*(?:goto|call|case)\w*\b", line):
+            continue
+        toks = re.findall(r"[A-Za-z_]\w*", line)
+        if toks and toks[-1] in scripts:
+            tid = resolve_trainer(toks[-1], scripts, _seen)
+            if tid:
+                return tid
     return None
+
+
+TRAINERBATTLE_RE = re.compile(r"\btrainerbattle\w*\s+(TRAINER_[A-Z0-9_]+)")
+LOCALID_RE = re.compile(r"\bLOCALID_[A-Z0-9_]+")
+
+
+def _name_tokens(symbol):
+    drop = {"TRAINER", "LOCALID", "OBJ", "EVENT", "GFX", ""}
+    return {t for t in symbol.split("_") if t not in drop and not t.isdigit()}
+
+
+def scripted_battles(object_events, scripts, claimed):
+    """Find trainer battles that live in map/coord scripts rather than on an
+    object (e.g. the Petalburg Woods Aqua grunt, the Champions Room champion),
+    and tie each to the object that represents the trainer.
+
+    Tier 1: the LOCALID textually nearest the battle line in the same script.
+    Tier 2 (champion-style, where the battle script has no LOCALID): the
+    unclaimed object whose LOCALID shares the most name tokens with the trainer.
+
+    Returns list of {x, y, trainerId, gfx}. `claimed` is the set of trainer ids
+    already placed from object scripts (skipped here).
+    """
+    by_localid = {}
+    for ev in object_events:
+        lid = ev.get("local_id")
+        if lid and lid not in ("0", 0):
+            by_localid[lid] = ev
+
+    out = []
+    used = set()
+
+    def place(lid, tid):
+        ev = by_localid[lid]
+        out.append({"x": int(ev.get("x", 0)), "y": int(ev.get("y", 0)),
+                    "trainerId": tid, "gfx": ev.get("graphics_id")})
+        used.add(lid)
+        claimed.add(tid)
+
+    # Tier 1: nearest LOCALID in the same script body
+    unmatched = []  # (tid,) deferred to tier 2
+    for body in scripts.values():
+        for m in TRAINERBATTLE_RE.finditer(body):
+            tid = m.group(1)
+            if tid in claimed:
+                continue
+            pos = m.start()
+            best, best_d = None, None
+            for lm in LOCALID_RE.finditer(body):
+                lid = lm.group(0)
+                if lid in by_localid and lid not in used:
+                    d = abs(lm.start() - pos)
+                    if best_d is None or d < best_d:
+                        best, best_d = lid, d
+            if best is not None:
+                place(best, tid)
+            else:
+                unmatched.append(tid)
+
+    # Tier 2: token-overlap match for battles whose script had no LOCALID
+    for tid in unmatched:
+        if tid in claimed:
+            continue
+        tt = _name_tokens(tid)
+        best, best_score = None, 0
+        for lid in by_localid:
+            if lid in used:
+                continue
+            score = len(tt & _name_tokens(lid))
+            if score > best_score:
+                best, best_score = lid, score
+        if best is not None:
+            place(best, tid)
+    return out
 
 
 def load_maps(dims):
@@ -153,8 +249,9 @@ def load_maps(dims):
         trainers, items = [], []
         for ev in mj.get("object_events", []):
             x, y = int(ev.get("x", 0)), int(ev.get("y", 0))
-            if ev.get("trainer_type") not in (None, "TRAINER_TYPE_NONE",
-                                              "0", 0):
+            # resolve any object whose script starts a battle (covers gym
+            # leaders / rivals with trainer_type NONE, not just sight trainers)
+            if ev.get("script"):
                 tid = resolve_trainer(ev.get("script"), scripts)
                 if tid:
                     trainers.append({"x": x, "y": y, "trainerId": tid,
@@ -163,6 +260,11 @@ def load_maps(dims):
                 items.append({"x": x, "y": y,
                               "item": ev.get("trainer_sight_or_berry_tree_id"),
                               "hidden": False})
+        # scripted/cutscene battles not attached to an object's own script
+        claimed = {t["trainerId"] for t in trainers}
+        trainers.extend(
+            scripted_battles(mj.get("object_events", []), scripts, claimed))
+
         for ev in mj.get("bg_events", []):
             if ev.get("type") == "hidden_item":
                 items.append({"x": int(ev.get("x", 0)),

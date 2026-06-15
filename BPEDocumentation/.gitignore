@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# The repo root .gitignore excludes *.js; the interactive map needs its app
+# logic and the vendored Leaflet library, so re-include JS under this folder.
+!*.js
