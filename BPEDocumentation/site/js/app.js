@@ -13,12 +13,22 @@ function prettify(name) {
     .replace(/([A-Za-z])(\d)/g, "$1 $2");  // "Route102" -> "Route 102"
 }
 
-function trainerPopup(t) {
+function trainerPopup(t, spriteFile) {
   if (!t) return "<div class='tcard-name'>Trainer</div>";
-  let html = `<div class="tcard-name">${t.name || "Trainer"}</div>`;
-  html += `<div class="tcard-class">${t.class || ""}</div>`;
+  const tImg = spriteFile
+    ? `<img class="tcard-sprite" src="img/sprites/${spriteFile}" alt="" ` +
+      `onerror="this.remove()">`
+    : "";
+  let html = `<div class="tcard-head">${tImg}<div class="tcard-id">` +
+    `<div class="tcard-name">${t.name || "Trainer"}</div>` +
+    `<div class="tcard-class">${t.class || ""}</div></div></div>`;
   for (const m of t.party || []) {
-    html += `<div class="mon"><div class="mon-head">${prettify(m.species)}` +
+    const icon = m.sprite
+      ? `<img class="mon-icon" src="img/pokemon/${m.sprite}" alt="" ` +
+        `loading="lazy" onerror="this.remove()">`
+      : "";
+    html += `<div class="mon">${icon}<div class="mon-body">` +
+      `<div class="mon-head">${prettify(m.species)}` +
       `<span class="mon-lvl"> · Lv ${m.level}</span></div>`;
     const meta = [];
     if (m.item) meta.push("@ " + m.item);
@@ -30,7 +40,7 @@ function trainerPopup(t) {
         m.moves.map(mv => `<span class="move">${mv}</span>`).join("") +
         `</div>`;
     }
-    html += `</div>`;
+    html += `</div></div>`;  // close .mon-body, .mon
   }
   return html;
 }
@@ -40,19 +50,43 @@ function itemPopup(it) {
   return `<div class="item-pop">${prettify(it.item)}${tag}</div>`;
 }
 
+function encSprite(m) {
+  // The build annotates each encounter mon with its menu-icon filename.
+  if (!m.sprite) return "";
+  return `<img class="enc-icon" src="img/pokemon/${m.sprite}" alt="" ` +
+    `loading="lazy" onerror="this.remove()">`;
+}
+
 function monRows(mons) {
   return mons
     .slice().sort((a, b) => b.pct - a.pct)
     .map(m => {
       const lvl = m.min === m.max ? `Lv ${m.min}` : `Lv ${m.min}–${m.max}`;
-      return `<div class="enc-row"><span class="enc-pct">${m.pct}%</span>` +
+      return `<div class="enc-row">` +
+        encSprite(m) +
         `<span class="enc-sp">${prettify(m.species)}</span>` +
+        `<span class="enc-pct">${m.pct}%</span>` +
         `<span class="enc-lvl">${lvl}</span></div>`;
     }).join("");
 }
 
 const ENC_LABELS = { land: "🌿 Grass", water: "🌊 Surf", rock_smash: "🪨 Rock Smash" };
 const ROD_LABELS = { old: "Old Rod", good: "Good Rod", super: "Super Rod" };
+
+// Towers/facilities that the game types as UNDERGROUND (cave tileset) but read
+// as buildings to players. Matched by map-id prefix, overriding the type.
+const BUILDING_MAP_PREFIXES = [
+  "MAP_SKY_PILLAR", "MAP_MIRAGE_TOWER", "MAP_NEW_MAUVILLE",
+];
+
+// "land_mons" covers both overworld grass and cave floors. Pick the wording
+// from the map type so caves don't say "Grass".
+function landLabel(m) {
+  if (BUILDING_MAP_PREFIXES.some(p => m.id.startsWith(p))) return "🏠 Building";
+  if (m.type === "MAP_TYPE_UNDERGROUND") return "🦇 Cave";
+  if (m.type === "MAP_TYPE_INDOOR") return "🏠 Building";
+  return ENC_LABELS.land;
+}
 
 function encounterPopup(m) {
   let html = `<div class="tcard-name">${prettify(m.id)}</div>`;
@@ -62,7 +96,8 @@ function encounterPopup(m) {
   }
   for (const key of ["land", "water", "rock_smash"]) {
     if (e[key]) {
-      html += `<div class="enc-cat">${ENC_LABELS[key]}` +
+      const label = key === "land" ? landLabel(m) : ENC_LABELS[key];
+      html += `<div class="enc-cat">${label}` +
         (e[key].rate != null ? `<span class="enc-rate"> · rate ${e[key].rate}</span>` : "") +
         `</div>${monRows(e[key].mons)}`;
     }
@@ -163,7 +198,7 @@ async function main() {
         `<button type="button" class="stack-cycle">Next ▸</button></div>`
       : "";
     objPopup.setLatLng(W2LL(t.gx, sp.yTop))
-      .setContent(nav + trainerPopup(world.trainerData[t.trainerId]))
+      .setContent(nav + trainerPopup(world.trainerData[t.trainerId], sp.file))
       .openOn(map);
     if (n > 1) {
       const el = objPopup.getElement();

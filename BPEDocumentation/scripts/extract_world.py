@@ -21,6 +21,7 @@ from collections import defaultdict, deque
 
 import common as C
 import parse_trainers
+import pokemon_sprites
 import sprites
 
 TILE = 16  # px per metatile block
@@ -296,6 +297,7 @@ def load_maps(dims):
         maps[mj["id"]] = {
             "id": mj["id"], "name": dirname, "img": img,
             "w": w, "h": h, "wPx": w * TILE, "hPx": h * TILE,
+            "type": mj.get("map_type"),
             "connections": mj.get("connections") or [],
             "warps": warps, "trainers": trainers, "items": items,
         }
@@ -486,6 +488,7 @@ def build():
     for mid, (ox, oy) in placed.items():
         m = maps[mid]
         entry = {"id": mid, "name": m["name"], "img": m["img"],
+                 "type": m.get("type"),
                  "x": ox, "y": oy, "w": m["wPx"], "h": m["hPx"]}
         if mid in encounters:
             entry["enc"] = encounters[mid]
@@ -510,6 +513,12 @@ def build():
                      for tid in used_trainers if tid in trainers_db}
     unresolved = len([t for t in used_trainers if t not in trainers_db])
 
+    # annotate each party mon with its menu-icon filename (img/pokemon/*.png)
+    pokemon_sprites.annotate(trainers_ship)
+
+    # annotate each wild-encounter mon with its menu-icon filename
+    enc_new, enc_missing = pokemon_sprites.annotate_encounters(out_maps)
+
     # render overworld sprites for the trainer graphics ids in use
     gfx_ids = {t["gfx"] for t in out_trainers if t.get("gfx")}
     sprite_map = sprites.extract_sprites(
@@ -533,6 +542,10 @@ def build():
           f"({sum(1 for i in out_items if i['hidden'])} hidden)")
     print(f"Warp links:     {len(warp_links)}")
     print(f"Maps w/ encs:   {enc_count}")
+    print(f"Enc icons:      {enc_new} new"
+          + (f", {len(enc_missing)} without an icon" if enc_missing else ""))
+    if enc_missing:
+        print("  " + ", ".join(sorted(enc_missing)))
     print(f"Trainer sprites:{len(sprite_map)} unique gfx")
     return world
 
