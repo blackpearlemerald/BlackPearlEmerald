@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=6.0, user-scalable=yes" />
+  <title>BPE Emerald — Interactive World Map</title>
+  <link rel="stylesheet" href="lib/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <div id="panel">
+    <div id="panel-title">BPE Emerald Map</div>
+    <label><input type="checkbox" id="t-trainers" checked /> Trainers</label>
+    <label><input type="checkbox" id="t-items" checked /> Items</label>
+    <label><input type="checkbox" id="t-hidden" /> Hidden items</label>
+    <label><input type="checkbox" id="t-warps" checked /> Warp links</label>
+    <label><input type="checkbox" id="t-labels" /> Map labels</label>
+    <div id="counts"></div>
+    <div id="hint">Click a map for wild encounters · click a trainer or item for details</div>
+  </div>
+
+  <button id="panel-toggle" aria-label="Toggle panel">☰</button>
+  <div id="loading">Loading world…</div>
+
+  <script src="lib/leaflet.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

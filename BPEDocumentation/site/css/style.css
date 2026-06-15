@@ -1,0 +1,183 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#map {
+  position: absolute;
+  inset: 0;
+  background: #0d1b2a;            /* dark void around the world */
+}
+
+/* ----- control panel ----- */
+#panel {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  background: rgba(20, 28, 40, 0.92);
+  color: #e8eef5;
+  padding: 12px 14px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  font-size: 14px;
+  min-width: 150px;
+}
+#panel-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+#panel label {
+  display: block;
+  margin: 5px 0;
+  cursor: pointer;
+  user-select: none;
+}
+#panel input { vertical-align: middle; margin-right: 6px; }
+#counts {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #9fb3c8;
+  line-height: 1.5;
+}
+#hint {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+  color: #7e93a8;
+  line-height: 1.45;
+}
+
+#panel-toggle {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1001;
+  display: none;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(20, 28, 40, 0.92);
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d1b2a;
+  color: #cfe3f5;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+/* keep pixel art crisp at all zoom levels */
+.leaflet-image-layer {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ----- markers ----- */
+.marker {
+  border-radius: 50%;
+  border: 1.5px solid rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+.sprite {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
+}
+.marker-trainer { background: #e23b3b; }
+.marker-item    { background: #f4c542; }
+.marker-hidden  { background: #7a8aa0; opacity: 0.85; }
+
+.map-label {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-shadow: 0 0 3px #000, 0 0 3px #000, 0 1px 2px #000;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ----- popups ----- */
+.leaflet-popup-content { margin: 10px 12px; }
+.tcard-name {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+.tcard-class { color: #5a6b7b; font-size: 12px; margin-bottom: 8px; }
+.mon {
+  border-top: 1px solid #e2e8f0;
+  padding: 6px 0;
+}
+.mon-head { font-weight: 600; }
+.mon-lvl { color: #5a6b7b; font-weight: 400; font-size: 12px; }
+.mon-meta { font-size: 12px; color: #4a5b6b; }
+.mon-moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 3px;
+}
+.move {
+  background: #eef2f7;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 11px;
+}
+.item-pop { font-weight: 600; font-size: 14px; }
+.item-pop small { display: block; color: #5a6b7b; font-weight: 400; }
+
+/* ----- encounter popup ----- */
+.enc-cat {
+  font-weight: 700;
+  font-size: 13px;
+  margin: 8px 0 3px;
+  padding-top: 6px;
+  border-top: 1px solid #e2e8f0;
+}
+.enc-cat:first-of-type { border-top: none; }
+.enc-rate { color: #8a99a8; font-weight: 400; font-size: 11px; }
+.enc-rod {
+  font-weight: 600;
+  font-size: 12px;
+  color: #3a6ea5;
+  margin: 5px 0 2px;
+}
+.enc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  font-size: 12px;
+  padding: 1px 0;
+}
+.enc-pct {
+  flex: 0 0 34px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: #2f7d4f;
+}
+.enc-sp { flex: 1 1 auto; }
+.enc-lvl { color: #5a6b7b; font-size: 11px; white-space: nowrap; }
+.enc-none { color: #5a6b7b; font-size: 13px; margin-top: 6px; }
+
+/* ----- mobile ----- */
+@media (max-width: 640px) {
+  #panel { display: none; min-width: 180px; }
+  #panel.open { display: block; top: 60px; }
+  #panel-toggle { display: block; }
+  .leaflet-popup-content { max-width: 78vw; }
+}
