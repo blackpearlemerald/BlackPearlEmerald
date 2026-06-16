@@ -194,6 +194,12 @@ enum __attribute__((packed)) TrainerPicID
     TRAINER_PIC_ELITE_FOUR_MALVA,
     TRAINER_PIC_ELITE_FOUR_SIEBOLD,
     TRAINER_PIC_ELITE_FOUR_WIKSTROM,
+    // Original base-game Hoenn E4 sprites (used by Trick House Puzzle 3 celebrity trainers;
+    // the real E4 keeps the custom sprites under TRAINER_PIC_ELITE_FOUR_SIDNEY/etc.)
+    TRAINER_PIC_ELITE_FOUR_SIDNEY_ORIGINAL,
+    TRAINER_PIC_ELITE_FOUR_PHOEBE_ORIGINAL,
+    TRAINER_PIC_ELITE_FOUR_GLACIA_ORIGINAL,
+    TRAINER_PIC_ELITE_FOUR_DRAKE_ORIGINAL,
     TRAINER_PIC_COUNT,
 };
 

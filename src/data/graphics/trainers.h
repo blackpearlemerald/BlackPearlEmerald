@@ -124,6 +124,19 @@ const u16 gTrainerPalette_EliteFourGlacia[] = INCGFX_U16("graphics/trainers/fron
 const u32 gTrainerFrontPic_EliteFourDrake[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_drake.png", ".4bpp.smol");
 const u16 gTrainerPalette_EliteFourDrake[] = INCGFX_U16("graphics/trainers/front_pics/elite_four_drake.png", ".gbapal");
 
+// Original base-game Hoenn E4 sprites (Trick House Puzzle 3 celebrity trainers)
+const u32 gTrainerFrontPic_EliteFourSidneyOriginal[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_sidney_original.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourSidneyOriginal[] = INCGFX_U16("graphics/trainers/front_pics/elite_four_sidney_original.png", ".gbapal");
+
+const u32 gTrainerFrontPic_EliteFourPhoebeOriginal[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_phoebe_original.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourPhoebeOriginal[] = INCGFX_U16("graphics/trainers/front_pics/elite_four_phoebe_original.png", ".gbapal");
+
+const u32 gTrainerFrontPic_EliteFourGlaciaOriginal[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_glacia_original.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourGlaciaOriginal[] = INCGFX_U16("graphics/trainers/front_pics/elite_four_glacia_original.png", ".gbapal");
+
+const u32 gTrainerFrontPic_EliteFourDrakeOriginal[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_drake_original.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourDrakeOriginal[] = INCGFX_U16("graphics/trainers/front_pics/elite_four_drake_original.png", ".gbapal");
+
 const u32 gTrainerFrontPic_LeaderRoxanne[] = INCGFX_U32("graphics/trainers/front_pics/leader_roxanne.png", ".4bpp.smol");
 const u16 gTrainerPalette_LeaderRoxanne[] = INCGFX_U16("graphics/trainers/front_pics/leader_roxanne.png", ".gbapal");
 
@@ -1335,5 +1348,23 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_ELITE_FOUR_WIKSTROM] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourWikstrom, gTrainerPalette_EliteFourWikstrom),
+    },
+    // Original base-game Hoenn E4 sprites (Trick House Puzzle 3); coords mirror the
+    // base-game TRAINER_PIC_ELITE_FOUR_* offsets so the originals frame identically.
+    [TRAINER_PIC_ELITE_FOUR_SIDNEY_ORIGINAL] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourSidneyOriginal, gTrainerPalette_EliteFourSidneyOriginal),
+    },
+    [TRAINER_PIC_ELITE_FOUR_PHOEBE_ORIGINAL] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourPhoebeOriginal, gTrainerPalette_EliteFourPhoebeOriginal),
+    },
+    [TRAINER_PIC_ELITE_FOUR_GLACIA_ORIGINAL] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourGlaciaOriginal, gTrainerPalette_EliteFourGlaciaOriginal, -4, 4, 0x1B0),
+    },
+    [TRAINER_PIC_ELITE_FOUR_DRAKE_ORIGINAL] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourDrakeOriginal, gTrainerPalette_EliteFourDrakeOriginal, 0, 5, 0x1A0),
     },
 };

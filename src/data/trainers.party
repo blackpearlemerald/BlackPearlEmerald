@@ -7100,7 +7100,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 === TRAINER_JUSTIN ===
 Name: SIDNEY
 Class: Elite Four
-Pic: Elite Four Sidney
+Pic: Elite Four Sidney Original
 Gender: Male
 Music: Elite Four
 Battle Type: Singles
@@ -14736,7 +14736,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 === TRAINER_MARTHA ===
 Name: PHOEBE
 Class: Elite Four
-Pic: Elite Four Phoebe
+Pic: Elite Four Phoebe Original
 Gender: Female
 Music: Elite Four
 Battle Type: Singles
@@ -20131,7 +20131,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 === TRAINER_ALAN ===
 Name: GLACIA
 Class: Elite Four
-Pic: Elite Four Glacia
+Pic: Elite Four Glacia Original
 Gender: Female
 Music: Elite Four
 Battle Type: Singles
@@ -20185,7 +20185,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 === TRAINER_ALAN2 ===
 Name: DRAKE
 Class: Elite Four
-Pic: Elite Four Drake
+Pic: Elite Four Drake Original
 Gender: Male
 Music: Elite Four
 Battle Type: Singles

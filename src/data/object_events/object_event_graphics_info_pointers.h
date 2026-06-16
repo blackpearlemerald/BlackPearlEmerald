@@ -122,6 +122,10 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Sidney;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Phoebe;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Glacia;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Drake;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_SidneyOriginal;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_PhoebeOriginal;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_GlaciaOriginal;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_DrakeOriginal;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Roxanne;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Brawly;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wattson;
@@ -545,6 +549,10 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_PHOEBE] =                   &gObjectEventGraphicsInfo_Phoebe,
     [OBJ_EVENT_GFX_GLACIA] =                   &gObjectEventGraphicsInfo_Glacia,
     [OBJ_EVENT_GFX_DRAKE] =                    &gObjectEventGraphicsInfo_Drake,
+    [OBJ_EVENT_GFX_SIDNEY_ORIGINAL] =          &gObjectEventGraphicsInfo_SidneyOriginal,
+    [OBJ_EVENT_GFX_PHOEBE_ORIGINAL] =          &gObjectEventGraphicsInfo_PhoebeOriginal,
+    [OBJ_EVENT_GFX_GLACIA_ORIGINAL] =          &gObjectEventGraphicsInfo_GlaciaOriginal,
+    [OBJ_EVENT_GFX_DRAKE_ORIGINAL] =           &gObjectEventGraphicsInfo_DrakeOriginal,
     [OBJ_EVENT_GFX_ROXANNE] =                  &gObjectEventGraphicsInfo_Roxanne,
     [OBJ_EVENT_GFX_BRAWLY] =                   &gObjectEventGraphicsInfo_Brawly,
     [OBJ_EVENT_GFX_WATTSON] =                  &gObjectEventGraphicsInfo_Wattson,

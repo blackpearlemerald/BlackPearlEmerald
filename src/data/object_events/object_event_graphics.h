@@ -142,6 +142,11 @@ const u32 gObjectEventPic_Sidney[] = INCGFX_U32("graphics/object_events/pics/peo
 const u32 gObjectEventPic_Phoebe[] = INCGFX_U32("graphics/object_events/pics/people/elite_four/phoebe.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u32 gObjectEventPic_Glacia[] = INCGFX_U32("graphics/object_events/pics/people/elite_four/glacia.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u32 gObjectEventPic_Drake[] = INCGFX_U32("graphics/object_events/pics/people/elite_four/drake.png", ".4bpp", "-mwidth 2 -mheight 4");
+// Original base-game Hoenn E4 overworld sprites (Trick House Puzzle 3)
+const u32 gObjectEventPic_SidneyOriginal[] = INCGFX_U32("graphics/object_events/pics/people/elite_four/sidney_original.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u32 gObjectEventPic_PhoebeOriginal[] = INCGFX_U32("graphics/object_events/pics/people/elite_four/phoebe_original.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u32 gObjectEventPic_GlaciaOriginal[] = INCGFX_U32("graphics/object_events/pics/people/elite_four/glacia_original.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u32 gObjectEventPic_DrakeOriginal[] = INCGFX_U32("graphics/object_events/pics/people/elite_four/drake_original.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u32 gObjectEventPic_Roxanne[] = INCGFX_U32("graphics/object_events/pics/people/gym_leaders/roxanne.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u32 gObjectEventPic_Brawly[] = INCGFX_U32("graphics/object_events/pics/people/gym_leaders/brawly.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u32 gObjectEventPic_Wattson[] = INCGFX_U32("graphics/object_events/pics/people/gym_leaders/wattson.png", ".4bpp", "-mwidth 2 -mheight 4");

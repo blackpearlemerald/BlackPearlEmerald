@@ -431,6 +431,12 @@ enum
     OBJ_EVENT_GFX_DRASNA,
     OBJ_EVENT_GFX_SIEBOLD,
     OBJ_EVENT_GFX_WIKSTROM,
+    // Original base-game Hoenn E4 overworld sprites (Trick House Puzzle 3 celebrity
+    // trainers; the real E4 rooms keep the custom sprites under OBJ_EVENT_GFX_SIDNEY/etc.)
+    OBJ_EVENT_GFX_SIDNEY_ORIGINAL,
+    OBJ_EVENT_GFX_PHOEBE_ORIGINAL,
+    OBJ_EVENT_GFX_GLACIA_ORIGINAL,
+    OBJ_EVENT_GFX_DRAKE_ORIGINAL,
     NUM_OBJ_EVENT_GFX,
 };
 

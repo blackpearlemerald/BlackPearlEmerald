@@ -537,6 +537,55 @@ static const struct SpriteFrameImage sPicTable_Drake[] = {
     overworld_frame(gObjectEventPic_Drake, 2, 4, 2),
 };
 
+// Original base-game Hoenn E4 overworld sprites (Trick House Puzzle 3)
+static const struct SpriteFrameImage sPicTable_SidneyOriginal[] = {
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_SidneyOriginal, 2, 4, 2),
+};
+
+static const struct SpriteFrameImage sPicTable_PhoebeOriginal[] = {
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_PhoebeOriginal, 2, 4, 2),
+};
+
+static const struct SpriteFrameImage sPicTable_GlaciaOriginal[] = {
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_GlaciaOriginal, 2, 4, 2),
+};
+
+static const struct SpriteFrameImage sPicTable_DrakeOriginal[] = {
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 0),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 1),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 2),
+    overworld_frame(gObjectEventPic_DrakeOriginal, 2, 4, 2),
+};
+
 static const struct SpriteFrameImage sPicTable_Roxanne[] = {
     overworld_frame(gObjectEventPic_Roxanne, 2, 4, 0),
     overworld_frame(gObjectEventPic_Roxanne, 2, 4, 1),

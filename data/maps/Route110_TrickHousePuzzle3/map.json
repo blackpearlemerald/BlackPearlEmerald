@@ -16,7 +16,7 @@
   "connections": 0,
   "object_events": [
     {
-      "graphics_id": "OBJ_EVENT_GFX_SIDNEY",
+      "graphics_id": "OBJ_EVENT_GFX_SIDNEY_ORIGINAL",
       "x": 7,
       "y": 19,
       "elevation": 3,
@@ -29,7 +29,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_PHOEBE",
+      "graphics_id": "OBJ_EVENT_GFX_PHOEBE_ORIGINAL",
       "x": 13,
       "y": 7,
       "elevation": 3,
@@ -42,7 +42,7 @@
       "flag": "0"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_GLACIA",
+      "graphics_id": "OBJ_EVENT_GFX_GLACIA_ORIGINAL",
       "x": 14,
       "y": 2,
       "elevation": 3,
@@ -107,7 +107,7 @@
       "flag": "FLAG_TEMP_16"
     },
     {
-      "graphics_id": "OBJ_EVENT_GFX_DRAKE",
+      "graphics_id": "OBJ_EVENT_GFX_DRAKE_ORIGINAL",
       "x": 3,
       "y": 20,
       "elevation": 3,
