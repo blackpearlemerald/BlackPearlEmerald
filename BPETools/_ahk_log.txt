@@ -1,0 +1,4 @@
+[AHK] Script started
+[AHK] mGBA window found
+[AHK] WinMenuSelectItem Tools>Scripting sent
+[AHK] ERROR: Scripting window did not open

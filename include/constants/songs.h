@@ -552,6 +552,7 @@
 #define MUS_DP_VS_ELITE_FOUR        613 // Battle! (Elite Four) - DPPt; Sinnoh Elite Four (Trick House Puzzle 4 cameo)
 #define MUS_BW_VS_ELITE_FOUR        614 // Battle! (Elite Four) - BW; Unova Elite Four (Trick House Puzzle 5 cameo)
 #define MUS_XY_VS_ELITE_FOUR        615 // Battle! (Elite Four) - XY; Kalos Elite Four (Trick House Puzzle 6 cameo)
+#define MUS_SM_VS_ELITE_FOUR        616 // Battle! (Elite Four) - SM; Alola/Galar cameos (Trick House Puzzle 7)
 
 #define MUS_ROUTE118                0x7FFF  // Map is split into 2 music sections. controlled by GetCurrLocationDefaultMusic().
 

@@ -330,6 +330,14 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Malva;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Drasna;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Siebold;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wikstrom;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Nessa;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hala;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hop;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Olivia;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Rika;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hassel;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Larry;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Poppy;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Agatha;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Daisy;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lorelei;
@@ -695,6 +703,14 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_DRASNA]               = &gObjectEventGraphicsInfo_Drasna,
     [OBJ_EVENT_GFX_SIEBOLD]              = &gObjectEventGraphicsInfo_Siebold,
     [OBJ_EVENT_GFX_WIKSTROM]             = &gObjectEventGraphicsInfo_Wikstrom,
+    [OBJ_EVENT_GFX_NESSA]               = &gObjectEventGraphicsInfo_Nessa,
+    [OBJ_EVENT_GFX_HALA]                = &gObjectEventGraphicsInfo_Hala,
+    [OBJ_EVENT_GFX_HOP]                 = &gObjectEventGraphicsInfo_Hop,
+    [OBJ_EVENT_GFX_OLIVIA]              = &gObjectEventGraphicsInfo_Olivia,
+    [OBJ_EVENT_GFX_RIKA]                = &gObjectEventGraphicsInfo_Rika,
+    [OBJ_EVENT_GFX_HASSEL]              = &gObjectEventGraphicsInfo_Hassel,
+    [OBJ_EVENT_GFX_LARRY]               = &gObjectEventGraphicsInfo_Larry,
+    [OBJ_EVENT_GFX_POPPY]               = &gObjectEventGraphicsInfo_Poppy,
 #if IS_FRLG
     [OBJ_EVENT_GFX_RED_NORMAL] =               &gObjectEventGraphicsInfo_RedNormal,
     [OBJ_EVENT_GFX_RED_BIKE] =                 &gObjectEventGraphicsInfo_RedBike,

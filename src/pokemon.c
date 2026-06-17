@@ -5341,6 +5341,12 @@ u16 GetBattleBGM(void)
             case TRAINER_BENNY2:
             case TRAINER_SEBASTIAN:
                 return MUS_XY_VS_ELITE_FOUR;
+            // The Trick House Alola/Galar cameos get the SM Elite Four theme
+            case TRAINER_EVERETT:
+            case TRAINER_JOSHUA:
+            case TRAINER_MARIELA:
+            case TRAINER_PATRICIA:
+                return MUS_SM_VS_ELITE_FOUR;
             }
             return MUS_VS_ELITE_FOUR;
         case TRAINER_CLASS_CHAMPION_FRLG:

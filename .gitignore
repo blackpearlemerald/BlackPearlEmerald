@@ -70,3 +70,6 @@ src/data/pokemon/teachable_learnsets.h
 
 # BPE Tools
 BPETools/Resources/
+
+# Claude Code local state (git worktrees, agent state)
+.claude/

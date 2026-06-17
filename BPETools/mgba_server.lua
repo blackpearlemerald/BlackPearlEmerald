@@ -943,7 +943,9 @@ local function automation_tick()
   -- Wait for a known state before acting. Unknown states (copyright screen,
   -- fade transitions) are harmless — the global timeout handles true hangs.
   if step == "start" then
-    console:log("[BPE] AUTO start: state=" .. state)
+    if step_frames % 60 == 0 then
+      console:log("[BPE] AUTO start: state=" .. state .. " (frame " .. step_frames .. ")")
+    end
     if state == "overworld" then
       write_resp_to_file({ ok=true, state="overworld",
                            msg="already in overworld", seq=automation.seq })
@@ -957,8 +959,11 @@ local function automation_tick()
       goto_step("wait_main_menu")
     elseif state == "loading_save" or state == "new_game" then
       goto_step("wait_overworld")
+    elseif step_frames % 60 == 0 then
+      -- Unknown state (intro cutscene, copyright, fade): press START every second to skip
+      pending_keys = { mask=KEYS.START, frames_left=3, total=3 }
     end
-    -- For unknown/copyright/transition states: keep waiting (global timeout guards)
+    -- For truly stuck unknown states: global timeout guards
 
   -- ── step: wait_main_menu ────────────────────────────────────
   -- The title screen has two phases: Phase1 (animation) skips to Phase2 on START,
@@ -1192,7 +1197,7 @@ end
 -- ============================================================
 -- STARTUP
 -- ============================================================
-console:log("[BPE] mgba_server.lua v1.5 starting (BPE Emerald v1.0.1)")
+console:log("[BPE] mgba_server.lua v1.6 starting (BPE Emerald v1.0.1)")
 
 -- Clean stale IPC files from previous session
 os.remove(CMD_FILE)

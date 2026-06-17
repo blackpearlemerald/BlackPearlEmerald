@@ -530,6 +530,24 @@ const u16 gObjectEventPal_Malva[] = INCGFX_U16("graphics/object_events/palettes/
 const u16 gObjectEventPal_Drasna[] = INCGFX_U16("graphics/object_events/palettes/drasna.pal", ".gbapal");
 const u16 gObjectEventPal_Siebold[] = INCGFX_U16("graphics/object_events/palettes/siebold.pal", ".gbapal");
 const u16 gObjectEventPal_Wikstrom[] = INCGFX_U16("graphics/object_events/palettes/wikstrom.pal", ".gbapal");
+// Alola/Galar cameos (Trick House Puzzle 7) - single-frame front-facing OW sprites
+const u16 gObjectEventPic_Nessa[] = INCGFX_U16("graphics/object_events/pics/people/nessa.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Hala[] = INCGFX_U16("graphics/object_events/pics/people/hala.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Hop[] = INCGFX_U16("graphics/object_events/pics/people/hop.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Olivia[] = INCGFX_U16("graphics/object_events/pics/people/olivia.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Nessa[] = INCGFX_U16("graphics/object_events/palettes/nessa.pal", ".gbapal");
+const u16 gObjectEventPal_Hala[] = INCGFX_U16("graphics/object_events/palettes/hala.pal", ".gbapal");
+const u16 gObjectEventPal_Hop[] = INCGFX_U16("graphics/object_events/palettes/hop.pal", ".gbapal");
+const u16 gObjectEventPal_Olivia[] = INCGFX_U16("graphics/object_events/palettes/olivia.pal", ".gbapal");
+// Paldea E4 cameos (Trick House Puzzle 8) - single-frame front-facing OW sprites
+const u16 gObjectEventPic_Rika[] = INCGFX_U16("graphics/object_events/pics/people/rika.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Hassel[] = INCGFX_U16("graphics/object_events/pics/people/hassel.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Larry[] = INCGFX_U16("graphics/object_events/pics/people/larry.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Poppy[] = INCGFX_U16("graphics/object_events/pics/people/poppy.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Rika[] = INCGFX_U16("graphics/object_events/palettes/rika.pal", ".gbapal");
+const u16 gObjectEventPal_Hassel[] = INCGFX_U16("graphics/object_events/palettes/hassel.pal", ".gbapal");
+const u16 gObjectEventPal_Larry[] = INCGFX_U16("graphics/object_events/palettes/larry.pal", ".gbapal");
+const u16 gObjectEventPal_Poppy[] = INCGFX_U16("graphics/object_events/palettes/poppy.pal", ".gbapal");
 
 #if IS_FRLG
 

@@ -622,6 +622,7 @@ gSongTable::
 	song mus_dp_vs_elite_four, MUSIC_PLAYER_BGM, 0
 	song mus_bw_vs_elite_four, MUSIC_PLAYER_BGM, 0
 	song mus_xy_vs_elite_four, MUSIC_PLAYER_BGM, 0
+	song mus_sm_vs_elite_four, MUSIC_PLAYER_BGM, 0
 
 	.align 2
 dummy_song_header:

@@ -139,9 +139,11 @@ def resolve_trainer(script_label, scripts, _seen=None):
     body = scripts.get(script_label)
     if body is None:
         return None
-    m = re.search(r"\btrainerbattle\w*\s+(TRAINER_[A-Z0-9_]+)", body)
+    m = re.search(r"\btrainerbattle\w*[ \t]+([^\n]*)", body)
     if m:
-        return m.group(1)
+        tid = opponent_from_args(m.group(1))
+        if tid:
+            return tid
     m = re.search(r"\bvsseeker_rematchid\s+(TRAINER_[A-Z0-9_]+)", body)
     if m:
         return m.group(1)
@@ -159,7 +161,19 @@ def resolve_trainer(script_label, scripts, _seen=None):
     return None
 
 
-TRAINERBATTLE_RE = re.compile(r"\btrainerbattle\w*\s+(TRAINER_[A-Z0-9_]+)")
+# Captures the whole argument list after a trainerbattle* macro. The first
+# TRAINER_* token can be a battle-TYPE constant (e.g. the raw
+# `trainerbattle TRAINER_BATTLE_CONTINUE_SCRIPT, LOCALID_X, TRAINER_X, ...`
+# form used by the Lavaridge gym), so the real opponent must be picked by
+# skipping TRAINER_BATTLE_* types and the TRAINER_NONE rematch placeholder.
+TRAINERBATTLE_RE = re.compile(r"\btrainerbattle\w*[ \t]+([^\n]*)")
+
+def opponent_from_args(args):
+    for tok in re.findall(r"\bTRAINER_[A-Z0-9_]+\b", args):
+        if tok.startswith("TRAINER_BATTLE_") or tok == "TRAINER_NONE":
+            continue
+        return tok
+    return None
 LOCALID_RE = re.compile(r"\bLOCALID_[A-Z0-9_]+")
 
 # direction keyword -> facing; the first one found in the movement_type wins
@@ -217,8 +231,8 @@ def scripted_battles(object_events, scripts, claimed):
     unmatched = []  # (tid,) deferred to tier 2
     for body in scripts.values():
         for m in TRAINERBATTLE_RE.finditer(body):
-            tid = m.group(1)
-            if tid in claimed:
+            tid = opponent_from_args(m.group(1))
+            if tid is None or tid in claimed:
                 continue
             pos = m.start()
             best, best_d = None, None
@@ -415,8 +429,36 @@ def assemble(maps):
             if wp["dest"]:
                 warp_into[wp["dest"]].append((mid, wp["x"], wp["y"]))
 
+    # 1b. Cluster all Trick House maps into one tidy block. They are otherwise
+    #     scattered: only Puzzle 1 has a static warp path from the overworld, so
+    #     the entrance/corridor/end land near Route 110 while puzzle rooms 2-8
+    #     (warp-orphans) fall to the overflow grid far away. Group them here so
+    #     the whole Trick House reads as a single area on the map.
+    TH_ORDER = ["ENTRANCE", "CORRIDOR", "PUZZLE1", "PUZZLE2", "PUZZLE3",
+                "PUZZLE4", "PUZZLE5", "PUZZLE6", "PUZZLE7", "PUZZLE8", "END"]
+    def _th_rank(mid):
+        for i, k in enumerate(TH_ORDER):
+            if mid.endswith(k):
+                return i
+        return len(TH_ORDER)
+    th_mids = sorted((mid for mid in maps if "TRICK_HOUSE" in mid), key=_th_rank)
+    th_set = set(th_mids)
+    if th_mids:
+        # reserve a clear block to the right of the overworld component
+        base_x = max(placed[m][0] + maps[m]["wPx"] for m in placed) + 600
+        col_w = max(maps[m]["wPx"] for m in th_mids) + PAD
+        row_h = max(maps[m]["hPx"] for m in th_mids) + PAD + 24
+        COLS = 4
+        for i, mid in enumerate(th_mids):
+            ox = base_x + (i % COLS) * col_w
+            oy = (i // COLS) * row_h
+            placed[mid] = (ox, oy)
+            packer.add(ox, oy, maps[mid]["wPx"], maps[mid]["hPx"])
+
     # 2. iteratively place remaining components anchored to placed maps
-    remaining = [c for i, c in enumerate(comps) if i != main_idx]
+    #    (skip Trick House maps; they were clustered above in step 1b)
+    remaining = [c for i, c in enumerate(comps)
+                 if i != main_idx and not (set(c) & th_set)]
     progressed = True
     while remaining and progressed:
         progressed = False
@@ -470,6 +512,49 @@ def assemble(maps):
             place_component(coords, ox, oy)
             ox += cw + PAD
             rowh = max(rowh, ch)
+
+    # 4. Trick House progression links: outside (Route 110) -> entrance ->
+    #    corridor -> each puzzle room in order. The Trick House warps are
+    #    dynamic (one entrance door cycles through rooms via a variable), so
+    #    these are drawn explicitly to show the intended play sequence.
+    def _center(mid):
+        ox, oy = placed[mid]
+        return (ox + maps[mid]["wPx"] / 2, oy + maps[mid]["hPx"] / 2)
+
+    def _edge_toward(mid, toward):
+        # point on mid's rectangle border in the direction of `toward`, so a
+        # room's incoming and outgoing endpoints sit on different edges and
+        # don't overlap (overlapping endpoints make clicks resolve the wrong
+        # direction).
+        cx, cy = _center(mid)
+        dx, dy = toward[0] - cx, toward[1] - cy
+        if dx == 0 and dy == 0:
+            return [cx, cy]
+        hw, hh = maps[mid]["wPx"] / 2, maps[mid]["hPx"] / 2
+        sx = hw / abs(dx) if dx else float("inf")
+        sy = hh / abs(dy) if dy else float("inf")
+        s = min(sx, sy)
+        return [cx + dx * s, cy + dy * s]
+
+    TH = "MAP_ROUTE110_TRICK_HOUSE_"
+    chain = ([TH + "ENTRANCE", TH + "CORRIDOR"]
+             + [TH + f"PUZZLE{i}" for i in range(1, 9)])
+    if all(mid in placed for mid in chain):
+        # outside door on Route 110 -> entrance
+        if "MAP_ROUTE110" in placed:
+            rox, roy = placed["MAP_ROUTE110"]
+            for wp in maps["MAP_ROUTE110"]["warps"]:
+                if wp["dest"] == TH + "ENTRANCE":
+                    door = [rox + wp["x"] * TILE, roy + wp["y"] * TILE]
+                    warp_links.append({
+                        "from": door,
+                        "to": _edge_toward(TH + "ENTRANCE", door)})
+                    break
+        # entrance -> corridor -> puzzle 1 -> ... -> puzzle 8, endpoints on the
+        # facing edges of each room
+        for a, b in zip(chain, chain[1:]):
+            warp_links.append({"from": _edge_toward(a, _center(b)),
+                               "to": _edge_toward(b, _center(a))})
 
     return placed, warp_links
 

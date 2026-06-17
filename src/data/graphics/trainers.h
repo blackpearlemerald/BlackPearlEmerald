@@ -432,6 +432,22 @@ const u32 gTrainerFrontPic_EliteFourSiebold[] = INCGFX_U32("graphics/trainers/fr
 const u16 gTrainerPalette_EliteFourSiebold[] = INCGFX_U16("graphics/trainers/palettes/elite_four_siebold.pal", ".gbapal");
 const u32 gTrainerFrontPic_EliteFourWikstrom[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_wikstrom.png", ".4bpp.smol");
 const u16 gTrainerPalette_EliteFourWikstrom[] = INCGFX_U16("graphics/trainers/palettes/elite_four_wikstrom.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourNessa[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_nessa.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourNessa[] = INCGFX_U16("graphics/trainers/palettes/elite_four_nessa.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourHala[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_hala.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourHala[] = INCGFX_U16("graphics/trainers/palettes/elite_four_hala.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourHop[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_hop.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourHop[] = INCGFX_U16("graphics/trainers/palettes/elite_four_hop.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourOlivia[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_olivia.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourOlivia[] = INCGFX_U16("graphics/trainers/palettes/elite_four_olivia.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourRika[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_rika.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourRika[] = INCGFX_U16("graphics/trainers/palettes/elite_four_rika.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourHassel[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_hassel.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourHassel[] = INCGFX_U16("graphics/trainers/palettes/elite_four_hassel.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourLarry[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_larry.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourLarry[] = INCGFX_U16("graphics/trainers/palettes/elite_four_larry.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourPoppy[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_poppy.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourPoppy[] = INCGFX_U16("graphics/trainers/palettes/elite_four_poppy.pal", ".gbapal");
 
 const u32 gTrainerFrontPic_LeaderBrockFrlg[] = INCGFX_U32("graphics/trainers/front_pics/leader_brock_frlg.png", ".4bpp.smol");
 const u16 gTrainerPalette_LeaderBrockFrlg[] = INCGFX_U16("graphics/trainers/palettes/leader_brock_frlg.pal", ".gbapal");
@@ -1348,6 +1364,38 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_ELITE_FOUR_WIKSTROM] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourWikstrom, gTrainerPalette_EliteFourWikstrom),
+    },
+    [TRAINER_PIC_ELITE_FOUR_NESSA] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourNessa, gTrainerPalette_EliteFourNessa),
+    },
+    [TRAINER_PIC_ELITE_FOUR_HALA] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourHala, gTrainerPalette_EliteFourHala),
+    },
+    [TRAINER_PIC_ELITE_FOUR_HOP] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourHop, gTrainerPalette_EliteFourHop),
+    },
+    [TRAINER_PIC_ELITE_FOUR_OLIVIA] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourOlivia, gTrainerPalette_EliteFourOlivia),
+    },
+    [TRAINER_PIC_ELITE_FOUR_RIKA] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourRika, gTrainerPalette_EliteFourRika),
+    },
+    [TRAINER_PIC_ELITE_FOUR_HASSEL] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourHassel, gTrainerPalette_EliteFourHassel),
+    },
+    [TRAINER_PIC_ELITE_FOUR_LARRY] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourLarry, gTrainerPalette_EliteFourLarry),
+    },
+    [TRAINER_PIC_ELITE_FOUR_POPPY] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourPoppy, gTrainerPalette_EliteFourPoppy),
     },
     // Original base-game Hoenn E4 sprites (Trick House Puzzle 3); coords mirror the
     // base-game TRAINER_PIC_ELITE_FOUR_* offsets so the originals frame identically.

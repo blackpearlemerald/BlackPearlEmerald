@@ -2748,10 +2748,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_VINCENT ===
 Name: POPPY
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Poppy
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -2804,10 +2804,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_LEROY ===
 Name: LARRY
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Larry
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -3461,10 +3461,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_KEIRA ===
 Name: RIKA
-Class: Cooltrainer 2
-Pic: Cooltrainer M
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Rika
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -3516,10 +3516,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_KEIRA2 ===
 Name: HASSEL
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Hassel
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -3934,10 +3934,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_PATRICIA ===
 Name: OLIVIA
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Olivia
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -7822,10 +7822,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_JOSHUA ===
 Name: HALA
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Hala
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -28542,10 +28542,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_MARIELA ===
 Name: HOP
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Elite Four
+Pic: Elite Four Hop
 Gender: Male
-Music: Cool
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
@@ -28594,10 +28594,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_EVERETT ===
 Name: NESSA
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
-Music: Cool
+Class: Elite Four
+Pic: Elite Four Nessa
+Gender: Female
+Music: Elite Four
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 

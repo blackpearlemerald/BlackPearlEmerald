@@ -431,6 +431,14 @@ enum
     OBJ_EVENT_GFX_DRASNA,
     OBJ_EVENT_GFX_SIEBOLD,
     OBJ_EVENT_GFX_WIKSTROM,
+    OBJ_EVENT_GFX_NESSA,
+    OBJ_EVENT_GFX_HALA,
+    OBJ_EVENT_GFX_HOP,
+    OBJ_EVENT_GFX_OLIVIA,
+    OBJ_EVENT_GFX_RIKA,
+    OBJ_EVENT_GFX_HASSEL,
+    OBJ_EVENT_GFX_LARRY,
+    OBJ_EVENT_GFX_POPPY,
     // Original base-game Hoenn E4 overworld sprites (Trick House Puzzle 3 celebrity
     // trainers; the real E4 rooms keep the custom sprites under OBJ_EVENT_GFX_SIDNEY/etc.)
     OBJ_EVENT_GFX_SIDNEY_ORIGINAL,
@@ -606,6 +614,14 @@ enum
 #define OBJ_EVENT_PAL_TAG_DRASNA                  0x113F
 #define OBJ_EVENT_PAL_TAG_SIEBOLD                 0x1140
 #define OBJ_EVENT_PAL_TAG_WIKSTROM                0x1141
+#define OBJ_EVENT_PAL_TAG_NESSA                   0x1142
+#define OBJ_EVENT_PAL_TAG_HALA                    0x1143
+#define OBJ_EVENT_PAL_TAG_HOP                     0x1144
+#define OBJ_EVENT_PAL_TAG_OLIVIA                  0x1145
+#define OBJ_EVENT_PAL_TAG_RIKA                    0x1146
+#define OBJ_EVENT_PAL_TAG_HASSEL                  0x1147
+#define OBJ_EVENT_PAL_TAG_LARRY                   0x1148
+#define OBJ_EVENT_PAL_TAG_POPPY                   0x1149
 
 #if OW_FOLLOWERS_POKEBALLS
 // Vanilla
