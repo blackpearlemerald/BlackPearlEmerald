@@ -232,14 +232,68 @@ def parse_encounters():
 
 SKIP_SPECIES = {"NONE", "EGG", "OLD_UNOWN_B", "OLD_UNOWN_C", "OLD_UNOWN_D", "OLD_UNOWN_E"}
 
+def _extract_paren_content(text, start):
+    """Return text inside matching parens starting at `start` (which must be '(')."""
+    depth = 1
+    i = start + 1
+    while i < len(text) and depth > 0:
+        if text[i] == '(':
+            depth += 1
+        elif text[i] == ')':
+            depth -= 1
+        i += 1
+    return text[start + 1 : i - 1]
+
+def _extract_brace_entries(text):
+    """Yield each top-level {...} string from `text` (handles nested braces)."""
+    i = 0
+    while i < len(text):
+        if text[i] == '{':
+            depth = 1
+            j = i + 1
+            while j < len(text) and depth > 0:
+                if text[j] == '{':
+                    depth += 1
+                elif text[j] == '}':
+                    depth -= 1
+                j += 1
+            yield text[i:j]
+            i = j
+        else:
+            i += 1
+
+def _parse_conditions(cond_str):
+    """Parse CONDITIONS({IF_X, VAL}, ...) → list of condition keys found."""
+    return re.findall(r"IF_\w+", cond_str)
+
 def _parse_evolutions(block):
-    m = re.search(r"\.evolutions\s*=\s*EVOLUTION\((.*?)\)(?=\s*[,}])", block, re.DOTALL)
+    m = re.search(r"\.evolutions\s*=\s*EVOLUTION\(", block)
     if not m:
         return []
+
+    # Use paren-counting to extract the full EVOLUTION(...) content,
+    # avoiding truncation at the first ')' inside nested CONDITIONS(...) calls.
+    evo_content = _extract_paren_content(block, m.end() - 1)
+
     evos = []
-    for evo_m in re.finditer(r"\{(\w+),\s*(.*?),\s*SPECIES_(\w+)\}", m.group(1)):
-        method, param, target = evo_m.group(1), evo_m.group(2).strip(), evo_m.group(3)
+    for entry in _extract_brace_entries(evo_content):
+        # Each entry is like:
+        #   {EVO_ITEM, ITEM_THUNDER_STONE, SPECIES_JOLTEON}
+        #   {EVO_LEVEL, 0, SPECIES_UMBREON, CONDITIONS({IF_MIN_FRIENDSHIP,...},{IF_TIME,...})}
+        em = re.match(r"\{\s*(\w+),\s*([^,{]+),\s*SPECIES_(\w+)(.*)\}$", entry.strip(), re.DOTALL)
+        if not em:
+            continue
+        method = em.group(1)
+        param  = em.group(2).strip()
+        target = em.group(3)
+        rest   = em.group(4).strip()   # e.g. ", CONDITIONS(...)" or ""
+
+        # Skip non-evolution entries (e.g. inner condition braces that leaked through)
+        if not method.startswith("EVO_"):
+            continue
+
         evo = {"method": method, "target": target}
+
         if method in ("EVO_LEVEL", "EVO_LEVEL_ATK_GT_DEF", "EVO_LEVEL_ATK_LT_DEF",
                       "EVO_LEVEL_ATK_EQ_DEF", "EVO_LEVEL_RAIN", "EVO_LEVEL_NIGHT",
                       "EVO_LEVEL_DAY", "EVO_LEVEL_FEMALE", "EVO_LEVEL_MALE"):
@@ -253,6 +307,13 @@ def _parse_evolutions(block):
             evo["move"] = param.replace("MOVE_", "").replace("_", " ").title()
         else:
             evo["param"] = param
+
+        # Parse CONDITIONS for richer display labels
+        if "CONDITIONS" in rest:
+            conds = _parse_conditions(rest)
+            if conds:
+                evo["conditions"] = conds
+
         evos.append(evo)
     return evos
 

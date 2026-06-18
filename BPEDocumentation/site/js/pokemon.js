@@ -90,8 +90,22 @@
   // ── Evolution chain ───────────────────────────────────────────
   function evoMethodLabel(evo) {
     var m = evo.method || '';
-    if (m === 'EVO_LEVEL' || m.startsWith('EVO_LEVEL_'))
-      return evo.level ? 'Lv. ' + evo.level : 'Level up';
+    var conds = evo.conditions || [];
+    var hasFriendship = conds.indexOf('IF_MIN_FRIENDSHIP') !== -1;
+    var isNight = conds.indexOf('IF_TIME') !== -1;
+    var isDay   = conds.indexOf('IF_NOT_TIME') !== -1;
+    var isMap   = conds.indexOf('IF_IN_MAP') !== -1;
+    var isFairy = conds.indexOf('IF_KNOWS_MOVE_TYPE') !== -1;
+
+    if (m === 'EVO_LEVEL' || m.startsWith('EVO_LEVEL_')) {
+      if (evo.level) return 'Lv. ' + evo.level;
+      if (hasFriendship && isNight) return 'Friendship (night)';
+      if (hasFriendship && isDay)   return 'Friendship (day)';
+      if (hasFriendship && isFairy) return 'Friendship + Fairy move';
+      if (hasFriendship)            return 'Friendship';
+      if (isMap)                    return 'Level up in area';
+      return 'Level up';
+    }
     if (m === 'EVO_FRIENDSHIP') return 'Friendship';
     if (m === 'EVO_FRIENDSHIP_DAY') return 'Friendship (day)';
     if (m === 'EVO_FRIENDSHIP_NIGHT') return 'Friendship (night)';
@@ -360,20 +374,7 @@
         + '</a>';
     }
 
-    function methodLabel(evo) {
-      var m = evo.method || '';
-      if (m === 'EVO_LEVEL' || m.startsWith('EVO_LEVEL_'))
-        return evo.level ? 'Lv. ' + evo.level : 'Level up';
-      if (m === 'EVO_FRIENDSHIP') return 'Friendship';
-      if (m === 'EVO_FRIENDSHIP_DAY') return 'Friendship (day)';
-      if (m === 'EVO_FRIENDSHIP_NIGHT') return 'Friendship (night)';
-      if (m.includes('ITEM_HOLD')) return 'Hold ' + (evo.item || '');
-      if (m.includes('ITEM')) return evo.item || 'Use item';
-      if (m === 'EVO_TRADE') return 'Trade';
-      if (m === 'EVO_MOVE') return 'Know ' + (evo.move || '');
-      if (m === 'EVO_BEAUTY') return 'Max Beauty';
-      return prettifyConstant(m.replace('EVO_', ''));
-    }
+    function methodLabel(evo) { return evoMethodLabel(evo); }
 
     function renderBranch(items) {
       if (!items || items.length === 0) return '';
