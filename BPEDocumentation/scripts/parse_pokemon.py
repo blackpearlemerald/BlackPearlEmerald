@@ -256,6 +256,14 @@ def _parse_evolutions(block):
         evos.append(evo)
     return evos
 
+def _collect_stat_macros(content):
+    """Extract #define NAME (P_UPDATED_STATS ... ? val1 : val2) -> {NAME: val1}."""
+    macros = {}
+    # BPE uses P_UPDATED_STATS >= GEN_LATEST so always take the first (modern) branch
+    for m in re.finditer(r"#define\s+(\w+)\s+\(.*?P_UPDATED_STATS.*?\?\s*(\d+)\s*:", content):
+        macros[m.group(1)] = int(m.group(2))
+    return macros
+
 def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters, tms, hms):
     tm_set = set(tms)
     hm_set = set(hms)
@@ -263,7 +271,9 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
 
     info_dir = REPO / "src" / "data" / "pokemon" / "species_info"
     for gen_file in sorted(info_dir.glob("gen_*_families.h")):
-        content = strip_c_comments(read_file(gen_file))
+        raw_content = read_file(gen_file)
+        stat_macros = _collect_stat_macros(raw_content)
+        content = strip_c_comments(raw_content)
         for species_key, block in find_blocks(content, r"\[SPECIES_(\w+)\]\s*="):
             if species_key in SKIP_SPECIES:
                 continue
@@ -297,7 +307,18 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
                 ("baseSpAttack", "spa"), ("baseSpDefense", "spd"), ("baseSpeed", "spe"),
             ]:
                 sm = re.search(rf"\.{src_key}\s*=\s*(\d+)", block)
-                stats[dst_key] = int(sm.group(1)) if sm else 0
+                if sm:
+                    stats[dst_key] = int(sm.group(1))
+                else:
+                    # Try named macro reference (e.g. CHARIZARD_SP_ATK → stat_macros dict)
+                    mm = re.search(rf"\.{src_key}\s*=\s*(\w+)", block)
+                    macro_name = mm.group(1) if mm else None
+                    if macro_name and macro_name in stat_macros:
+                        stats[dst_key] = stat_macros[macro_name]
+                    else:
+                        # Try inline P_UPDATED_STATS ternary (BPE always uses modern gen values)
+                        tm = re.search(rf"\.{src_key}\s*=.*?P_UPDATED_STATS.*?\?\s*(\d+)", block)
+                        stats[dst_key] = int(tm.group(1)) if tm else 0
             entry["baseStats"] = stats
 
             # Types
