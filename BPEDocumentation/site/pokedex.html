@@ -5,13 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BPE Emerald — Pokédex</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/pokedex.css" />
 </head>
-<body class="page-placeholder">
-  <div class="placeholder-content">
-    <div class="placeholder-badge">Coming Soon</div>
-    <h1>Pokédex</h1>
-    <p>Browse BPE Emerald's full Pokédex with base stats, learnsets, abilities, and encounter locations for every Pokémon in the game.</p>
-  </div>
+<body class="page-pokedex">
   <script src="js/nav.js"></script>
+
+  <div class="dex-container">
+    <div class="dex-controls">
+      <input id="dex-search" class="dex-search" type="search" placeholder="Search Pokémon…" autocomplete="off" />
+      <div class="dex-type-filters" id="type-filters"></div>
+      <label class="dex-forms-toggle">
+        <input type="checkbox" id="show-forms" /> Show alternate forms
+      </label>
+    </div>
+    <div class="dex-count" id="dex-count"></div>
+    <div id="dex-grid" class="dex-grid">
+      <div class="dex-loading">Loading Pokédex…</div>
+    </div>
+  </div>
+
+  <script src="js/pokedex.js"></script>
 </body>
 </html>
