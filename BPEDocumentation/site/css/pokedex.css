@@ -33,25 +33,27 @@
   margin: 1px;
   user-select: none;
 }
-.type-badge.t-NORMAL   { background: #8a8a6e; }
-.type-badge.t-FIRE     { background: #c46010; }
-.type-badge.t-WATER    { background: #3a68c8; }
-.type-badge.t-ELECTRIC { background: #b89800; color: #1a1a00; }
-.type-badge.t-GRASS    { background: #4a9428; }
-.type-badge.t-ICE      { background: #4aa0a0; }
-.type-badge.t-FIGHTING { background: #8a1818; }
-.type-badge.t-POISON   { background: #782878; }
-.type-badge.t-GROUND   { background: #9a7820; color: #1a1200; }
-.type-badge.t-FLYING   { background: #6858c0; }
-.type-badge.t-PSYCHIC  { background: #c01858; }
-.type-badge.t-BUG      { background: #6a7808; }
-.type-badge.t-ROCK     { background: #786818; }
-.type-badge.t-GHOST    { background: #4a3870; }
-.type-badge.t-DRAGON   { background: #4810c0; }
-.type-badge.t-DARK     { background: #4a3028; }
-.type-badge.t-STEEL    { background: #6a6a80; }
-.type-badge.t-FAIRY    { background: #a84870; }
-.type-badge.t-STELLAR  { background: #227a6e; }
+/* Type colours are shared by the inline badges and the Pokédex filter buttons
+   (both carry a t-<TYPE> class). */
+.t-NORMAL   { background: #8a8a6e; }
+.t-FIRE     { background: #c46010; }
+.t-WATER    { background: #3a68c8; }
+.t-ELECTRIC { background: #b89800; color: #1a1a00; }
+.t-GRASS    { background: #4a9428; }
+.t-ICE      { background: #4aa0a0; }
+.t-FIGHTING { background: #8a1818; }
+.t-POISON   { background: #782878; }
+.t-GROUND   { background: #9a7820; color: #1a1200; }
+.t-FLYING   { background: #6858c0; }
+.t-PSYCHIC  { background: #c01858; }
+.t-BUG      { background: #6a7808; }
+.t-ROCK     { background: #786818; }
+.t-GHOST    { background: #4a3870; }
+.t-DRAGON   { background: #4810c0; }
+.t-DARK     { background: #4a3028; }
+.t-STEEL    { background: #6a6a80; }
+.t-FAIRY    { background: #a84870; }
+.t-STELLAR  { background: #227a6e; }
 
 /* ── Pokédex Listing ─────────────────────────────────────────── */
 .dex-controls {
@@ -94,11 +96,19 @@
   letter-spacing: 0.4px;
   text-transform: uppercase;
   color: #fff;
-  opacity: 0.45;
-  transition: opacity 0.12s, border-color 0.12s;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.45);
+  opacity: 0.78;
+  transition: opacity 0.12s, border-color 0.12s, box-shadow 0.12s;
 }
-.type-filter-btn.active { opacity: 1; border-color: rgba(255,255,255,0.5); }
-.type-filter-btn:hover  { opacity: 0.85; }
+/* Dark-text types keep a light shadow so their label stays legible. */
+.type-filter-btn.t-ELECTRIC,
+.type-filter-btn.t-GROUND { text-shadow: 0 1px 1px rgba(255,255,255,0.35); }
+.type-filter-btn.active {
+  opacity: 1;
+  border-color: #fff;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.4);
+}
+.type-filter-btn:hover  { opacity: 1; }
 .type-filter-btn.all-btn {
   background: rgba(255,255,255,0.15);
   color: #e8eef5;
@@ -398,6 +408,10 @@
   border-radius: 8px;
   transition: background 0.12s;
   color: inherit;
+  /* Fixed width so sprites line up in a column when branches fan out. */
+  width: 88px;
+  box-sizing: border-box;
+  flex: none;
 }
 .evo-node:hover { background: rgba(77,184,122,0.1); }
 .evo-node.current { background: rgba(77,184,122,0.15); }
@@ -416,8 +430,40 @@
   color: #4db87a;
   font-size: 20px;
   padding: 0 2px;
+  /* Fixed width so the target nodes after the arrow stay aligned regardless of
+     how long the method label is (e.g. "Friendship + Fairy move"). */
+  width: 88px;
+  flex: none;
 }
-.evo-method { font-size: 10px; color: #5a7080; text-align: center; max-width: 80px; }
+.evo-method { font-size: 10px; color: #5a7080; text-align: center; max-width: 84px; }
+
+/* Single-path evolution (Abra → Kadabra → Alakazam): horizontal sequence. */
+.evo-seq {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Multiple evolutions from one Pokémon (Eevee, Wurmple, …): the source sits on
+   the left and the branches fan out as spokes stacked to its right. */
+.evo-branch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.evo-spokes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  border-left: 2px solid rgba(77,184,122,0.25);
+  padding-left: 8px;
+}
+.evo-spoke {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
 /* Learnset section */
 .dex-section {

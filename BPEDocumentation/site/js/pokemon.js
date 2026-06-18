@@ -88,6 +88,14 @@
   }
 
   // ── Evolution chain ───────────────────────────────────────────
+  // Evolutions are pre-merged by the parser: each entry has a `methods` array
+  // (one or more human labels for the ways to reach `target`). Older data may
+  // still carry the raw {method, conditions, ...} shape — fall back to that.
+  function evoMethodText(evo) {
+    if (evo.methods && evo.methods.length) return evo.methods.join(' / ');
+    return evoMethodLabel(evo);
+  }
+
   function evoMethodLabel(evo) {
     var m = evo.method || '';
     var conds = evo.conditions || [];
@@ -168,7 +176,7 @@
         var nodeHtml = renderEvoNode(item.node.id, item.node.sp, currentId);
         if (!item.branches || item.branches.length === 0) return nodeHtml;
         var nexts = item.branches.map(function (b) {
-          var method = evoMethodLabel(b.evo);
+          var method = evoMethodText(b.evo);
           var nextItems = b.next || [];
           var nextHtml = renderBranch(nextItems);
           return '<div class="evo-arrow">&#8594;<div class="evo-method">' + esc(method) + '</div></div>'
@@ -374,18 +382,35 @@
         + '</a>';
     }
 
-    function methodLabel(evo) { return evoMethodLabel(evo); }
+    function methodLabel(evo) { return evoMethodText(evo); }
+
+    function arrowHtml(evo) {
+      return '<div class="evo-arrow">&#8594;<div class="evo-method">'
+        + esc(methodLabel(evo)) + '</div></div>';
+    }
 
     function renderBranch(items) {
       if (!items || items.length === 0) return '';
       return items.map(function (item) {
         var nodeHtml = renderNode(item.node.id, item.node.sp);
-        if (!item.branches || item.branches.length === 0) return nodeHtml;
-        var nexts = item.branches.map(function (b) {
-          return '<div class="evo-arrow">&#8594;<div class="evo-method">' + esc(methodLabel(b.evo)) + '</div></div>'
-            + renderBranch(b.next);
+        var branches = item.branches || [];
+        if (branches.length === 0) return nodeHtml;
+
+        // Single evolution path (e.g. Abra → Kadabra → Alakazam): keep it as a
+        // simple horizontal sequence.
+        if (branches.length === 1) {
+          return '<div class="evo-seq">' + nodeHtml
+            + arrowHtml(branches[0].evo) + renderBranch(branches[0].next)
+            + '</div>';
+        }
+
+        // Multiple evolutions from one Pokémon (e.g. Eevee): fan the branches
+        // out from the source like spokes on a wheel.
+        var spokes = branches.map(function (b) {
+          return '<div class="evo-spoke">' + arrowHtml(b.evo) + renderBranch(b.next) + '</div>';
         }).join('');
-        return nodeHtml + nexts;
+        return '<div class="evo-branch">' + nodeHtml
+          + '<div class="evo-spokes">' + spokes + '</div></div>';
       }).join('');
     }
 

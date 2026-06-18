@@ -95,6 +95,18 @@ def parse_dex_numbers():
         current += 1
     return dex_map  # {"BULBASAUR": 1, "IVYSAUR": 2, ...}
 
+def parse_species_aliases():
+    """Parse `SPECIES_X = SPECIES_Y` aliases from species.h → {X: Y}.
+
+    Used to find each form-family's canonical default form (e.g.
+    SPECIES_ALCREMIE = SPECIES_ALCREMIE_STRAWBERRY = …_VANILLA_CREAM)."""
+    path = REPO / "include" / "constants" / "species.h"
+    content = read_file(path)
+    alias = {}
+    for m in re.finditer(r"\bSPECIES_(\w+)\s*=\s*SPECIES_(\w+)\b", content):
+        alias[m.group(1)] = m.group(2)
+    return alias
+
 # ── 2. Moves ───────────────────────────────────────────────────────────────────
 
 def parse_moves():
@@ -191,17 +203,39 @@ def parse_teachable_learnsets():
 
 # ── 8. Wild encounters ─────────────────────────────────────────────────────────
 
+def parse_hoenn_map_ids():
+    """Set of map IDs that actually exist in this game as Hoenn-region maps.
+
+    BPE removed the FRLG (Kanto / Sevii Islands) maps, but
+    `wild_encounters.json` still carries stale encounter entries for them.
+    Those maps have no `map.json` (or a REGION_KANTO one), so we keep only maps
+    whose `map.json` declares `REGION_HOENN`."""
+    hoenn = set()
+    for mj in (REPO / "data" / "maps").glob("*/map.json"):
+        try:
+            with open(mj, "r", encoding="utf-8") as f:
+                d = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if d.get("region") == "REGION_HOENN" and d.get("id"):
+            hoenn.add(d["id"])
+    return hoenn
+
 def parse_encounters():
     path = REPO / "src" / "data" / "wild_encounters.json"
     with open(path, "r", encoding="utf-8") as f:
         raw = json.load(f)
 
+    hoenn_maps = parse_hoenn_map_ids()
     enc_types = ["land_mons", "water_mons", "rock_smash_mons", "fishing_mons"]
     species_enc = {}  # SPECIES_KEY -> list of encounter dicts
 
     for group in raw.get("wild_encounter_groups", []):
         for entry in group.get("encounters", []):
             map_id = entry.get("map", "")
+            # Skip FRLG / non-Hoenn maps that aren't in this game.
+            if map_id not in hoenn_maps:
+                continue
             map_name = prettify_map(map_id)
             for enc_type in enc_types:
                 if enc_type not in entry:
@@ -325,6 +359,219 @@ def _collect_stat_macros(content):
         macros[m.group(1)] = int(m.group(2))
     return macros
 
+# ── Macro-defined species expansion ─────────────────────────────────────────────
+#
+# Many cosmetic / regional forms (Vivillon, Alcremie, Mothim, Scatterbug, Unown …)
+# are NOT written as `[SPECIES_X] = { ... }` brace blocks.  Instead they are macro
+# instantiations like:
+#
+#     [SPECIES_SCATTERBUG_ICY_SNOW] = SCATTERBUG_SPECIES_INFO(ICY_SNOW),
+#
+# where the macro body uses `##` token-pasting to build the per-form evolution
+# target (e.g. SPECIES_SPEWPA_##evolution -> SPECIES_SPEWPA_ICY_SNOW).
+#
+# The naïve brace scanner cannot handle these — it skips forward to the next `{`,
+# stealing an unrelated species' body (corrupting data) and silently eating the
+# species declarations in between.  We fix that by collecting the `#define`
+# macros and expanding the invocation into a real brace block before parsing.
+
+def _join_line_continuations(raw):
+    """Join C backslash-newline line continuations into single logical lines."""
+    return re.sub(r"\\\s*\n", " ", raw)
+
+def _read_paren(text, i):
+    """text[i] must be '('. Return (inner_text, index_after_close)."""
+    assert text[i] == "("
+    depth = 0
+    start = i
+    while i < len(text):
+        if text[i] == "(":
+            depth += 1
+        elif text[i] == ")":
+            depth -= 1
+            if depth == 0:
+                return text[start + 1:i], i + 1
+        i += 1
+    return text[start + 1:], len(text)
+
+def _split_top_args(s):
+    """Split macro arg list on top-level commas (ignoring nested parens/braces)."""
+    args, depth, cur = [], 0, ""
+    for ch in s:
+        if ch in "([{":
+            depth += 1; cur += ch
+        elif ch in ")]}":
+            depth -= 1; cur += ch
+        elif ch == "," and depth == 0:
+            args.append(cur); cur = ""
+        else:
+            cur += ch
+    if cur.strip() or args:
+        args.append(cur)
+    return [a.strip() for a in args]
+
+def collect_macros(raw_content):
+    """Collect #define macros (function-like and object-like) whose body is a
+    species-info fragment.  Returns {name: (params_or_None, body_text)}."""
+    text = strip_c_comments(_join_line_continuations(raw_content))
+    macros = {}
+    # Function-like:  NAME(...)  — '(' must immediately follow the name (C rule).
+    # Object-like:    NAME       — at least one space before the body.
+    for m in re.finditer(r"#define\s+(\w+)(\([^()]*\))?[ \t]+(.*)", text):
+        name = m.group(1)
+        params = None
+        if m.group(2):
+            params = [p.strip() for p in m.group(2)[1:-1].split(",") if p.strip()]
+        body = m.group(3).strip()
+        # Only keep macros that actually carry species-info fields, to avoid
+        # clobbering value macros / unrelated defines.
+        if ".base" in body or "_MISC_INFO" in body or ".speciesName" in body \
+           or ".natDexNum" in body or ".evolutions" in body or ".types" in body:
+            macros[name] = (params, body)
+    return macros
+
+def expand_macros(text, macros, _seen=(), _depth=0):
+    """Recursively expand any macro invocations found in `text`."""
+    if _depth > 25:
+        return text
+    out = []
+    i, n = 0, len(text)
+    while i < n:
+        ch = text[i]
+        if ch == "_" or ch.isalpha():
+            j = i
+            while j < n and (text[j].isalnum() or text[j] == "_"):
+                j += 1
+            word = text[i:j]
+            if word in macros and word not in _seen:
+                params, body = macros[word]
+                k = j
+                args = None
+                if params is not None:
+                    while k < n and text[k] in " \t\n":
+                        k += 1
+                    if k < n and text[k] == "(":
+                        inner, k = _read_paren(text, k)
+                        args = _split_top_args(inner)
+                ebody = body
+                if params:
+                    # The ## paste operator concatenates tokens and absorbs any
+                    # surrounding whitespace (e.g. `SPECIES_FLOETTE_ ##FORM` →
+                    # `SPECIES_FLOETTE_FORM`). Normalise that before substituting.
+                    ebody = re.sub(r"\s*##\s*", "##", ebody)
+                    for p, a in zip(params, args or []):
+                        # token-paste first (foo##p, p##bar), then whole-word
+                        ebody = ebody.replace("##" + p, a).replace(p + "##", a)
+                        ebody = re.sub(r"\b" + re.escape(p) + r"\b", a, ebody)
+                ebody = ebody.replace("##", "")  # drop any stray paste operators
+                out.append(expand_macros(ebody, macros, _seen + (word,), _depth + 1))
+                i = k if params is not None else j
+                continue
+            out.append(word)
+            i = j
+            continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+def iter_species_decls(content, macros):
+    """Yield (species_key, block_text) for every `[SPECIES_X] = ...` declaration,
+    handling both brace blocks and macro instantiations."""
+    for m in re.finditer(r"\[SPECIES_(\w+)\]\s*=\s*", content):
+        key = m.group(1)
+        j = m.end()
+        if j >= len(content):
+            continue
+        if content[j] == "{":
+            # Plain brace block — extract with brace matching.
+            depth, i = 0, j
+            while i < len(content):
+                if content[i] == "{":
+                    depth += 1
+                elif content[i] == "}":
+                    depth -= 1
+                    if depth == 0:
+                        break
+                i += 1
+            # Brace blocks may still embed field-list macros such as
+            # FLABEBE_MISC_INFO(Red, RED, 1) — expand those so stats/types/
+            # evolutions inside them are parsed.
+            yield key, expand_macros(content[j + 1:i], macros)
+        else:
+            # Macro instantiation: NAME or NAME(args)
+            mm = re.match(r"(\w+)\s*", content[j:])
+            if not mm:
+                continue
+            mname = mm.group(1)
+            if mname not in macros:
+                continue  # unknown / non-species macro — skip (no corruption)
+            # Isolate just this invocation (NAME or NAME(...)) before expanding,
+            # so we don't recursively expand the rest of the file.
+            after = j + mm.end()
+            inv_end = after
+            if macros[mname][0] is not None and after < len(content) and content[after] == "(":
+                _, inv_end = _read_paren(content, after)
+            expanded = expand_macros(content[j:inv_end], macros).lstrip()
+            # Extract the first balanced brace block from the expansion.
+            bi = expanded.find("{")
+            if bi < 0:
+                continue
+            depth, i = 0, bi
+            while i < len(expanded):
+                if expanded[i] == "{":
+                    depth += 1
+                elif expanded[i] == "}":
+                    depth -= 1
+                    if depth == 0:
+                        break
+                i += 1
+            yield key, expanded[bi + 1:i]
+
+# ── Evolution method label (kept in sync with site/js/pokemon.js) ────────────────
+
+def _evo_label(evo):
+    m = evo.get("method", "")
+    conds = evo.get("conditions", [])
+    has_friend = "IF_MIN_FRIENDSHIP" in conds
+    is_night = "IF_TIME" in conds
+    is_day = "IF_NOT_TIME" in conds
+    is_map = "IF_IN_MAP" in conds
+    is_fairy = "IF_KNOWS_MOVE_TYPE" in conds
+
+    if m == "EVO_LEVEL" or m.startswith("EVO_LEVEL_"):
+        if evo.get("level"):
+            return "Lv. " + str(evo["level"])
+        if has_friend and is_night:
+            return "Friendship (night)"
+        if has_friend and is_day:
+            return "Friendship (day)"
+        if has_friend and is_fairy:
+            return "Friendship + Fairy move"
+        if has_friend:
+            return "Friendship"
+        if is_map:
+            return "Level up in area"
+        return "Level up"
+    if m == "EVO_FRIENDSHIP":
+        return "Friendship"
+    if m == "EVO_FRIENDSHIP_DAY":
+        return "Friendship (day)"
+    if m == "EVO_FRIENDSHIP_NIGHT":
+        return "Friendship (night)"
+    if "ITEM_HOLD" in m or m == "EVO_TRADE_ITEM":
+        return ("Trade holding " if m == "EVO_TRADE_ITEM" else "Hold ") + (evo.get("item") or "")
+    if "ITEM" in m:
+        return evo.get("item") or "Use item"
+    if m == "EVO_TRADE":
+        return "Trade"
+    if m == "EVO_MOVE":
+        return "Know " + (evo.get("move") or "")
+    if m == "EVO_BEAUTY":
+        return "Max Beauty"
+    if m == "EVO_SPIN":
+        return "Spin w/ Sweet"
+    return m.replace("EVO_", "").replace("_", " ").title()
+
 def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters, tms, hms):
     tm_set = set(tms)
     hm_set = set(hms)
@@ -334,8 +581,9 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
     for gen_file in sorted(info_dir.glob("gen_*_families.h")):
         raw_content = read_file(gen_file)
         stat_macros = _collect_stat_macros(raw_content)
+        macros = collect_macros(raw_content)
         content = strip_c_comments(raw_content)
-        for species_key, block in find_blocks(content, r"\[SPECIES_(\w+)\]\s*="):
+        for species_key, block in iter_species_decls(content, macros):
             if species_key in SKIP_SPECIES:
                 continue
 
@@ -436,8 +684,9 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
             )
             entry["description"] = extract_compound_string(m.group(1)) if m else ""
 
-            # Evolutions
-            entry["evolutions"] = _parse_evolutions(block)
+            # Evolutions (raw — merged/canonicalized in a post-pass below once
+            # every target species' national dex number is known)
+            entry["_evosRaw"] = _parse_evolutions(block)
 
             # Learnsets (resolve by array name embedded in block)
             def get_array_name(field):
@@ -465,7 +714,95 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
 
             all_species[species_key] = entry
 
-    # Back-fill preEvolution pointers
+    # ── Post-pass: canonicalize + merge evolution targets ───────────────────────
+    #
+    # Two problems are fixed here:
+    #   (1) Multiple evolution methods to the SAME species (e.g. Eevee → Leafeon by
+    #       Leaf Stone *or* by levelling in Petalburg Woods) were rendered as two
+    #       separate nodes — the "weird duplicates".
+    #   (2) Pokémon that evolve into many cosmetic forms of one species (Milcery →
+    #       63 Alcremie creams) exploded the tree.  These forms share a national
+    #       dex number and identical types/stats, so they collapse to one node.
+
+    # Cosmetic-form dex numbers: every species with that dex number has identical
+    # types + base stats (Vivillon patterns, Alcremie creams, Mothim, …).  These
+    # are safe to collapse.  Functionally distinct forms (e.g. Wormadam Plant/
+    # Sandy/Trash, which differ in typing) are NOT collapsed.
+    # Special (non-cosmetic) form markers — Gigantamax/Mega/etc. share their base
+    # dex number but differ in stats, and must not disturb cosmetic detection.
+    SPECIAL_FORM = ("_GMAX", "_GIGANTAMAX", "_MEGA", "_PRIMAL", "_ETERNAMAX")
+
+    def _is_special(e):
+        return any(s in e["id"] for s in SPECIAL_FORM) \
+            or sum(e["baseStats"].values()) == 0   # unparsed / placeholder
+
+    by_dex = {}
+    for e in all_species.values():
+        by_dex.setdefault(e["natDexNum"], []).append(e)
+
+    def _sig(e):
+        return (tuple(e["types"]), tuple(sorted(e["baseStats"].items())))
+
+    cosmetic_dex = set()
+    for dn, members in by_dex.items():
+        normal = [m for m in members if not _is_special(m)]
+        if dn and len(normal) > 1 and all(_sig(m) == _sig(normal[0]) for m in normal):
+            cosmetic_dex.add(dn)
+
+    # Canonical representative species per dex number, taken from species.h
+    # aliases (e.g. SPECIES_ALCREMIE = SPECIES_ALCREMIE_STRAWBERRY = …).
+    alias = parse_species_aliases()
+
+    def resolve_alias(k):
+        seen = set()
+        while k in alias and k not in seen:
+            seen.add(k)
+            k = alias[k]
+        return k
+
+    dex_rep, dex_rep_score = {}, {}
+    for base in alias:
+        concrete = resolve_alias(base)
+        if concrete in all_species:
+            dn = all_species[concrete]["natDexNum"]
+            score = base.count("_")          # fewer underscores ⇒ more canonical
+            if dn not in dex_rep_score or score < dex_rep_score[dn]:
+                dex_rep_score[dn] = score
+                dex_rep[dn] = concrete
+
+    def canonical_target(tkey):
+        sp = all_species.get(tkey)
+        if sp is None:
+            r = resolve_alias(tkey)
+            sp = all_species.get(r)
+            if sp is None:
+                return tkey            # unknown target — keep as-is
+            tkey = r
+        dn = sp["natDexNum"]
+        if dn in cosmetic_dex and dn in dex_rep:
+            return dex_rep[dn]
+        return tkey
+
+    for entry in all_species.values():
+        groups = {}                    # canonical target -> list of raw evo dicts
+        order = []
+        for evo in entry.pop("_evosRaw"):
+            ck = canonical_target(evo["target"])
+            if ck not in groups:
+                groups[ck] = []
+                order.append(ck)
+            groups[ck].append(evo)
+        merged = []
+        for ck in order:
+            methods = []
+            for evo in groups[ck]:
+                label = _evo_label(evo)
+                if label not in methods:
+                    methods.append(label)
+            merged.append({"target": ck, "methods": methods})
+        entry["evolutions"] = merged
+
+    # Back-fill preEvolution pointers (on the merged/canonical targets)
     for key, entry in all_species.items():
         for evo in entry["evolutions"]:
             t = evo["target"]
@@ -499,6 +836,23 @@ FORM_SUFFIXES = [
     ("_ICE", "ice"), ("_SHADOW", "shadow"),
 ]
 
+POKE_GFX_ROOT = REPO / "graphics" / "pokemon"
+
+def _split_base_form(name_lower):
+    """Split a lowercased species name into (base_dir_name, form_subpath).
+
+    The base is the longest underscore-delimited prefix that is an actual
+    `graphics/pokemon/<base>/` directory; the remainder is the per-form
+    subfolder.  E.g. 'floette_blue' -> ('floette', 'blue'),
+    'vivillon_high_plains' -> ('vivillon', 'high_plains'),
+    'mr_mime' -> ('mr_mime', '')  (multi-word base that is itself a dir)."""
+    parts = name_lower.split("_")
+    for i in range(len(parts), 0, -1):
+        base = "_".join(parts[:i])
+        if (POKE_GFX_ROOT / base).is_dir():
+            return base, "_".join(parts[i:])
+    return name_lower, ""
+
 def _sprite_candidates(species_key, filename):
     name = species_key
     subfolder = None
@@ -507,12 +861,21 @@ def _sprite_candidates(species_key, filename):
             subfolder = folder
             name = name[: -len(suffix)]
             break
-    base = name.lower()
-    poke_dir = REPO / "graphics" / "pokemon" / base
+
+    base, form = _split_base_form(name.lower())
+    poke_dir = POKE_GFX_ROOT / base
+    alt = filename.replace("anim_", "")  # 'anim_front.png' -> 'front.png'
     candidates = []
+    # 1. Known form suffix (e.g. _ALOLAN -> alolan/)
     if subfolder:
-        candidates += [poke_dir / subfolder / filename, poke_dir / subfolder / filename.replace("anim_", "")]
-    candidates.append(poke_dir / filename)
+        candidates += [poke_dir / subfolder / filename, poke_dir / subfolder / alt]
+    # 2. Generic per-form subfolder (e.g. FLOETTE_BLUE -> floette/blue/).
+    #    Some forms only override the icon, so a missing front here correctly
+    #    falls through to the base/default-form art below.
+    if form:
+        candidates += [poke_dir / form / filename, poke_dir / form / alt]
+    # 3. Default / base-folder art.
+    candidates += [poke_dir / filename, poke_dir / alt]
     return candidates
 
 def find_sprite(species_key):

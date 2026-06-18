@@ -424,7 +424,29 @@ async function main() {
   });
 
   document.getElementById("loading").style.display = "none";
-  window.bpe = { map, world, W2LL };
+
+  // Pan + zoom to a specific map (e.g. from a Pokédex encounter link), and
+  // optionally open its wild-encounter popup.
+  function focusMap(id, openPopup) {
+    const m = world.maps.find((mm) => mm.id === id);
+    if (!m) return false;
+    const bounds = L.latLngBounds(W2LL(m.x, m.y), W2LL(m.x + m.w, m.y + m.h));
+    map.fitBounds(bounds.pad(0.3), { maxZoom: 2, animate: true });
+    if (openPopup) {
+      const center = W2LL(m.x + m.w / 2, m.y + m.h / 2);
+      encPopup.setLatLng(center).setContent(encounterPopup(m)).openOn(map);
+    }
+    return true;
+  }
+
+  window.bpe = { map, world, W2LL, focusMap };
+
+  // Honour ?map=MAP_ID — clicking a location in the Pokédex deep-links here.
+  const focusId = new URLSearchParams(location.search).get("map");
+  if (focusId) {
+    // Defer so the initial world fitBounds/layout settles first, then fly in.
+    setTimeout(() => focusMap(focusId, true), 0);
+  }
 }
 
 main().catch(e => {
