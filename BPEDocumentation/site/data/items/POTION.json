@@ -1,0 +1,1 @@
+{"id":"POTION","name":"Potion","price":200,"description":"Restores the HP of a Pokémon by 20 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/potion.png"}

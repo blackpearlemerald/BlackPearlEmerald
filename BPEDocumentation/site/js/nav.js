@@ -10,8 +10,9 @@
   // Resolve current page filename ('index.html', 'search.html', etc.)
   var current = location.pathname.split('/').pop();
   if (!current || current === '') current = 'index.html';
-  // pokemon.html is a sub-page of the Pokédex
+  // Sub-page mappings
   if (current === 'pokemon.html') current = 'pokedex.html';
+  if (current === 'item.html')    current = 'items.html';
 
   var links = NAV_ITEMS.map(function (p) {
     var cls = 'nav-link' + (current === p.href ? ' active' : '');

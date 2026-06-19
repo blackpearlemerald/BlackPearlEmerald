@@ -1,0 +1,1 @@
+{"id":"EJECT_PACK","name":"Eject Pack","price":30000,"description":"Forces the user to switch if its stats are lowered.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/eject_pack.png"}

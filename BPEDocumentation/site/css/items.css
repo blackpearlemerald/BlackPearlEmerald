@@ -1,0 +1,234 @@
+/* ============================================================
+   BPE EMERALD — ITEMS STYLES
+   Shared by items.html (listing) and item.html (detail)
+   ============================================================ */
+
+/* ── Base / Page ────────────────────────────────────────────── */
+.page-items,
+.page-item {
+  background: #0d1b2a;
+  color: #e8eef5;
+  min-height: 100vh;
+  padding-top: 48px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.items-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+}
+
+/* ── Controls ───────────────────────────────────────────────── */
+.items-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+/* ── Pocket filter buttons ──────────────────────────────────── */
+.pocket-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.pocket-btn {
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 3px 13px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition: opacity 0.12s, border-color 0.12s, box-shadow 0.12s;
+  background: none;
+}
+
+.pocket-btn.all-pocket {
+  background: rgba(255,255,255,0.12);
+  color: #e8eef5;
+  border-color: rgba(255,255,255,0.2);
+}
+.pocket-btn.all-pocket.active {
+  border-color: #4db87a;
+  color: #4db87a;
+  box-shadow: 0 0 0 1px rgba(77,184,122,0.3);
+}
+
+/* Per-pocket colours: match item-pocket-badge colours below */
+.pocket-btn.pb-POCKET_ITEMS      { color: #6a98e8; border-color: rgba(58,104,200,0.35); }
+.pocket-btn.pb-POCKET_POKE_BALLS { color: #e87870; border-color: rgba(220,60,40,0.35); }
+.pocket-btn.pb-POCKET_TM_HM      { color: #c090f0; border-color: rgba(148,60,210,0.35); }
+.pocket-btn.pb-POCKET_BERRIES    { color: #70d870; border-color: rgba(60,180,60,0.35); }
+.pocket-btn.pb-POCKET_KEY_ITEMS  { color: #e8c040; border-color: rgba(200,160,30,0.35); }
+
+.pocket-btn.active {
+  box-shadow: 0 0 0 1px currentColor;
+}
+.pocket-btn:hover { opacity: 0.85; }
+
+/* ── Pocket badge (card + detail) ──────────────────────────── */
+.item-pocket-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 8px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  user-select: none;
+}
+
+.item-pocket-badge.pocket-POCKET_ITEMS      { background: rgba(58,104,200,0.18); color: #6a98e8; }
+.item-pocket-badge.pocket-POCKET_POKE_BALLS { background: rgba(220,60,40,0.18);  color: #e87870; }
+.item-pocket-badge.pocket-POCKET_TM_HM      { background: rgba(148,60,210,0.18); color: #c090f0; }
+.item-pocket-badge.pocket-POCKET_BERRIES    { background: rgba(60,180,60,0.18);  color: #70d870; }
+.item-pocket-badge.pocket-POCKET_KEY_ITEMS  { background: rgba(200,160,30,0.18); color: #e8c040; }
+
+/* ── Item grid ──────────────────────────────────────────────── */
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+/* ── Item card ──────────────────────────────────────────────── */
+.item-card {
+  background: rgba(20,28,40,0.85);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 12px 8px 10px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, transform 0.12s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+.item-card:hover {
+  background: rgba(30,42,60,0.95);
+  border-color: rgba(77,184,122,0.35);
+  transform: translateY(-2px);
+}
+
+.item-card-icon {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  margin: 0 auto 7px;
+  object-fit: contain;
+}
+
+.item-card-noimg {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin: 0 auto 7px;
+  color: #2a3a48;
+}
+
+.item-card-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #c8d8e8;
+  margin-bottom: 5px;
+  line-height: 1.2;
+}
+
+/* ── Item detail page ───────────────────────────────────────── */
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.item-icon-large {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  flex-shrink: 0;
+}
+
+.item-icon-large-noimg {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  color: #2a3a48;
+  flex-shrink: 0;
+}
+
+.item-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #e8eef5;
+  margin: 0 0 8px;
+}
+
+.item-description {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #7e93a8;
+  margin: 0 0 20px;
+  max-width: 600px;
+}
+
+.item-meta-card {
+  background: rgba(20,28,40,0.85);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 380px;
+}
+
+.item-meta-card h3 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #4db87a;
+  margin: 0 0 12px;
+}
+
+.item-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.item-meta-row:last-child { border-bottom: none; }
+
+.item-meta-label {
+  color: #5a7080;
+  width: 80px;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.item-meta-value {
+  color: #c8d8e8;
+  font-weight: 600;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .items-controls { flex-direction: column; align-items: stretch; }
+  .dex-search { max-width: 100%; }
+  .items-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}

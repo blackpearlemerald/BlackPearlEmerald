@@ -5,13 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BPE Emerald — Items</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/items.css" />
 </head>
-<body class="page-placeholder">
-  <div class="placeholder-content">
-    <div class="placeholder-badge">Coming Soon</div>
-    <h1>Items</h1>
-    <p>View all items available in BPE Emerald — where to find them, what they do, and which Pokémon can hold them.</p>
-  </div>
+<body class="page-items">
   <script src="js/nav.js"></script>
+
+  <div class="items-container">
+    <div class="items-controls">
+      <input id="items-search" class="dex-search" type="search" placeholder="Search items…" autocomplete="off" />
+      <div class="pocket-filters" id="pocket-filters"></div>
+    </div>
+    <div class="dex-count" id="items-count"></div>
+    <div id="items-grid" class="items-grid">
+      <div class="dex-loading">Loading items…</div>
+    </div>
+  </div>
+
+  <script src="js/items.js"></script>
 </body>
 </html>
