@@ -543,6 +543,9 @@ const u16 gTrainerPalette_Cynthia[] = INCGFX_U16("graphics/trainers/front_pics/c
 const u32 gTrainerFrontPic_Pants[] = INCGFX_U32("graphics/trainers/front_pics/pants.png", ".4bpp.smol");
 const u16 gTrainerPalette_Pants[] = INCGFX_U16("graphics/trainers/front_pics/pants.png", ".gbapal");
 
+const u32 gTrainerFrontPic_N[] = INCGFX_U32("graphics/trainers/front_pics/n.png", ".4bpp.smol");
+const u16 gTrainerPalette_N[] = INCGFX_U16("graphics/trainers/front_pics/n.png", ".gbapal");
+
 static const u8 gTrainerBackPic_None[] = INCGFX_U8("graphics/trainers/back_pics/none.png", ".4bpp");
 const u8 gTrainerBackPic_Brendan[] = INCGFX_U8("graphics/trainers/back_pics/brendan.png", ".4bpp");
 const u8 gTrainerBackPic_May[] = INCGFX_U8("graphics/trainers/back_pics/may.png", ".4bpp");
@@ -1414,5 +1417,9 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_ELITE_FOUR_DRAKE_ORIGINAL] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourDrakeOriginal, gTrainerPalette_EliteFourDrakeOriginal, 0, 5, 0x1A0),
+    },
+    [TRAINER_PIC_N] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_N, gTrainerPalette_N),
     },
 };

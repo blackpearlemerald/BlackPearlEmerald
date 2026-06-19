@@ -2981,8 +2981,8 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_SAMUEL ===
 Name: N
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Rival
+Pic: N
 Gender: Male
 Music: Cool
 Battle Type: Singles
