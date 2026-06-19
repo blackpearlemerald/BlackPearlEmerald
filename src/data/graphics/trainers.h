@@ -545,6 +545,12 @@ const u16 gTrainerPalette_Pants[] = INCGFX_U16("graphics/trainers/front_pics/pan
 
 const u32 gTrainerFrontPic_N[] = INCGFX_U32("graphics/trainers/front_pics/n.png", ".4bpp.smol");
 const u16 gTrainerPalette_N[] = INCGFX_U16("graphics/trainers/front_pics/n.png", ".gbapal");
+const u32 gTrainerFrontPic_Ghetsis[] = INCGFX_U32("graphics/trainers/front_pics/ghetsis.png", ".4bpp.smol");
+const u16 gTrainerPalette_Ghetsis[] = INCGFX_U16("graphics/trainers/front_pics/ghetsis.png", ".gbapal");
+const u32 gTrainerFrontPic_Iris[] = INCGFX_U32("graphics/trainers/front_pics/iris.png", ".4bpp.smol");
+const u16 gTrainerPalette_Iris[] = INCGFX_U16("graphics/trainers/front_pics/iris.png", ".gbapal");
+const u32 gTrainerFrontPic_Cyrus[] = INCGFX_U32("graphics/trainers/front_pics/cyrus.png", ".4bpp.smol");
+const u16 gTrainerPalette_Cyrus[] = INCGFX_U16("graphics/trainers/front_pics/cyrus.png", ".gbapal");
 
 static const u8 gTrainerBackPic_None[] = INCGFX_U8("graphics/trainers/back_pics/none.png", ".4bpp");
 const u8 gTrainerBackPic_Brendan[] = INCGFX_U8("graphics/trainers/back_pics/brendan.png", ".4bpp");
@@ -1421,5 +1427,17 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_N] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_N, gTrainerPalette_N),
+    },
+    [TRAINER_PIC_GHETSIS] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_Ghetsis, gTrainerPalette_Ghetsis),
+    },
+    [TRAINER_PIC_IRIS] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_Iris, gTrainerPalette_Iris),
+    },
+    [TRAINER_PIC_CYRUS] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_Cyrus, gTrainerPalette_Cyrus),
     },
 };

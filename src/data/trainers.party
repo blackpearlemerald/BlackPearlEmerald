@@ -1716,8 +1716,8 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_FELIX ===
 Name: GHETSIS
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Leader
+Pic: Ghetsis
 Gender: Male
 Music: Cool
 Battle Type: Singles
@@ -2912,9 +2912,9 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_ALBERT ===
 Name: IRIS
-Class: Cooltrainer 2
-Pic: Cooltrainer F
-Gender: Male
+Class: Champion
+Pic: Iris
+Gender: Female
 Music: Cool
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
@@ -17217,8 +17217,8 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_HALLE ===
 Name: CYRUS
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Leader
+Pic: Cyrus
 Gender: Male
 Music: Cool
 Battle Type: Singles
