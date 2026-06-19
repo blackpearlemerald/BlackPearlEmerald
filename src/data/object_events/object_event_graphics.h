@@ -373,6 +373,8 @@ const u32 gObjectEventPic_Cynthia[] = INCGFX_U32("graphics/object_events/pics/pe
 const u16 gObjectEventPalette_Cynthia[] = INCGFX_U16("graphics/object_events/pics/people/cynthia.png", ".gbapal");
 const u32 gObjectEventPic_Pants[] = INCGFX_U32("graphics/object_events/pics/people/pants.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPalette_Pants[] = INCGFX_U16("graphics/object_events/pics/people/pants.png", ".gbapal");
+const u32 gObjectEventPic_N[] = INCGFX_U32("graphics/object_events/pics/people/n.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPalette_N[] = INCGFX_U16("graphics/object_events/pics/people/n.png", ".gbapal");
 
 const u32 gObjectEventPic_DeoxysOld[] = INCGFX_U32("graphics/object_events/pics/pokemon_old/deoxys.png", ".4bpp", "-mwidth 4 -mheight 4");
 const u32 gObjectEventPic_MewOld[] = INCGFX_U32("graphics/object_events/pics/pokemon_old/mew.png", ".4bpp", "-mwidth 2 -mheight 4");

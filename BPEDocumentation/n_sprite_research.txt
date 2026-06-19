@@ -1,0 +1,52 @@
+N (Natural Harmonia) & Gen 5 Villain Sprite Research
+======================================================
+Date: 2026-06-19
+
+WHAT WAS FOUND
+--------------
+
+BATTLE SPRITES (64x64, 16-colour, GBA-ready) — SAVED:
+  - n_battle_candidate.png       (64x64, GBA palette)
+  - ghetsis_battle_candidate.png (64x64, GBA palette)
+  - iris_battle_candidate.png    (64x64, GBA palette)
+  - cyrus_battle_candidate.png   (64x64, GBA palette)
+
+Source: "GBA (64x64 + 16-colour) Trainer Sprites" pack by Greenphx
+  PokéCommunity thread: https://www.pokecommunity.com/threads/gba-64x64-16-colour-trainer-sprites.463927/
+  Shrunk from 80x80 Spriters-Resource DS originals.
+  These should work in pokeemerald/firered without further conversion.
+
+OVERWORLD SPRITES — NOT YET DOWNLOADED (requires manual action)
+  N overworld (Gen 3 / GBA style, comprehensive — walking/running/bike/surf/fish + battle front+back):
+    https://www.deviantart.com/richardpt/art/Pokemon-Black-and-White-Trainer-N-in-Gen-3-Style-895633988
+    Sheet is 812x548px. Log in to DeviantArt and click Download.
+
+  N overworld (smaller, 2015 vintage, 142x113px):
+    https://www.deviantart.com/academico95/art/N-overworld-sprites-559315614
+
+  Cyrus overworld (RPG Maker XP format, 128x192 — NOT GBA format, needs reformatting):
+    https://www.deviantart.com/purplezaffre/art/Cyrus-Gen-3-725397313
+
+  Ghetsis overworld (Gen 3 GBA style): NOT FOUND in any accessible source
+  Iris overworld (Gen 3 GBA style):    NOT FOUND in any accessible source
+
+WHAT STILL NEEDS MANUAL DOWNLOAD
+---------------------------------
+1. Go to https://www.deviantart.com/richardpt/art/Pokemon-Black-and-White-Trainer-N-in-Gen-3-Style-895633988
+   Log in, click Download, save as "n_sprite_sheet_richardpt.png"
+   This has BOTH the overworld walking frames AND the battle front sprite all in one sheet.
+
+2. (Optional) For Ghetsis/Iris overworld sprites — no GBA-format source found.
+   Would need to be custom-made or sourced from PokéCommunity sprite requests.
+
+GBA SPRITE FORMAT NOTES
+-----------------------
+For pokeemerald-expansion, overworld sprites must be:
+  - 16x32 pixels per frame (one frame = one direction step)
+  - 4 frames per row x 4 direction rows = 64x128 total spritesheet
+  - OR the standard FRLG layout used by object_event_graphics.c
+
+Battle trainer sprites:
+  - 64x64 pixels, indexed PNG, max 16 colours
+  - Placed in graphics/trainers/pics/<name>.png
+  - Referenced via TRAINER_PIC_* enum in include/constants/trainers.h

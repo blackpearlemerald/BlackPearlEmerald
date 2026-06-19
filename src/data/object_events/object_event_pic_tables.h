@@ -1446,6 +1446,18 @@ const struct SpriteFrameImage gObjectEventPicTable_Pants[] = {
     overworld_frame(gObjectEventPic_Pants, 2, 4, 8),
 };
 
+const struct SpriteFrameImage gObjectEventPicTable_N[] = {
+    overworld_frame(gObjectEventPic_N, 2, 4, 0),
+    overworld_frame(gObjectEventPic_N, 2, 4, 1),
+    overworld_frame(gObjectEventPic_N, 2, 4, 2),
+    overworld_frame(gObjectEventPic_N, 2, 4, 3),
+    overworld_frame(gObjectEventPic_N, 2, 4, 4),
+    overworld_frame(gObjectEventPic_N, 2, 4, 5),
+    overworld_frame(gObjectEventPic_N, 2, 4, 6),
+    overworld_frame(gObjectEventPic_N, 2, 4, 7),
+    overworld_frame(gObjectEventPic_N, 2, 4, 8),
+};
+
 // FRLG/Johto cameo NPC sprites, needed in the Emerald build (Trick House celebrity trainers)
 static const struct SpriteFrameImage sPicTable_Lorelei[] = {
     overworld_frame(gObjectEventPic_Lorelei, 2, 4, 0),

@@ -439,6 +439,7 @@ enum
     OBJ_EVENT_GFX_HASSEL,
     OBJ_EVENT_GFX_LARRY,
     OBJ_EVENT_GFX_POPPY,
+    OBJ_EVENT_GFX_N,
     // Original base-game Hoenn E4 overworld sprites (Trick House Puzzle 3 celebrity
     // trainers; the real E4 rooms keep the custom sprites under OBJ_EVENT_GFX_SIDNEY/etc.)
     OBJ_EVENT_GFX_SIDNEY_ORIGINAL,
@@ -668,6 +669,7 @@ enum
 #define OBJ_EVENT_PAL_TAG_WAKE                    0x1125
 #define OBJ_EVENT_PAL_TAG_CYNTHIA                 0x1126
 #define OBJ_EVENT_PAL_TAG_PANTS                   0x1127
+#define OBJ_EVENT_PAL_TAG_N                       0x1128
 // Not a real OW palette tag; used for the white flash applied to followers
 #define OBJ_EVENT_PAL_TAG_WHITE                   (OBJ_EVENT_PAL_TAG_NONE - 1)
 #define OBJ_EVENT_PAL_TAG_NONE                    0x11FF
