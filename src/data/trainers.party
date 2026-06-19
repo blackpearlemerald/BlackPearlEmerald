@@ -3049,8 +3049,8 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_VITO ===
 Name: RED
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Champion
+Pic: Red
 Gender: Male
 Music: Cool
 Battle Type: Singles
@@ -3118,8 +3118,8 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_OWEN ===
 Name: BLUE
-Class: Cooltrainer 2
-Pic: Cooltrainer M
+Class: Champion
+Pic: Champion Rival Frlg
 Gender: Male
 Music: Cool
 Battle Type: Singles
@@ -3745,10 +3745,10 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_CAROLINE ===
 Name: STEVEN
-Class: Cooltrainer 2
-Pic: Cooltrainer M
-Gender: Female
-Music: Female
+Class: Champion
+Pic: Steven
+Gender: Male
+Music: Cool
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
