@@ -5,13 +5,195 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BPE Emerald — Damage Calculator</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/calc.css" />
 </head>
-<body class="page-placeholder">
-  <div class="placeholder-content">
-    <div class="placeholder-badge">Coming Soon</div>
-    <h1>Damage Calculator</h1>
-    <p>Calculate damage, check type matchups, and optimize your team's coverage — tuned for BPE Emerald's custom moves and abilities.</p>
-  </div>
+<body class="page-calc">
   <script src="js/nav.js"></script>
+  <div class="calc-wrap">
+
+    <div class="calc-header">
+      <h2 class="calc-title">Damage Calculator</h2>
+      <span class="calc-subtitle">Gen 9 mechanics &middot; BPE Emerald &middot; custom Pok&eacute;mon use their Showdown names</span>
+    </div>
+
+    <!-- ── Main Calculator ─────────────────────────────────── -->
+    <div class="calc-main">
+
+      <!-- Attacker -->
+      <fieldset class="calc-panel" id="panel-att">
+        <legend><span class="calc-role att">Attacker</span></legend>
+
+        <div class="calc-row">
+          <label>Species
+            <input id="att-species" class="calc-input" placeholder="e.g. Garchomp" autocomplete="off" />
+          </label>
+          <label class="calc-short">Level
+            <input id="att-level" class="calc-input" type="number" value="50" min="1" max="100" />
+          </label>
+        </div>
+
+        <div class="calc-row">
+          <label>Nature
+            <select id="att-nature" class="calc-select"></select>
+          </label>
+          <label>Ability
+            <input id="att-ability" class="calc-input" placeholder="e.g. Rough Skin" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="calc-row">
+          <label>Held Item
+            <input id="att-item" class="calc-input" placeholder="e.g. Choice Band" autocomplete="off" />
+          </label>
+          <label>Tera Type
+            <select id="att-tera" class="calc-select">
+              <option value="">None</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="calc-section-label">EVs</div>
+        <div class="calc-evs">
+          <label>HP<input id="att-hp" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>Atk<input id="att-atk" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>Def<input id="att-def" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>SpA<input id="att-spa" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>SpD<input id="att-spd" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>Spe<input id="att-spe" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+        </div>
+
+        <div class="calc-section-label">Boosts &amp; Status</div>
+        <div class="calc-row">
+          <label class="calc-short">Atk boost
+            <select id="att-boost" class="calc-select">
+              <option value="-6">-6</option><option value="-5">-5</option><option value="-4">-4</option>
+              <option value="-3">-3</option><option value="-2">-2</option><option value="-1">-1</option>
+              <option value="0" selected>0</option>
+              <option value="1">+1</option><option value="2">+2</option><option value="3">+3</option>
+              <option value="4">+4</option><option value="5">+5</option><option value="6">+6</option>
+            </select>
+          </label>
+          <label class="calc-check"><input type="checkbox" id="att-burned" /> Burned</label>
+          <label class="calc-check"><input type="checkbox" id="att-tera-active" /> Terastallized</label>
+        </div>
+
+        <div class="calc-moves-label">Moves</div>
+        <div class="calc-moves-list" id="att-moves">
+          <input class="calc-input calc-move-input" data-idx="0" placeholder="Move 1" autocomplete="off" />
+          <input class="calc-input calc-move-input" data-idx="1" placeholder="Move 2" autocomplete="off" />
+          <input class="calc-input calc-move-input" data-idx="2" placeholder="Move 3" autocomplete="off" />
+          <input class="calc-input calc-move-input" data-idx="3" placeholder="Move 4" autocomplete="off" />
+        </div>
+      </fieldset>
+
+      <!-- Mid column -->
+      <div class="calc-mid">
+        <div class="calc-mid-inner">
+          <div class="calc-mid-label">Active move</div>
+          <select id="calc-move-select" class="calc-select calc-move-sel">
+            <option value="">— fill a move above —</option>
+          </select>
+
+          <div class="calc-field-section">
+            <div class="calc-mid-label">Field conditions</div>
+            <label class="calc-check"><input type="checkbox" id="field-reflect" /> Reflect</label>
+            <label class="calc-check"><input type="checkbox" id="field-lscreen" /> Light Screen</label>
+            <label class="calc-check"><input type="checkbox" id="field-rain" /> Rain</label>
+            <label class="calc-check"><input type="checkbox" id="field-sun" /> Sun</label>
+            <label class="calc-check"><input type="checkbox" id="field-sand" /> Sand</label>
+            <label class="calc-check"><input type="checkbox" id="field-hail" /> Hail/Snow</label>
+          </div>
+
+          <button id="calc-btn" class="calc-btn">Calculate Damage</button>
+
+          <div id="calc-result" class="calc-result hidden"></div>
+        </div>
+      </div>
+
+      <!-- Defender -->
+      <fieldset class="calc-panel" id="panel-def">
+        <legend><span class="calc-role def">Defender</span></legend>
+
+        <div class="calc-row">
+          <label>Species
+            <input id="def-species" class="calc-input" placeholder="e.g. Blissey" autocomplete="off" />
+          </label>
+          <label class="calc-short">Level
+            <input id="def-level" class="calc-input" type="number" value="50" min="1" max="100" />
+          </label>
+        </div>
+
+        <div class="calc-row">
+          <label>Nature
+            <select id="def-nature" class="calc-select"></select>
+          </label>
+          <label>Ability
+            <input id="def-ability" class="calc-input" placeholder="e.g. Natural Cure" autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="calc-row">
+          <label>Held Item
+            <input id="def-item" class="calc-input" placeholder="e.g. Leftovers" autocomplete="off" />
+          </label>
+          <label>Tera Type
+            <select id="def-tera" class="calc-select">
+              <option value="">None</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="calc-section-label">EVs</div>
+        <div class="calc-evs">
+          <label>HP<input id="def-hp" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>Atk<input id="def-atk" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>Def<input id="def-def" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>SpA<input id="def-spa" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>SpD<input id="def-spd" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+          <label>Spe<input id="def-spe" type="number" class="calc-ev" value="0" min="0" max="252" /></label>
+        </div>
+
+        <div class="calc-section-label">Boosts</div>
+        <div class="calc-row">
+          <label class="calc-short">Def boost
+            <select id="def-boost" class="calc-select">
+              <option value="-6">-6</option><option value="-5">-5</option><option value="-4">-4</option>
+              <option value="-3">-3</option><option value="-2">-2</option><option value="-1">-1</option>
+              <option value="0" selected>0</option>
+              <option value="1">+1</option><option value="2">+2</option><option value="3">+3</option>
+              <option value="4">+4</option><option value="5">+5</option><option value="6">+6</option>
+            </select>
+          </label>
+          <label class="calc-short">SpD boost
+            <select id="def-spd-boost" class="calc-select">
+              <option value="-6">-6</option><option value="-5">-5</option><option value="-4">-4</option>
+              <option value="-3">-3</option><option value="-2">-2</option><option value="-1">-1</option>
+              <option value="0" selected>0</option>
+              <option value="1">+1</option><option value="2">+2</option><option value="3">+3</option>
+              <option value="4">+4</option><option value="5">+5</option><option value="6">+6</option>
+            </select>
+          </label>
+          <label class="calc-check"><input type="checkbox" id="def-tera-active" /> Terastallized</label>
+        </div>
+      </fieldset>
+
+    </div><!-- end .calc-main -->
+
+    <!-- ── Trainer Loader ──────────────────────────────────── -->
+    <div class="calc-trainers-section">
+      <h3 class="calc-section-h3">Load from BPE Trainer</h3>
+      <p class="calc-tr-hint">Search for a trainer, then click a Pok&eacute;mon to load it as Attacker or Defender.</p>
+      <div class="calc-tr-controls">
+        <input type="text" id="calc-tr-search" class="dex-search" placeholder="Search trainer name, class, or Pok&eacute;mon…" autocomplete="off" />
+        <span id="calc-tr-count" class="tr-count"></span>
+      </div>
+      <div id="calc-tr-grid" class="calc-tr-grid">
+        <div class="dex-loading">Loading trainers…</div>
+      </div>
+    </div>
+
+  </div><!-- end .calc-wrap -->
+
+  <script type="module" src="js/calc.js"></script>
 </body>
 </html>

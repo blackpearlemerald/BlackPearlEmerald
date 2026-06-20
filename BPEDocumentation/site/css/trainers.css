@@ -1,0 +1,271 @@
+/* ============================================================
+   BPE EMERALD – TRAINERS PAGE STYLES
+   ============================================================ */
+
+.page-trainers {
+  background: #0d1b2a;
+  color: #e8eef5;
+  min-height: 100vh;
+  padding-top: 48px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.trainers-wrap {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 16px 60px;
+}
+
+/* ── Controls ───────────────────────────────────────────── */
+
+.trainers-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.tr-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 14px;
+  color: #9fb3c8;
+  cursor: pointer;
+  user-select: none;
+}
+.tr-toggle-label input[type="checkbox"] { accent-color: #4db87a; }
+
+.tr-count {
+  font-size: 13px;
+  color: #5a7080;
+  margin-bottom: 14px;
+}
+
+/* ── Grid ───────────────────────────────────────────────── */
+
+.trainer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+/* ── Card ───────────────────────────────────────────────── */
+
+.tr-card {
+  background: rgba(20, 28, 40, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.tr-card:hover {
+  border-color: rgba(77, 184, 122, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Card Top Row ───────────────────────────────────────── */
+
+.tr-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px 10px;
+}
+
+.tr-sprite {
+  width: 40px;
+  height: 64px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+}
+
+.tr-sprite-ph {
+  width: 40px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 9px;
+  color: #5a7080;
+  text-align: center;
+  line-height: 1.2;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.tr-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tr-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e8eef5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tr-class-badge {
+  display: inline-block;
+  background: rgba(77, 184, 122, 0.14);
+  color: #4db87a;
+  border: 1px solid rgba(77, 184, 122, 0.28);
+  border-radius: 20px;
+  padding: 1px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  margin: 4px 0 6px;
+}
+
+.tr-card-locs {
+  font-size: 12px;
+  color: #7e93a8;
+  line-height: 1.6;
+}
+
+.tr-loc-link {
+  color: #4db87a;
+  text-decoration: none;
+  transition: color 0.12s;
+}
+.tr-loc-link:hover { color: #7ed4a0; text-decoration: underline; }
+
+.tr-loc-more {
+  color: #5a7080;
+  font-size: 11px;
+}
+
+.tr-loc-none {
+  color: #4a5e70;
+  font-style: italic;
+}
+
+/* ── Party Chips ────────────────────────────────────────── */
+
+.tr-party {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 14px 12px;
+}
+
+.tr-mon-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 5px 6px 3px;
+  min-width: 42px;
+}
+
+.tr-mon-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.tr-mon-lv {
+  font-size: 10px;
+  color: #7e93a8;
+  white-space: nowrap;
+}
+
+/* ── Expand Detail ──────────────────────────────────────── */
+
+.tr-detail {
+  display: none;
+  padding: 0 14px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.tr-card.expanded .tr-detail {
+  display: block;
+}
+
+.tr-card.expanded {
+  border-color: rgba(77, 184, 122, 0.4);
+}
+
+.tr-mon-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.tr-mon-detail:last-child { border-bottom: none; }
+
+.tr-d-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tr-mon-d-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.tr-mon-d-head {
+  font-size: 14px;
+  color: #e8eef5;
+  line-height: 1.4;
+}
+
+.tr-mon-d-meta {
+  font-size: 12px;
+  color: #7e93a8;
+  margin: 3px 0;
+}
+
+.tr-mon-d-moves {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 5px;
+}
+
+.tr-d-move {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  color: #b8cfe0;
+}
+
+/* ── Shared utility (also in pokedex.css, repeated for standalone use) */
+.dex-loading,
+.dex-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #5a7080;
+  padding: 60px 0;
+  font-size: 15px;
+}
+
+/* ── Responsive ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .trainer-grid {
+    grid-template-columns: 1fr;
+  }
+  .tr-card-top {
+    gap: 10px;
+  }
+}

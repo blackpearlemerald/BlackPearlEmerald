@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BPE Emerald — Trainers</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/trainers.css" />
+</head>
+<body class="page-trainers">
+  <script src="js/nav.js"></script>
+  <div class="trainers-wrap">
+    <div class="trainers-controls">
+      <input type="text" id="trainer-search" class="dex-search"
+             placeholder="Search by name, class, or Pokémon…" autocomplete="off" />
+      <label class="tr-toggle-label">
+        <input type="checkbox" id="tr-map-only" checked />
+        Map trainers only
+      </label>
+    </div>
+    <div id="trainer-count" class="tr-count"></div>
+    <div id="trainer-grid" class="trainer-grid">
+      <div class="dex-loading">Loading…</div>
+    </div>
+  </div>
+  <script src="js/trainers.js"></script>
+</body>
+</html>

@@ -2,8 +2,9 @@
   var NAV_ITEMS = [
     { href: 'index.html',   label: 'Interactive Map'    },
     { href: 'search.html',  label: 'Global Search'      },
-    { href: 'pokedex.html', label: 'Pokédex'            },
-    { href: 'items.html',   label: 'Items'              },
+    { href: 'pokedex.html',   label: 'Pokédex'            },
+    { href: 'trainers.html', label: 'Trainers'           },
+    { href: 'items.html',    label: 'Items'              },
     { href: 'calc.html',    label: 'Damage Calculator'  },
   ];
 
