@@ -1,16 +1,10 @@
 /**
  * BPE Emerald Damage Calculator
- * Uses @smogon/calc (Gen 9) via esm.sh CDN.
- * Trainer team loader pulls from js/data/trainers.json + world.json.
+ * Uses @smogon/calc (Gen 9) via esm.sh CDN — loaded lazily on first calculate
+ * so the trainer search section works even without internet access.
  */
 
-import { Dex } from 'https://esm.sh/@smogon/data';
-import { Generations, Pokemon, Move, Field, calculate } from 'https://esm.sh/@smogon/calc';
-
 // ── Globals ──────────────────────────────────────────────────────────────────
-
-const gens = new Generations(Dex);
-const gen = gens.get(9);
 
 const NATURES = [
   'Hardy','Lonely','Brave','Adamant','Naughty',
@@ -26,19 +20,26 @@ const TYPES = [
   'Rock','Ghost','Dragon','Dark','Steel','Fairy',
 ];
 
+// ── Calc library (lazy-loaded) ────────────────────────────────────────────────
+
+let _lib = null;  // { gen, Pokemon, Move, Field, calculate }
+
+async function ensureCalcLib() {
+  if (_lib) return _lib;
+  const [{ Dex }, { Generations, Pokemon, Move, Field, calculate }] = await Promise.all([
+    import('https://esm.sh/@smogon/data'),
+    import('https://esm.sh/@smogon/calc'),
+  ]);
+  const gen = new Generations(Dex).get(9);
+  _lib = { gen, Pokemon, Move, Field, calculate };
+  return _lib;
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function esc(s) {
   return String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function prettifyMap(id) {
-  if (!id) return '';
-  const s = id.replace(/^MAP_/, '').replace(/_/g, ' ')
-    .split(' ').map(w => w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w)
-    .join(' ');
-  return s.replace(/([A-Za-z])(\d)/g, '$1 $2');
 }
 
 function populateSelect(sel, opts, selected = '') {
@@ -49,7 +50,7 @@ function populateSelect(sel, opts, selected = '') {
 
 function readEVs(prefix) {
   return {
-    hp:  Number(document.getElementById(`${prefix}-hp`).value) || 0,
+    hp:  Number(document.getElementById(`${prefix}-hp`).value)  || 0,
     atk: Number(document.getElementById(`${prefix}-atk`).value) || 0,
     def: Number(document.getElementById(`${prefix}-def`).value) || 0,
     spa: Number(document.getElementById(`${prefix}-spa`).value) || 0,
@@ -59,8 +60,7 @@ function readEVs(prefix) {
 }
 
 function fillEVs(prefix, evs) {
-  const map = { hp:'hp', atk:'atk', def:'def', spa:'spa', spd:'spd', spe:'spe' };
-  Object.entries(map).forEach(([stat, key]) => {
+  ['hp','atk','def','spa','spd','spe'].forEach(stat => {
     const el = document.getElementById(`${prefix}-${stat}`);
     if (el) el.value = (evs && evs[stat]) || 0;
   });
@@ -69,11 +69,6 @@ function fillEVs(prefix, evs) {
 function fillField(id, val) {
   const el = document.getElementById(id);
   if (el) el.value = val || '';
-}
-
-function fillCheck(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.checked = !!val;
 }
 
 // ── Move selector sync ────────────────────────────────────────────────────────
@@ -90,7 +85,7 @@ function syncMoveSelect() {
 
 // ── Calculation ───────────────────────────────────────────────────────────────
 
-function doCalculate() {
+async function doCalculate() {
   const resultEl = document.getElementById('calc-result');
 
   const moveName = document.getElementById('calc-move-select').value.trim();
@@ -98,7 +93,6 @@ function doCalculate() {
     showResult(resultEl, 'Enter moves above and select one to calculate.', true);
     return;
   }
-
   const attSpecies = document.getElementById('att-species').value.trim();
   const defSpecies = document.getElementById('def-species').value.trim();
   if (!attSpecies || !defSpecies) {
@@ -106,22 +100,33 @@ function doCalculate() {
     return;
   }
 
+  showResult(resultEl, 'Loading calculator…', false);
+
+  let lib;
   try {
+    lib = await ensureCalcLib();
+  } catch (err) {
+    showResult(resultEl, 'Could not load calc library — check your internet connection.', true);
+    return;
+  }
+
+  try {
+    const { gen, Pokemon, Move, Field, calculate } = lib;
+
     const attOpts = {
-      level:   Number(document.getElementById('att-level').value) || 50,
-      nature:  document.getElementById('att-nature').value || 'Hardy',
-      evs:     readEVs('att'),
-      boosts:  { atk: Number(document.getElementById('att-boost').value) || 0,
-                 spa: Number(document.getElementById('att-boost').value) || 0 },
-      status:  document.getElementById('att-burned').checked ? 'brn' : '',
+      level:  Number(document.getElementById('att-level').value) || 50,
+      nature: document.getElementById('att-nature').value || 'Hardy',
+      evs:    readEVs('att'),
+      boosts: { atk: Number(document.getElementById('att-boost').value) || 0,
+                spa: Number(document.getElementById('att-boost').value) || 0 },
+      status: document.getElementById('att-burned').checked ? 'brn' : '',
     };
     const attAbility = document.getElementById('att-ability').value.trim();
     if (attAbility) attOpts.ability = attAbility;
     const attItem = document.getElementById('att-item').value.trim();
     if (attItem) attOpts.item = attItem;
     const attTera = document.getElementById('att-tera').value;
-    const attTeraActive = document.getElementById('att-tera-active').checked;
-    if (attTera && attTeraActive) attOpts.teraType = attTera;
+    if (attTera && document.getElementById('att-tera-active').checked) attOpts.teraType = attTera;
 
     const defOpts = {
       level:  Number(document.getElementById('def-level').value) || 50,
@@ -135,15 +140,13 @@ function doCalculate() {
     const defItem = document.getElementById('def-item').value.trim();
     if (defItem) defOpts.item = defItem;
     const defTera = document.getElementById('def-tera').value;
-    const defTeraActive = document.getElementById('def-tera-active').checked;
-    if (defTera && defTeraActive) defOpts.teraType = defTera;
+    if (defTera && document.getElementById('def-tera-active').checked) defOpts.teraType = defTera;
 
     const attacker = new Pokemon(gen, attSpecies, attOpts);
     const defender = new Pokemon(gen, defSpecies, defOpts);
-    const move = new Move(gen, moveName);
+    const move     = new Move(gen, moveName);
 
     const fieldOpts = { gameType: 'Singles' };
-    const attSide = {};
     const defSide = {};
     if (document.getElementById('field-reflect').checked) defSide.isReflect = true;
     if (document.getElementById('field-lscreen').checked) defSide.isLightScreen = true;
@@ -151,26 +154,26 @@ function doCalculate() {
     if (document.getElementById('field-sun').checked)     fieldOpts.weather = 'Sun';
     if (document.getElementById('field-sand').checked)    fieldOpts.weather = 'Sand';
     if (document.getElementById('field-hail').checked)    fieldOpts.weather = 'Snow';
-    fieldOpts.attackerSide = attSide;
     fieldOpts.defenderSide = defSide;
     const field = new Field(fieldOpts);
 
-    const result = calculate(gen, attacker, defender, move, field);
-    const dmg = result.damage;
-    const rolls = Array.isArray(dmg) ? dmg : [dmg, dmg];
-    const minDmg = Array.isArray(rolls[0]) ? rolls[0][0] : Math.min(...rolls);
-    const maxDmg = Array.isArray(rolls[0]) ? rolls[rolls.length-1] : Math.max(...rolls);
-    const defHP = result.defender.originalCurHP || result.defender.stats.hp;
-    const minPct = ((minDmg / defHP) * 100).toFixed(1);
-    const maxPct = ((maxDmg / defHP) * 100).toFixed(1);
+    const result  = calculate(gen, attacker, defender, move, field);
+    const dmg     = result.damage;
+    const rolls   = Array.isArray(dmg) ? dmg : [dmg, dmg];
+    const minDmg  = Array.isArray(rolls[0]) ? rolls[0][0] : Math.min(...rolls);
+    const maxDmg  = Array.isArray(rolls[0]) ? rolls[rolls.length - 1] : Math.max(...rolls);
+    const defHP   = result.defender.originalCurHP || result.defender.stats.hp;
+    const minPct  = ((minDmg / defHP) * 100).toFixed(1);
+    const maxPct  = ((maxDmg / defHP) * 100).toFixed(1);
+    const desc    = result.desc ? result.desc() : '';
 
-    const desc = result.desc ? result.desc() : '';
-    const html = `<div class="calc-result-main">${minPct}% – ${maxPct}% (${minDmg} – ${maxDmg} damage)</div>`
-               + (desc ? `<div class="calc-result-desc">${esc(desc)}</div>` : '');
-    resultEl.innerHTML = html;
+    resultEl.innerHTML =
+      `<div class="calc-result-main">${minPct}% – ${maxPct}% &nbsp;(${minDmg} – ${maxDmg} damage)</div>`
+      + (desc ? `<div class="calc-result-desc">${esc(desc)}</div>` : '');
     resultEl.className = 'calc-result';
   } catch (err) {
-    showResult(resultEl, `Calculation error: ${err.message}. Check species and move names match Showdown format.`, true);
+    showResult(resultEl,
+      `Calculation error: ${err.message}. Check species/move names match Showdown format.`, true);
   }
 }
 
@@ -181,9 +184,9 @@ function showResult(el, msg, isError = false) {
 
 // ── Trainer Loader ────────────────────────────────────────────────────────────
 
-let trainerAll = [];
+let trainerAll   = [];
 let trainerQuery = '';
-let activePopup = null;
+let activePopup  = null;
 let pinnedTrainer = null;
 
 function pinTrainer(trainer) {
@@ -233,7 +236,7 @@ function pinTrainer(trainer) {
 }
 
 function renderTrainers(filtered) {
-  const grid = document.getElementById('calc-tr-grid');
+  const grid    = document.getElementById('calc-tr-grid');
   const countEl = document.getElementById('calc-tr-count');
   countEl.textContent = filtered.length + ' trainers';
 
@@ -250,7 +253,7 @@ function renderTrainers(filtered) {
     const party = t.party.map((m, i) => {
       const icon = m.sprite
         ? `<img class="calc-mon-icon" src="img/pokemon/${esc(m.sprite)}" alt="${esc(m.species)}" onerror="this.remove()" loading="lazy">`
-        : `<span style="font-size:10px;color:#5a7080">${esc(m.species.slice(0,6))}</span>`;
+        : `<span style="font-size:10px;color:#5a7080">${esc(m.species.slice(0, 6))}</span>`;
       return `<button class="calc-mon-btn" data-tid="${esc(t.id)}" data-pidx="${i}"
                 title="${esc(m.species)} Lv.${m.level}">${icon}<span class="calc-mon-lv">Lv.${m.level}</span></button>`;
     }).join('');
@@ -264,17 +267,13 @@ function renderTrainers(filtered) {
     </div>`;
   }).join('');
 
-  // Wire up Pokémon buttons
   grid.querySelectorAll('.calc-mon-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      const tid = btn.dataset.tid;
-      const pidx = parseInt(btn.dataset.pidx, 10);
-      const trainer = trainerAll.find(t => t.id === tid);
+      const trainer = trainerAll.find(t => t.id === btn.dataset.tid);
       if (!trainer) return;
-      const mon = trainer.party[pidx];
-      if (!mon) return;
-      showMonPopup(btn, mon, trainer);
+      const mon = trainer.party[parseInt(btn.dataset.pidx, 10)];
+      if (mon) showMonPopup(btn, mon, trainer);
     });
   });
 }
@@ -292,14 +291,18 @@ function showMonPopup(anchor, mon, trainer) {
   activePopup = popup;
 
   const rect = anchor.getBoundingClientRect();
-  let top = rect.bottom + window.scrollY + 6;
+  let top  = rect.bottom + window.scrollY + 6;
   let left = rect.left + window.scrollX;
   if (left + 200 > window.innerWidth) left = window.innerWidth - 210;
-  popup.style.top = top + 'px';
+  popup.style.top  = top  + 'px';
   popup.style.left = left + 'px';
 
-  popup.querySelector('#pp-att').addEventListener('click', () => { fillMon('att', mon); if (trainer) pinTrainer(trainer); dismissPopup(); });
-  popup.querySelector('#pp-def').addEventListener('click', () => { fillMon('def', mon); if (trainer) pinTrainer(trainer); dismissPopup(); });
+  popup.querySelector('#pp-att').addEventListener('click', () => {
+    fillMon('att', mon); if (trainer) pinTrainer(trainer); dismissPopup();
+  });
+  popup.querySelector('#pp-def').addEventListener('click', () => {
+    fillMon('def', mon); if (trainer) pinTrainer(trainer); dismissPopup();
+  });
 
   setTimeout(() => document.addEventListener('click', dismissPopup, { once: true }), 10);
 }
@@ -313,20 +316,13 @@ function fillMon(role, mon) {
   document.getElementById(`${role}-level`).value = mon.level || 50;
   if (mon.nature) document.getElementById(`${role}-nature`).value = mon.nature;
   fillField(`${role}-ability`, mon.ability || '');
-  fillField(`${role}-item`, mon.item || '');
-  if (mon.tera) {
-    document.getElementById(`${role}-tera`).value = mon.tera;
-  }
-
-  if (mon.evs) {
-    fillEVs(role, mon.evs);
-  } else {
-    fillEVs(role, null);
-  }
+  fillField(`${role}-item`,    mon.item    || '');
+  if (mon.tera) document.getElementById(`${role}-tera`).value = mon.tera;
+  fillEVs(role, mon.evs || null);
 
   if (role === 'att' && mon.moves) {
-    const inputs = document.querySelectorAll('#att-moves .calc-move-input');
-    inputs.forEach((inp, i) => { inp.value = mon.moves[i] || ''; });
+    document.querySelectorAll('#att-moves .calc-move-input')
+      .forEach((inp, i) => { inp.value = mon.moves[i] || ''; });
     syncMoveSelect();
   }
 }
@@ -334,38 +330,30 @@ function fillMon(role, mon) {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 function init() {
-  // Populate nature selects
-  ['att-nature', 'def-nature'].forEach(id => {
-    populateSelect(document.getElementById(id), NATURES, 'Hardy');
-  });
+  ['att-nature', 'def-nature'].forEach(id =>
+    populateSelect(document.getElementById(id), NATURES, 'Hardy'));
 
-  // Populate tera selects
   ['att-tera', 'def-tera'].forEach(id => {
-    const sel = document.getElementById(id);
-    sel.innerHTML = '<option value="">None</option>' +
+    document.getElementById(id).innerHTML =
+      '<option value="">None</option>' +
       TYPES.map(t => `<option value="${t}">${t}</option>`).join('');
   });
 
-  // Move select sync
-  document.querySelectorAll('#att-moves .calc-move-input').forEach(inp => {
-    inp.addEventListener('input', syncMoveSelect);
-  });
+  document.querySelectorAll('#att-moves .calc-move-input').forEach(inp =>
+    inp.addEventListener('input', syncMoveSelect));
 
-  // Calculate button
   document.getElementById('calc-btn').addEventListener('click', doCalculate);
 
-  // Allow Enter to calculate
   document.querySelector('.calc-main').addEventListener('keydown', e => {
     if (e.key === 'Enter') doCalculate();
   });
 
-  // Trainer search
   document.getElementById('calc-tr-search').addEventListener('input', function () {
     trainerQuery = this.value.trim().toLowerCase();
     renderTrainers(filterTrainers());
   });
 
-  // Load trainer data
+  // Trainer data loads independently — no dependency on esm.sh
   Promise.all([
     fetch('js/data/trainers.json').then(r => r.json()),
     fetch('js/data/world.json').then(r => r.json()),
@@ -379,14 +367,14 @@ function init() {
       if (file) spriteIndex[t.trainerId] = file;
     });
 
-    const mapTrainerSet = new Set((world.trainers || []).map(t => t.trainerId));
+    const mapSet = new Set((world.trainers || []).map(t => t.trainerId));
 
     trainerAll = Object.keys(trainersData)
       .filter(id => id !== 'TRAINER_NONE' && trainersData[id].party && trainersData[id].party.length > 0)
       .map(id => {
         const t = trainersData[id];
         return { id, name: t.name || '', trClass: t.class || '', party: t.party || [],
-                 sprite: spriteIndex[id] || null, onMap: mapTrainerSet.has(id) };
+                 sprite: spriteIndex[id] || null, onMap: mapSet.has(id) };
       })
       .sort((a, b) => {
         if (a.onMap !== b.onMap) return a.onMap ? -1 : 1;
@@ -404,12 +392,11 @@ function init() {
 
 function filterTrainers() {
   if (!trainerQuery) return trainerAll;
-  return trainerAll.filter(t => {
-    if (t.name.toLowerCase().includes(trainerQuery)) return true;
-    if (t.trClass.toLowerCase().includes(trainerQuery)) return true;
-    if (t.party.some(m => m.species && m.species.toLowerCase().includes(trainerQuery))) return true;
-    return false;
-  });
+  return trainerAll.filter(t =>
+    t.name.toLowerCase().includes(trainerQuery) ||
+    t.trClass.toLowerCase().includes(trainerQuery) ||
+    t.party.some(m => m.species && m.species.toLowerCase().includes(trainerQuery))
+  );
 }
 
 if (document.readyState === 'loading') {
