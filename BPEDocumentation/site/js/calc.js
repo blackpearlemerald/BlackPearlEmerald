@@ -184,6 +184,53 @@ function showResult(el, msg, isError = false) {
 let trainerAll = [];
 let trainerQuery = '';
 let activePopup = null;
+let pinnedTrainer = null;
+
+function pinTrainer(trainer) {
+  pinnedTrainer = trainer;
+  const el = document.getElementById('calc-pinned-trainer');
+
+  const sprite = trainer.sprite
+    ? `<img class="calc-pinned-sprite" src="img/sprites/${esc(trainer.sprite)}" alt="" onerror="this.style.display='none'">`
+    : `<div class="calc-pinned-sprite-ph"></div>`;
+
+  const chips = trainer.party.map((m, i) => {
+    const icon = m.sprite
+      ? `<img class="calc-mon-icon" src="img/pokemon/${esc(m.sprite)}" alt="${esc(m.species)}" onerror="this.remove()" loading="lazy">`
+      : `<span style="font-size:10px;color:#5a7080">${esc(m.species.slice(0, 6))}</span>`;
+    return `<button class="calc-mon-btn" data-pidx="${i}" title="${esc(m.species)} Lv.${m.level}">`
+      + icon + `<span class="calc-mon-lv">Lv.${m.level}</span></button>`;
+  }).join('');
+
+  el.innerHTML =
+    `<div class="calc-pinned-inner">`
+    + `<span class="calc-pinned-label">Team</span>`
+    + sprite
+    + `<div class="calc-pinned-info"><div class="calc-pinned-name">${esc(trainer.name)}</div>`
+    + `<div class="calc-pinned-class">${esc(trainer.trClass)}</div></div>`
+    + `<div class="calc-pinned-divider"></div>`
+    + `<div class="calc-pinned-party">${chips}</div>`
+    + `</div>`
+    + `<button class="calc-pinned-clear" title="Unpin trainer">&times;</button>`;
+
+  el.className = 'calc-pinned';
+
+  el.querySelectorAll('.calc-pinned-party .calc-mon-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const m = trainer.party[parseInt(btn.dataset.pidx, 10)];
+      if (m) showMonPopup(btn, m, trainer);
+    });
+  });
+
+  el.querySelector('.calc-pinned-clear').addEventListener('click', () => {
+    pinnedTrainer = null;
+    el.className = 'calc-pinned hidden';
+    el.innerHTML = '';
+  });
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
 
 function renderTrainers(filtered) {
   const grid = document.getElementById('calc-tr-grid');
@@ -227,12 +274,12 @@ function renderTrainers(filtered) {
       if (!trainer) return;
       const mon = trainer.party[pidx];
       if (!mon) return;
-      showMonPopup(btn, mon);
+      showMonPopup(btn, mon, trainer);
     });
   });
 }
 
-function showMonPopup(anchor, mon) {
+function showMonPopup(anchor, mon, trainer) {
   dismissPopup();
 
   const popup = document.createElement('div');
@@ -251,8 +298,8 @@ function showMonPopup(anchor, mon) {
   popup.style.top = top + 'px';
   popup.style.left = left + 'px';
 
-  popup.querySelector('#pp-att').addEventListener('click', () => { fillMon('att', mon); dismissPopup(); });
-  popup.querySelector('#pp-def').addEventListener('click', () => { fillMon('def', mon); dismissPopup(); });
+  popup.querySelector('#pp-att').addEventListener('click', () => { fillMon('att', mon); if (trainer) pinTrainer(trainer); dismissPopup(); });
+  popup.querySelector('#pp-def').addEventListener('click', () => { fillMon('def', mon); if (trainer) pinTrainer(trainer); dismissPopup(); });
 
   setTimeout(() => document.addEventListener('click', dismissPopup, { once: true }), 10);
 }
