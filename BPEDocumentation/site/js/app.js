@@ -541,7 +541,11 @@ async function main() {
     map.fitBounds(bounds.pad(0.3), { maxZoom: 2, animate: true });
     if (openPopup) {
       const center = W2LL(m.x + m.w / 2, m.y + m.h / 2);
-      encPopup.setLatLng(center).setContent(encounterPopup(m)).openOn(map);
+      if (world.marts && world.marts[id]) {
+        objPopup.setLatLng(center).setContent(martPopup(world.marts[id])).openOn(map);
+      } else {
+        encPopup.setLatLng(center).setContent(encounterPopup(m)).openOn(map);
+      }
     }
     return true;
   }

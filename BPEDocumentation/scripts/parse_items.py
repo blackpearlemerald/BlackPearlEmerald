@@ -204,9 +204,9 @@ WORLD_JSON = DATA_DIR.parent / "js" / "data" / "world.json"
 
 
 def _prettify_map(map_id):
-    """MAP_OLDALE_TOWN -> Oldale Town"""
+    """MAP_ROUTE103 -> Route 103, MAP_OLDALE_TOWN -> Oldale Town"""
     s = map_id.replace("MAP_", "").replace("_", " ").title()
-    # collapse multi-word "Town Town" / "City City" patterns
+    s = re.sub(r"([A-Za-z])(\d)", r"\1 \2", s)  # "Route103" -> "Route 103"
     return s
 
 

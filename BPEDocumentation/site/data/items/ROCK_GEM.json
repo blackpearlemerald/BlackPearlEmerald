@@ -1,1 +1,1 @@
-{"id":"ROCK_GEM","name":"Rock Gem","price":0,"description":"Increases the power of Rock Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE124","mapName":"Route124","hidden":false}],"gifts":[]}}
+{"id":"ROCK_GEM","name":"Rock Gem","price":0,"description":"Increases the power of Rock Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE124","mapName":"Route 124","hidden":false}],"gifts":[]}}
