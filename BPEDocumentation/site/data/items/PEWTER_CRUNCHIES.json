@@ -1,1 +1,1 @@
-{"id":"PEWTER_CRUNCHIES","name":"Pewter Crunchies","price":250,"description":"Heals all the status problems of one Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/pewter_crunchies.png"}
+{"id":"PEWTER_CRUNCHIES","name":"Pewter Crunchies","price":250,"description":"Heals all the status problems of one Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/pewter_crunchies.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

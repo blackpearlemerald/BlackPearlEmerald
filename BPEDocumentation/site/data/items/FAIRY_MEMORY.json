@@ -1,1 +1,1 @@
-{"id":"FAIRY_MEMORY","name":"Fairy Memory","price":1000,"description":"A disc with Fairy type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/fairy_memory.png"}
+{"id":"FAIRY_MEMORY","name":"Fairy Memory","price":1000,"description":"A disc with Fairy type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/fairy_memory.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

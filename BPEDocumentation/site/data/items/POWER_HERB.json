@@ -1,1 +1,1 @@
-{"id":"POWER_HERB","name":"Power Herb","price":30000,"description":"Allows immediate use of a move that charges first.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/power_herb.png"}
+{"id":"POWER_HERB","name":"Power Herb","price":30000,"description":"Allows immediate use of a move that charges first.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/power_herb.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

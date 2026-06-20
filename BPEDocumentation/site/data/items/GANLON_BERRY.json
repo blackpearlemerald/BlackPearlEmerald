@@ -1,1 +1,1 @@
-{"id":"GANLON_BERRY","name":"Ganlon Berry","price":80,"description":"A hold item that raises Defense in a pinch.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/ganlon_berry.png"}
+{"id":"GANLON_BERRY","name":"Ganlon Berry","price":80,"description":"A hold item that raises Defense in a pinch.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/ganlon_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

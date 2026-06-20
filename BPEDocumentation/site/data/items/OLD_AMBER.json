@@ -1,1 +1,1 @@
-{"id":"OLD_AMBER","name":"Old Amber","price":1000,"description":"A stone containing the genes of an ancient Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/old_amber.png"}
+{"id":"OLD_AMBER","name":"Old Amber","price":1000,"description":"A stone containing the genes of an ancient Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/old_amber.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

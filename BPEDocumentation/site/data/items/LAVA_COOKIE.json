@@ -1,1 +1,1 @@
-{"id":"LAVA_COOKIE","name":"Lava Cookie","price":350,"description":"A local specialty that heals all status problems.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/lava_cookie.png"}
+{"id":"LAVA_COOKIE","name":"Lava Cookie","price":350,"description":"A local specialty that heals all status problems.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/lava_cookie.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

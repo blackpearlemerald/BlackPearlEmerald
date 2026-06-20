@@ -1,1 +1,1 @@
-{"id":"SS_TICKET","name":"S.S. Ticket","price":0,"description":"The ticket required for sailing on a ferry.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/ss_ticket.png"}
+{"id":"SS_TICKET","name":"S.S. Ticket","price":0,"description":"The ticket required for sailing on a ferry.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/ss_ticket.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

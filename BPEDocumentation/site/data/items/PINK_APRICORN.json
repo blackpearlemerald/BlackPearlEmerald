@@ -1,1 +1,1 @@
-{"id":"PINK_APRICORN","name":"Pink Apricorn","price":0,"description":"A pink apricorn. It has a nice, sweet scent.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null}
+{"id":"PINK_APRICORN","name":"Pink Apricorn","price":0,"description":"A pink apricorn. It has a nice, sweet scent.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"NAUGHTY_MINT","name":"Naughty Mint","price":20000,"description":"Can be smelled. It ups Attack, but reduces Sp. Def.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null}
+{"id":"NAUGHTY_MINT","name":"Naughty Mint","price":20000,"description":"Can be smelled. It ups Attack, but reduces Sp. Def.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

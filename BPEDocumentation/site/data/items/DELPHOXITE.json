@@ -1,1 +1,1 @@
-{"id":"DELPHOXITE","name":"Delphoxite","price":0,"description":"This stone enables Delphox to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/delphoxite.png"}
+{"id":"DELPHOXITE","name":"Delphoxite","price":0,"description":"This stone enables Delphox to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/delphoxite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

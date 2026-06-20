@@ -1,1 +1,1 @@
-{"id":"FLOWER_SWEET","name":"Flower Sweet","price":0,"description":"A flower-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/flower_sweet.png"}
+{"id":"FLOWER_SWEET","name":"Flower Sweet","price":0,"description":"A flower-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/flower_sweet.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

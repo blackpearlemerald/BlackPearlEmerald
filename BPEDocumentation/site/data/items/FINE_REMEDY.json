@@ -1,1 +1,1 @@
-{"id":"FINE_REMEDY","name":"Fine Remedy","price":150,"description":"A bitter powder that restores HP by 60 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/fine_remedy.png"}
+{"id":"FINE_REMEDY","name":"Fine Remedy","price":150,"description":"A bitter powder that restores HP by 60 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/fine_remedy.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

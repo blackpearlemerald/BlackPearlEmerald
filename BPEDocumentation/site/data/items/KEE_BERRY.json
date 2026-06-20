@@ -1,1 +1,1 @@
-{"id":"KEE_BERRY","name":"Kee Berry","price":80,"description":"If hit by a physical move, it raises the Defense a bit.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/kee_berry.png"}
+{"id":"KEE_BERRY","name":"Kee Berry","price":80,"description":"If hit by a physical move, it raises the Defense a bit.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/kee_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

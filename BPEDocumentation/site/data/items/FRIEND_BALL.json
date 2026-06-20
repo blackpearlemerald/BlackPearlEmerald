@@ -1,1 +1,1 @@
-{"id":"FRIEND_BALL","name":"Friend Ball","price":0,"description":"A Ball that makes a Pokémon friendly when caught.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/friend_ball.png"}
+{"id":"FRIEND_BALL","name":"Friend Ball","price":0,"description":"A Ball that makes a Pokémon friendly when caught.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/friend_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

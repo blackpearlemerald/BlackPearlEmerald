@@ -1,1 +1,1 @@
-{"id":"DRAGON_SCALE","name":"Dragon Scale","price":2000,"description":"A strange scale held by Dragon- type Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/dragon_scale.png"}
+{"id":"DRAGON_SCALE","name":"Dragon Scale","price":2000,"description":"A strange scale held by Dragon- type Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/dragon_scale.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"DAMP_MULCH","name":"Damp Mulch","price":200,"description":"A fertilizer that decelerates the growth of Berries.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null}
+{"id":"DAMP_MULCH","name":"Damp Mulch","price":200,"description":"A fertilizer that decelerates the growth of Berries.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

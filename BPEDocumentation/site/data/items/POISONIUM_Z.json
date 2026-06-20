@@ -1,1 +1,1 @@
-{"id":"POISONIUM_Z","name":"Poisonium Z","price":0,"description":"Upgrade Poison- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/poisonium_z.png"}
+{"id":"POISONIUM_Z","name":"Poisonium Z","price":0,"description":"Upgrade Poison- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/poisonium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

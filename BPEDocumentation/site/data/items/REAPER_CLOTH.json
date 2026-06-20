@@ -1,1 +1,1 @@
-{"id":"REAPER_CLOTH","name":"Reaper Cloth","price":2000,"description":"Loved by a certain Pokémon. Imbued with spirit energy.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/reaper_cloth.png"}
+{"id":"REAPER_CLOTH","name":"Reaper Cloth","price":2000,"description":"Loved by a certain Pokémon. Imbued with spirit energy.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/reaper_cloth.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

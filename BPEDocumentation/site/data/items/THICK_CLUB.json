@@ -1,1 +1,1 @@
-{"id":"THICK_CLUB","name":"Thick Club","price":1000,"description":"A hold item that raises Cubone or Marowak's Attack.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null}
+{"id":"THICK_CLUB","name":"Thick Club","price":1000,"description":"A hold item that raises Cubone or Marowak's Attack.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_RUSTURF_TUNNEL","mapName":"Rusturf Tunnel","hidden":false}],"gifts":[]}}

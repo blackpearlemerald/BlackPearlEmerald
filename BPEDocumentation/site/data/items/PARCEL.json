@@ -1,1 +1,1 @@
-{"id":"PARCEL","name":"Parcel","price":0,"description":"A parcel for Prof. Oak from a Pokémon Mart's clerk.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/parcel.png"}
+{"id":"PARCEL","name":"Parcel","price":0,"description":"A parcel for Prof. Oak from a Pokémon Mart's clerk.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/parcel.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"LEVEL_BALL","name":"Level Ball","price":0,"description":"A Ball that works well on lower level Pokémon.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/level_ball.png"}
+{"id":"LEVEL_BALL","name":"Level Ball","price":0,"description":"A Ball that works well on lower level Pokémon.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/level_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

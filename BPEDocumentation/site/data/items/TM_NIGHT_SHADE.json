@@ -1,1 +1,1 @@
-{"id":"TM_NIGHT_SHADE","name":"TM42","price":0,"description":"Night Shade","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_NIGHT_SHADE","name":"TM42","price":0,"description":"Night Shade","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"MEGA_RING","name":"Mega Ring","price":0,"description":"Enables {PKMN} holding their Mega Stone to Mega Evolve.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/mega_ring.png"}
+{"id":"MEGA_RING","name":"Mega Ring","price":0,"description":"Enables {PKMN} holding their Mega Stone to Mega Evolve.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/mega_ring.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

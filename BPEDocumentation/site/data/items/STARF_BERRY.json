@@ -1,1 +1,1 @@
-{"id":"STARF_BERRY","name":"Starf Berry","price":80,"description":"A hold item that sharply boosts a stat in a pinch.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/starf_berry.png"}
+{"id":"STARF_BERRY","name":"Starf Berry","price":80,"description":"A hold item that sharply boosts a stat in a pinch.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/starf_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

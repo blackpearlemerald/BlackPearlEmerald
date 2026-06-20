@@ -1,1 +1,1 @@
-{"id":"PSYCHIC_MEMORY","name":"Psychic Memory","price":1000,"description":"A disc with Psychic type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/psychic_memory.png"}
+{"id":"PSYCHIC_MEMORY","name":"Psychic Memory","price":1000,"description":"A disc with Psychic type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/psychic_memory.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

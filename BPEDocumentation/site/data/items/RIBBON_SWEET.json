@@ -1,1 +1,1 @@
-{"id":"RIBBON_SWEET","name":"Ribbon Sweet","price":0,"description":"A ribbon-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/ribbon_sweet.png"}
+{"id":"RIBBON_SWEET","name":"Ribbon Sweet","price":0,"description":"A ribbon-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/ribbon_sweet.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

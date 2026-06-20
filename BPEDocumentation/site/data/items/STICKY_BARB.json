@@ -1,1 +1,1 @@
-{"id":"STICKY_BARB","name":"Sticky Barb","price":10000,"description":"Damages the holder each turn. May latch on to foes.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/sticky_barb.png"}
+{"id":"STICKY_BARB","name":"Sticky Barb","price":10000,"description":"Damages the holder each turn. May latch on to foes.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/sticky_barb.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE104","mapName":"Route104","hidden":false}],"gifts":[]}}

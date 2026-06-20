@@ -1,1 +1,1 @@
-{"id":"ARMORITE_ORE","name":"Armorite Ore","price":20,"description":"A rare ore. Can be found in the Isle of Armor at Galar.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/armorite_ore.png"}
+{"id":"ARMORITE_ORE","name":"Armorite Ore","price":20,"description":"A rare ore. Can be found in the Isle of Armor at Galar.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/armorite_ore.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

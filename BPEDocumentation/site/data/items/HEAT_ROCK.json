@@ -1,1 +1,1 @@
-{"id":"HEAT_ROCK","name":"Heat Rock","price":8000,"description":"Extends the length of Sunny Day if used by the holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/heat_rock.png"}
+{"id":"HEAT_ROCK","name":"Heat Rock","price":8000,"description":"Extends the length of Sunny Day if used by the holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/heat_rock.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE110","mapName":"Route110","hidden":false}],"gifts":[]}}

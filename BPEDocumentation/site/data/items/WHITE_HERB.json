@@ -1,1 +1,1 @@
-{"id":"WHITE_HERB","name":"White Herb","price":20000,"description":"A hold item that restores any lowered stat.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null}
+{"id":"WHITE_HERB","name":"White Herb","price":20000,"description":"A hold item that restores any lowered stat.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE119","mapName":"Route119","hidden":false}],"gifts":[]}}

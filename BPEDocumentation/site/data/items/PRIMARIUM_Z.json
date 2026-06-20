@@ -1,1 +1,1 @@
-{"id":"PRIMARIUM_Z","name":"Primarium Z","price":0,"description":"Upgrade Primarina's Sparkling Aria into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/primarium_z.png"}
+{"id":"PRIMARIUM_Z","name":"Primarium Z","price":0,"description":"Upgrade Primarina's Sparkling Aria into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/primarium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

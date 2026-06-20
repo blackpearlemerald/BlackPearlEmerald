@@ -1,1 +1,1 @@
-{"id":"PREMIER_BALL","name":"Premier Ball","price":20,"description":"A rare Ball made in commemoration of some event.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/premier_ball.png"}
+{"id":"PREMIER_BALL","name":"Premier Ball","price":20,"description":"A rare Ball made in commemoration of some event.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/premier_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

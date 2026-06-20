@@ -1,1 +1,1 @@
-{"id":"TM_FACADE","name":"TM42","price":3000,"description":"Raises Attack when poisoned, burned, or paralyzed.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_FACADE","name":"TM42","price":3000,"description":"Raises Attack when poisoned, burned, or paralyzed.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"TM_EXPANDING_FORCE","name":"TM218","price":0,"description":"Expanding Force","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_EXPANDING_FORCE","name":"TM218","price":0,"description":"Expanding Force","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

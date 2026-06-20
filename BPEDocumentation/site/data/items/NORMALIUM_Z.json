@@ -1,1 +1,1 @@
-{"id":"NORMALIUM_Z","name":"Normalium Z","price":0,"description":"Upgrade Normal- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/normalium_z.png"}
+{"id":"NORMALIUM_Z","name":"Normalium Z","price":0,"description":"Upgrade Normal- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/normalium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

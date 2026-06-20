@@ -1,1 +1,1 @@
-{"id":"WEPEAR_BERRY","name":"Wepear Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Wepear.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/wepear_berry.png"}
+{"id":"WEPEAR_BERRY","name":"Wepear Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Wepear.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/wepear_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

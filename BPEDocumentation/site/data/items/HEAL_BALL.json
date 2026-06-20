@@ -1,1 +1,1 @@
-{"id":"HEAL_BALL","name":"Heal Ball","price":300,"description":"A remedial Ball that restores caught Pokémon.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/heal_ball.png"}
+{"id":"HEAL_BALL","name":"Heal Ball","price":300,"description":"A remedial Ball that restores caught Pokémon.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/heal_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

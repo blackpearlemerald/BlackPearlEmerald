@@ -1,1 +1,1 @@
-{"id":"JAW_FOSSIL","name":"Jaw Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's large jaw.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/jaw_fossil.png"}
+{"id":"JAW_FOSSIL","name":"Jaw Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's large jaw.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/jaw_fossil.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

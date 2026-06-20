@@ -1,1 +1,1 @@
-{"id":"LYCANIUM_Z","name":"Lycanium Z","price":0,"description":"Upgrade Lycanroc's Stone Edge into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/lycanium_z.png"}
+{"id":"LYCANIUM_Z","name":"Lycanium Z","price":0,"description":"Upgrade Lycanroc's Stone Edge into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/lycanium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

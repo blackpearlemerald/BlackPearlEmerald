@@ -1,1 +1,1 @@
-{"id":"POKE_DOLL","name":"Poké Doll","price":300,"description":"Use to flee from any battle with a wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Battle Item","icon":"sprites/items/poke_doll.png"}
+{"id":"POKE_DOLL","name":"Poké Doll","price":300,"description":"Use to flee from any battle with a wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Battle Item","icon":"sprites/items/poke_doll.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

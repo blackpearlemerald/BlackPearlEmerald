@@ -1,1 +1,1 @@
-{"id":"GRASSIUM_Z","name":"Grassium Z","price":0,"description":"Upgrade Grass- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/grassium_z.png"}
+{"id":"GRASSIUM_Z","name":"Grassium Z","price":0,"description":"Upgrade Grass- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/grassium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

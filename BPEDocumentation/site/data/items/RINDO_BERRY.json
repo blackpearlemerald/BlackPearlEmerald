@@ -1,1 +1,1 @@
-{"id":"RINDO_BERRY","name":"Rindo Berry","price":80,"description":"A hold item that weakens a Grass move if weak to it.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/rindo_berry.png"}
+{"id":"RINDO_BERRY","name":"Rindo Berry","price":80,"description":"A hold item that weakens a Grass move if weak to it.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/rindo_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

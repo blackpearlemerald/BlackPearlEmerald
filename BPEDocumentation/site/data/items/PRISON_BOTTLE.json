@@ -1,1 +1,1 @@
-{"id":"PRISON_BOTTLE","name":"Prison Bottle","price":0,"description":"A bottle used to seal a certain Pokémon long ago.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/prison_bottle.png"}
+{"id":"PRISON_BOTTLE","name":"Prison Bottle","price":0,"description":"A bottle used to seal a certain Pokémon long ago.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/prison_bottle.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -28,6 +28,8 @@ TILE = 16  # px per metatile block
 PAD = 24   # px gap between islands when packing
 
 TRAINER_TOK_RE = re.compile(r"\bTRAINER_[A-Z0-9_]+\b")
+GIVEITEM_RE    = re.compile(r"\bgiveitem\s+(ITEM_\w+)(?:\s*,\s*(\d+))?")
+ADDITEM_RE     = re.compile(r"\badditem\s+(ITEM_\w+)(?:\s*,\s*(\d+))?")
 
 # Fishing's 10 slots are split across the three rods (pokeemerald convention).
 FISHING_RODS = {"old": (0, 2), "good": (2, 5), "super": (5, 10)}
@@ -264,6 +266,153 @@ def scripted_battles(object_events, scripts, claimed):
     return out
 
 
+# --------------------------------------------------------------------------- #
+# Mart item lists
+# --------------------------------------------------------------------------- #
+def _mart_get_pokemart(body, subscripts):
+    """Return the pokemart list label referenced in body, or via one goto."""
+    pm = re.search(r"\bpokemart\s+(\w+)", body)
+    if pm:
+        return pm.group(1)
+    for m in re.finditer(r"\bgoto\w*\s+(\w+)", body):
+        t = m.group(1)
+        if t in subscripts:
+            pm2 = re.search(r"\bpokemart\s+(\w+)", subscripts[t])
+            if pm2:
+                return pm2.group(1)
+    return None
+
+
+def parse_mart_scripts(content):
+    """Parse a mart scripts.inc; return [{condition, items}]."""
+    # 1. Collect .2byte item lists
+    item_lists = {}
+    for m in re.finditer(
+            r"^(\w+):\s*\n((?:[ \t]+\.2byte ITEM_\w+[ \t]*\n)+)",
+            content, re.MULTILINE):
+        items_in_block = re.findall(r"\.2byte (ITEM_\w+)", m.group(2))
+        if items_in_block:
+            item_lists[m.group(1)] = items_in_block
+
+    if not item_lists:
+        return []
+
+    # 2. Build script label→body map
+    scripts = {}
+    for m in re.finditer(r"^(\w+)::(.*?)(?=^\w+::|\Z)",
+                          content, re.MULTILINE | re.DOTALL):
+        scripts[m.group(1)] = m.group(2)
+
+    # 3. Locate the clerk (or first script with pokemart)
+    clerk_label = next((l for l in scripts if "Clerk" in l), None)
+    if not clerk_label:
+        return [{"condition": "Always available", "items": v}
+                for v in item_lists.values()]
+
+    clerk_body = scripts[clerk_label]
+
+    # 4. Conditional jumps in the clerk script → derive conditions
+    inventories, processed = [], set()
+
+    for m in re.finditer(
+            r"\bgoto_if_(set|unset)\s+(FLAG_\w+),\s*(\w+)", clerk_body):
+        kind, flag, target = m.group(1), m.group(2), m.group(3)
+        friendly = flag.replace("FLAG_", "").replace("_", " ").title()
+        list_label = _mart_get_pokemart(scripts.get(target, ""), scripts)
+        if list_label and list_label in item_lists and list_label not in processed:
+            cond = f"After {friendly}" if kind == "set" else f"Before {friendly}"
+            inventories.append({"condition": cond, "items": item_lists[list_label]})
+            processed.add(list_label)
+
+    # 5. Direct pokemart in clerk = fallthrough / always / opposite case
+    direct_pm = re.search(r"\bpokemart\s+(\w+)", clerk_body)
+    if direct_pm:
+        ll = direct_pm.group(1)
+        if ll in item_lists and ll not in processed:
+            if inventories:
+                first = inventories[0]["condition"]
+                if first.startswith("After "):
+                    cond = "Before " + first[6:]
+                elif first.startswith("Before "):
+                    cond = "After " + first[7:]
+                else:
+                    cond = "Always available"
+            else:
+                cond = "Always available"
+            inventories.append({"condition": cond, "items": item_lists[ll]})
+            processed.add(ll)
+
+    # 6. Catch any lists still unprocessed
+    for label, items_in_block in item_lists.items():
+        if label not in processed:
+            inventories.append({"condition": "Always available",
+                                 "items": items_in_block})
+
+    def _sort(inv):
+        c = inv["condition"]
+        return 0 if c == "Always available" else (1 if c.startswith("Before ") else 2)
+    inventories.sort(key=_sort)
+    return inventories
+
+
+def parse_marts():
+    """Return {map_id: {name, inventories}} for every mart map."""
+    result = {}
+    maps_dir = C.src("data", "maps")
+    for dirname in sorted(os.listdir(maps_dir)):
+        if "mart" not in dirname.lower():
+            continue
+        scripts_path = os.path.join(maps_dir, dirname, "scripts.inc")
+        map_json_path = os.path.join(maps_dir, dirname, "map.json")
+        if not os.path.isfile(scripts_path):
+            continue
+        try:
+            mj = C.load_json(map_json_path)
+            map_id = mj.get("id")
+        except Exception:
+            continue
+        if not map_id:
+            continue
+        with open(scripts_path, "r", encoding="utf-8", errors="replace") as f:
+            content = f.read()
+        inventories = parse_mart_scripts(content)
+        if inventories:
+            # "OldaleTown_Mart" → "Oldale Town"
+            raw = dirname.replace("_Mart", "").replace("_UnusedMart", "").replace("_", " ")
+            name = re.sub(r"([a-z])([A-Z])", r"\1 \2", raw)
+            result[map_id] = {"name": name, "inventories": inventories}
+    return result
+
+
+# --------------------------------------------------------------------------- #
+# NPC care-package (gift) detection
+# --------------------------------------------------------------------------- #
+def collect_gifts(script_label, scripts, _seen=None):
+    """Recursively follow calls/gotos; return list of (ITEM_*, qty) tuples."""
+    if not script_label:
+        return []
+    if _seen is None:
+        _seen = set()
+    if script_label in _seen or len(_seen) > 24:
+        return []
+    _seen.add(script_label)
+    body = scripts.get(script_label)
+    if body is None:
+        return []
+    gifts = []
+    for m in GIVEITEM_RE.finditer(body):
+        gifts.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
+    for m in ADDITEM_RE.finditer(body):
+        gifts.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
+    for line in body.splitlines():
+        if not re.match(r"\s*(?:goto|call|case)\w*\b", line):
+            continue
+        toks = re.findall(r"[A-Za-z_]\w*", line)
+        if toks and toks[-1] in scripts:
+            gifts.extend(collect_gifts(toks[-1], scripts, _seen))
+    return gifts
+
+
 def load_maps(dims):
     """Return dict name -> map record with objects/items resolved."""
     maps = {}
@@ -278,7 +427,7 @@ def load_maps(dims):
         scripts = parse_scripts_inc(
             C.src("data", "maps", dirname, "scripts.inc"))
 
-        trainers, items = [], []
+        trainers, items, gifts = [], [], []
         for ev in mj.get("object_events", []):
             x, y = int(ev.get("x", 0)), int(ev.get("y", 0))
             # resolve any object whose script starts a battle (covers gym
@@ -289,6 +438,16 @@ def load_maps(dims):
                     trainers.append({"x": x, "y": y, "trainerId": tid,
                                      "gfx": ev.get("graphics_id"),
                                      "dir": facing_dir(ev.get("movement_type"))})
+                # Gift NPC: script that recursively gives 2+ items
+                elif ev.get("graphics_id") != "OBJ_EVENT_GFX_ITEM_BALL":
+                    gift_items = collect_gifts(ev.get("script"), scripts)
+                    if len(gift_items) >= 2:
+                        gifts.append({"x": x, "y": y,
+                                      "gfx": ev.get("graphics_id"),
+                                      "dir": facing_dir(ev.get("movement_type")),
+                                      "script": ev.get("script"),
+                                      "items": [{"item": it, "qty": qty}
+                                                 for it, qty in gift_items]})
             if ev.get("graphics_id") == "OBJ_EVENT_GFX_ITEM_BALL":
                 items.append({"x": x, "y": y,
                               "item": ev.get("trainer_sight_or_berry_tree_id"),
@@ -314,6 +473,7 @@ def load_maps(dims):
             "type": mj.get("map_type"),
             "connections": mj.get("connections") or [],
             "warps": warps, "trainers": trainers, "items": items,
+            "gifts": gifts,
         }
     return maps
 
@@ -566,7 +726,7 @@ def build():
     trainers_db = parse_trainers.build()
     encounters = build_encounters()
 
-    out_maps, out_trainers, out_items = [], [], []
+    out_maps, out_trainers, out_items, out_gifts = [], [], [], []
     used_trainers = set()
     unresolved = 0
     enc_count = 0
@@ -592,6 +752,14 @@ def build():
                               "gx": ox + it["x"] * TILE + TILE // 2,
                               "gy": oy + it["y"] * TILE + TILE // 2,
                               "item": it["item"], "hidden": it["hidden"]})
+        for g in m.get("gifts", []):
+            out_gifts.append({"mapId": mid,
+                              "gx": ox + g["x"] * TILE + TILE // 2,
+                              "gy": oy + g["y"] * TILE + TILE // 2,
+                              "gfx": g.get("gfx"),
+                              "dir": g.get("dir", "down"),
+                              "script": g.get("script", ""),
+                              "items": g["items"]})
 
     # only ship trainer data actually referenced on the map
     trainers_ship = {tid: trainers_db[tid]
@@ -604,16 +772,22 @@ def build():
     # annotate each wild-encounter mon with its menu-icon filename
     enc_new, enc_missing = pokemon_sprites.annotate_encounters(out_maps)
 
-    # render overworld sprites for the trainer graphics ids in use
+    # render overworld sprites for trainers + gift NPCs + item ball
     gfx_ids = {t["gfx"] for t in out_trainers if t.get("gfx")}
+    gfx_ids |= {g["gfx"] for g in out_gifts if g.get("gfx")}
+    gfx_ids.add("OBJ_EVENT_GFX_ITEM_BALL")  # for item pickups
     sprite_map = sprites.extract_sprites(
         gfx_ids, os.path.join(C.SITE, "img", "sprites"))
+
+    marts = parse_marts()
 
     world = {
         "tile": TILE,
         "maps": out_maps,
         "trainers": out_trainers,
         "items": out_items,
+        "gifts": out_gifts,
+        "marts": marts,
         "warpLinks": warp_links,
         "trainerData": trainers_ship,
         "sprites": sprite_map,
@@ -625,6 +799,8 @@ def build():
           f"({len(trainers_ship)} unique teams, {unresolved} unresolved)")
     print(f"Items shown:    {len(out_items)} "
           f"({sum(1 for i in out_items if i['hidden'])} hidden)")
+    print(f"Gift NPCs:      {len(out_gifts)}")
+    print(f"Marts parsed:   {len(marts)}")
     print(f"Warp links:     {len(warp_links)}")
     print(f"Maps w/ encs:   {enc_count}")
     print(f"Enc icons:      {enc_new} new"

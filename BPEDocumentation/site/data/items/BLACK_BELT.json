@@ -1,1 +1,1 @@
-{"id":"BLACK_BELT","name":"Black Belt","price":0,"description":"A hold item that boosts Fighting- type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Type Boost Held Item","icon":"sprites/items/black_belt.png"}
+{"id":"BLACK_BELT","name":"Black Belt","price":0,"description":"A hold item that boosts Fighting- type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Type Boost Held Item","icon":"sprites/items/black_belt.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE106","mapName":"Route106","hidden":false}],"gifts":[]}}

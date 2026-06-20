@@ -1,1 +1,1 @@
-{"id":"ENERGY_POWDER","name":"Energy Powder","price":500,"description":"A bitter powder that restores HP by 60 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":null}
+{"id":"ENERGY_POWDER","name":"Energy Powder","price":500,"description":"A bitter powder that restores HP by 60 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

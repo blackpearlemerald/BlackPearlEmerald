@@ -1,1 +1,1 @@
-{"id":"REVEAL_GLASS","name":"Reveal Glass","price":0,"description":"This glass returns a Pokémon back to its original form.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/reveal_glass.png"}
+{"id":"REVEAL_GLASS","name":"Reveal Glass","price":0,"description":"This glass returns a Pokémon back to its original form.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/reveal_glass.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

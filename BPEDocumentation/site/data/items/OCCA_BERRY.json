@@ -1,1 +1,1 @@
-{"id":"OCCA_BERRY","name":"Occa Berry","price":80,"description":"A hold item that weakens a Fire move if weak to it.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/occa_berry.png"}
+{"id":"OCCA_BERRY","name":"Occa Berry","price":80,"description":"A hold item that weakens a Fire move if weak to it.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/occa_berry.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_MAUVILLE_CITY","mapName":"Mauville City","hidden":false}],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"TM_THUNDERBOLT","name":"TM126","price":0,"description":"Thunderbolt","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_THUNDERBOLT","name":"TM126","price":0,"description":"Thunderbolt","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_MAUVILLE_CITY","mapName":"Mauville City","qty":1},{"mapId":"MAP_MAUVILLE_CITY_GAME_CORNER","mapName":"Mauville City Game Corner","qty":1}]}}

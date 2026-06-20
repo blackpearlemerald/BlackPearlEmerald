@@ -1,1 +1,1 @@
-{"id":"RELIC_BAND","name":"Relic Band","price":0,"description":"An old bracelet. It sells at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Relic","icon":"sprites/items/relic_band.png"}
+{"id":"RELIC_BAND","name":"Relic Band","price":0,"description":"An old bracelet. It sells at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Relic","icon":"sprites/items/relic_band.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

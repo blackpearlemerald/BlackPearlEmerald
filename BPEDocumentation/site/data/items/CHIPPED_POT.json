@@ -1,1 +1,1 @@
-{"id":"CHIPPED_POT","name":"Chipped Pot","price":38000,"description":"A chipped teapot that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/chipped_pot.png"}
+{"id":"CHIPPED_POT","name":"Chipped Pot","price":38000,"description":"A chipped teapot that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/chipped_pot.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

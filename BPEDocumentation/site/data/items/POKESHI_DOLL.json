@@ -1,1 +1,1 @@
-{"id":"POKESHI_DOLL","name":"Pokéshi Doll","price":2000,"description":"A wooden toy resembling a Poké- mon. Can be sold.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/pokeshi_doll.png"}
+{"id":"POKESHI_DOLL","name":"Pokéshi Doll","price":2000,"description":"A wooden toy resembling a Poké- mon. Can be sold.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/pokeshi_doll.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"SCROLL_OF_DARKNESS","name":"Scroll of Darkness","price":0,"description":"A peculiar scroll with secrets of the dark path.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"Evolution Item","icon":"sprites/items/scroll_of_darkness.png"}
+{"id":"SCROLL_OF_DARKNESS","name":"Scroll of Darkness","price":0,"description":"A peculiar scroll with secrets of the dark path.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"Evolution Item","icon":"sprites/items/scroll_of_darkness.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

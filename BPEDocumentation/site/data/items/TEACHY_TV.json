@@ -1,1 +1,1 @@
-{"id":"TEACHY_TV","name":"Teachy TV","price":0,"description":"A TV set tuned to an advice program for Trainers.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/teachy_tv.png"}
+{"id":"TEACHY_TV","name":"Teachy TV","price":0,"description":"A TV set tuned to an advice program for Trainers.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/teachy_tv.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"EXP_CHARM","name":"Exp. Charm","price":0,"description":"A charm that raises the amount of Exp. earned in battle.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/exp_charm.png"}
+{"id":"EXP_CHARM","name":"Exp. Charm","price":0,"description":"A charm that raises the amount of Exp. earned in battle.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/exp_charm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

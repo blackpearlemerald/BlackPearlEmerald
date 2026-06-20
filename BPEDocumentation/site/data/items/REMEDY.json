@@ -1,1 +1,1 @@
-{"id":"REMEDY","name":"Remedy","price":150,"description":"A bitter powder that restores HP by 20 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/remedy.png"}
+{"id":"REMEDY","name":"Remedy","price":150,"description":"A bitter powder that restores HP by 20 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/remedy.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

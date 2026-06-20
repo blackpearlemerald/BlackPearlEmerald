@@ -1,1 +1,1 @@
-{"id":"TM_LIGHT_SCREEN","name":"TM16","price":3000,"description":"Creates a wall of light that lowers Sp. Atk damage.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_LIGHT_SCREEN","name":"TM16","price":3000,"description":"Creates a wall of light that lowers Sp. Atk damage.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

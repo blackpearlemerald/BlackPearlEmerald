@@ -1,1 +1,1 @@
-{"id":"MODEST_MINT","name":"Modest Mint","price":20000,"description":"Can be smelled. It ups Sp. Atk, but reduces Attack.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null}
+{"id":"MODEST_MINT","name":"Modest Mint","price":20000,"description":"Can be smelled. It ups Sp. Atk, but reduces Attack.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE118","mapName":"Route118","hidden":false}],"gifts":[]}}

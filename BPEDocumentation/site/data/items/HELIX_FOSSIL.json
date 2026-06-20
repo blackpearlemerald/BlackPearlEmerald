@@ -1,1 +1,1 @@
-{"id":"HELIX_FOSSIL","name":"Helix Fossil","price":7000,"description":"A piece of an ancient marine Pokémon's seashell.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/helix_fossil.png"}
+{"id":"HELIX_FOSSIL","name":"Helix Fossil","price":7000,"description":"A piece of an ancient marine Pokémon's seashell.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/helix_fossil.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

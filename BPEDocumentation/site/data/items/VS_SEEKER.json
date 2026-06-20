@@ -1,1 +1,1 @@
-{"id":"VS_SEEKER","name":"Vs. Seeker","price":0,"description":"A rechargeable unit that flags battle- ready Trainers.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/vs_seeker.png"}
+{"id":"VS_SEEKER","name":"Vs. Seeker","price":0,"description":"A rechargeable unit that flags battle- ready Trainers.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/vs_seeker.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

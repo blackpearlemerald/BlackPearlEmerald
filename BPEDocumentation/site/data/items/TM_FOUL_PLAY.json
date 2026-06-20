@@ -1,1 +1,1 @@
-{"id":"TM_FOUL_PLAY","name":"TM62","price":0,"description":"Foul Play","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_FOUL_PLAY","name":"TM62","price":0,"description":"Foul Play","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"TM_THUNDER_FANG","name":"TM09","price":0,"description":"Thunder Fang","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_THUNDER_FANG","name":"TM09","price":0,"description":"Thunder Fang","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

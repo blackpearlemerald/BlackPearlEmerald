@@ -1,1 +1,1 @@
-{"id":"SOLGANIUM_Z","name":"Solganium Z","price":0,"description":"Upgrade Solgaleo's Sunsteel Strike into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/solganium_z.png"}
+{"id":"SOLGANIUM_Z","name":"Solganium Z","price":0,"description":"Upgrade Solgaleo's Sunsteel Strike into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/solganium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

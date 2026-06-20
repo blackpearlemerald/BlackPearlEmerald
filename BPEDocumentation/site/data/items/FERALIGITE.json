@@ -1,1 +1,1 @@
-{"id":"FERALIGITE","name":"Feraligite","price":0,"description":"This stone enables Feraligatr to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/feraligite.png"}
+{"id":"FERALIGITE","name":"Feraligite","price":0,"description":"This stone enables Feraligatr to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/feraligite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

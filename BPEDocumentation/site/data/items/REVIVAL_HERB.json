@@ -1,1 +1,1 @@
-{"id":"REVIVAL_HERB","name":"Revival Herb","price":2800,"description":"A very bitter herb that revives a fainted Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/revival_herb.png"}
+{"id":"REVIVAL_HERB","name":"Revival Herb","price":2800,"description":"A very bitter herb that revives a fainted Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/revival_herb.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -365,6 +365,127 @@ body.page-placeholder {
 .enc-lvl { color: #5a6b7b; font-size: 11px; white-space: nowrap; }
 .enc-none { color: #5a6b7b; font-size: 13px; margin-top: 6px; }
 
+/* ----- item ball sprite ----- */
+.item-ball-sprite {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+}
+
+/* ----- mart popup ----- */
+.mart-head {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: #1a3a5c;
+}
+.mart-cond {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #2f7d4f;
+  margin: 8px 0 4px;
+  padding-top: 6px;
+  border-top: 1px solid #e2e8f0;
+}
+.mart-cond:first-of-type { border-top: none; margin-top: 0; }
+.mart-list { display: flex; flex-direction: column; gap: 2px; }
+
+/* ----- gift NPC popup ----- */
+.gift-head {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: #1a3a5c;
+}
+.gift-items { display: flex; flex-direction: column; gap: 2px; }
+
+/* ----- shared item row (mart + gift popups) ----- */
+.pop-item-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  padding: 2px 0;
+}
+.pop-item-icon {
+  width: 20px;
+  height: 20px;
+  image-rendering: pixelated;
+  flex: 0 0 auto;
+}
+.pop-item-name { flex: 1 1 auto; }
+.pop-item-qty {
+  font-size: 11px;
+  font-weight: 700;
+  color: #3a6ea5;
+  white-space: nowrap;
+}
+
+/* ----- gift badge on map ----- */
+.gift-badge {
+  font-size: 13px;
+  line-height: 1;
+  pointer-events: none;
+  transform: translate(-6px, -20px);
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.6));
+}
+
+/* ----- where to find (item.html) ----- */
+.item-where-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-top: 16px;
+}
+.item-where-card h3 {
+  margin: 0 0 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a2b3a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.where-section { margin-top: 10px; }
+.where-section:first-of-type { margin-top: 0; }
+.where-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #5a6b7b;
+  margin-bottom: 5px;
+}
+.where-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+  padding: 2px 0;
+}
+.where-map-link {
+  color: #3a6ea5;
+  text-decoration: none;
+  font-weight: 500;
+}
+.where-map-link:hover { text-decoration: underline; }
+.where-cond {
+  font-size: 11px;
+  color: #7e93a8;
+}
+.where-hidden {
+  font-size: 11px;
+  color: #9fb3c8;
+  font-style: italic;
+}
+.where-qty {
+  font-size: 11px;
+  font-weight: 700;
+  color: #3a6ea5;
+}
+
 /* ----- mobile ----- */
 @media (max-width: 640px) {
   #panel { display: none; min-width: 180px; }

@@ -1,1 +1,1 @@
-{"id":"MAGMA_EMBLEM","name":"Magma Emblem","price":0,"description":"A medal-like item in the same shape as Team Magma's mark.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/magma_emblem.png"}
+{"id":"MAGMA_EMBLEM","name":"Magma Emblem","price":0,"description":"A medal-like item in the same shape as Team Magma's mark.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/magma_emblem.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

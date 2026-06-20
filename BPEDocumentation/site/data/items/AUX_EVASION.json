@@ -1,1 +1,1 @@
-{"id":"AUX_EVASION","name":"Aux Evasion","price":800,"description":"Sharply raises evasiveness during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":null}
+{"id":"AUX_EVASION","name":"Aux Evasion","price":800,"description":"Sharply raises evasiveness during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

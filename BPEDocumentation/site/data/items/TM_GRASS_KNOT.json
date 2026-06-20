@@ -1,1 +1,1 @@
-{"id":"TM_GRASS_KNOT","name":"TM81","price":0,"description":"Grass Knot","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_GRASS_KNOT","name":"TM81","price":0,"description":"Grass Knot","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

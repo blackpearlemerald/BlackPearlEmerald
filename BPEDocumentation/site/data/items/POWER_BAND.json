@@ -1,1 +1,1 @@
-{"id":"POWER_BAND","name":"Power Band","price":10000,"description":"Hold item that pro- motes Sp. Def gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_band.png"}
+{"id":"POWER_BAND","name":"Power Band","price":10000,"description":"Hold item that pro- motes Sp. Def gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_band.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"MALAMARITE","name":"Malamarite","price":0,"description":"This stone enables Malamar to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/malamarite.png"}
+{"id":"MALAMARITE","name":"Malamarite","price":0,"description":"This stone enables Malamar to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/malamarite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

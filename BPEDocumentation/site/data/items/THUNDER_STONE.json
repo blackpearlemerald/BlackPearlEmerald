@@ -1,1 +1,1 @@
-{"id":"THUNDER_STONE","name":"Thunder Stone","price":3000,"description":"Makes certain species of Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Stone","icon":"sprites/items/thunder_stone.png"}
+{"id":"THUNDER_STONE","name":"Thunder Stone","price":3000,"description":"Makes certain species of Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Stone","icon":"sprites/items/thunder_stone.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

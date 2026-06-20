@@ -1,1 +1,1 @@
-{"id":"EXP_CANDY_S","name":"Exp. Candy S","price":240,"description":"Gives a small amount of Exp. to a single Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Level Up Item","icon":"sprites/items/exp_candy_s.png"}
+{"id":"EXP_CANDY_S","name":"Exp. Candy S","price":240,"description":"Gives a small amount of Exp. to a single Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Level Up Item","icon":"sprites/items/exp_candy_s.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

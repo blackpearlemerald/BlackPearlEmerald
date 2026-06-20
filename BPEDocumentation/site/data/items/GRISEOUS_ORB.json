@@ -1,1 +1,1 @@
-{"id":"GRISEOUS_ORB","name":"Griseous Orb","price":0,"description":"Boosts Giratina's Dragon and Ghost- type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/griseous_orb.png"}
+{"id":"GRISEOUS_ORB","name":"Griseous Orb","price":0,"description":"Boosts Giratina's Dragon and Ghost- type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/griseous_orb.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

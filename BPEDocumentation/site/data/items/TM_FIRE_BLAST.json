@@ -1,1 +1,1 @@
-{"id":"TM_FIRE_BLAST","name":"TM38","price":5500,"description":"A powerful fire attack that may burn the foe.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_FIRE_BLAST","name":"TM38","price":5500,"description":"A powerful fire attack that may burn the foe.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

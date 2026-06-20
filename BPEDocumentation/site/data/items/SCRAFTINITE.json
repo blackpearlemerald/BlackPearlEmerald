@@ -1,1 +1,1 @@
-{"id":"SCRAFTINITE","name":"Scraftinite","price":0,"description":"This stone enables Scrafty to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/scraftinite.png"}
+{"id":"SCRAFTINITE","name":"Scraftinite","price":0,"description":"This stone enables Scrafty to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/scraftinite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

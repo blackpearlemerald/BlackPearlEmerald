@@ -1,1 +1,1 @@
-{"id":"FOCUS_BAND","name":"Focus Band","price":10000,"description":"A hold item that occasionally prevents fainting.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/focus_band.png"}
+{"id":"FOCUS_BAND","name":"Focus Band","price":10000,"description":"A hold item that occasionally prevents fainting.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/focus_band.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

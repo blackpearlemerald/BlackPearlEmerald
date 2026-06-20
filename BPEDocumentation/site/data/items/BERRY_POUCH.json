@@ -1,1 +1,1 @@
-{"id":"BERRY_POUCH","name":"Berry Pouch","price":0,"description":"A convenient container that holds Berries.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/berry_pouch.png"}
+{"id":"BERRY_POUCH","name":"Berry Pouch","price":0,"description":"A convenient container that holds Berries.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/berry_pouch.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

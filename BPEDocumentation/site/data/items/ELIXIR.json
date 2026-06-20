@@ -1,1 +1,1 @@
-{"id":"ELIXIR","name":"Elixir","price":3000,"description":"Restores the PP of all moves by 10.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":null}
+{"id":"ELIXIR","name":"Elixir","price":3000,"description":"Restores the PP of all moves by 10.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

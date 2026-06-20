@@ -1,1 +1,1 @@
-{"id":"FROSLASSITE","name":"Froslassite","price":0,"description":"This stone enables Froslass to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/froslassite.png"}
+{"id":"FROSLASSITE","name":"Froslassite","price":0,"description":"This stone enables Froslass to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/froslassite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

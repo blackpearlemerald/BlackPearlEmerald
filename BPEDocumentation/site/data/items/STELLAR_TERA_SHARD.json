@@ -1,1 +1,1 @@
-{"id":"STELLAR_TERA_SHARD","name":"Stellar Tera Shard","price":0,"description":"These shards may form when a Tera Pokémon faints.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Tera Shard","icon":"sprites/items/stellar_tera_shard.png"}
+{"id":"STELLAR_TERA_SHARD","name":"Stellar Tera Shard","price":0,"description":"These shards may form when a Tera Pokémon faints.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Tera Shard","icon":"sprites/items/stellar_tera_shard.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

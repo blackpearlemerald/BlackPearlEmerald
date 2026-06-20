@@ -1,1 +1,1 @@
-{"id":"METEORITE","name":"Meteorite","price":0,"description":"A meteorite found at Meteor Falls.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/meteorite.png"}
+{"id":"METEORITE","name":"Meteorite","price":0,"description":"A meteorite found at Meteor Falls.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/meteorite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

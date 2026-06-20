@@ -1,1 +1,1 @@
-{"id":"MEWNIUM_Z","name":"Mewnium Z","price":0,"description":"Upgrade Mew's Psychic into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/mewnium_z.png"}
+{"id":"MEWNIUM_Z","name":"Mewnium Z","price":0,"description":"Upgrade Mew's Psychic into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/mewnium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

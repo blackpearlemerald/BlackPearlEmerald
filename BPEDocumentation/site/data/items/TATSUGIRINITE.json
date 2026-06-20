@@ -1,1 +1,1 @@
-{"id":"TATSUGIRINITE","name":"Tatsugirinite","price":0,"description":"This stone enables Tatsugiri to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/tatsugirinite.png"}
+{"id":"TATSUGIRINITE","name":"Tatsugirinite","price":0,"description":"This stone enables Tatsugiri to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/tatsugirinite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

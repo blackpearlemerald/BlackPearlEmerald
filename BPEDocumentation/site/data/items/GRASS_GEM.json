@@ -1,1 +1,1 @@
-{"id":"GRASS_GEM","name":"Grass Gem","price":0,"description":"Increases the power of Grass Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null}
+{"id":"GRASS_GEM","name":"Grass Gem","price":0,"description":"Increases the power of Grass Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE120","mapName":"Route120","hidden":false}],"gifts":[]}}

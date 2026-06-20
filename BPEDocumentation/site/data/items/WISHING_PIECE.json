@@ -1,1 +1,1 @@
-{"id":"WISHING_PIECE","name":"Wishing Piece","price":20,"description":"Throw into a {PKMN} Den to attract Dynamax Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/wishing_piece.png"}
+{"id":"WISHING_PIECE","name":"Wishing Piece","price":20,"description":"Throw into a {PKMN} Den to attract Dynamax Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/wishing_piece.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"DYNAMAX_CANDY","name":"Dynamax Candy","price":0,"description":"Raises the Dynamax Level of a single Pokémon by one.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Level Up Item","icon":"sprites/items/dynamax_candy.png"}
+{"id":"DYNAMAX_CANDY","name":"Dynamax Candy","price":0,"description":"Raises the Dynamax Level of a single Pokémon by one.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Level Up Item","icon":"sprites/items/dynamax_candy.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"BLUK_BERRY","name":"Bluk Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Bluk.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/bluk_berry.png"}
+{"id":"BLUK_BERRY","name":"Bluk Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Bluk.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/bluk_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

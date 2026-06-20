@@ -1,1 +1,1 @@
-{"id":"RUSTED_SHIELD","name":"Rusted Shield","price":0,"description":"A rusty shield. A hero used it to halt a disaster.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/rusted_shield.png"}
+{"id":"RUSTED_SHIELD","name":"Rusted Shield","price":0,"description":"A rusty shield. A hero used it to halt a disaster.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/rusted_shield.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

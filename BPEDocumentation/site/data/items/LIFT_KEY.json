@@ -1,1 +1,1 @@
-{"id":"LIFT_KEY","name":"Lift Key","price":0,"description":"An elevator key used in Team Rocket's Hideout.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/lift_key.png"}
+{"id":"LIFT_KEY","name":"Lift Key","price":0,"description":"An elevator key used in Team Rocket's Hideout.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/lift_key.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

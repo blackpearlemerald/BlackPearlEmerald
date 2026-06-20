@@ -1,1 +1,1 @@
-{"id":"TM_X_SCISSOR","name":"TM105","price":0,"description":"X-Scissor","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_X_SCISSOR","name":"TM105","price":0,"description":"X-Scissor","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

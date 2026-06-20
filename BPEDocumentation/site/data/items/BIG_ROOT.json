@@ -1,1 +1,1 @@
-{"id":"BIG_ROOT","name":"Big Root","price":10000,"description":"A held item that ups the power of HP-stealing moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/big_root.png"}
+{"id":"BIG_ROOT","name":"Big Root","price":10000,"description":"A held item that ups the power of HP-stealing moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/big_root.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE120","mapName":"Route120","hidden":false}],"gifts":[]}}

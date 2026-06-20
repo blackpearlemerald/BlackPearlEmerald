@@ -1,1 +1,1 @@
-{"id":"TM_LASH_OUT","name":"TM199","price":0,"description":"Lash Out","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_LASH_OUT","name":"TM199","price":0,"description":"Lash Out","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

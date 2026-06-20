@@ -1,1 +1,1 @@
-{"id":"HEALTH_MOCHI","name":"Health Mochi","price":500,"description":"An item that raises the base HP of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":null}
+{"id":"HEALTH_MOCHI","name":"Health Mochi","price":500,"description":"An item that raises the base HP of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

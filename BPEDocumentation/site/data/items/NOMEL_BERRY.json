@@ -1,1 +1,1 @@
-{"id":"NOMEL_BERRY","name":"Nomel Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Nomel.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/nomel_berry.png"}
+{"id":"NOMEL_BERRY","name":"Nomel Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Nomel.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/nomel_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

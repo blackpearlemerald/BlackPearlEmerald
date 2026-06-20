@@ -1,1 +1,1 @@
-{"id":"TM_DUAL_WINGBEAT","name":"TM197","price":0,"description":"Dual Wingbeat","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_DUAL_WINGBEAT","name":"TM197","price":0,"description":"Dual Wingbeat","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

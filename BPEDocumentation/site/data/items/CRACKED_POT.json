@@ -1,1 +1,1 @@
-{"id":"CRACKED_POT","name":"Cracked Pot","price":1600,"description":"A cracked teapot that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/cracked_pot.png"}
+{"id":"CRACKED_POT","name":"Cracked Pot","price":1600,"description":"A cracked teapot that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/cracked_pot.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

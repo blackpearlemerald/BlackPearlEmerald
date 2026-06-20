@@ -1,1 +1,1 @@
-{"id":"BEAD_MAIL","name":"Bead Mail","price":50,"description":"Mail featuring a sketch of the holding Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mail","icon":"sprites/items/bead_mail.png"}
+{"id":"BEAD_MAIL","name":"Bead Mail","price":50,"description":"Mail featuring a sketch of the holding Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mail","icon":"sprites/items/bead_mail.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

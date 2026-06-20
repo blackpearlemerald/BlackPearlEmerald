@@ -45,9 +45,48 @@ function trainerPopup(t, spriteFile) {
   return html;
 }
 
+function itemIconUrl(itemConst) {
+  const key = (itemConst || "").replace(/^ITEM_/, "").toLowerCase();
+  return `sprites/items/${key}.png`;
+}
+
+function itemRow(itemConst, qty) {
+  const name = prettify(itemConst);
+  const icon = `<img class="pop-item-icon" src="${itemIconUrl(itemConst)}" `
+    + `alt="" onerror="this.remove()" loading="lazy">`;
+  const qtyStr = qty > 1 ? `<span class="pop-item-qty">×${qty}</span>` : "";
+  return `<div class="pop-item-row">${icon}<span class="pop-item-name">${name}</span>${qtyStr}</div>`;
+}
+
 function itemPopup(it) {
   const tag = it.hidden ? "<small>Hidden item</small>" : "<small>Item Ball</small>";
-  return `<div class="item-pop">${prettify(it.item)}${tag}</div>`;
+  const icon = it.hidden ? ""
+    : `<img class="pop-item-icon" src="${itemIconUrl(it.item)}" alt="" onerror="this.remove()"> `;
+  return `<div class="item-pop">${icon}${prettify(it.item)}${tag}</div>`;
+}
+
+function martPopup(mart) {
+  let html = `<div class="mart-head">🛒 ${mart.name} Poké Mart</div>`;
+  for (const inv of mart.inventories) {
+    html += `<div class="mart-cond">${inv.condition}</div>`;
+    html += `<div class="mart-list">`;
+    for (const item of inv.items) {
+      html += itemRow(item, 1);
+    }
+    html += `</div>`;
+  }
+  return html;
+}
+
+function giftPopup(gift) {
+  const src = prettify(gift.script || gift.mapId);
+  let html = `<div class="gift-head">🎁 ${prettify(gift.mapId)} Gift</div>`;
+  html += `<div class="gift-items">`;
+  for (const gi of gift.items) {
+    html += itemRow(gi.item, gi.qty);
+  }
+  html += `</div>`;
+  return html;
 }
 
 function encSprite(m) {
@@ -186,6 +225,17 @@ async function main() {
     return best;
   }
 
+  function giftAt(latlng) {
+    if (!map.hasLayer(giftLayer)) return null;
+    const p = map.latLngToContainerPoint(latlng);
+    let best = null, bestD = 14;
+    for (const h of giftHits) {
+      const d = p.distanceTo(map.latLngToContainerPoint(h.ll));
+      if (d < bestD) { bestD = d; best = h.gift; }
+    }
+    return best;
+  }
+
   // show a trainer stack's current member; cycle via the marker or the button
   let openStack = null;
   function showStack(st) {
@@ -231,8 +281,18 @@ async function main() {
       objPopup.setLatLng(e.latlng).setContent(itemPopup(it)).openOn(map);
       return;
     }
+    const gf = giftAt(e.latlng);
+    if (gf) {
+      objPopup.setLatLng(e.latlng).setContent(giftPopup(gf)).openOn(map);
+      return;
+    }
     const m = mapAt(x, y);
     if (!m) return;
+    if (world.marts && world.marts[m.id]) {
+      objPopup.setLatLng(e.latlng)
+        .setContent(martPopup(world.marts[m.id])).openOn(map);
+      return;
+    }
     encPopup.setLatLng(e.latlng).setContent(encounterPopup(m)).openOn(map);
   });
   const worldBounds = L.latLngBounds(W2LL(minX, minY), W2LL(maxX, maxY));
@@ -371,19 +431,60 @@ async function main() {
   // ---- items (visible + hidden split into two layers) ----
   const itemLayer = L.layerGroup();
   const hiddenLayer = L.layerGroup();
+  const ballSprite = world.sprites && world.sprites["OBJ_EVENT_GFX_ITEM_BALL"];
   for (const it of world.items) {
     const hidden = it.hidden;
     const ll = W2LL(it.gx, it.gy);
-    L.circleMarker(ll, {
-      radius: hidden ? 4 : 5,
-      color: hidden ? "#3a4654" : "#7a5b00",
-      weight: 1,
-      fillColor: hidden ? "#7a8aa0" : "#f4c542",
-      fillOpacity: hidden ? 0.8 : 0.95,
-      interactive: false,
-      renderer: canvas,
-    }).addTo(hidden ? hiddenLayer : itemLayer);
+    if (!hidden && ballSprite) {
+      const sw = ballSprite.w, sh = ballSprite.h;
+      const file = (ballSprite.dirs && ballSprite.dirs.down) || ballSprite.file;
+      const bounds = [
+        W2LL(it.gx - sw / 2, it.gy + TILE / 2),
+        W2LL(it.gx + sw / 2, it.gy + TILE / 2 - sh),
+      ];
+      L.imageOverlay("img/sprites/" + file, bounds, {
+        className: "sprite item-ball-sprite", interactive: false,
+      }).addTo(itemLayer);
+    } else {
+      L.circleMarker(ll, {
+        radius: hidden ? 4 : 5,
+        color: hidden ? "#3a4654" : "#7a5b00",
+        weight: 1,
+        fillColor: hidden ? "#7a8aa0" : "#f4c542",
+        fillOpacity: hidden ? 0.8 : 0.95,
+        interactive: false,
+        renderer: canvas,
+      }).addTo(hidden ? hiddenLayer : itemLayer);
+    }
     itemHits.push({ ll, it });
+  }
+
+  // ---- gift NPCs ----
+  const giftLayer = L.layerGroup();
+  const giftHits = [];  // {ll, gift}
+  for (const gift of (world.gifts || [])) {
+    const ll = W2LL(gift.gx, gift.gy);
+    const sp = world.sprites && world.sprites[gift.gfx];
+    if (sp) {
+      const sw = sp.w, sh = sp.h;
+      const file = (sp.dirs && (sp.dirs[gift.dir] || sp.dirs.down)) || sp.file;
+      const yBot = gift.gy + TILE / 2;
+      L.imageOverlay("img/sprites/" + file,
+        [W2LL(gift.gx - sw / 2, yBot), W2LL(gift.gx + sw / 2, yBot - sh)],
+        { className: "sprite", interactive: false }).addTo(giftLayer);
+    } else {
+      L.circleMarker(ll, {
+        radius: 5, color: "#004d33", weight: 1.5,
+        fillColor: "#2ecc71", fillOpacity: 0.9,
+        interactive: false, renderer: canvas,
+      }).addTo(giftLayer);
+    }
+    // Gift badge
+    L.marker(ll, {
+      interactive: false,
+      icon: L.divIcon({ className: "gift-badge", html: "🎁", iconSize: [0, 0] }),
+    }).addTo(giftLayer);
+    giftHits.push({ ll, gift });
   }
 
   // ---- map labels ----
@@ -401,10 +502,12 @@ async function main() {
   warpLayer.addTo(map);
   trainerLayer.addTo(map);
   itemLayer.addTo(map);
+  giftLayer.addTo(map);
 
   // ---- toggles ----
   const bind = (id, layer) => {
     const el = document.getElementById(id);
+    if (!el) return;
     el.addEventListener("change", () => {
       if (el.checked) layer.addTo(map); else map.removeLayer(layer);
     });
@@ -414,10 +517,14 @@ async function main() {
   bind("t-hidden", hiddenLayer);
   bind("t-warps", warpLayer);
   bind("t-labels", labelLayer);
+  bind("t-gifts", giftLayer);
 
+  const giftCount = (world.gifts || []).length;
+  const martCount = Object.keys(world.marts || {}).length;
   document.getElementById("counts").innerHTML =
     `${world.maps.length} maps · ${world.trainers.length} trainers<br>` +
-    `${world.items.length} items (${world.items.filter(i => i.hidden).length} hidden)`;
+    `${world.items.length} items (${world.items.filter(i => i.hidden).length} hidden)<br>` +
+    `${martCount} marts · ${giftCount} gift NPCs`;
 
   document.getElementById("panel-toggle").addEventListener("click", () => {
     document.getElementById("panel").classList.toggle("open");

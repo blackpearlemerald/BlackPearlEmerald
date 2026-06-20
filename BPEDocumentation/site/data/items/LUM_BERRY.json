@@ -1,1 +1,1 @@
-{"id":"LUM_BERRY","name":"Lum Berry","price":80,"description":"A hold item that heals any status problem in battle.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/lum_berry.png"}
+{"id":"LUM_BERRY","name":"Lum Berry","price":80,"description":"A hold item that heals any status problem in battle.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/lum_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

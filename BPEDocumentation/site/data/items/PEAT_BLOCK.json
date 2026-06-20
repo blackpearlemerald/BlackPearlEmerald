@@ -1,1 +1,1 @@
-{"id":"PEAT_BLOCK","name":"Peat Block","price":10000,"description":"A block of material that makes some Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/peat_block.png"}
+{"id":"PEAT_BLOCK","name":"Peat Block","price":10000,"description":"A block of material that makes some Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/peat_block.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

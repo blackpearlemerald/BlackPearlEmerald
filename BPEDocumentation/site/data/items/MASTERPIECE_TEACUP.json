@@ -1,1 +1,1 @@
-{"id":"MASTERPIECE_TEACUP","name":"Masterpiece Teacup","price":38000,"description":"A chipped teacup that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/masterpiece_teacup.png"}
+{"id":"MASTERPIECE_TEACUP","name":"Masterpiece Teacup","price":38000,"description":"A chipped teacup that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/masterpiece_teacup.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

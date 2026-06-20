@@ -1,1 +1,1 @@
-{"id":"TM_METRONOME","name":"TM80","price":0,"description":"Metronome","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_METRONOME","name":"TM80","price":0,"description":"Metronome","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

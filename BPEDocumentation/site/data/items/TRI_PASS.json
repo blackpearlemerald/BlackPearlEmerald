@@ -1,1 +1,1 @@
-{"id":"TRI_PASS","name":"Tri-Pass","price":0,"description":"A pass for ferries between One, Two, and Three Island.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/tri_pass.png"}
+{"id":"TRI_PASS","name":"Tri-Pass","price":0,"description":"A pass for ferries between One, Two, and Three Island.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/tri_pass.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

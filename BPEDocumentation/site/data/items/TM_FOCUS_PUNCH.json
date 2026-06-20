@@ -1,1 +1,1 @@
-{"id":"TM_FOCUS_PUNCH","name":"TM192","price":0,"description":"Focus Punch","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_FOCUS_PUNCH","name":"TM192","price":0,"description":"Focus Punch","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

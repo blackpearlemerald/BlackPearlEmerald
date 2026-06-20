@@ -1,1 +1,1 @@
-{"id":"BALM_MUSHROOM","name":"Balm Mushroom","price":0,"description":"A rare mushroom that would sell at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/balm_mushroom.png"}
+{"id":"BALM_MUSHROOM","name":"Balm Mushroom","price":0,"description":"A rare mushroom that would sell at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/balm_mushroom.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

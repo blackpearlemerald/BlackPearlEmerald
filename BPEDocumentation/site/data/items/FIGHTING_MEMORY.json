@@ -1,1 +1,1 @@
-{"id":"FIGHTING_MEMORY","name":"Fighting Memory","price":1000,"description":"Disc with Fighting type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/fighting_memory.png"}
+{"id":"FIGHTING_MEMORY","name":"Fighting Memory","price":1000,"description":"Disc with Fighting type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/fighting_memory.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

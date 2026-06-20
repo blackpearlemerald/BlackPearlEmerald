@@ -1,1 +1,1 @@
-{"id":"SOUL_DEW","name":"Soul Dew","price":0,"description":"Powers up Latios' & Latias' Psychic and Dragon-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/soul_dew.png"}
+{"id":"SOUL_DEW","name":"Soul Dew","price":0,"description":"Powers up Latios' & Latias' Psychic and Dragon-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/soul_dew.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

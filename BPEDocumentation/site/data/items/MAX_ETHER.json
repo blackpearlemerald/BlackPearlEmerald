@@ -1,1 +1,1 @@
-{"id":"MAX_ETHER","name":"Max Ether","price":2000,"description":"Fully restores the PP of a selected move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":null}
+{"id":"MAX_ETHER","name":"Max Ether","price":2000,"description":"Fully restores the PP of a selected move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_MT_PYRE_EXTERIOR","mapName":"Mt Pyre Exterior","hidden":true}],"gifts":[]}}

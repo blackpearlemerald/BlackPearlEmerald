@@ -1,1 +1,1 @@
-{"id":"MIRROR_HERB","name":"Mirror Herb","price":30000,"description":"Mirrors an enemy's stat increases but only once.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/mirror_herb.png"}
+{"id":"MIRROR_HERB","name":"Mirror Herb","price":30000,"description":"Mirrors an enemy's stat increases but only once.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/mirror_herb.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE114","mapName":"Route114","hidden":false}],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"MOOMOO_MILK","name":"Moomoo Milk","price":600,"description":"A nutritious milk that restores HP by 100 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/moomoo_milk.png"}
+{"id":"MOOMOO_MILK","name":"Moomoo Milk","price":600,"description":"A nutritious milk that restores HP by 100 points.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/moomoo_milk.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

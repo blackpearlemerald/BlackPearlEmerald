@@ -1,1 +1,1 @@
-{"id":"ROCKY_HELMET","name":"Rocky Helmet","price":50000,"description":"Hurts the foe if they touch its holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/rocky_helmet.png"}
+{"id":"ROCKY_HELMET","name":"Rocky Helmet","price":50000,"description":"Hurts the foe if they touch its holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/rocky_helmet.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_METEOR_FALLS_1F_1R","mapName":"Meteor Falls 1F 1R","hidden":false}],"gifts":[]}}

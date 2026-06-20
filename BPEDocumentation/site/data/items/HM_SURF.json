@@ -1,1 +1,1 @@
-{"id":"HM_SURF","name":"HM03","price":0,"description":"Creates a huge wave, then crashes it down on the foe.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm.png"}
+{"id":"HM_SURF","name":"HM03","price":0,"description":"Creates a huge wave, then crashes it down on the foe.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

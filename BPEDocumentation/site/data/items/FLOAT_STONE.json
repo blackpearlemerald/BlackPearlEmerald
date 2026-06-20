@@ -1,1 +1,1 @@
-{"id":"FLOAT_STONE","name":"Float Stone","price":10000,"description":"It's so light that when held, it halves a Pokémon's weight.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/float_stone.png"}
+{"id":"FLOAT_STONE","name":"Float Stone","price":10000,"description":"It's so light that when held, it halves a Pokémon's weight.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/float_stone.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

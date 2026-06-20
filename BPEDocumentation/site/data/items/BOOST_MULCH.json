@@ -1,1 +1,1 @@
-{"id":"BOOST_MULCH","name":"Boost Mulch","price":200,"description":"A fertilizer that ups the dry speed of soft soil.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null}
+{"id":"BOOST_MULCH","name":"Boost Mulch","price":200,"description":"A fertilizer that ups the dry speed of soft soil.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

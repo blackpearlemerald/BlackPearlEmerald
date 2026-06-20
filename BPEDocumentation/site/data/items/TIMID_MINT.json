@@ -1,1 +1,1 @@
-{"id":"TIMID_MINT","name":"Timid Mint","price":20000,"description":"Can be smelled. It ups Speed, but reduces Attack.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null}
+{"id":"TIMID_MINT","name":"Timid Mint","price":20000,"description":"Can be smelled. It ups Speed, but reduces Attack.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE109","mapName":"Route109","hidden":false}],"gifts":[]}}

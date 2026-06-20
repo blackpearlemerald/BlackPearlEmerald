@@ -198,6 +198,71 @@ def write_json(path, obj):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, separators=(",", ":"), ensure_ascii=False)
 
+# ── 5. Location cross-reference ────────────────────────────────────────────────
+
+WORLD_JSON = DATA_DIR.parent / "js" / "data" / "world.json"
+
+
+def _prettify_map(map_id):
+    """MAP_OLDALE_TOWN -> Oldale Town"""
+    s = map_id.replace("MAP_", "").replace("_", " ").title()
+    # collapse multi-word "Town Town" / "City City" patterns
+    return s
+
+
+def build_locations(items_dict):
+    """Return {item_id: {marts, overworld, gifts}} using world.json."""
+    if not WORLD_JSON.exists():
+        print("  ! world.json not found — skip location data")
+        return {}
+
+    with open(WORLD_JSON, "r", encoding="utf-8") as f:
+        world = json.load(f)
+
+    locs = {k: {"marts": [], "overworld": [], "gifts": []}
+            for k in items_dict}
+
+    map_names = {m["id"]: _prettify_map(m["id"]) for m in world.get("maps", [])}
+
+    # Mart locations
+    for map_id, mart in world.get("marts", {}).items():
+        mart_name = mart.get("name", _prettify_map(map_id))
+        for inv in mart.get("inventories", []):
+            for item_const in inv.get("items", []):
+                key = item_const.replace("ITEM_", "")
+                if key in locs:
+                    # Avoid duplicates
+                    entry = {"mapId": map_id, "martName": mart_name,
+                             "condition": inv["condition"]}
+                    if entry not in locs[key]["marts"]:
+                        locs[key]["marts"].append(entry)
+
+    # Overworld item ball pickups
+    for it in world.get("items", []):
+        item_const = it.get("item") or ""
+        key = item_const.replace("ITEM_", "")
+        if key in locs:
+            entry = {"mapId": it["mapId"],
+                     "mapName": map_names.get(it["mapId"],
+                                              _prettify_map(it["mapId"])),
+                     "hidden": it.get("hidden", False)}
+            locs[key]["overworld"].append(entry)
+
+    # Gift NPC bundles
+    for gift in world.get("gifts", []):
+        map_name = map_names.get(gift["mapId"], _prettify_map(gift["mapId"]))
+        for gi in gift.get("items", []):
+            item_const = gi.get("item") or ""
+            key = item_const.replace("ITEM_", "")
+            if key in locs:
+                qty = gi.get("qty", 1)
+                entry = {"mapId": gift["mapId"], "mapName": map_name,
+                         "qty": qty}
+                locs[key]["gifts"].append(entry)
+
+    return locs
+
+
 # ── Main ───────────────────────────────────────────────────────────────────────
 
 def main():
@@ -220,7 +285,17 @@ def main():
     print("  [3] Copying icons …")
     copy_icons(items)
 
-    print("  [4] Writing JSON …")
+    print("  [4] Building location data …")
+    index = {item["id"]: item for item in items}
+    locations = build_locations(index)
+    for item in items:
+        item["locations"] = locations.get(item["id"],
+                                          {"marts": [], "overworld": [], "gifts": []})
+    locs_with_data = sum(1 for i in items
+                         if any(i["locations"][k] for k in ("marts","overworld","gifts")))
+    print(f"       -> {locs_with_data}/{len(items)} items have location data")
+
+    print("  [5] Writing JSON …")
     index = {item["id"]: item for item in items}
     write_json(DATA_DIR / "items_index.json", index)
     for item in items:

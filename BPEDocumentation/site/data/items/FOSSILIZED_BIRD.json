@@ -1,1 +1,1 @@
-{"id":"FOSSILIZED_BIRD","name":"Fossilized Bird","price":5000,"description":"A fossil of an ancient, sky- soaring Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/fossilized_bird.png"}
+{"id":"FOSSILIZED_BIRD","name":"Fossilized Bird","price":5000,"description":"A fossil of an ancient, sky- soaring Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/fossilized_bird.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"TM_THUNDER","name":"TM166","price":0,"description":"Thunder","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_THUNDER","name":"TM166","price":0,"description":"Thunder","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

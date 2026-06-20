@@ -1,1 +1,1 @@
-{"id":"DUBIOUS_DISC","name":"Dubious Disc","price":2000,"description":"A clear device overflowing with dubious data.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/dubious_disc.png"}
+{"id":"DUBIOUS_DISC","name":"Dubious Disc","price":2000,"description":"A clear device overflowing with dubious data.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/dubious_disc.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

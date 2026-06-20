@@ -1,1 +1,1 @@
-{"id":"GOOD_ROD","name":"Good Rod","price":0,"description":"A decent fishing rod for catching wild Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/good_rod.png"}
+{"id":"GOOD_ROD","name":"Good Rod","price":0,"description":"A decent fishing rod for catching wild Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/good_rod.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

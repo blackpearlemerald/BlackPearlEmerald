@@ -1,1 +1,1 @@
-{"id":"RAGE_CANDY_BAR","name":"Rage Candy Bar","price":350,"description":"Heals all the status problems of one Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/rage_candy_bar.png"}
+{"id":"RAGE_CANDY_BAR","name":"Rage Candy Bar","price":350,"description":"Heals all the status problems of one Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/rage_candy_bar.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

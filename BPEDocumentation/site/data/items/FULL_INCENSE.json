@@ -1,1 +1,1 @@
-{"id":"FULL_INCENSE","name":"Full Incense","price":5000,"description":"A held item that makes the holder move slower.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/full_incense.png"}
+{"id":"FULL_INCENSE","name":"Full Incense","price":5000,"description":"A held item that makes the holder move slower.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/full_incense.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

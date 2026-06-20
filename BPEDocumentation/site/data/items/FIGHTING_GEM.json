@@ -1,1 +1,1 @@
-{"id":"FIGHTING_GEM","name":"Fighting Gem","price":0,"description":"Increases the power of Fighting Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null}
+{"id":"FIGHTING_GEM","name":"Fighting Gem","price":0,"description":"Increases the power of Fighting Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE124","mapName":"Route124","hidden":false}],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"HEAVY_BALL","name":"Heavy Ball","price":0,"description":"Works well on very heavy Pokémon.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/heavy_ball.png"}
+{"id":"HEAVY_BALL","name":"Heavy Ball","price":0,"description":"Works well on very heavy Pokémon.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/heavy_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

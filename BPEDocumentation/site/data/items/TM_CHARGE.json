@@ -1,1 +1,1 @@
-{"id":"TM_CHARGE","name":"TM173","price":0,"description":"Charge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_CHARGE","name":"TM173","price":0,"description":"Charge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

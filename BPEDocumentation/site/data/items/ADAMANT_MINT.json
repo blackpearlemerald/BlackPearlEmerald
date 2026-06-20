@@ -1,1 +1,1 @@
-{"id":"ADAMANT_MINT","name":"Adamant Mint","price":20000,"description":"Can be smelled. It ups Attack, but reduces Sp. Atk.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null}
+{"id":"ADAMANT_MINT","name":"Adamant Mint","price":20000,"description":"Can be smelled. It ups Attack, but reduces Sp. Atk.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE116","mapName":"Route116","hidden":false}],"gifts":[]}}

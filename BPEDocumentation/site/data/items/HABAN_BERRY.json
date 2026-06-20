@@ -1,1 +1,1 @@
-{"id":"HABAN_BERRY","name":"Haban Berry","price":80,"description":"A hold item that weakens a Dragon move if weak to it.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/haban_berry.png"}
+{"id":"HABAN_BERRY","name":"Haban Berry","price":80,"description":"A hold item that weakens a Dragon move if weak to it.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/haban_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

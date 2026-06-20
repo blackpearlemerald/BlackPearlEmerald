@@ -1,1 +1,1 @@
-{"id":"LUCKY_PUNCH","name":"Lucky Punch","price":1000,"description":"A hold item that raises Chansey's critical-hit rate.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/lucky_punch.png"}
+{"id":"LUCKY_PUNCH","name":"Lucky Punch","price":1000,"description":"A hold item that raises Chansey's critical-hit rate.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/lucky_punch.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

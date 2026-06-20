@@ -1,1 +1,1 @@
-{"id":"PINSIRITE","name":"Pinsirite","price":0,"description":"This stone enables Pinsir to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/pinsirite.png"}
+{"id":"PINSIRITE","name":"Pinsirite","price":0,"description":"This stone enables Pinsir to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/pinsirite.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE119","mapName":"Route119","hidden":false}],"gifts":[]}}

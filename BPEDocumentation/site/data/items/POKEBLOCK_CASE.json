@@ -1,1 +1,1 @@
-{"id":"POKEBLOCK_CASE","name":"{POKEBLOCK} Case","price":0,"description":"A case for holding {POKEBLOCK}s made with a Berry Blender.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/pokeblock_case.png"}
+{"id":"POKEBLOCK_CASE","name":"{POKEBLOCK} Case","price":0,"description":"A case for holding {POKEBLOCK}s made with a Berry Blender.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/pokeblock_case.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

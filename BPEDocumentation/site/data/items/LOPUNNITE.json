@@ -1,1 +1,1 @@
-{"id":"LOPUNNITE","name":"Lopunnite","price":0,"description":"This stone enables Lopunny to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/lopunnite.png"}
+{"id":"LOPUNNITE","name":"Lopunnite","price":0,"description":"This stone enables Lopunny to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/lopunnite.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_PETALBURG_WOODS","mapName":"Petalburg Woods","hidden":false}],"gifts":[]}}

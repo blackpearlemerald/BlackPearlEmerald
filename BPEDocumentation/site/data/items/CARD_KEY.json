@@ -1,1 +1,1 @@
-{"id":"CARD_KEY","name":"Card Key","price":0,"description":"A card-type door key used in Silph Co's office.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/card_key.png"}
+{"id":"CARD_KEY","name":"Card Key","price":0,"description":"A card-type door key used in Silph Co's office.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/card_key.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

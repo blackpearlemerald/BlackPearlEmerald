@@ -1,1 +1,1 @@
-{"id":"MAGOST_BERRY","name":"Magost Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Magost.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/magost_berry.png"}
+{"id":"MAGOST_BERRY","name":"Magost Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Magost.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/magost_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"LAX_INCENSE","name":"Lax Incense","price":5000,"description":"A hold item that slightly lowers the foe's accuracy.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/lax_incense.png"}
+{"id":"LAX_INCENSE","name":"Lax Incense","price":5000,"description":"A hold item that slightly lowers the foe's accuracy.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/lax_incense.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

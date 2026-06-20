@@ -1,1 +1,1 @@
-{"id":"APICOT_BERRY","name":"Apicot Berry","price":80,"description":"A hold item that raises Sp. Def in a pinch.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/apicot_berry.png"}
+{"id":"APICOT_BERRY","name":"Apicot Berry","price":80,"description":"A hold item that raises Sp. Def in a pinch.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/apicot_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

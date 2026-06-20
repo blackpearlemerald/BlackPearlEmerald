@@ -1,1 +1,1 @@
-{"id":"TM_SNARL","name":"TM30","price":0,"description":"Snarl","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_SNARL","name":"TM30","price":0,"description":"Snarl","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

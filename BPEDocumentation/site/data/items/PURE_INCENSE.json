@@ -1,1 +1,1 @@
-{"id":"PURE_INCENSE","name":"Pure Incense","price":6000,"description":"A hold item that helps repel wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/pure_incense.png"}
+{"id":"PURE_INCENSE","name":"Pure Incense","price":6000,"description":"A hold item that helps repel wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/pure_incense.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

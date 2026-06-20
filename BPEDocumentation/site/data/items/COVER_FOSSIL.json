@@ -1,1 +1,1 @@
-{"id":"COVER_FOSSIL","name":"Cover Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's back.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/cover_fossil.png"}
+{"id":"COVER_FOSSIL","name":"Cover Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's back.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/cover_fossil.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

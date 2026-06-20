@@ -1,1 +1,1 @@
-{"id":"RARE_CANDY","name":"Rare Candy","price":0,"description":"Raises the level of a Pokémon by one.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Level Up Item","icon":"sprites/items/rare_candy.png"}
+{"id":"RARE_CANDY","name":"Rare Candy","price":0,"description":"Raises the level of a Pokémon by one.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Level Up Item","icon":"sprites/items/rare_candy.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_SAFARI_ZONE_NORTHEAST","mapName":"Safari Zone Northeast","hidden":true}],"gifts":[]}}

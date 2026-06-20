@@ -1,1 +1,1 @@
-{"id":"WATER_MEMORY","name":"Water Memory","price":1000,"description":"A disc with Water type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/water_memory.png"}
+{"id":"WATER_MEMORY","name":"Water Memory","price":1000,"description":"A disc with Water type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/water_memory.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

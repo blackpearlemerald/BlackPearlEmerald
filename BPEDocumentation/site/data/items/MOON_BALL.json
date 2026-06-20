@@ -1,1 +1,1 @@
-{"id":"MOON_BALL","name":"Moon Ball","price":0,"description":"A Ball that works well on Moon Stone users.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/moon_ball.png"}
+{"id":"MOON_BALL","name":"Moon Ball","price":0,"description":"A Ball that works well on Moon Stone users.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/moon_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

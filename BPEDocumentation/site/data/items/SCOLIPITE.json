@@ -1,1 +1,1 @@
-{"id":"SCOLIPITE","name":"Scolipite","price":0,"description":"This stone enables Scolipede to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/scolipite.png"}
+{"id":"SCOLIPITE","name":"Scolipite","price":0,"description":"This stone enables Scolipede to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/scolipite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

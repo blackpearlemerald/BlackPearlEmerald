@@ -1,1 +1,1 @@
-{"id":"X_SP_DEF","name":"X Sp. Def","price":2000,"description":"Sharply raises stat Sp. Def during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"X Item","icon":null}
+{"id":"X_SP_DEF","name":"X Sp. Def","price":2000,"description":"Sharply raises stat Sp. Def during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"X Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

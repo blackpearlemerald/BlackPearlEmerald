@@ -1,1 +1,1 @@
-{"id":"BLUE_SHARD","name":"Blue Shard","price":1000,"description":"A shard from an ancient item. Can be sold cheaply.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Shard","icon":null}
+{"id":"BLUE_SHARD","name":"Blue Shard","price":1000,"description":"A shard from an ancient item. Can be sold cheaply.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Shard","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE124","mapName":"Route124","hidden":false}],"gifts":[]}}

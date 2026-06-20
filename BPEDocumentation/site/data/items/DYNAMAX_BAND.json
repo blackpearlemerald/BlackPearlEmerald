@@ -1,1 +1,1 @@
-{"id":"DYNAMAX_BAND","name":"Dynamax Band","price":0,"description":"A band carrying a Wishing Star that allows Dynamaxing.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/dynamax_band.png"}
+{"id":"DYNAMAX_BAND","name":"Dynamax Band","price":0,"description":"A band carrying a Wishing Star that allows Dynamaxing.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/dynamax_band.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

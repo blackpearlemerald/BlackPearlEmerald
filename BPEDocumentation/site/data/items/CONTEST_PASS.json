@@ -1,1 +1,1 @@
-{"id":"CONTEST_PASS","name":"Contest Pass","price":0,"description":"The pass required for entering Pokémon Contests.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/contest_pass.png"}
+{"id":"CONTEST_PASS","name":"Contest Pass","price":0,"description":"The pass required for entering Pokémon Contests.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/contest_pass.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

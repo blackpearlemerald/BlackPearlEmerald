@@ -1,1 +1,1 @@
-{"id":"POWER_BRACER","name":"Power Bracer","price":10000,"description":"A hold item that promotes Atk gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_bracer.png"}
+{"id":"POWER_BRACER","name":"Power Bracer","price":10000,"description":"A hold item that promotes Atk gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_bracer.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

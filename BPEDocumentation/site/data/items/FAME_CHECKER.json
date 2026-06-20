@@ -1,1 +1,1 @@
-{"id":"FAME_CHECKER","name":"Fame Checker","price":0,"description":"Stores information on famous people for instant recall.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/fame_checker.png"}
+{"id":"FAME_CHECKER","name":"Fame Checker","price":0,"description":"Stores information on famous people for instant recall.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/fame_checker.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

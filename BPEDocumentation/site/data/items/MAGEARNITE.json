@@ -1,1 +1,1 @@
-{"id":"MAGEARNITE","name":"Magearnite","price":0,"description":"This stone enables Magearna to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/magearnite.png"}
+{"id":"MAGEARNITE","name":"Magearnite","price":0,"description":"This stone enables Magearna to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/magearnite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

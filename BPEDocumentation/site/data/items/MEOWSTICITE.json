@@ -1,1 +1,1 @@
-{"id":"MEOWSTICITE","name":"Meowsticite","price":0,"description":"This stone enables Meowstic to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/meowsticite.png"}
+{"id":"MEOWSTICITE","name":"Meowsticite","price":0,"description":"This stone enables Meowstic to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/meowsticite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

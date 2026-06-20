@@ -1,1 +1,1 @@
-{"id":"FOSSILIZED_FISH","name":"Fossilized Fish","price":5000,"description":"A fossil of an ancient, sea- dwelling Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/fossilized_fish.png"}
+{"id":"FOSSILIZED_FISH","name":"Fossilized Fish","price":5000,"description":"A fossil of an ancient, sea- dwelling Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/fossilized_fish.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

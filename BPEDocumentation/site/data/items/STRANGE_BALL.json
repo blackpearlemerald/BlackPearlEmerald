@@ -1,1 +1,1 @@
-{"id":"STRANGE_BALL","name":"Strange Ball","price":0,"description":"An unusual Ball warped through space and time.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/strange_ball.png"}
+{"id":"STRANGE_BALL","name":"Strange Ball","price":0,"description":"An unusual Ball warped through space and time.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/strange_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

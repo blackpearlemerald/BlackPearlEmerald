@@ -1,1 +1,1 @@
-{"id":"TM_GRASSY_GLIDE","name":"TM194","price":0,"description":"Grassy Glide","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_GRASSY_GLIDE","name":"TM194","price":0,"description":"Grassy Glide","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

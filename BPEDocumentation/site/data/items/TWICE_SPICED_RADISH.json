@@ -1,1 +1,1 @@
-{"id":"TWICE_SPICED_RADISH","name":"Twice-Spiced Radish","price":1600,"description":"?????","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":"sprites/items/twice_spiced_radish.png"}
+{"id":"TWICE_SPICED_RADISH","name":"Twice-Spiced Radish","price":1600,"description":"?????","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":"sprites/items/twice_spiced_radish.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

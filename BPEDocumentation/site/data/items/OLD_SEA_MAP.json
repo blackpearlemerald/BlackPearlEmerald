@@ -1,1 +1,1 @@
-{"id":"OLD_SEA_MAP","name":"Old Sea Map","price":0,"description":"A faded sea chart that shows the way to a certain island.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/old_sea_map.png"}
+{"id":"OLD_SEA_MAP","name":"Old Sea Map","price":0,"description":"A faded sea chart that shows the way to a certain island.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/old_sea_map.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

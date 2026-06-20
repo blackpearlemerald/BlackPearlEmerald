@@ -1,1 +1,1 @@
-{"id":"MALICIOUS_ARMOR","name":"Malicious Armor","price":3000,"description":"Armor inhabited by malicious will. Causes evolution.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/malicious_armor.png"}
+{"id":"MALICIOUS_ARMOR","name":"Malicious Armor","price":3000,"description":"Armor inhabited by malicious will. Causes evolution.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/malicious_armor.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

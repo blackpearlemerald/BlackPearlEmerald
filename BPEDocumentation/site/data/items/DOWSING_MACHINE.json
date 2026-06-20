@@ -1,1 +1,1 @@
-{"id":"DOWSING_MACHINE","name":"Dowsing Machine","price":0,"description":"A device that signals an invisible item by sound.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/dowsing_machine.png"}
+{"id":"DOWSING_MACHINE","name":"Dowsing Machine","price":0,"description":"A device that signals an invisible item by sound.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/dowsing_machine.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

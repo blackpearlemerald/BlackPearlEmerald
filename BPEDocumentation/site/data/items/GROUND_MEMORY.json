@@ -1,1 +1,1 @@
-{"id":"GROUND_MEMORY","name":"Ground Memory","price":1000,"description":"A disc with Ground type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/ground_memory.png"}
+{"id":"GROUND_MEMORY","name":"Ground Memory","price":1000,"description":"A disc with Ground type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/ground_memory.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"DNA_SPLICERS","name":"DNA Splicers","price":0,"description":"Splicer that fuses Kyurem and a certain Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/dna_splicers.png"}
+{"id":"DNA_SPLICERS","name":"DNA Splicers","price":0,"description":"Splicer that fuses Kyurem and a certain Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/dna_splicers.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

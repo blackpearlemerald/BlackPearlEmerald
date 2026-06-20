@@ -1,1 +1,1 @@
-{"id":"DUSK_BALL","name":"Dusk Ball","price":1000,"description":"Works well if used in a dark place.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/dusk_ball.png"}
+{"id":"DUSK_BALL","name":"Dusk Ball","price":1000,"description":"Works well if used in a dark place.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/dusk_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

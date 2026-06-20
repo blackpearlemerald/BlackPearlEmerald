@@ -1,1 +1,1 @@
-{"id":"ENIGMA_BERRY","name":"Enigma Berry","price":80,"description":"A hold item that heals from super effective moves.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/enigma_berry.png"}
+{"id":"ENIGMA_BERRY","name":"Enigma Berry","price":80,"description":"A hold item that heals from super effective moves.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/enigma_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"RUSTED_SWORD","name":"Rusted Sword","price":0,"description":"A rusty sword. A hero used it to halt a disaster.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/rusted_sword.png"}
+{"id":"RUSTED_SWORD","name":"Rusted Sword","price":0,"description":"A rusty sword. A hero used it to halt a disaster.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/rusted_sword.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

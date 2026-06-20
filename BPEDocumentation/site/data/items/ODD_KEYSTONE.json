@@ -1,1 +1,1 @@
-{"id":"ODD_KEYSTONE","name":"Odd Keystone","price":2100,"description":"Voices can be heard from this odd stone occasionally.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/odd_keystone.png"}
+{"id":"ODD_KEYSTONE","name":"Odd Keystone","price":2100,"description":"Voices can be heard from this odd stone occasionally.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/odd_keystone.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

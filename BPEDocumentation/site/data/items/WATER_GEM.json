@@ -1,1 +1,1 @@
-{"id":"WATER_GEM","name":"Water Gem","price":0,"description":"Increases the power of Water Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null}
+{"id":"WATER_GEM","name":"Water Gem","price":0,"description":"Increases the power of Water Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE120","mapName":"Route120","hidden":false}],"gifts":[]}}

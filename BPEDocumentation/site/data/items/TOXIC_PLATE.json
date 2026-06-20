@@ -1,1 +1,1 @@
-{"id":"TOXIC_PLATE","name":"Toxic Plate","price":1000,"description":"A tablet that ups the power of Poison-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null}
+{"id":"TOXIC_PLATE","name":"Toxic Plate","price":1000,"description":"A tablet that ups the power of Poison-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

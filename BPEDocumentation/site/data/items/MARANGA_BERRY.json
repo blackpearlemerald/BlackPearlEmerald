@@ -1,1 +1,1 @@
-{"id":"MARANGA_BERRY","name":"Maranga Berry","price":80,"description":"If hit by a special move, it raises the Sp. Def. a bit.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/maranga_berry.png"}
+{"id":"MARANGA_BERRY","name":"Maranga Berry","price":80,"description":"If hit by a special move, it raises the Sp. Def. a bit.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/maranga_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

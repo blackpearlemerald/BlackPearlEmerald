@@ -1,1 +1,1 @@
-{"id":"RAINBOW_PASS","name":"Rainbow Pass","price":0,"description":"For ferries serving Vermilion and the Sevii Islands.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/rainbow_pass.png"}
+{"id":"RAINBOW_PASS","name":"Rainbow Pass","price":0,"description":"For ferries serving Vermilion and the Sevii Islands.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/rainbow_pass.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

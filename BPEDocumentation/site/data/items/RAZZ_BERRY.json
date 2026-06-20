@@ -1,1 +1,1 @@
-{"id":"RAZZ_BERRY","name":"Razz Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Razz.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/razz_berry.png"}
+{"id":"RAZZ_BERRY","name":"Razz Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow Razz.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/razz_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"KINGS_ROCK","name":"King's Rock","price":10000,"description":"A hold item that may cause flinching when the foe is hit.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/kings_rock.png"}
+{"id":"KINGS_ROCK","name":"King's Rock","price":10000,"description":"A hold item that may cause flinching when the foe is hit.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/kings_rock.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

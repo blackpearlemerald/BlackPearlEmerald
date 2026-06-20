@@ -1,1 +1,1 @@
-{"id":"CLEVER_FEATHER","name":"Clever Feather","price":300,"description":"An item that raises the base Sp. Def. of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Feather","icon":null}
+{"id":"CLEVER_FEATHER","name":"Clever Feather","price":300,"description":"An item that raises the base Sp. Def. of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Feather","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

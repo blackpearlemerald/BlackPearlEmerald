@@ -1,1 +1,1 @@
-{"id":"EXPERT_BELT","name":"Expert Belt","price":30000,"description":"A belt that boosts the power of super effective moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/expert_belt.png"}
+{"id":"EXPERT_BELT","name":"Expert Belt","price":30000,"description":"A belt that boosts the power of super effective moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/expert_belt.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE113","mapName":"Route113","hidden":false}],"gifts":[]}}

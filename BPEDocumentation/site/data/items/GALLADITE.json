@@ -1,1 +1,1 @@
-{"id":"GALLADITE","name":"Galladite","price":0,"description":"This stone enables Gallade to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/galladite.png"}
+{"id":"GALLADITE","name":"Galladite","price":0,"description":"This stone enables Gallade to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/galladite.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE114","mapName":"Route114","hidden":false}],"gifts":[]}}

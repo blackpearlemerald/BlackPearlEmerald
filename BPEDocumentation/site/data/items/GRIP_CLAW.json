@@ -1,1 +1,1 @@
-{"id":"GRIP_CLAW","name":"Grip Claw","price":10000,"description":"A held item that extends binding moves like Wrap.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/grip_claw.png"}
+{"id":"GRIP_CLAW","name":"Grip Claw","price":10000,"description":"A held item that extends binding moves like Wrap.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/grip_claw.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

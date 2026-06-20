@@ -1,1 +1,1 @@
-{"id":"OVAL_CHARM","name":"Oval Charm","price":0,"description":"Raises the chance of finding eggs at the daycare.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/oval_charm.png"}
+{"id":"OVAL_CHARM","name":"Oval Charm","price":0,"description":"Raises the chance of finding eggs at the daycare.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/oval_charm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

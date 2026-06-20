@@ -1,1 +1,1 @@
-{"id":"RELIC_SILVER","name":"Relic Silver","price":0,"description":"A silver coin used long ago. It sells at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Relic","icon":null}
+{"id":"RELIC_SILVER","name":"Relic Silver","price":0,"description":"A silver coin used long ago. It sells at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Relic","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

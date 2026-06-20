@@ -1,1 +1,1 @@
-{"id":"DREAD_PLATE","name":"Dread Plate","price":1000,"description":"A tablet that ups the power of Dark-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null}
+{"id":"DREAD_PLATE","name":"Dread Plate","price":1000,"description":"A tablet that ups the power of Dark-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

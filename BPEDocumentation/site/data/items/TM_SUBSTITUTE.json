@@ -1,1 +1,1 @@
-{"id":"TM_SUBSTITUTE","name":"TM103","price":0,"description":"Substitute","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_SUBSTITUTE","name":"TM103","price":0,"description":"Substitute","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

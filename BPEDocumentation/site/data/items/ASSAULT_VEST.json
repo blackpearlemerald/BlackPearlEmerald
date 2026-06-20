@@ -1,1 +1,1 @@
-{"id":"ASSAULT_VEST","name":"Assault Vest","price":50000,"description":"Raises Sp. Def but prevents the use of status moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/assault_vest.png"}
+{"id":"ASSAULT_VEST","name":"Assault Vest","price":50000,"description":"Raises Sp. Def but prevents the use of status moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/assault_vest.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

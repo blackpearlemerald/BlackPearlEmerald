@@ -1,1 +1,1 @@
-{"id":"MAX_ELIXIR","name":"Max Elixir","price":4500,"description":"Fully restores the PP of a Pokémon's moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":null}
+{"id":"MAX_ELIXIR","name":"Max Elixir","price":4500,"description":"Fully restores the PP of a Pokémon's moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

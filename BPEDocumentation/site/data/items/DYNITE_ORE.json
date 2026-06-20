@@ -1,1 +1,1 @@
-{"id":"DYNITE_ORE","name":"Dynite Ore","price":20,"description":"A mysterious ore. It can be found in Galar's Max Lair.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/dynite_ore.png"}
+{"id":"DYNITE_ORE","name":"Dynite Ore","price":20,"description":"A mysterious ore. It can be found in Galar's Max Lair.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/dynite_ore.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

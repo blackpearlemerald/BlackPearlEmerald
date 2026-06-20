@@ -1,1 +1,1 @@
-{"id":"SKULL_FOSSIL","name":"Skull Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's collar.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/skull_fossil.png"}
+{"id":"SKULL_FOSSIL","name":"Skull Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's collar.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/skull_fossil.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

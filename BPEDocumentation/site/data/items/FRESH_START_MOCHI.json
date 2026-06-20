@@ -1,1 +1,1 @@
-{"id":"FRESH_START_MOCHI","name":"Fresh-Start Mochi","price":300,"description":"An item that resets all base points of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":null}
+{"id":"FRESH_START_MOCHI","name":"Fresh-Start Mochi","price":300,"description":"An item that resets all base points of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"LEEK","name":"Leek","price":1000,"description":"A hold item that raises Farfetch'd's critical-hit ratio.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/leek.png"}
+{"id":"LEEK","name":"Leek","price":1000,"description":"A hold item that raises Farfetch'd's critical-hit ratio.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/leek.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

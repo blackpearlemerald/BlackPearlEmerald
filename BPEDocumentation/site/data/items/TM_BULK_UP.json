@@ -1,1 +1,1 @@
-{"id":"TM_BULK_UP","name":"TM08","price":3000,"description":"Bulks up the body to boost both Attack & Defense.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_BULK_UP","name":"TM08","price":3000,"description":"Bulks up the body to boost both Attack & Defense.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

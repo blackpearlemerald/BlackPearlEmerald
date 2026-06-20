@@ -1,1 +1,1 @@
-{"id":"MISTY_SEED","name":"Misty Seed","price":20000,"description":"Boosts Sp. Def. on Misty Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null}
+{"id":"MISTY_SEED","name":"Misty Seed","price":20000,"description":"Boosts Sp. Def. on Misty Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

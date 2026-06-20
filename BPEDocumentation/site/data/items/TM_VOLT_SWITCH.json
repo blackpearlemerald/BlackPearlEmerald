@@ -1,1 +1,1 @@
-{"id":"TM_VOLT_SWITCH","name":"TM48","price":0,"description":"Volt Switch","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_VOLT_SWITCH","name":"TM48","price":0,"description":"Volt Switch","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

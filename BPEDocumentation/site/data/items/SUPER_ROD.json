@@ -1,1 +1,1 @@
-{"id":"SUPER_ROD","name":"Super Rod","price":0,"description":"The best fishing rod for catching wild Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/super_rod.png"}
+{"id":"SUPER_ROD","name":"Super Rod","price":0,"description":"The best fishing rod for catching wild Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/super_rod.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

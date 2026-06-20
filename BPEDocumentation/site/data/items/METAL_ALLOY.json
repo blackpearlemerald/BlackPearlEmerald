@@ -1,1 +1,1 @@
-{"id":"METAL_ALLOY","name":"Metal Alloy","price":6000,"description":"A peculiar metal that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/metal_alloy.png"}
+{"id":"METAL_ALLOY","name":"Metal Alloy","price":6000,"description":"A peculiar metal that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/metal_alloy.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

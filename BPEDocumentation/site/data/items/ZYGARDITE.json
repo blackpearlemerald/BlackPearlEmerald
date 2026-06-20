@@ -1,1 +1,1 @@
-{"id":"ZYGARDITE","name":"Zygardite","price":0,"description":"This stone enables Zygarde to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/zygardite.png"}
+{"id":"ZYGARDITE","name":"Zygardite","price":0,"description":"This stone enables Zygarde to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/zygardite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

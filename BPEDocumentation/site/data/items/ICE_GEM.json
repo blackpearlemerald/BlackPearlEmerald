@@ -1,1 +1,1 @@
-{"id":"ICE_GEM","name":"Ice Gem","price":0,"description":"Increases the power of Ice Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null}
+{"id":"ICE_GEM","name":"Ice Gem","price":0,"description":"Increases the power of Ice Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_SHOAL_CAVE_LOW_TIDE_INNER_ROOM","mapName":"Shoal Cave Low Tide Inner Room","hidden":false}],"gifts":[]}}

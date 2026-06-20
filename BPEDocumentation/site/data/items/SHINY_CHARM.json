@@ -1,1 +1,1 @@
-{"id":"SHINY_CHARM","name":"Shiny Charm","price":0,"description":"A charm that will raise the chance of Shiny Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/shiny_charm.png"}
+{"id":"SHINY_CHARM","name":"Shiny Charm","price":0,"description":"A charm that will raise the chance of Shiny Pokémon.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/shiny_charm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

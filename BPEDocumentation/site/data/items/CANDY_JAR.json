@@ -1,1 +1,1 @@
-{"id":"CANDY_JAR","name":"Candy Jar","price":0,"description":"A bottomless jar filled with Rare Candies.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/candy_jar.png"}
+{"id":"CANDY_JAR","name":"Candy Jar","price":0,"description":"A bottomless jar filled with Rare Candies.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/candy_jar.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_LITTLEROOT_TOWN","mapName":"Littleroot Town","qty":1}]}}

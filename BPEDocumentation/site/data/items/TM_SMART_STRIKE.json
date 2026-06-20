@@ -1,1 +1,1 @@
-{"id":"TM_SMART_STRIKE","name":"TM53","price":0,"description":"Smart Strike","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_SMART_STRIKE","name":"TM53","price":0,"description":"Smart Strike","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

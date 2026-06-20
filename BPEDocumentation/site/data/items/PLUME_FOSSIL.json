@@ -1,1 +1,1 @@
-{"id":"PLUME_FOSSIL","name":"Plume Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's wing.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/plume_fossil.png"}
+{"id":"PLUME_FOSSIL","name":"Plume Fossil","price":7000,"description":"A piece of a prehistoric Poké- mon's wing.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/plume_fossil.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

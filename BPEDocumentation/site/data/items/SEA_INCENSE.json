@@ -1,1 +1,1 @@
-{"id":"SEA_INCENSE","name":"Sea Incense","price":2000,"description":"A hold item that slightly boosts Water-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/sea_incense.png"}
+{"id":"SEA_INCENSE","name":"Sea Incense","price":2000,"description":"A hold item that slightly boosts Water-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/sea_incense.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"ROOT_FOSSIL","name":"Root Fossil","price":7000,"description":"A fossil of an ancient, seafloor- dwelling Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/root_fossil.png"}
+{"id":"ROOT_FOSSIL","name":"Root Fossil","price":7000,"description":"A fossil of an ancient, seafloor- dwelling Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Fossil","icon":"sprites/items/root_fossil.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_DESERT_UNDERPASS","mapName":"Desert Underpass","qty":1}]}}

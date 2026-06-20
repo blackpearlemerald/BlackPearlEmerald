@@ -1,1 +1,1 @@
-{"id":"VENUSAURITE","name":"Venusaurite","price":0,"description":"This stone enables Venusaur to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/venusaurite.png"}
+{"id":"VENUSAURITE","name":"Venusaurite","price":0,"description":"This stone enables Venusaur to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/venusaurite.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE116","mapName":"Route116","hidden":false}],"gifts":[]}}

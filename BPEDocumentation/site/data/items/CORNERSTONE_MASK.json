@@ -1,1 +1,1 @@
-{"id":"CORNERSTONE_MASK","name":"Cornerstone Mask","price":0,"description":"Allows Ogerpon to wield the Rock- type in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/cornerstone_mask.png"}
+{"id":"CORNERSTONE_MASK","name":"Cornerstone Mask","price":0,"description":"Allows Ogerpon to wield the Rock- type in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Special Held Item","icon":"sprites/items/cornerstone_mask.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

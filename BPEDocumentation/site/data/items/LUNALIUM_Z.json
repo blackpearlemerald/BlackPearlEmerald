@@ -1,1 +1,1 @@
-{"id":"LUNALIUM_Z","name":"Lunalium Z","price":0,"description":"Upgrade Lunala's Moongeist Beam into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/lunalium_z.png"}
+{"id":"LUNALIUM_Z","name":"Lunalium Z","price":0,"description":"Upgrade Lunala's Moongeist Beam into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/lunalium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

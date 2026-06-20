@@ -1,1 +1,1 @@
-{"id":"SNORLIUM_Z","name":"Snorlium Z","price":0,"description":"Upgrade Snorlax's Giga Impact into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/snorlium_z.png"}
+{"id":"SNORLIUM_Z","name":"Snorlium Z","price":0,"description":"Upgrade Snorlax's Giga Impact into a Z-Move.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/snorlium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"STEEL_TERA_SHARD","name":"Steel Tera Shard","price":0,"description":"These shards may form when a Tera Pokémon faints.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Tera Shard","icon":null}
+{"id":"STEEL_TERA_SHARD","name":"Steel Tera Shard","price":0,"description":"These shards may form when a Tera Pokémon faints.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Tera Shard","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

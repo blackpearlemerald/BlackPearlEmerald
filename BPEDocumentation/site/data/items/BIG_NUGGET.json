@@ -1,1 +1,1 @@
-{"id":"BIG_NUGGET","name":"Big Nugget","price":0,"description":"A big nugget made of gold, sellable at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/big_nugget.png"}
+{"id":"BIG_NUGGET","name":"Big Nugget","price":0,"description":"A big nugget made of gold, sellable at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/big_nugget.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

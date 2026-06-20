@@ -13,6 +13,73 @@
     return '₽' + price.toLocaleString();
   }
 
+  function prettify(name) {
+    if (!name) return '';
+    name = name.replace(/^(ITEM_|MAP_)/, '');
+    return name.split('_').map(function(w) {
+      return w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w;
+    }).join(' ').replace(/([A-Za-z])(\d)/g, '$1 $2');
+  }
+
+  function whereToFind(locs) {
+    if (!locs) return '';
+    var marts = locs.marts || [];
+    var overworld = locs.overworld || [];
+    var gifts = locs.gifts || [];
+    if (!marts.length && !overworld.length && !gifts.length) return '';
+
+    var html = '<div class="item-where-card"><h3>Where to Find</h3>';
+
+    if (marts.length) {
+      html += '<div class="where-section"><div class="where-section-label">🛒 Poké Mart</div>';
+      // Group by martName + condition
+      marts.forEach(function(m) {
+        var mapLink = 'index.html?map=' + encodeURIComponent(m.mapId);
+        html += '<div class="where-row">'
+          + '<a href="' + mapLink + '" class="where-map-link">' + esc(m.martName) + '</a>'
+          + '<span class="where-cond">' + esc(m.condition) + '</span>'
+          + '</div>';
+      });
+      html += '</div>';
+    }
+
+    if (overworld.length) {
+      // Deduplicate by mapId
+      var seen = {};
+      var unique = overworld.filter(function(o) {
+        if (seen[o.mapId]) return false;
+        seen[o.mapId] = true;
+        return true;
+      });
+      html += '<div class="where-section"><div class="where-section-label">⚪ Item Ball</div>';
+      unique.forEach(function(o) {
+        var mapLink = 'index.html?map=' + encodeURIComponent(o.mapId);
+        var hiddenLabel = o.hidden ? ' <span class="where-hidden">(hidden)</span>' : '';
+        html += '<div class="where-row">'
+          + '<a href="' + mapLink + '" class="where-map-link">' + esc(o.mapName) + '</a>'
+          + hiddenLabel
+          + '</div>';
+      });
+      html += '</div>';
+    }
+
+    if (gifts.length) {
+      html += '<div class="where-section"><div class="where-section-label">🎁 Gift NPC</div>';
+      gifts.forEach(function(g) {
+        var mapLink = 'index.html?map=' + encodeURIComponent(g.mapId);
+        var qtyLabel = g.qty > 1 ? ' <span class="where-qty">×' + g.qty + '</span>' : '';
+        html += '<div class="where-row">'
+          + '<a href="' + mapLink + '" class="where-map-link">' + esc(g.mapName) + '</a>'
+          + qtyLabel
+          + '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>';
+    return html;
+  }
+
   function render(item) {
     var content = document.getElementById('item-content');
     document.title = 'BPE Emerald — ' + item.name;
@@ -55,7 +122,8 @@
       + '<div class="item-meta-card">'
       +   '<h3>Details</h3>'
       +   metaHtml
-      + '</div>';
+      + '</div>'
+      + whereToFind(item.locations);
   }
 
   function init() {

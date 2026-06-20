@@ -1,1 +1,1 @@
-{"id":"TM_CASE","name":"TM Case","price":0,"description":"A convenient case that holds TMs and HMs.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_CASE","name":"TM Case","price":0,"description":"A convenient case that holds TMs and HMs.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

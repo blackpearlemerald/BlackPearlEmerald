@@ -1,1 +1,1 @@
-{"id":"AUX_POWERGUARD","name":"Aux Powerguard","price":1200,"description":"Sharply raises offense & defense during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":"sprites/items/aux_powerguard.png"}
+{"id":"AUX_POWERGUARD","name":"Aux Powerguard","price":1200,"description":"Sharply raises offense & defense during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":"sprites/items/aux_powerguard.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

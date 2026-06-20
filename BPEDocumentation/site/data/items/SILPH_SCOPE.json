@@ -1,1 +1,1 @@
-{"id":"SILPH_SCOPE","name":"Silph Scope","price":0,"description":"Silph Co's scope makes unseeable POKéMON visible.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/silph_scope.png"}
+{"id":"SILPH_SCOPE","name":"Silph Scope","price":0,"description":"Silph Co's scope makes unseeable POKéMON visible.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/silph_scope.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

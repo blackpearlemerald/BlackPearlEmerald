@@ -1,1 +1,1 @@
-{"id":"WAVE_INCENSE","name":"Wave Incense","price":2000,"description":"A hold item that slightly boosts Water-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/wave_incense.png"}
+{"id":"WAVE_INCENSE","name":"Wave Incense","price":2000,"description":"A hold item that slightly boosts Water-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/wave_incense.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

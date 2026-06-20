@@ -1,1 +1,1 @@
-{"id":"POWER_ANKLET","name":"Power Anklet","price":10000,"description":"A hold item that promotes Spd gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_anklet.png"}
+{"id":"POWER_ANKLET","name":"Power Anklet","price":10000,"description":"A hold item that promotes Spd gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_anklet.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

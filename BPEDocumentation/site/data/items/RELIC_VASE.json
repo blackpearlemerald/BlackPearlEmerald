@@ -1,1 +1,1 @@
-{"id":"RELIC_VASE","name":"Relic Vase","price":0,"description":"A vase made long ago. It sells at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Relic","icon":"sprites/items/relic_vase.png"}
+{"id":"RELIC_VASE","name":"Relic Vase","price":0,"description":"A vase made long ago. It sells at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Relic","icon":"sprites/items/relic_vase.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

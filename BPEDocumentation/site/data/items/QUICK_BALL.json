@@ -1,1 +1,1 @@
-{"id":"QUICK_BALL","name":"Quick Ball","price":1000,"description":"Works well if used on the first turn.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/quick_ball.png"}
+{"id":"QUICK_BALL","name":"Quick Ball","price":1000,"description":"Works well if used on the first turn.","pocket":"POCKET_POKE_BALLS","pocketLabel":"Poké Balls","sortType":"","icon":"sprites/items/quick_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

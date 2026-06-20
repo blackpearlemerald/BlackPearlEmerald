@@ -1,1 +1,1 @@
-{"id":"REINS_OF_UNITY","name":"Reins of Unity","price":0,"description":"Reins that unite Calyrex with its beloved steed.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/reins_of_unity.png"}
+{"id":"REINS_OF_UNITY","name":"Reins of Unity","price":0,"description":"Reins that unite Calyrex with its beloved steed.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/reins_of_unity.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

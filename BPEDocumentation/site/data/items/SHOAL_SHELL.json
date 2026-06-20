@@ -1,1 +1,1 @@
-{"id":"SHOAL_SHELL","name":"Shoal Shell","price":20,"description":"A seashell found deep inside the Shoal Cave.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/shoal_shell.png"}
+{"id":"SHOAL_SHELL","name":"Shoal Shell","price":20,"description":"A seashell found deep inside the Shoal Cave.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/shoal_shell.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"TM_SUNNY_DAY","name":"TM11","price":2000,"description":"Raises the power of Fire-type moves for 5 turns.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png"}
+{"id":"TM_SUNNY_DAY","name":"TM11","price":2000,"description":"Raises the power of Fire-type moves for 5 turns.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_SCORCHED_SLAB","mapName":"Scorched Slab","hidden":false}],"gifts":[]}}

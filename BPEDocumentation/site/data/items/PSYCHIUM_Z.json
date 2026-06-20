@@ -1,1 +1,1 @@
-{"id":"PSYCHIUM_Z","name":"Psychium Z","price":0,"description":"Upgrade Psychic- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/psychium_z.png"}
+{"id":"PSYCHIUM_Z","name":"Psychium Z","price":0,"description":"Upgrade Psychic- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/psychium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

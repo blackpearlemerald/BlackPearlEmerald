@@ -1,1 +1,1 @@
-{"id":"STEELIUM_Z","name":"Steelium Z","price":0,"description":"Upgrade Steel- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/steelium_z.png"}
+{"id":"STEELIUM_Z","name":"Steelium Z","price":0,"description":"Upgrade Steel- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/steelium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

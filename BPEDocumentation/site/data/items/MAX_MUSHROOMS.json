@@ -1,1 +1,1 @@
-{"id":"MAX_MUSHROOMS","name":"Max Mushrooms","price":8000,"description":"Raises every stat during one battle by one stage.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Battle Item","icon":"sprites/items/max_mushrooms.png"}
+{"id":"MAX_MUSHROOMS","name":"Max Mushrooms","price":8000,"description":"Raises every stat during one battle by one stage.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Battle Item","icon":"sprites/items/max_mushrooms.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

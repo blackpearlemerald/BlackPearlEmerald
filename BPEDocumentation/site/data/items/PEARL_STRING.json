@@ -1,1 +1,1 @@
-{"id":"PEARL_STRING","name":"Pearl String","price":0,"description":"Very large pearls that would sell at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/pearl_string.png"}
+{"id":"PEARL_STRING","name":"Pearl String","price":0,"description":"Very large pearls that would sell at a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/pearl_string.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

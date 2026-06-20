@@ -1,1 +1,1 @@
-{"id":"PSYCHIC_GEM","name":"Psychic Gem","price":0,"description":"Increases the power of Psychic Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null}
+{"id":"PSYCHIC_GEM","name":"Psychic Gem","price":0,"description":"Increases the power of Psychic Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_MT_PYRE_6F","mapName":"Mt Pyre 6F","hidden":false}],"gifts":[]}}

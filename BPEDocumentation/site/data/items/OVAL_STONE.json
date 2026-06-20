@@ -1,1 +1,1 @@
-{"id":"OVAL_STONE","name":"Oval Stone","price":2000,"description":"Peculiar stone that evolves a certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/oval_stone.png"}
+{"id":"OVAL_STONE","name":"Oval Stone","price":2000,"description":"Peculiar stone that evolves a certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/oval_stone.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

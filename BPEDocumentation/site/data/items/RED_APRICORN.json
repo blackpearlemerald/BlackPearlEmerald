@@ -1,1 +1,1 @@
-{"id":"RED_APRICORN","name":"Red Apricorn","price":0,"description":"A red apricorn. It assails your nostrils.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null}
+{"id":"RED_APRICORN","name":"Red Apricorn","price":0,"description":"A red apricorn. It assails your nostrils.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

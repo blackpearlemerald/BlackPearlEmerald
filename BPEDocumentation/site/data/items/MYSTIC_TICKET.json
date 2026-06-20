@@ -1,1 +1,1 @@
-{"id":"MYSTIC_TICKET","name":"Mystic Ticket","price":0,"description":"A ticket required to board the ship to Navel Rock.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/mystic_ticket.png"}
+{"id":"MYSTIC_TICKET","name":"Mystic Ticket","price":0,"description":"A ticket required to board the ship to Navel Rock.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/mystic_ticket.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

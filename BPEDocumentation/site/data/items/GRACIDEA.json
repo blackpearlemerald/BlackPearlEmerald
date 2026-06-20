@@ -1,1 +1,1 @@
-{"id":"GRACIDEA","name":"Gracidea","price":0,"description":"Bouquets made with it are offered as a token of gratitude.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/gracidea.png"}
+{"id":"GRACIDEA","name":"Gracidea","price":0,"description":"Bouquets made with it are offered as a token of gratitude.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/gracidea.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

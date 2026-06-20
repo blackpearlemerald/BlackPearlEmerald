@@ -1,1 +1,1 @@
-{"id":"MAX_HONEY","name":"Max Honey","price":8000,"description":"Revives a fainted Pokémon with all its HP.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/max_honey.png"}
+{"id":"MAX_HONEY","name":"Max Honey","price":8000,"description":"Revives a fainted Pokémon with all its HP.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":"sprites/items/max_honey.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

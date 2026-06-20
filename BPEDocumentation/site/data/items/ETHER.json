@@ -1,1 +1,1 @@
-{"id":"ETHER","name":"Ether","price":1200,"description":"Restores the PP of a selected move by 10.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":"sprites/items/ether.png"}
+{"id":"ETHER","name":"Ether","price":1200,"description":"Restores the PP of a selected move by 10.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Pp Recovery","icon":"sprites/items/ether.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

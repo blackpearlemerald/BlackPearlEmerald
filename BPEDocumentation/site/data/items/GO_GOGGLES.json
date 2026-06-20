@@ -1,1 +1,1 @@
-{"id":"GO_GOGGLES","name":"Go-Goggles","price":0,"description":"Nifty goggles that protect eyes from desert sandstorms.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/go_goggles.png"}
+{"id":"GO_GOGGLES","name":"Go-Goggles","price":0,"description":"Nifty goggles that protect eyes from desert sandstorms.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/go_goggles.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

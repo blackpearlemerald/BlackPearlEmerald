@@ -1,1 +1,1 @@
-{"id":"ROCKIUM_Z","name":"Rockium Z","price":0,"description":"Upgrade Rock- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/rockium_z.png"}
+{"id":"ROCKIUM_Z","name":"Rockium Z","price":0,"description":"Upgrade Rock- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/rockium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

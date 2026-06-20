@@ -1,1 +1,1 @@
-{"id":"SACHET","name":"Sachet","price":2000,"description":"A sachet of strong perfumes, loved by a certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/sachet.png"}
+{"id":"SACHET","name":"Sachet","price":2000,"description":"A sachet of strong perfumes, loved by a certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/sachet.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

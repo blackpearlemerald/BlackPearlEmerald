@@ -1,1 +1,1 @@
-{"id":"STAR_SWEET","name":"Star Sweet","price":0,"description":"A star-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/star_sweet.png"}
+{"id":"STAR_SWEET","name":"Star Sweet","price":0,"description":"A star-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/star_sweet.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

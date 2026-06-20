@@ -1,1 +1,1 @@
-{"id":"ICE_HEAL","name":"Ice Heal","price":200,"description":"Defrosts a frozen Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":null}
+{"id":"ICE_HEAL","name":"Ice Heal","price":200,"description":"Defrosts a frozen Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":null,"locations":{"marts":[{"mapId":"MAP_VERDANTURF_TOWN_MART","martName":"Verdanturf Town","condition":"Always available"}],"overworld":[{"mapId":"MAP_LAVARIDGE_TOWN","mapName":"Lavaridge Town","hidden":true}],"gifts":[]}}

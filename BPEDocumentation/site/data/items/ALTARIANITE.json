@@ -1,1 +1,1 @@
-{"id":"ALTARIANITE","name":"Altarianite","price":0,"description":"This stone enables Altaria to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/altarianite.png"}
+{"id":"ALTARIANITE","name":"Altarianite","price":0,"description":"This stone enables Altaria to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/altarianite.png","locations":{"marts":[],"overworld":[{"mapId":"MAP_ROUTE117","mapName":"Route117","hidden":false}],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"EELEKTROSSITE","name":"Eelektrossite","price":0,"description":"This stone enables Eelektross to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/eelektrossite.png"}
+{"id":"EELEKTROSSITE","name":"Eelektrossite","price":0,"description":"This stone enables Eelektross to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/eelektrossite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

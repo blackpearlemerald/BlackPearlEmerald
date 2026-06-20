@@ -1,1 +1,1 @@
-{"id":"UNREMARKABLE_TEACUP","name":"Unremarkable Teacup","price":1600,"description":"A cracked teacup that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/unremarkable_teacup.png"}
+{"id":"UNREMARKABLE_TEACUP","name":"Unremarkable Teacup","price":1600,"description":"A cracked teacup that makes certain Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/unremarkable_teacup.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

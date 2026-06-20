@@ -1,1 +1,1 @@
-{"id":"HONEY","name":"Honey","price":900,"description":"Sweet honey that attracts wild Pokémon when used.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/honey.png"}
+{"id":"HONEY","name":"Honey","price":900,"description":"Sweet honey that attracts wild Pokémon when used.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/honey.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

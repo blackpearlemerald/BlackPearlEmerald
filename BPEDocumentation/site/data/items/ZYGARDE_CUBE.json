@@ -1,1 +1,1 @@
-{"id":"ZYGARDE_CUBE","name":"Zygarde Cube","price":0,"description":"An item to store Zygarde Cores and Cells.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/zygarde_cube.png"}
+{"id":"ZYGARDE_CUBE","name":"Zygarde Cube","price":0,"description":"An item to store Zygarde Cores and Cells.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/zygarde_cube.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"ELECTRIUM_Z","name":"Electrium Z","price":0,"description":"Upgrade Electric- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/electrium_z.png"}
+{"id":"ELECTRIUM_Z","name":"Electrium Z","price":0,"description":"Upgrade Electric- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/electrium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

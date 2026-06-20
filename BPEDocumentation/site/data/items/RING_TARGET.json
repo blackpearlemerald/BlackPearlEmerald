@@ -1,1 +1,1 @@
-{"id":"RING_TARGET","name":"Ring Target","price":10000,"description":"Moves that usually have no effect will hit the holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/ring_target.png"}
+{"id":"RING_TARGET","name":"Ring Target","price":10000,"description":"Moves that usually have no effect will hit the holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/ring_target.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

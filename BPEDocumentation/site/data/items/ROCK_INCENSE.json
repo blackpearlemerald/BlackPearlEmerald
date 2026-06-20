@@ -1,1 +1,1 @@
-{"id":"ROCK_INCENSE","name":"Rock Incense","price":2000,"description":"A hold item that raises the power of Rock-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/rock_incense.png"}
+{"id":"ROCK_INCENSE","name":"Rock Incense","price":2000,"description":"A hold item that raises the power of Rock-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Incense","icon":"sprites/items/rock_incense.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

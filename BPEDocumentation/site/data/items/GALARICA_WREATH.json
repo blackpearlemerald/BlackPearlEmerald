@@ -1,1 +1,1 @@
-{"id":"GALARICA_WREATH","name":"Galarica Wreath","price":3000,"description":"A wreath made in Galar. Makes some Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/galarica_wreath.png"}
+{"id":"GALARICA_WREATH","name":"Galarica Wreath","price":3000,"description":"A wreath made in Galar. Makes some Pokémon evolve.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/galarica_wreath.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

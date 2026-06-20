@@ -1,1 +1,1 @@
-{"id":"ELECTIRIZER","name":"Electirizer","price":2000,"description":"Loved by a certain Pokémon. It's full of electric energy.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/electirizer.png"}
+{"id":"ELECTIRIZER","name":"Electirizer","price":2000,"description":"Loved by a certain Pokémon. It's full of electric energy.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/electirizer.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

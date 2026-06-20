@@ -1,1 +1,1 @@
-{"id":"PERSIM_BERRY","name":"Persim Berry","price":80,"description":"A hold item that heals confusion in battle.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/persim_berry.png"}
+{"id":"PERSIM_BERRY","name":"Persim Berry","price":80,"description":"A hold item that heals confusion in battle.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/persim_berry.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

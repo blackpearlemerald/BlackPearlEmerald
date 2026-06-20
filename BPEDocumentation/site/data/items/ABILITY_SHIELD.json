@@ -1,1 +1,1 @@
-{"id":"ABILITY_SHIELD","name":"Ability Shield","price":20000,"description":"Ability changes are prevented for this items's holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/ability_shield.png"}
+{"id":"ABILITY_SHIELD","name":"Ability Shield","price":20000,"description":"Ability changes are prevented for this items's holder.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/ability_shield.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

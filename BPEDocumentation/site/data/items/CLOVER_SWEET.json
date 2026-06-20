@@ -1,1 +1,1 @@
-{"id":"CLOVER_SWEET","name":"Clover Sweet","price":0,"description":"A clover-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/clover_sweet.png"}
+{"id":"CLOVER_SWEET","name":"Clover Sweet","price":0,"description":"A clover-shaped sweet loved by Milcery.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Evolution Item","icon":"sprites/items/clover_sweet.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

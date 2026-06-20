@@ -1,1 +1,1 @@
-{"id":"RICH_MULCH","name":"Rich Mulch","price":200,"description":"A fertilizer that ups the number of Berries harvested.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null}
+{"id":"RICH_MULCH","name":"Rich Mulch","price":200,"description":"A fertilizer that ups the number of Berries harvested.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}

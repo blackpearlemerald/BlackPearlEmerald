@@ -1,1 +1,1 @@
-{"id":"SACRED_ASH","name":"Sacred Ash","price":50000,"description":"Fully revives and restores all fainted Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":null}
+{"id":"SACRED_ASH","name":"Sacred Ash","price":50000,"description":"Fully revives and restores all fainted Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Health Recovery","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_NAVEL_ROCK_TOP","mapName":"Navel Rock Top","hidden":true}],"gifts":[]}}

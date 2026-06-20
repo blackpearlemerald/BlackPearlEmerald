@@ -1,1 +1,1 @@
-{"id":"EON_TICKET","name":"Eon Ticket","price":0,"description":"The ticket for a ferry to a distant southern island.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/eon_ticket.png"}
+{"id":"EON_TICKET","name":"Eon Ticket","price":0,"description":"The ticket for a ferry to a distant southern island.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/eon_ticket.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"BOTTLE_CAP","name":"Bottle Cap","price":20000,"description":"A beautiful bottle cap that gives off a silver gleam.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/bottle_cap.png"}
+{"id":"BOTTLE_CAP","name":"Bottle Cap","price":20000,"description":"A beautiful bottle cap that gives off a silver gleam.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/bottle_cap.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

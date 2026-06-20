@@ -1,1 +1,1 @@
-{"id":"DARKRANITE","name":"Darkranite","price":0,"description":"This stone enables Darkrai to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/darkranite.png"}
+{"id":"DARKRANITE","name":"Darkranite","price":0,"description":"This stone enables Darkrai to Mega Evolve in battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Mega Stone","icon":"sprites/items/darkranite.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

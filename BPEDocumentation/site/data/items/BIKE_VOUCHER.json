@@ -1,1 +1,1 @@
-{"id":"BIKE_VOUCHER","name":"Bike Voucher","price":0,"description":"A voucher for obtaining a bicycle from the Bike Shop.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/bike_voucher.png"}
+{"id":"BIKE_VOUCHER","name":"Bike Voucher","price":0,"description":"A voucher for obtaining a bicycle from the Bike Shop.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/bike_voucher.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

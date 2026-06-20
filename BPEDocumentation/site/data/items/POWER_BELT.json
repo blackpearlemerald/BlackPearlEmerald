@@ -1,1 +1,1 @@
-{"id":"POWER_BELT","name":"Power Belt","price":10000,"description":"A hold item that promotes Def gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_belt.png"}
+{"id":"POWER_BELT","name":"Power Belt","price":10000,"description":"A hold item that promotes Def gain, but reduces Speed.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Ev Boost Held Item","icon":"sprites/items/power_belt.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"SCROLL_OF_WATERS","name":"Scroll of Waters","price":0,"description":"A peculiar scroll with secrets of the water path.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"Evolution Item","icon":"sprites/items/scroll_of_waters.png"}
+{"id":"SCROLL_OF_WATERS","name":"Scroll of Waters","price":0,"description":"A peculiar scroll with secrets of the water path.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"Evolution Item","icon":"sprites/items/scroll_of_waters.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

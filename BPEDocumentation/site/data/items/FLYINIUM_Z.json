@@ -1,1 +1,1 @@
-{"id":"FLYINIUM_Z","name":"Flyinium Z","price":0,"description":"Upgrade Flying- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/flyinium_z.png"}
+{"id":"FLYINIUM_Z","name":"Flyinium Z","price":0,"description":"Upgrade Flying- type moves into Z-Moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Z Crystal","icon":"sprites/items/flyinium_z.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"BINDING_BAND","name":"Binding Band","price":20000,"description":"Increases the power of binding moves when held.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/binding_band.png"}
+{"id":"BINDING_BAND","name":"Binding Band","price":20000,"description":"Increases the power of binding moves when held.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/binding_band.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

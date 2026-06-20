@@ -1,1 +1,1 @@
-{"id":"POISON_MEMORY","name":"Poison Memory","price":1000,"description":"A disc with Poison type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/poison_memory.png"}
+{"id":"POISON_MEMORY","name":"Poison Memory","price":1000,"description":"A disc with Poison type data. It swaps Silvally's type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Memory","icon":"sprites/items/poison_memory.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

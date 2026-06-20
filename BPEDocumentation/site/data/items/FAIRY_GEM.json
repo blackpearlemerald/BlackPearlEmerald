@@ -1,1 +1,1 @@
-{"id":"FAIRY_GEM","name":"Fairy Gem","price":0,"description":"Increases the power of Fairy Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null}
+{"id":"FAIRY_GEM","name":"Fairy Gem","price":0,"description":"Increases the power of Fairy Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[{"mapId":"MAP_SHOAL_CAVE_LOW_TIDE_STAIRS_ROOM","mapName":"Shoal Cave Low Tide Stairs Room","hidden":false}],"gifts":[]}}
