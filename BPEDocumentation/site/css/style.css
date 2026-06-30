@@ -487,6 +487,339 @@ body.page-placeholder {
   color: #3a6ea5;
 }
 
+/* ============================================================
+   DETAIL PANEL — object/encounter modals
+   Desktop: roomy floating card docked top-right.
+   Mobile:  full-screen slide-up sheet (see media query below).
+   ============================================================ */
+.detail {
+  position: fixed;
+  inset: 0;
+  z-index: 2500;
+  pointer-events: none;           /* empty area never blocks the map */
+}
+.detail[hidden] { display: none; }
+
+.detail-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 12, 22, 0.55);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  display: none;                  /* desktop: no backdrop, map stays usable */
+  pointer-events: auto;
+}
+
+.detail-card {
+  position: absolute;
+  top: 60px;
+  right: 12px;
+  width: 384px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  background: #16202e;
+  color: #e8eef5;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.985);
+  transform-origin: top right;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.detail.open .detail-card { opacity: 1; transform: none; }
+
+.detail-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 14px 11px;
+  background: linear-gradient(180deg, #1c2839 0%, #16202e 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.detail-kind {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #4db87a;
+}
+.detail-close {
+  margin-left: auto;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #cbd6e2;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.detail-close:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+
+.detail-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 14px 16px 18px;
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+.detail-body::-webkit-scrollbar { width: 10px; }
+.detail-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ----- trainer card (dark) ----- */
+.detail-body .tcard-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.detail-body .tcard-sprite {
+  flex: 0 0 auto;
+  height: 56px;
+  width: auto;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
+}
+.detail-body .tcard-name {
+  font-weight: 700;
+  font-size: 19px;
+  color: #f3f7fb;
+  margin-bottom: 2px;
+}
+.detail-body .tcard-class { color: #8aa0b6; font-size: 13px; font-weight: 500; }
+.detail-body .mon {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 9px 0;
+  gap: 10px;
+  align-items: flex-start;
+}
+.detail-body .mon-icon { width: 44px; height: 44px; margin-top: -4px; }
+.detail-body .mon-head { font-weight: 600; font-size: 15px; color: #e8eef5; }
+.detail-body .mon-lvl { color: #8aa0b6; font-weight: 400; font-size: 13px; }
+.detail-body .mon-meta { font-size: 13px; color: #9fb3c8; margin-top: 1px; }
+.detail-body .mon-moves { gap: 5px; margin-top: 6px; }
+.detail-body .move {
+  background: rgba(77, 184, 122, 0.13);
+  color: #bfe6cf;
+  border: 1px solid rgba(77, 184, 122, 0.22);
+  border-radius: 6px;
+  padding: 3px 9px;
+  font-size: 12.5px;
+}
+
+/* ----- item (dark) ----- */
+.detail-body .item-pop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.detail-body .item-pop .pop-item-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+}
+.detail-body .item-pop-name {
+  font-weight: 700;
+  font-size: 20px;
+  color: #f3f7fb;
+}
+.detail-body .item-pop small {
+  flex-basis: 100%;
+  order: -1;                       /* eyebrow tag above the name */
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #6cc6f0;
+}
+.detail-body .pop-item-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 16px;
+  padding: 8px 13px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #4db87a;
+  text-decoration: none;
+  background: rgba(77, 184, 122, 0.12);
+  border: 1px solid rgba(77, 184, 122, 0.25);
+  border-radius: 9px;
+  transition: background 0.12s;
+}
+.detail-body .pop-item-link:hover { background: rgba(77, 184, 122, 0.2); }
+
+/* ----- mart + gift (dark) ----- */
+.detail-body .mart-head,
+.detail-body .gift-head {
+  font-weight: 700;
+  font-size: 18px;
+  color: #f3f7fb;
+  margin-bottom: 10px;
+}
+.detail-body .mart-cond {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #4db87a;
+  margin: 12px 0 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.detail-body .mart-cond:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+.detail-body .mart-list,
+.detail-body .gift-items { display: flex; flex-direction: column; gap: 3px; }
+
+/* ----- shared item row (mart + gift, dark) ----- */
+.detail-body .pop-item-row {
+  align-items: center;
+  gap: 10px;
+  font-size: 14.5px;
+  padding: 5px 8px;
+  border-radius: 8px;
+}
+.detail-body .pop-item-row:hover { background: rgba(255, 255, 255, 0.04); }
+.detail-body .pop-item-icon { width: 28px; height: 28px; }
+.detail-body .pop-item-name { color: #dbe5ef; }
+.detail-body .pop-item-qty { font-size: 12.5px; font-weight: 700; color: #4db87a; }
+
+/* ----- encounters (dark) ----- */
+.detail-body .enc-cat {
+  font-weight: 700;
+  font-size: 15px;
+  color: #f3f7fb;
+  margin: 14px 0 6px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.detail-body .enc-cat:first-of-type {
+  border-top: none;
+  padding-top: 4px;
+  margin-top: 4px;
+}
+.detail-body .enc-rate { color: #8aa0b6; font-weight: 400; font-size: 12px; }
+.detail-body .enc-rod {
+  font-weight: 700;
+  font-size: 13px;
+  color: #6cc6f0;
+  margin: 9px 0 3px;
+}
+.detail-body .enc-row {
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.detail-body .enc-row:hover { background: rgba(255, 255, 255, 0.04); }
+.detail-body .enc-icon { width: 36px; height: 36px; margin: -3px 0; }
+.detail-body .enc-sp { color: #e2eaf2; }
+.detail-body .enc-pct {
+  flex: 0 0 42px;
+  font-weight: 700;
+  color: #5fd08a;
+}
+.detail-body .enc-lvl {
+  flex: 0 0 auto;
+  min-width: 66px;
+  text-align: right;
+  color: #8aa0b6;
+  font-size: 12.5px;
+}
+.detail-body .enc-none { color: #8aa0b6; font-size: 14px; margin-top: 8px; }
+
+/* ----- trainer stack nav (dark) ----- */
+.detail-body .stack-nav {
+  font-size: 13px;
+  font-weight: 600;
+  color: #9fb3c8;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.detail-body .stack-cycle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0d1b2a;
+  background: #4db87a;
+  border-radius: 8px;
+  padding: 6px 14px;
+}
+.detail-body .stack-cycle:hover { background: #5fce8c; }
+
+/* ----- clickable deep links (Pokémon sprites/names, item rows) ----- */
+.detail-body .mon-icon-link {
+  flex: 0 0 auto;
+  display: block;
+  margin-top: -4px;
+  line-height: 0;
+  cursor: pointer;
+}
+.detail-body .mon-icon-link .mon-icon { margin-top: 0; }
+.detail-body .mon-icon-link:hover { filter: brightness(1.12); }
+.detail-body .mon-name-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.detail-body .mon-name-link:hover { color: #7fe0a6; text-decoration: underline; }
+
+.detail-body .enc-mon {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+a.enc-mon { cursor: pointer; }
+.detail-body a.enc-mon:hover .enc-sp { color: #fff; text-decoration: underline; }
+.detail-body a.enc-mon:hover .enc-icon { filter: brightness(1.12); }
+
+.detail-body a.pop-item-row { color: inherit; text-decoration: none; cursor: pointer; }
+.detail-body a.pop-item-row:hover .pop-item-name { color: #fff; text-decoration: underline; }
+
+.detail-body .item-pop-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.detail-body .item-pop-head:hover .item-pop-name {
+  color: #7fe0a6;
+  text-decoration: underline;
+}
+
 /* ----- mobile ----- */
 @media (max-width: 640px) {
   #panel { display: none; min-width: 180px; }
@@ -497,4 +830,34 @@ body.page-placeholder {
   body.page-map #panel.open { top: 108px; }
   .nav-brand { font-size: 13px; margin-right: 10px; }
   .nav-link { padding: 6px 10px; font-size: 13px; }
+
+  /* detail panel becomes a full-screen slide-up sheet */
+  .detail-backdrop { display: block; }
+  .detail.open .detail-backdrop { opacity: 1; }
+  .detail-card {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    border: none;
+    border-radius: 0;
+    transform: translateY(100%);
+    transform-origin: bottom center;
+    transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .detail.open .detail-card { transform: none; opacity: 1; }
+  .detail-head { padding: 15px 16px; position: sticky; top: 0; }
+  .detail-close { width: 38px; height: 38px; font-size: 17px; }
+  .detail-body {
+    padding: 16px 18px calc(28px + env(safe-area-inset-bottom));
+    font-size: 16px;
+  }
+  .detail-body .tcard-name { font-size: 21px; }
+  .detail-body .enc-row,
+  .detail-body .pop-item-row { font-size: 15.5px; padding: 7px 8px; }
+  .detail-body .mon-icon { width: 48px; height: 48px; }
+  .detail-body .enc-icon { width: 40px; height: 40px; }
 }

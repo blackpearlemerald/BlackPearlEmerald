@@ -13,6 +13,19 @@ function prettify(name) {
     .replace(/([A-Za-z])(\d)/g, "$1 $2");  // "Route102" -> "Route 102"
 }
 
+// Detail-panel deep links. The Pokémon/item pages are keyed by the species/item
+// id (the constant without its prefix). The build writes each mon's menu-icon as
+// "<ID>.png", which is the most reliable species id — trainer parties store a
+// display name ("Bronzong"), not a constant, so the sprite name is preferred.
+function monPageId(m) {
+  if (m && m.sprite) return m.sprite.replace(/\.[a-z0-9]+$/i, "");
+  if (m && /^SPECIES_/.test(m.species || "")) return m.species.replace(/^SPECIES_/, "");
+  return null;
+}
+function itemPageId(itemConst) {
+  return (itemConst || "").replace(/^ITEM_/, "");
+}
+
 function trainerPopup(t, spriteFile) {
   if (!t) return "<div class='tcard-name'>Trainer</div>";
   const tImg = spriteFile
@@ -23,12 +36,25 @@ function trainerPopup(t, spriteFile) {
     `<div class="tcard-name">${t.name || "Trainer"}</div>` +
     `<div class="tcard-class">${t.class || ""}</div></div></div>`;
   for (const m of t.party || []) {
-    const icon = m.sprite
+    // Trainer mons deep-link into the damage calculator: clicking loads this
+    // exact set onto the defender side (see js/calc_deeplink.js).
+    const desc = encodeURIComponent(JSON.stringify({
+      s: m.species, l: m.level,
+      c: t.class || "", tn: t.name || "", m: m.moves || [],
+    }));
+    const href = `calc.html#mon=${desc}`;
+    const tip = `Open ${prettify(m.species)} in the damage calculator`;
+    const iconImg = m.sprite
       ? `<img class="mon-icon" src="img/pokemon/${m.sprite}" alt="" ` +
         `loading="lazy" onerror="this.remove()">`
       : "";
+    const icon = iconImg
+      ? `<a class="mon-icon-link" href="${href}" title="${tip}">${iconImg}</a>`
+      : iconImg;
+    const name =
+      `<a class="mon-name-link" href="${href}" title="${tip}">${prettify(m.species)}</a>`;
     html += `<div class="mon">${icon}<div class="mon-body">` +
-      `<div class="mon-head">${prettify(m.species)}` +
+      `<div class="mon-head">${name}` +
       `<span class="mon-lvl"> · Lv ${m.level}</span></div>`;
     const meta = [];
     if (m.item) meta.push("@ " + m.item);
@@ -52,17 +78,27 @@ function itemIconUrl(itemConst) {
 
 function itemRow(itemConst, qty) {
   const name = prettify(itemConst);
+  const id = itemPageId(itemConst);
   const icon = `<img class="pop-item-icon" src="${itemIconUrl(itemConst)}" `
-    + `alt="" onerror="this.remove()" loading="lazy">`;
+    + `alt="" onerror="this.style.visibility='hidden'" loading="lazy">`;
   const qtyStr = qty > 1 ? `<span class="pop-item-qty">×${qty}</span>` : "";
-  return `<div class="pop-item-row">${icon}<span class="pop-item-name">${name}</span>${qtyStr}</div>`;
+  const inner = `${icon}<span class="pop-item-name">${name}</span>${qtyStr}`;
+  return id
+    ? `<a class="pop-item-row" href="item.html?id=${encodeURIComponent(id)}">${inner}</a>`
+    : `<div class="pop-item-row">${inner}</div>`;
 }
 
 function itemPopup(it) {
   const tag = it.hidden ? "<small>Hidden item</small>" : "<small>Item Ball</small>";
-  const icon = it.hidden ? ""
-    : `<img class="pop-item-icon" src="${itemIconUrl(it.item)}" alt="" onerror="this.remove()"> `;
-  return `<div class="item-pop">${icon}${prettify(it.item)}${tag}</div>`;
+  const id = itemPageId(it.item);
+  const icon = `<img class="pop-item-icon" src="${itemIconUrl(it.item)}" alt="" onerror="this.style.visibility='hidden'">`;
+  const headInner = `${icon}<span class="item-pop-name">${prettify(it.item)}</span>`;
+  const href = id ? `item.html?id=${encodeURIComponent(id)}` : null;
+  const head = href
+    ? `<a class="item-pop-head" href="${href}">${headInner}</a>` : headInner;
+  const link = href
+    ? `<a class="pop-item-link" href="${href}">View item details →</a>` : "";
+  return `<div class="item-pop">${tag}${head}</div>${link}`;
 }
 
 function martPopup(mart) {
@@ -101,9 +137,12 @@ function monRows(mons) {
     .slice().sort((a, b) => b.pct - a.pct)
     .map(m => {
       const lvl = m.min === m.max ? `Lv ${m.min}` : `Lv ${m.min}–${m.max}`;
-      return `<div class="enc-row">` +
-        encSprite(m) +
-        `<span class="enc-sp">${prettify(m.species)}</span>` +
+      const id = monPageId(m);
+      const cellInner = encSprite(m) + `<span class="enc-sp">${prettify(m.species)}</span>`;
+      const cell = id
+        ? `<a class="enc-mon" href="pokemon.html?id=${encodeURIComponent(id)}">${cellInner}</a>`
+        : `<span class="enc-mon">${cellInner}</span>`;
+      return `<div class="enc-row">${cell}` +
         `<span class="enc-pct">${m.pct}%</span>` +
         `<span class="enc-lvl">${lvl}</span></div>`;
     }).join("");
@@ -181,8 +220,64 @@ async function main() {
   // Map clicks open the encounter menu. A single map-level handler is used
   // (rather than per-overlay popups) because the marker canvas sits above the
   // image overlays and would otherwise swallow their click events.
-  const encPopup = L.popup({ maxWidth: 300, maxHeight: 380,
-                             className: "enc-popup", autoPan: true });
+
+  // ---- detail panel ----------------------------------------------------------
+  // Object/encounter details render in a custom panel (#detail) instead of
+  // Leaflet popups: a roomy floating card on desktop, a full-screen sheet on
+  // mobile. Far easier to read than the cramped anchored bubbles.
+  const detailRoot = document.getElementById("detail");
+  const detailBody = document.getElementById("detail-body");
+  const detailKind = document.getElementById("detail-kind");
+  let detailHideTimer = null;
+  let openStack = null;
+  const isPhone = () => window.matchMedia("(max-width: 640px)").matches;
+
+  // Pan a point target into the open area beside the desktop card so it isn't
+  // hidden behind it. No-op on phones (the sheet covers the map anyway).
+  function revealAt(ll) {
+    if (isPhone()) return;
+    const size = map.getSize();
+    const cardReserve = 408;                 // card width + margins, in px
+    const z = map.getZoom();
+    const cur = map.latLngToContainerPoint(ll);
+    const want = L.point((size.x - cardReserve) / 2, size.y / 2);
+    if (Math.abs(cur.x - want.x) < 40 && Math.abs(cur.y - want.y) < 40) return;
+    const off = want.subtract(L.point(size.x / 2, size.y / 2));
+    map.panTo(map.unproject(map.project(ll, z).subtract(off), z),
+              { animate: true, duration: 0.4 });
+  }
+
+  function updateDetail(kind, html) {
+    detailKind.textContent = kind || "";
+    detailBody.innerHTML = html;
+    detailBody.scrollTop = 0;
+  }
+
+  // Open (or re-target) the panel. Pass a latlng to pulse + reveal the spot.
+  function openDetail(kind, html, ll) {
+    if (detailHideTimer) { clearTimeout(detailHideTimer); detailHideTimer = null; }
+    updateDetail(kind, html);
+    detailRoot.hidden = false;
+    detailRoot.setAttribute("aria-hidden", "false");
+    requestAnimationFrame(() => detailRoot.classList.add("open"));
+    if (ll) { revealAt(ll); pulseAt(ll); }
+    return detailBody;
+  }
+
+  function closeDetail() {
+    detailRoot.classList.remove("open");
+    detailRoot.setAttribute("aria-hidden", "true");
+    openStack = null;
+    detailHideTimer = setTimeout(() => { detailRoot.hidden = true; }, 220);
+  }
+
+  detailRoot.addEventListener("click", (ev) => {
+    if (ev.target.closest("[data-detail-close]")) closeDetail();
+  });
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape" && !detailRoot.hidden) closeDetail();
+  });
+
   function mapAt(x, y) {
     let best = null;
     for (const m of world.maps) {
@@ -197,7 +292,6 @@ async function main() {
   // clicks bubble to the map, so all object clicks go through one handler.
   const trainerHits = [];  // {x0,x1,yTop,yBot, gxTop, trainerId}
   const itemHits = [];     // {ll, it}
-  const objPopup = L.popup({ autoPan: true, maxWidth: 320, maxHeight: 360 });
 
   function trainerAt(x, y) {
     if (!map.hasLayer(trainerLayer)) return null;
@@ -236,27 +330,26 @@ async function main() {
     return best;
   }
 
-  // show a trainer stack's current member; cycle via the marker or the button
-  let openStack = null;
-  function showStack(st) {
+  // show a trainer stack's current member; cycle via the marker or the button.
+  // firstOpen=true pans/pulses the location; cycling just swaps the content.
+  function showStack(st, firstOpen) {
     const t = st.trainers[st.idx];
-    renderStack(st);                          // map sprite matches the popup
+    renderStack(st);                          // map sprite matches the panel
     const sp = spriteFor(t);
     const n = st.trainers.length;
     const nav = n > 1
       ? `<div class="stack-nav">Trainer ${st.idx + 1} / ${n}` +
         `<button type="button" class="stack-cycle">Next ▸</button></div>`
       : "";
-    objPopup.setLatLng(W2LL(t.gx, sp.yTop))
-      .setContent(nav + trainerPopup(world.trainerData[t.trainerId], sp.file))
-      .openOn(map);
+    const html = nav + trainerPopup(world.trainerData[t.trainerId], sp.file);
+    if (firstOpen) openDetail("Trainer", html, W2LL(t.gx, sp.yTop));
+    else updateDetail("Trainer", html);
     if (n > 1) {
-      const el = objPopup.getElement();
-      const btn = el && el.querySelector(".stack-cycle");
-      if (btn) L.DomEvent.on(btn, "click", (ev) => {
-        L.DomEvent.stop(ev);
+      const btn = detailBody.querySelector(".stack-cycle");
+      if (btn) btn.addEventListener("click", (ev) => {
+        ev.preventDefault();
         st.idx = (st.idx + 1) % n;
-        showStack(st);
+        showStack(st, false);
       });
     }
   }
@@ -272,28 +365,27 @@ async function main() {
       if (st === openStack)                  // tapping the same marker cycles
         st.idx = (st.idx + 1) % st.trainers.length;
       openStack = st;
-      showStack(st);
+      showStack(st, true);
       return;
     }
     openStack = null;
     const it = itemAt(e.latlng);
     if (it) {
-      objPopup.setLatLng(e.latlng).setContent(itemPopup(it)).openOn(map);
+      openDetail("Item", itemPopup(it), e.latlng);
       return;
     }
     const gf = giftAt(e.latlng);
     if (gf) {
-      objPopup.setLatLng(e.latlng).setContent(giftPopup(gf)).openOn(map);
+      openDetail("Gift", giftPopup(gf), e.latlng);
       return;
     }
     const m = mapAt(x, y);
     if (!m) return;
     if (world.marts && world.marts[m.id]) {
-      objPopup.setLatLng(e.latlng)
-        .setContent(martPopup(world.marts[m.id])).openOn(map);
+      openDetail("Poké Mart", martPopup(world.marts[m.id]), e.latlng);
       return;
     }
-    encPopup.setLatLng(e.latlng).setContent(encounterPopup(m)).openOn(map);
+    openDetail("Wild Pokémon", encounterPopup(m), e.latlng);
   });
   const worldBounds = L.latLngBounds(W2LL(minX, minY), W2LL(maxX, maxY));
   map.fitBounds(worldBounds.pad(0.05));
@@ -576,8 +668,7 @@ async function main() {
                     hit.hidden ? "t-hidden" : "t-items");
         const ll = W2LL(hit.gx, hit.gy);
         map.setView(ll, 2, { animate: true });
-        objPopup.setLatLng(ll).setContent(itemPopup(hit)).openOn(map);
-        pulseAt(ll);
+        openDetail("Item", itemPopup(hit), ll);
         return true;
       }
     }
@@ -589,8 +680,7 @@ async function main() {
         ensureLayer(giftLayer, "t-gifts");
         const ll = W2LL(g.gx, g.gy);
         map.setView(ll, 2, { animate: true });
-        objPopup.setLatLng(ll).setContent(giftPopup(g)).openOn(map);
-        pulseAt(ll);
+        openDetail("Gift", giftPopup(g), ll);
         return true;
       }
     }
@@ -600,9 +690,9 @@ async function main() {
     map.fitBounds(bounds.pad(0.3), { maxZoom: 2, animate: true });
     const center = W2LL(m.x + m.w / 2, m.y + m.h / 2);
     if (world.marts && world.marts[id]) {
-      objPopup.setLatLng(center).setContent(martPopup(world.marts[id])).openOn(map);
+      openDetail("Poké Mart", martPopup(world.marts[id]), center);
     } else {
-      encPopup.setLatLng(center).setContent(encounterPopup(m)).openOn(map);
+      openDetail("Wild Pokémon", encounterPopup(m), center);
     }
     return true;
   }

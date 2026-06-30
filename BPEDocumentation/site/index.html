@@ -26,6 +26,19 @@
   <button id="panel-toggle" aria-label="Toggle panel">☰</button>
   <div id="loading">Loading world…</div>
 
+  <!-- Detail panel: floating card on desktop, full-screen sheet on mobile.
+       Content is rendered by app.js (openDetail). -->
+  <div id="detail" class="detail" hidden aria-hidden="true">
+    <div class="detail-backdrop" data-detail-close></div>
+    <div class="detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-kind">
+      <header class="detail-head">
+        <span class="detail-kind" id="detail-kind"></span>
+        <button type="button" class="detail-close" aria-label="Close" data-detail-close>✕</button>
+      </header>
+      <div class="detail-body" id="detail-body"></div>
+    </div>
+  </div>
+
   <script src="js/nav.js"></script>
   <script src="lib/leaflet.js"></script>
   <script src="js/app.js"></script>
