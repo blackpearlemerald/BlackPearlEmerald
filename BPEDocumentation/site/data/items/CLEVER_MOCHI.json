@@ -1,1 +1,1 @@
-{"id":"CLEVER_MOCHI","name":"Clever Mochi","price":500,"description":"An item that raises the base Sp. Def. of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"CLEVER_MOCHI","name":"Clever Mochi","price":500,"description":"An item that raises the base Sp. Def. of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":"sprites/items/clever_mochi.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

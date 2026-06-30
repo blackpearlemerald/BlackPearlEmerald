@@ -1,1 +1,1 @@
-{"id":"TM_FLAME_CHARGE","name":"TM38","price":0,"description":"Flame Charge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FLAME_CHARGE","name":"TM38","price":0,"description":"Flame Charge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_flame_charge.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

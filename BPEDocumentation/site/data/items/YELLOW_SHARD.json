@@ -1,1 +1,1 @@
-{"id":"YELLOW_SHARD","name":"Yellow Shard","price":1000,"description":"A shard from an ancient item. Can be sold cheaply.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Shard","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"YELLOW_SHARD","name":"Yellow Shard","price":1000,"description":"A shard from an ancient item. Can be sold cheaply.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Shard","icon":"sprites/items/yellow_shard.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

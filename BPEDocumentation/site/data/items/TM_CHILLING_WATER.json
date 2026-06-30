@@ -1,1 +1,1 @@
-{"id":"TM_CHILLING_WATER","name":"TM22","price":0,"description":"Chilling Water","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_CHILLING_WATER","name":"TM22","price":0,"description":"Chilling Water","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_chilling_water.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

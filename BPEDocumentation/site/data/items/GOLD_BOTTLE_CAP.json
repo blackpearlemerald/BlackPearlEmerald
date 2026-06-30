@@ -1,1 +1,1 @@
-{"id":"GOLD_BOTTLE_CAP","name":"Gold Bottle Cap","price":60000,"description":"A beautiful bottle cap that gives off a golden gleam.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"GOLD_BOTTLE_CAP","name":"Gold Bottle Cap","price":60000,"description":"A beautiful bottle cap that gives off a golden gleam.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/gold_bottle_cap.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"SPOOKY_PLATE","name":"Spooky Plate","price":1000,"description":"A tablet that ups the power of Ghost-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"SPOOKY_PLATE","name":"Spooky Plate","price":1000,"description":"A tablet that ups the power of Ghost-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":"sprites/items/spooky_plate.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

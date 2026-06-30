@@ -1,1 +1,1 @@
-{"id":"SHOAL_SALT","name":"Shoal Salt","price":20,"description":"Salt obtained from deep inside the Shoal Cave.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"SHOAL_SALT","name":"Shoal Salt","price":20,"description":"Salt obtained from deep inside the Shoal Cave.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/shoal_salt.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

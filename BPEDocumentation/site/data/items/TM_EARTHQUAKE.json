@@ -1,1 +1,1 @@
-{"id":"TM_EARTHQUAKE","name":"TM149","price":0,"description":"Earthquake","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_EARTHQUAKE","name":"TM149","price":0,"description":"Earthquake","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_earthquake.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -11,22 +11,25 @@ import render_maps
 import extract_world
 import parse_pokemon
 import parse_items
+import build_calc_data
 
 
 def main():
     C.ensure_dirs()
-    print("[1/6] Parsing trainers ...")
+    print("[1/7] Parsing trainers ...")
     parse_trainers.main()
-    print("[2/6] Extracting party Pokemon icons ...")
+    print("[2/7] Extracting party Pokemon icons ...")
     pokemon_sprites.main()
-    print("[3/6] Rendering map images ...")
+    print("[3/7] Rendering map images ...")
     render_maps.main()
-    print("[4/6] Extracting world layout + objects ...")
+    print("[4/7] Extracting world layout + objects ...")
     extract_world.build()
-    print("[5/6] Building Pokedex data ...")
+    print("[5/7] Building Pokedex data ...")
     parse_pokemon.main()
-    print("[6/6] Building Items data ...")
+    print("[6/7] Building Items data ...")
     parse_items.main()
+    print("[7/7] Building damage-calculator data ...")
+    build_calc_data.main()
     print("\nDone. Serve with:  py -m http.server -d ../site 8000")
 
 

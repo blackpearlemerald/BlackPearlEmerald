@@ -1,1 +1,1 @@
-{"id":"BLACK_FLUTE","name":"Black Flute","price":20,"description":"A glass flute that keeps away wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Flute","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"BLACK_FLUTE","name":"Black Flute","price":20,"description":"A glass flute that keeps away wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Flute","icon":"sprites/items/black_flute.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

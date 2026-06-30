@@ -1,1 +1,1 @@
-{"id":"GREEN_APRICORN","name":"Green Apricorn","price":0,"description":"A green apricorn. It has a strange, aromatic scent.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"GREEN_APRICORN","name":"Green Apricorn","price":0,"description":"A green apricorn. It has a strange, aromatic scent.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":"sprites/items/green_apricorn.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

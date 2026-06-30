@@ -1,1 +1,1 @@
-{"id":"TM_IMPRISON","name":"TM92","price":0,"description":"Imprison","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_IMPRISON","name":"TM92","price":0,"description":"Imprison","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_imprison.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

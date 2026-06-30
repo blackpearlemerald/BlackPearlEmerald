@@ -1,1 +1,1 @@
-{"id":"HM_FLASH","name":"HM05","price":0,"description":"Looses a powerful blast of light that reduces accuracy.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"HM_FLASH","name":"HM05","price":0,"description":"Looses a powerful blast of light that reduces accuracy.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm_flash.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

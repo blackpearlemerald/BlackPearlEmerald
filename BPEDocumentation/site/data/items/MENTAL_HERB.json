@@ -1,1 +1,1 @@
-{"id":"MENTAL_HERB","name":"Mental Herb","price":10000,"description":"Snaps Pokémon out of move-binding effects.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"MENTAL_HERB","name":"Mental Herb","price":10000,"description":"Snaps Pokémon out of move-binding effects.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/mental_herb.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

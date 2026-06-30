@@ -1,1 +1,1 @@
-{"id":"GRASSY_SEED","name":"Grassy Seed","price":20000,"description":"Boosts Defense on Grassy Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"GRASSY_SEED","name":"Grassy Seed","price":20000,"description":"Boosts Defense on Grassy Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/grassy_seed.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"TM_SWORDS_DANCE","name":"TM88","price":0,"description":"Swords Dance","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SWORDS_DANCE","name":"TM88","price":0,"description":"Swords Dance","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_swords_dance.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

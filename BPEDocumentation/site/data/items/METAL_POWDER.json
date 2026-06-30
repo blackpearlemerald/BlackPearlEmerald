@@ -1,1 +1,1 @@
-{"id":"METAL_POWDER","name":"Metal Powder","price":1000,"description":"A hold item that raises Ditto's Defense.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"METAL_POWDER","name":"Metal Powder","price":1000,"description":"A hold item that raises Ditto's Defense.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/metal_powder.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

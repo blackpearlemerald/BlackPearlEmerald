@@ -1,1 +1,1 @@
-{"id":"TM_HIDDEN_POWER","name":"TM10","price":3000,"description":"The attack power varies among different Pokémon.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_HIDDEN_POWER","name":"TM10","price":3000,"description":"The attack power varies among different Pokémon.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_hidden_power.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

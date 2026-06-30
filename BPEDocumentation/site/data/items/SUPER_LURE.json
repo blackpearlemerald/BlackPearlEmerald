@@ -1,1 +1,1 @@
-{"id":"SUPER_LURE","name":"Super Lure","price":700,"description":"Makes Pokémon more likely to appear for 200 steps.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Field Use","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"SUPER_LURE","name":"Super Lure","price":700,"description":"Makes Pokémon more likely to appear for 200 steps.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Field Use","icon":"sprites/items/super_lure.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

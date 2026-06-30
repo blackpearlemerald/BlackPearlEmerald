@@ -1,1 +1,1 @@
-{"id":"HEAL_POWDER","name":"Heal Powder","price":300,"description":"A bitter powder that heals all status problems.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"HEAL_POWDER","name":"Heal Powder","price":300,"description":"A bitter powder that heals all status problems.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Status Recovery","icon":"sprites/items/heal_powder.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

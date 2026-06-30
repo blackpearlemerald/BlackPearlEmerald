@@ -1,1 +1,1 @@
-{"id":"HM_DIVE","name":"HM08","price":0,"description":"Dives underwater the 1st turn, then attacks next turn.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"HM_DIVE","name":"HM08","price":0,"description":"Dives underwater the 1st turn, then attacks next turn.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm_dive.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

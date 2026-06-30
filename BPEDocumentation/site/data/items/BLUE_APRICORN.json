@@ -1,1 +1,1 @@
-{"id":"BLUE_APRICORN","name":"Blue Apricorn","price":0,"description":"A blue apricorn. It smells a bit like grass.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"BLUE_APRICORN","name":"Blue Apricorn","price":0,"description":"A blue apricorn. It smells a bit like grass.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":"sprites/items/blue_apricorn.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

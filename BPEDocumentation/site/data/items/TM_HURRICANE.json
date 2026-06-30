@@ -1,1 +1,1 @@
-{"id":"TM_HURRICANE","name":"TM160","price":0,"description":"Hurricane","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_HURRICANE","name":"TM160","price":0,"description":"Hurricane","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_hurricane.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

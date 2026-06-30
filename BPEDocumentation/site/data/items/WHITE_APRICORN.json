@@ -1,1 +1,1 @@
-{"id":"WHITE_APRICORN","name":"White Apricorn","price":0,"description":"A white apricorn. It doesn't smell like anything.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"WHITE_APRICORN","name":"White Apricorn","price":0,"description":"A white apricorn. It doesn't smell like anything.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":"sprites/items/white_apricorn.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

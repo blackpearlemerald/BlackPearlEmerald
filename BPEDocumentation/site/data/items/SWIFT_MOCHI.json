@@ -1,1 +1,1 @@
-{"id":"SWIFT_MOCHI","name":"Swift Mochi","price":500,"description":"An item that raises the base Speed of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"SWIFT_MOCHI","name":"Swift Mochi","price":500,"description":"An item that raises the base Speed of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Mochi","icon":"sprites/items/swift_mochi.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"RED_NECTAR","name":"Red Nectar","price":300,"description":"Flower nectar that changes the form of certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nectar","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"RED_NECTAR","name":"Red Nectar","price":300,"description":"Flower nectar that changes the form of certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nectar","icon":"sprites/items/red_nectar.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

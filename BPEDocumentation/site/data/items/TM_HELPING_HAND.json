@@ -1,1 +1,1 @@
-{"id":"TM_HELPING_HAND","name":"TM130","price":0,"description":"Helping Hand","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_HELPING_HAND","name":"TM130","price":0,"description":"Helping Hand","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_helping_hand.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

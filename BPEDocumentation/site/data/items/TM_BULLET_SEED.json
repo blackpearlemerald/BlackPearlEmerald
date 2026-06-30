@@ -1,1 +1,1 @@
-{"id":"TM_BULLET_SEED","name":"TM09","price":3000,"description":"Shoots 2 to 5 seeds in a row to strike the foe.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_BULLET_SEED","name":"TM09","price":3000,"description":"Shoots 2 to 5 seeds in a row to strike the foe.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_bullet_seed.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

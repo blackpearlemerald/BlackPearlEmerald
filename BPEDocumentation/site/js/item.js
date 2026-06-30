@@ -21,24 +21,29 @@
     }).join(' ').replace(/([A-Za-z])(\d)/g, '$1 $2');
   }
 
-  function whereToFind(locs) {
+  function whereToFind(locs, itemId) {
     if (!locs) return '';
     var marts = locs.marts || [];
     var overworld = locs.overworld || [];
     var gifts = locs.gifts || [];
     if (!marts.length && !overworld.length && !gifts.length) return '';
 
+    // Each link deep-links into the map and tells it what to snap to.
+    function link(mapId, extra, label, trailing) {
+      var href = 'index.html?map=' + encodeURIComponent(mapId) + extra;
+      return '<div class="where-row">'
+        + '<a href="' + href + '" class="where-map-link">' + esc(label) + '</a>'
+        + (trailing || '')
+        + '</div>';
+    }
+
     var html = '<div class="item-where-card"><h3>Where to Find</h3>';
 
     if (marts.length) {
       html += '<div class="where-section"><div class="where-section-label">🛒 Poké Mart</div>';
-      // Group by martName + condition
       marts.forEach(function(m) {
-        var mapLink = 'index.html?map=' + encodeURIComponent(m.mapId);
-        html += '<div class="where-row">'
-          + '<a href="' + mapLink + '" class="where-map-link">' + esc(m.martName) + '</a>'
-          + '<span class="where-cond">' + esc(m.condition) + '</span>'
-          + '</div>';
+        html += link(m.mapId, '&mart=1', m.martName,
+          '<span class="where-cond">' + esc(m.condition) + '</span>');
       });
       html += '</div>';
     }
@@ -53,12 +58,8 @@
       });
       html += '<div class="where-section"><div class="where-section-label">⚪ Item Ball</div>';
       unique.forEach(function(o) {
-        var mapLink = 'index.html?map=' + encodeURIComponent(o.mapId);
         var hiddenLabel = o.hidden ? ' <span class="where-hidden">(hidden)</span>' : '';
-        html += '<div class="where-row">'
-          + '<a href="' + mapLink + '" class="where-map-link">' + esc(o.mapName) + '</a>'
-          + hiddenLabel
-          + '</div>';
+        html += link(o.mapId, '&item=' + encodeURIComponent(itemId), o.mapName, hiddenLabel);
       });
       html += '</div>';
     }
@@ -66,12 +67,8 @@
     if (gifts.length) {
       html += '<div class="where-section"><div class="where-section-label">🎁 Gift NPC</div>';
       gifts.forEach(function(g) {
-        var mapLink = 'index.html?map=' + encodeURIComponent(g.mapId);
         var qtyLabel = g.qty > 1 ? ' <span class="where-qty">×' + g.qty + '</span>' : '';
-        html += '<div class="where-row">'
-          + '<a href="' + mapLink + '" class="where-map-link">' + esc(g.mapName) + '</a>'
-          + qtyLabel
-          + '</div>';
+        html += link(g.mapId, '&gift=' + encodeURIComponent(itemId), g.mapName, qtyLabel);
       });
       html += '</div>';
     }
@@ -123,7 +120,7 @@
       +   '<h3>Details</h3>'
       +   metaHtml
       + '</div>'
-      + whereToFind(item.locations);
+      + whereToFind(item.locations, item.id);
   }
 
   function init() {

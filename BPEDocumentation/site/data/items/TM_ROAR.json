@@ -1,1 +1,1 @@
-{"id":"TM_ROAR","name":"TM172","price":0,"description":"Roar","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_ROAR","name":"TM172","price":0,"description":"Roar","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_roar.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

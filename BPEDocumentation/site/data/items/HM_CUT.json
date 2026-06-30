@@ -1,1 +1,1 @@
-{"id":"HM_CUT","name":"HM01","price":0,"description":"Attacks the foe with sharp blades or claws.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"HM_CUT","name":"HM01","price":0,"description":"Attacks the foe with sharp blades or claws.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/hm_cut.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

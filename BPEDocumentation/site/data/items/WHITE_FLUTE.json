@@ -1,1 +1,1 @@
-{"id":"WHITE_FLUTE","name":"White Flute","price":20,"description":"A glass flute that lures wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Flute","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"WHITE_FLUTE","name":"White Flute","price":20,"description":"A glass flute that lures wild Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Flute","icon":"sprites/items/white_flute.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

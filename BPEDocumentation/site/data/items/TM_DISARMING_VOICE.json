@@ -1,1 +1,1 @@
-{"id":"TM_DISARMING_VOICE","name":"TM19","price":0,"description":"Disarming Voice","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_DISARMING_VOICE","name":"TM19","price":0,"description":"Disarming Voice","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_disarming_voice.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

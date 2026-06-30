@@ -1,1 +1,1 @@
-{"id":"YELLOW_NECTAR","name":"Yellow Nectar","price":300,"description":"Flower nectar that changes the form of certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nectar","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"YELLOW_NECTAR","name":"Yellow Nectar","price":300,"description":"Flower nectar that changes the form of certain Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nectar","icon":"sprites/items/yellow_nectar.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

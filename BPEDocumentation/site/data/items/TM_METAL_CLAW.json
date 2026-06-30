@@ -1,1 +1,1 @@
-{"id":"TM_METAL_CLAW","name":"TM31","price":0,"description":"Metal Claw","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_METAL_CLAW","name":"TM31","price":0,"description":"Metal Claw","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_metal_claw.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

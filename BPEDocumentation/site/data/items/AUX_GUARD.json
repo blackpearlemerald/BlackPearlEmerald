@@ -1,1 +1,1 @@
-{"id":"AUX_GUARD","name":"Aux Guard","price":400,"description":"Sharply raises defenses during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"AUX_GUARD","name":"Aux Guard","price":400,"description":"Sharply raises defenses during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":"sprites/items/aux_guard.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

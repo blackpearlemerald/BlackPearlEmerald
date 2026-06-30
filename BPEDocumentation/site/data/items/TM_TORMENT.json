@@ -1,1 +1,1 @@
-{"id":"TM_TORMENT","name":"TM41","price":3000,"description":"Prevents the foe from using the same move in a row.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_TORMENT","name":"TM41","price":3000,"description":"Prevents the foe from using the same move in a row.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_torment.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

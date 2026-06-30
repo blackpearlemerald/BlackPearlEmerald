@@ -1,1 +1,1 @@
-{"id":"RESIST_FEATHER","name":"Resist Feather","price":300,"description":"An item that raises the base Defense of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Feather","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"RESIST_FEATHER","name":"Resist Feather","price":300,"description":"An item that raises the base Defense of a Pokémon.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Stat Boost Feather","icon":"sprites/items/resist_feather.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

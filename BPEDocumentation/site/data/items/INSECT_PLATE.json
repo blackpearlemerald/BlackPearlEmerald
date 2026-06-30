@@ -1,1 +1,1 @@
-{"id":"INSECT_PLATE","name":"Insect Plate","price":1000,"description":"A tablet that ups the power of Bug-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"INSECT_PLATE","name":"Insect Plate","price":1000,"description":"A tablet that ups the power of Bug-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":"sprites/items/insect_plate.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

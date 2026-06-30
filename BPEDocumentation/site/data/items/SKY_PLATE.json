@@ -1,1 +1,1 @@
-{"id":"SKY_PLATE","name":"Sky Plate","price":1000,"description":"A tablet that ups the power of Flying-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"SKY_PLATE","name":"Sky Plate","price":1000,"description":"A tablet that ups the power of Flying-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":"sprites/items/sky_plate.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

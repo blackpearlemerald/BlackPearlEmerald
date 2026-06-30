@@ -1,1 +1,1 @@
-{"id":"TM_SWIFT","name":"TM32","price":0,"description":"Swift","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SWIFT","name":"TM32","price":0,"description":"Swift","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_swift.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"COMET_SHARD","name":"Comet Shard","price":0,"description":"A comet's shard. It would sell for a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"COMET_SHARD","name":"Comet Shard","price":0,"description":"A comet's shard. It would sell for a high price.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Sellable","icon":"sprites/items/comet_shard.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"TM_LEAF_STORM","name":"TM159","price":0,"description":"Leaf Storm","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_LEAF_STORM","name":"TM159","price":0,"description":"Leaf Storm","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_leaf_storm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

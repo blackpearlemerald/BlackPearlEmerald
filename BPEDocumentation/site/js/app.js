@@ -532,31 +532,94 @@ async function main() {
 
   document.getElementById("loading").style.display = "none";
 
-  // Pan + zoom to a specific map (e.g. from a Pokédex encounter link), and
-  // optionally open its wild-encounter popup.
-  function focusMap(id, openPopup) {
+  // Briefly pulse a ring at a location so a deep-linked target is easy to spot.
+  function pulseAt(ll) {
+    const pm = L.circleMarker(ll, {
+      radius: 7, color: "#ffd54a", weight: 3,
+      fillColor: "#ffd54a", fillOpacity: 0.35, interactive: false,
+    }).addTo(map);
+    let r = 7, grow = true, n = 0;
+    const iv = setInterval(() => {
+      r += grow ? 3 : -3;
+      if (r >= 22) grow = false;
+      else if (r <= 7) grow = true;
+      pm.setRadius(r);
+      if (++n > 26) { clearInterval(iv); map.removeLayer(pm); }
+    }, 80);
+  }
+
+  // Make a layer visible and tick its toggle (deep-links may target a layer
+  // the user has turned off — e.g. hidden items).
+  function ensureLayer(layer, toggleId) {
+    if (!map.hasLayer(layer)) layer.addTo(map);
+    const cb = document.getElementById(toggleId);
+    if (cb) cb.checked = true;
+  }
+
+  // Pan/zoom to a specific map and snap to what the deep-link asked for:
+  //   opts.item  -> the exact item-ball/hidden-item of that item id
+  //   opts.gift  -> the gift NPC on that map (optionally giving that item)
+  //   opts.mart  -> the map's Poké Mart popup
+  // Falls back to the map's wild-encounter popup.
+  function focusMap(id, opts) {
+    opts = opts || {};
     const m = world.maps.find((mm) => mm.id === id);
     if (!m) return false;
+
+    // Snap to a specific item ball / hidden item on this map.
+    if (opts.item) {
+      const want = "ITEM_" + opts.item;
+      const hit = world.items.find((it) => it.mapId === id && it.item === want)
+                || world.items.find((it) => it.mapId === id && it.item === opts.item);
+      if (hit) {
+        ensureLayer(hit.hidden ? hiddenLayer : itemLayer,
+                    hit.hidden ? "t-hidden" : "t-items");
+        const ll = W2LL(hit.gx, hit.gy);
+        map.setView(ll, 2, { animate: true });
+        objPopup.setLatLng(ll).setContent(itemPopup(hit)).openOn(map);
+        pulseAt(ll);
+        return true;
+      }
+    }
+
+    // Snap to a gift NPC on this map.
+    if (opts.gift) {
+      const g = (world.gifts || []).find((gg) => gg.mapId === id);
+      if (g) {
+        ensureLayer(giftLayer, "t-gifts");
+        const ll = W2LL(g.gx, g.gy);
+        map.setView(ll, 2, { animate: true });
+        objPopup.setLatLng(ll).setContent(giftPopup(g)).openOn(map);
+        pulseAt(ll);
+        return true;
+      }
+    }
+
+    // Otherwise frame the whole map and open the most relevant popup.
     const bounds = L.latLngBounds(W2LL(m.x, m.y), W2LL(m.x + m.w, m.y + m.h));
     map.fitBounds(bounds.pad(0.3), { maxZoom: 2, animate: true });
-    if (openPopup) {
-      const center = W2LL(m.x + m.w / 2, m.y + m.h / 2);
-      if (world.marts && world.marts[id]) {
-        objPopup.setLatLng(center).setContent(martPopup(world.marts[id])).openOn(map);
-      } else {
-        encPopup.setLatLng(center).setContent(encounterPopup(m)).openOn(map);
-      }
+    const center = W2LL(m.x + m.w / 2, m.y + m.h / 2);
+    if (world.marts && world.marts[id]) {
+      objPopup.setLatLng(center).setContent(martPopup(world.marts[id])).openOn(map);
+    } else {
+      encPopup.setLatLng(center).setContent(encounterPopup(m)).openOn(map);
     }
     return true;
   }
 
   window.bpe = { map, world, W2LL, focusMap };
 
-  // Honour ?map=MAP_ID — clicking a location in the Pokédex deep-links here.
-  const focusId = new URLSearchParams(location.search).get("map");
+  // Honour ?map=MAP_ID (+ optional &item=/&gift=/&mart=) — clicking a location
+  // in the Pokédex / item pages deep-links here.
+  const params = new URLSearchParams(location.search);
+  const focusId = params.get("map");
   if (focusId) {
     // Defer so the initial world fitBounds/layout settles first, then fly in.
-    setTimeout(() => focusMap(focusId, true), 0);
+    setTimeout(() => focusMap(focusId, {
+      item: params.get("item"),
+      gift: params.get("gift"),
+      mart: params.get("mart"),
+    }), 0);
   }
 }
 

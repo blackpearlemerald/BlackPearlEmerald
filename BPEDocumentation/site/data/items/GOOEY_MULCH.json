@@ -1,1 +1,1 @@
-{"id":"GOOEY_MULCH","name":"Gooey Mulch","price":200,"description":"A fertilizer that makes more Berries regrow after fall.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"GOOEY_MULCH","name":"Gooey Mulch","price":200,"description":"A fertilizer that makes more Berries regrow after fall.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":"sprites/items/gooey_mulch.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

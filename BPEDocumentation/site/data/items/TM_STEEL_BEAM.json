@@ -1,1 +1,1 @@
-{"id":"TM_STEEL_BEAM","name":"TM170","price":0,"description":"Steel Beam","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_STEEL_BEAM","name":"TM170","price":0,"description":"Steel Beam","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_steel_beam.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

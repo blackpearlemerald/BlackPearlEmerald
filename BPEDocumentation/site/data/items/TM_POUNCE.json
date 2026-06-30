@@ -1,1 +1,1 @@
-{"id":"TM_POUNCE","name":"TM21","price":0,"description":"Pounce","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_POUNCE","name":"TM21","price":0,"description":"Pounce","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_pounce.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

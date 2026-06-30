@@ -1,1 +1,1 @@
-{"id":"BUG_GEM","name":"Bug Gem","price":0,"description":"Increases the power of Bug Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"BUG_GEM","name":"Bug Gem","price":0,"description":"Increases the power of Bug Type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Gem","icon":"sprites/items/bug_gem.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

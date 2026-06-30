@@ -1,1 +1,1 @@
-{"id":"TM_STORED_POWER","name":"TM41","price":0,"description":"Stored Power","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_STORED_POWER","name":"TM41","price":0,"description":"Stored Power","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_stored_power.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

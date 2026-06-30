@@ -1,1 +1,1 @@
-{"id":"TM_BUG_BUZZ","name":"TM162","price":0,"description":"Bug Buzz","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_BUG_BUZZ","name":"TM162","price":0,"description":"Bug Buzz","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_bug_buzz.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"ELECTRIC_SEED","name":"Electric Seed","price":20000,"description":"Boosts Defense on Electric Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"ELECTRIC_SEED","name":"Electric Seed","price":20000,"description":"Boosts Defense on Electric Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/electric_seed.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

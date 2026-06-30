@@ -1,1 +1,1 @@
-{"id":"MIND_PLATE","name":"Mind Plate","price":1000,"description":"A tablet that ups the power of Psy chic-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"MIND_PLATE","name":"Mind Plate","price":1000,"description":"A tablet that ups the power of Psy chic-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":"sprites/items/mind_plate.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

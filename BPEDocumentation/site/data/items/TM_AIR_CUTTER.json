@@ -1,1 +1,1 @@
-{"id":"TM_AIR_CUTTER","name":"TM40","price":0,"description":"Air Cutter","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_AIR_CUTTER","name":"TM40","price":0,"description":"Air Cutter","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_air_cutter.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

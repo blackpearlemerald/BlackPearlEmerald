@@ -1,1 +1,1 @@
-{"id":"FIST_PLATE","name":"Fist Plate","price":1000,"description":"A tablet that ups the power of Fight- ing-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"FIST_PLATE","name":"Fist Plate","price":1000,"description":"A tablet that ups the power of Fight- ing-type moves.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Plate","icon":"sprites/items/fist_plate.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

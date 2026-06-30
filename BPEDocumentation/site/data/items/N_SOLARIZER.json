@@ -1,1 +1,1 @@
-{"id":"N_SOLARIZER","name":"N-Solarizer","price":0,"description":"A device to fuse and split Necrozma using a Solgaleo.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"N_SOLARIZER","name":"N-Solarizer","price":0,"description":"A device to fuse and split Necrozma using a Solgaleo.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/n_solarizer.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

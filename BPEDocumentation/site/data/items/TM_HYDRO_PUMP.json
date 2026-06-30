@@ -1,1 +1,1 @@
-{"id":"TM_HYDRO_PUMP","name":"TM142","price":0,"description":"Hydro Pump","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_HYDRO_PUMP","name":"TM142","price":0,"description":"Hydro Pump","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_hydro_pump.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

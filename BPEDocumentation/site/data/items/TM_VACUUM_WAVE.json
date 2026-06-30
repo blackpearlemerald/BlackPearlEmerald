@@ -1,1 +1,1 @@
-{"id":"TM_VACUUM_WAVE","name":"TM184","price":0,"description":"Vacuum Wave","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_VACUUM_WAVE","name":"TM184","price":0,"description":"Vacuum Wave","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_vacuum_wave.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

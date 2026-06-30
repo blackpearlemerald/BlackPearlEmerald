@@ -1,1 +1,1 @@
-{"id":"YELLOW_FLUTE","name":"Yellow Flute","price":20,"description":"A glass flute that snaps Pokémon out of confusion.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Flute","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"YELLOW_FLUTE","name":"Yellow Flute","price":20,"description":"A glass flute that snaps Pokémon out of confusion.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Flute","icon":"sprites/items/yellow_flute.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

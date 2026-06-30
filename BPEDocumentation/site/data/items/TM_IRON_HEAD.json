@@ -1,1 +1,1 @@
-{"id":"TM_IRON_HEAD","name":"TM99","price":0,"description":"Iron Head","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_IRON_HEAD","name":"TM99","price":0,"description":"Iron Head","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_iron_head.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

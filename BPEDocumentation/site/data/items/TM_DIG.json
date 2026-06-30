@@ -1,1 +1,1 @@
-{"id":"TM_DIG","name":"TM28","price":2000,"description":"Digs underground the 1st turn, then strikes next turn.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_DIG","name":"TM28","price":2000,"description":"Digs underground the 1st turn, then strikes next turn.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_dig.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

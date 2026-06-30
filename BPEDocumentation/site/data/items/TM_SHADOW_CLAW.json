@@ -1,1 +1,1 @@
-{"id":"TM_SHADOW_CLAW","name":"TM61","price":0,"description":"Shadow Claw","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SHADOW_CLAW","name":"TM61","price":0,"description":"Shadow Claw","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_shadow_claw.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

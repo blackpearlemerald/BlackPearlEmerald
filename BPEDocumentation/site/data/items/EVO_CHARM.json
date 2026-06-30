@@ -1,1 +1,1 @@
-{"id":"EVO_CHARM","name":"Evo Charm","price":0,"description":"A special charm that will help overleveled Pokémon evolve.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"EVO_CHARM","name":"Evo Charm","price":0,"description":"A special charm that will help overleveled Pokémon evolve.","pocket":"POCKET_KEY_ITEMS","pocketLabel":"Key Items","sortType":"","icon":"sprites/items/evo_charm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

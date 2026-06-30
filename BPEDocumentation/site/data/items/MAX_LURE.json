@@ -1,1 +1,1 @@
-{"id":"MAX_LURE","name":"Max Lure","price":900,"description":"Makes Pokémon more likely to appear for 250 steps.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Field Use","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"MAX_LURE","name":"Max Lure","price":900,"description":"Makes Pokémon more likely to appear for 250 steps.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Field Use","icon":"sprites/items/max_lure.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

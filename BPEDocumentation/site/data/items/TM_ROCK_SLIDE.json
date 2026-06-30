@@ -1,1 +1,1 @@
-{"id":"TM_ROCK_SLIDE","name":"TM86","price":0,"description":"Rock Slide","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_ROCK_SLIDE","name":"TM86","price":0,"description":"Rock Slide","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_rock_slide.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

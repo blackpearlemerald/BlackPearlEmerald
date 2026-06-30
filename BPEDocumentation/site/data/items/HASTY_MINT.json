@@ -1,1 +1,1 @@
-{"id":"HASTY_MINT","name":"Hasty Mint","price":20000,"description":"Can be smelled. It ups Speed, but reduces Defense.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"HASTY_MINT","name":"Hasty Mint","price":20000,"description":"Can be smelled. It ups Speed, but reduces Defense.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Nature Mint","icon":"sprites/items/hasty_mint.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

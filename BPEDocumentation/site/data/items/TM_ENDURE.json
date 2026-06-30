@@ -1,1 +1,1 @@
-{"id":"TM_ENDURE","name":"TM47","price":0,"description":"Endure","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_ENDURE","name":"TM47","price":0,"description":"Endure","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_endure.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

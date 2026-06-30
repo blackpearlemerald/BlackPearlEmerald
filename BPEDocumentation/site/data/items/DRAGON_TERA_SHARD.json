@@ -1,1 +1,1 @@
-{"id":"DRAGON_TERA_SHARD","name":"Dragon Tera Shard","price":0,"description":"These shards may form when a Tera Pokémon faints.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Tera Shard","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"DRAGON_TERA_SHARD","name":"Dragon Tera Shard","price":0,"description":"These shards may form when a Tera Pokémon faints.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Tera Shard","icon":"sprites/items/dragon_tera_shard.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

@@ -1,1 +1,1 @@
-{"id":"ENIGMA_BERRY_E_READER","name":"Enigma Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow a mystery.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"ENIGMA_BERRY_E_READER","name":"Enigma Berry","price":80,"description":"{POKEBLOCK} ingredient. Plant in loamy soil to grow a mystery.","pocket":"POCKET_BERRIES","pocketLabel":"Berries","sortType":"","icon":"sprites/items/enigma_berry_e_reader.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

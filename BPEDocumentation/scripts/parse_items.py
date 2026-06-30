@@ -9,8 +9,9 @@ Reads ROM source files and generates:
 Usage:  py parse_items.py
 """
 
-import re, json, os, shutil
+import re, json, os
 from pathlib import Path
+from PIL import Image
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 
@@ -22,8 +23,10 @@ DATA_DIR = SITE / "data"
 ITEMS_DIR = DATA_DIR / "items"
 ICONS_DST = SITE / "sprites" / "items"
 
-ITEMS_H   = REPO / "src" / "data" / "items.h"
-GFX_ICONS = REPO / "graphics" / "items" / "icons"
+ITEMS_H    = REPO / "src" / "data" / "items.h"
+GFX_ITEMS_H = REPO / "src" / "data" / "graphics" / "items.h"
+TYPES_INFO_H = REPO / "src" / "data" / "types_info.h"
+MOVES_JSON = DATA_DIR / "moves.json"
 
 # ── Pocket metadata ────────────────────────────────────────────────────────────
 
@@ -67,13 +70,44 @@ def parse_price(raw):
         return int(m.group(1))
     return 0
 
-def icon_filename(key):
-    """Map an ITEM_* key to its PNG filename in graphics/items/icons/."""
-    if key.startswith("TM_"):
-        return "tm.png"
-    if key.startswith("HM_"):
-        return "hm.png"
-    return key.lower() + ".png"
+def read_jasc_pal(path):
+    """Parse a JASC-PAL file into a list of (r, g, b) tuples."""
+    lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    n = int(lines[2].strip())
+    cols = []
+    for ln in lines[3:3 + n]:
+        parts = ln.split()
+        if len(parts) >= 3:
+            cols.append((int(parts[0]), int(parts[1]), int(parts[2])))
+    return cols
+
+
+def parse_gfx_symbols():
+    """Build {symbol: repo-relative path} maps for item icons and palettes
+    from src/data/graphics/items.h (INCGFX/INCBIN declarations)."""
+    text = read_file(GFX_ITEMS_H)
+    icons, palettes = {}, {}
+    # gItemIcon_X[] = INCGFX_U32("graphics/items/icons/x.png", ...)
+    for m in re.finditer(r'(gItemIcon_\w+)\[\]\s*=\s*INC\w+\(\s*"([^"]+)"', text):
+        icons[m.group(1)] = m.group(2)
+    # gItemIconPalette_Y[] = INCGFX_U16("graphics/items/icon_palettes/y.pal", ...)
+    for m in re.finditer(r'(gItemIconPalette_\w+)\[\]\s*=\s*INC\w+\(\s*"([^"]+)"', text):
+        palettes[m.group(1)] = m.group(2)
+    return icons, palettes
+
+
+def parse_type_tmhm_palettes():
+    """Build {TYPE_NAME: palette symbol} from gTypesInfo[].paletteTMHM."""
+    text = strip_c_comments(read_file(TYPES_INFO_H))
+    out = {}
+    for m in re.finditer(
+        r'\[TYPE_(\w+)\]\s*=\s*\{(.*?)\n\s*\}', text, re.DOTALL
+    ):
+        type_name = m.group(1)
+        pm = re.search(r'\.paletteTMHM\s*=\s*(gItemIconPalette_\w+)', m.group(2))
+        if pm:
+            out[type_name] = pm.group(1)
+    return out
 
 # ── 1. Shared static description strings ──────────────────────────────────────
 
@@ -161,35 +195,108 @@ def parse_items(shared_descs):
         st = re.search(r"\.sortType\s*=\s*ITEM_TYPE_(\w+)", block)
         item["sortType"] = st.group(1).replace("_", " ").title() if st else ""
 
-        # ── Icon path ─────────────────────────────────────────────────────────
-        fname = icon_filename(key)
-        item["icon"] = f"sprites/items/{fname}" if (GFX_ICONS / fname).exists() else None
+        # ── Icon symbols (resolved to PNGs later by render_icons) ──────────────
+        ip = re.search(r"\.iconPic\s*=\s*(gItemIcon_\w+)", block)
+        item["_iconPic"] = ip.group(1) if ip else None
+        ipal = re.search(r"\.iconPalette\s*=\s*(gItemIconPalette_\w+)", block)
+        item["_iconPalette"] = ipal.group(1) if ipal else None
+        # TMs/HMs carry their move in .secondaryId; their icon is colored by type.
+        mv = re.search(r"\.secondaryId\s*=\s*MOVE_(\w+)", block)
+        item["_move"] = mv.group(1) if mv else None
+        item["icon"] = None  # filled in by render_icons
 
         items.append(item)
 
     return items
 
-# ── 3. Copy icons ──────────────────────────────────────────────────────────────
+# ── 3. Render icons (icon shape + per-item palette -> colored PNG) ──────────────
 
-def copy_icons(items):
+def _render_one(icon_rel, pal_syms_path, dst):
+    """Recolor an indexed icon PNG with a JASC palette; index 0 -> transparent.
+    Falls back to the icon's own embedded palette if pal_syms_path is None."""
+    icon_path = REPO / icon_rel
+    if not icon_path.exists():
+        return False
+
+    pal = None
+    if pal_syms_path is not None:
+        pp = REPO / pal_syms_path
+        if pp.exists():
+            pal = read_jasc_pal(pp)
+
+    im = Image.open(icon_path)
+    if im.mode != "P":
+        # Already truecolor — just copy through with alpha.
+        im.convert("RGBA").save(dst)
+        return True
+
+    if pal is None:
+        # Use the icon's own embedded palette.
+        flat = im.getpalette() or []
+        pal = [tuple(flat[i:i + 3]) for i in range(0, len(flat), 3)]
+
+    px = list(im.getdata())
+    out_px = []
+    for i in px:
+        if i == 0:                       # GBA sprite color index 0 = transparent
+            out_px.append((0, 0, 0, 0))
+        else:
+            c = pal[i] if i < len(pal) else (0, 0, 0)
+            out_px.append((c[0], c[1], c[2], 255))
+    out = Image.new("RGBA", im.size)
+    out.putdata(out_px)
+    out.save(dst)
+    return True
+
+
+def render_icons(items):
+    """Resolve each item's icon shape + palette and write a colored 24x24 PNG.
+    Mirrors the game's GetItemIconPic / GetItemIconPalette logic."""
     ICONS_DST.mkdir(parents=True, exist_ok=True)
-    copied = skipped = missing = 0
-    seen = set()
+    icon_map, pal_map = parse_gfx_symbols()
+    type_pal = parse_type_tmhm_palettes()
+    moves = {}
+    if MOVES_JSON.exists():
+        with open(MOVES_JSON, "r", encoding="utf-8") as f:
+            moves = json.load(f)
+    else:
+        print("  ! moves.json not found — TM/HM icons will use a default color")
+
+    rendered = missing = 0
     for item in items:
-        fname = icon_filename(item["id"])
-        src   = GFX_ICONS / fname
-        dst   = ICONS_DST / fname
-        if not src.exists():
+        key = item["id"]
+        icon_sym = pal_sym = None
+
+        if item["pocket"] == "POCKET_TM_HM":
+            # TM/HM: a TM/HM disc colored by the move's type. The item->move
+            # link is ITEM_TM_<MOVE>/ITEM_HM_<MOVE> -> MOVE_<MOVE>, so the move
+            # is the key minus its prefix (HMs have no .secondaryId field).
+            is_hm = key.startswith("HM_")
+            icon_sym = "gItemIcon_HM" if is_hm else "gItemIcon_TM"
+            mv = item.get("_move") or key[3:]
+            mtype = moves.get(mv, {}).get("type") if mv else None
+            pal_sym = type_pal.get(mtype)
+        else:
+            icon_sym = item.get("_iconPic")
+            pal_sym = item.get("_iconPalette")
+
+        icon_rel = icon_map.get(icon_sym) if icon_sym else None
+        pal_rel = pal_map.get(pal_sym) if pal_sym else None
+
+        if not icon_rel:
             missing += 1
+            item["icon"] = None
             continue
-        if fname in seen:
-            skipped += 1
-            continue
-        seen.add(fname)
-        if not dst.exists():
-            shutil.copy2(src, dst)
-            copied += 1
-    print(f"  icons: {copied} copied, {skipped} shared/skipped, {missing} not found")
+
+        dst = ICONS_DST / f"{key.lower()}.png"
+        if _render_one(icon_rel, pal_rel, dst):
+            item["icon"] = f"sprites/items/{key.lower()}.png"
+            rendered += 1
+        else:
+            missing += 1
+            item["icon"] = None
+
+    print(f"  icons: {rendered} rendered, {missing} without artwork")
 
 # ── 4. JSON output ─────────────────────────────────────────────────────────────
 
@@ -224,18 +331,28 @@ def build_locations(items_dict):
 
     map_names = {m["id"]: _prettify_map(m["id"]) for m in world.get("maps", [])}
 
-    # Mart locations
+    # Mart locations. A mart can stock an item across several inventory tiers;
+    # emit ONE entry per mart with the clearest condition — "Always available"
+    # if it's in every tier, otherwise the trigger of the earliest tier it
+    # appears in (so an item only in the expanded list reads e.g. "After
+    # meeting the Devon researcher", and a Petalburg-only expanded item reads
+    # "Never unlocks (unused in-game)").
     for map_id, mart in world.get("marts", {}).items():
         mart_name = mart.get("name", _prettify_map(map_id))
-        for inv in mart.get("inventories", []):
-            for item_const in inv.get("items", []):
-                key = item_const.replace("ITEM_", "")
-                if key in locs:
-                    # Avoid duplicates
-                    entry = {"mapId": map_id, "martName": mart_name,
-                             "condition": inv["condition"]}
-                    if entry not in locs[key]["marts"]:
-                        locs[key]["marts"].append(entry)
+        invs = mart.get("inventories", [])
+        for key in locs:
+            item_const = "ITEM_" + key
+            present = [i for i, inv in enumerate(invs)
+                       if item_const in inv.get("items", [])]
+            if not present:
+                continue
+            if len(present) == len(invs):
+                condition = (invs[0]["condition"] if len(invs) == 1
+                             else "Always available")
+            else:
+                condition = invs[present[0]]["condition"]
+            locs[key]["marts"].append(
+                {"mapId": map_id, "martName": mart_name, "condition": condition})
 
     # Overworld item ball pickups
     for it in world.get("items", []):
@@ -282,8 +399,8 @@ def main():
     items = [i for i in items if i["id"] != "NONE" and i["name"] != "????????"]
     print(f"       -> {len(items)} items")
 
-    print("  [3] Copying icons …")
-    copy_icons(items)
+    print("  [3] Rendering icons …")
+    render_icons(items)
 
     print("  [4] Building location data …")
     index = {item["id"]: item for item in items}
@@ -296,6 +413,10 @@ def main():
     print(f"       -> {locs_with_data}/{len(items)} items have location data")
 
     print("  [5] Writing JSON …")
+    # Drop internal resolution fields before serializing.
+    for item in items:
+        for k in ("_iconPic", "_iconPalette", "_move"):
+            item.pop(k, None)
     index = {item["id"]: item for item in items}
     write_json(DATA_DIR / "items_index.json", index)
     for item in items:

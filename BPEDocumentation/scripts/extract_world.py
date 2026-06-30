@@ -283,6 +283,38 @@ def _mart_get_pokemart(body, subscripts):
     return None
 
 
+# Plain-English trigger text for mart-expansion flags. BPE marts expand on
+# story flags, not gym badges, so each known flag is mapped to a readable
+# trigger. "set" = the tier reached when the flag IS set; "unset" = when it is
+# not. Unknown flags fall back to a generic title-cased phrasing.
+MART_FLAG_DESCRIPTIONS = {
+    "FLAG_ADVENTURE_STARTED": {
+        "set":   "After starting your adventure",
+        "unset": "Before starting your adventure",
+    },
+    "FLAG_MET_DEVON_EMPLOYEE": {
+        "set":   "After meeting the Devon researcher (Route 116)",
+        "unset": "Before meeting the Devon researcher (Route 116)",
+    },
+    # This flag is never set anywhere in the game, so the expanded tier is
+    # unreachable dead code (as in vanilla Emerald): the basic list is what
+    # you always get.
+    "FLAG_PETALBURG_MART_EXPANDED_ITEMS": {
+        "set":   "Never unlocks (unused in-game)",
+        "unset": "Always available",
+    },
+}
+
+
+def _describe_condition(flag, kind):
+    """Human-readable trigger for a mart tier. kind is 'set' or 'unset'."""
+    desc = MART_FLAG_DESCRIPTIONS.get(flag)
+    if desc:
+        return desc[kind]
+    friendly = flag.replace("FLAG_", "").replace("_", " ").title()
+    return f"After {friendly}" if kind == "set" else f"Before {friendly}"
+
+
 def parse_mart_scripts(content):
     """Parse a mart scripts.inc; return [{condition, items}]."""
     # 1. Collect .2byte item lists
@@ -306,52 +338,52 @@ def parse_mart_scripts(content):
     # 3. Locate the clerk (or first script with pokemart)
     clerk_label = next((l for l in scripts if "Clerk" in l), None)
     if not clerk_label:
-        return [{"condition": "Always available", "items": v}
+        return [{"condition": "Always available", "items": v, "_rank": 0}
                 for v in item_lists.values()]
 
     clerk_body = scripts[clerk_label]
 
-    # 4. Conditional jumps in the clerk script → derive conditions
+    # 4. Conditional jumps in the clerk script → derive conditions. _rank keeps
+    # the earlier/basic tier (0) above the later/expanded tier (1).
     inventories, processed = [], set()
+    first_flag = first_kind = None
 
     for m in re.finditer(
             r"\bgoto_if_(set|unset)\s+(FLAG_\w+),\s*(\w+)", clerk_body):
         kind, flag, target = m.group(1), m.group(2), m.group(3)
-        friendly = flag.replace("FLAG_", "").replace("_", " ").title()
         list_label = _mart_get_pokemart(scripts.get(target, ""), scripts)
         if list_label and list_label in item_lists and list_label not in processed:
-            cond = f"After {friendly}" if kind == "set" else f"Before {friendly}"
-            inventories.append({"condition": cond, "items": item_lists[list_label]})
+            if first_flag is None:
+                first_flag, first_kind = flag, kind
+            inventories.append({"condition": _describe_condition(flag, kind),
+                                "items": item_lists[list_label],
+                                "_rank": 1 if kind == "set" else 0})
             processed.add(list_label)
 
-    # 5. Direct pokemart in clerk = fallthrough / always / opposite case
+    # 5. Direct pokemart in clerk = fallthrough / opposite of the first jump
     direct_pm = re.search(r"\bpokemart\s+(\w+)", clerk_body)
     if direct_pm:
         ll = direct_pm.group(1)
         if ll in item_lists and ll not in processed:
-            if inventories:
-                first = inventories[0]["condition"]
-                if first.startswith("After "):
-                    cond = "Before " + first[6:]
-                elif first.startswith("Before "):
-                    cond = "After " + first[7:]
-                else:
-                    cond = "Always available"
+            if first_flag is not None:
+                opp = "unset" if first_kind == "set" else "set"
+                cond, rank = _describe_condition(first_flag, opp), \
+                             (1 if opp == "set" else 0)
             else:
-                cond = "Always available"
-            inventories.append({"condition": cond, "items": item_lists[ll]})
+                cond, rank = "Always available", 0
+            inventories.append({"condition": cond, "items": item_lists[ll],
+                                "_rank": rank})
             processed.add(ll)
 
     # 6. Catch any lists still unprocessed
     for label, items_in_block in item_lists.items():
         if label not in processed:
             inventories.append({"condition": "Always available",
-                                 "items": items_in_block})
+                                 "items": items_in_block, "_rank": 0})
 
-    def _sort(inv):
-        c = inv["condition"]
-        return 0 if c == "Always available" else (1 if c.startswith("Before ") else 2)
-    inventories.sort(key=_sort)
+    inventories.sort(key=lambda inv: inv["_rank"])
+    for inv in inventories:
+        inv.pop("_rank", None)
     return inventories
 
 

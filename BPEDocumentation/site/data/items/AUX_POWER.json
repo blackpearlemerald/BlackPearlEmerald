@@ -1,1 +1,1 @@
-{"id":"AUX_POWER","name":"Aux Power","price":400,"description":"Sharply raises offenses during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"AUX_POWER","name":"Aux Power","price":400,"description":"Sharply raises offenses during one battle.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Aux Item","icon":"sprites/items/aux_power.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

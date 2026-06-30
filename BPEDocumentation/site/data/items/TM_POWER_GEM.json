@@ -1,1 +1,1 @@
-{"id":"TM_POWER_GEM","name":"TM101","price":0,"description":"Power Gem","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_POWER_GEM","name":"TM101","price":0,"description":"Power Gem","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_power_gem.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

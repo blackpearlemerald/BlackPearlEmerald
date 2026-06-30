@@ -1,1 +1,1 @@
-{"id":"PSYCHIC_SEED","name":"Psychic Seed","price":20000,"description":"Boosts Sp. Def. on Psychic Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"PSYCHIC_SEED","name":"Psychic Seed","price":20000,"description":"Boosts Sp. Def. on Psychic Terrain, but only one time.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Held Item","icon":"sprites/items/psychic_seed.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

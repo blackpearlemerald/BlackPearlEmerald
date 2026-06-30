@@ -1,1 +1,1 @@
-{"id":"CHILL_DRIVE","name":"Chill Drive","price":0,"description":"Changes Genesect's Techno Blast to Ice-type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Drive","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"CHILL_DRIVE","name":"Chill Drive","price":0,"description":"Changes Genesect's Techno Blast to Ice-type.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Drive","icon":"sprites/items/chill_drive.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

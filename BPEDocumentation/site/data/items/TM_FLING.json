@@ -1,1 +1,1 @@
-{"id":"TM_FLING","name":"TM43","price":0,"description":"Fling","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FLING","name":"TM43","price":0,"description":"Fling","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_fling.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

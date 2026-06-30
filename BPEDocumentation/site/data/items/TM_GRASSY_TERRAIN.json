@@ -1,1 +1,1 @@
-{"id":"TM_GRASSY_TERRAIN","name":"TM137","price":0,"description":"Grassy Terrain","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_GRASSY_TERRAIN","name":"TM137","price":0,"description":"Grassy Terrain","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_grassy_terrain.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

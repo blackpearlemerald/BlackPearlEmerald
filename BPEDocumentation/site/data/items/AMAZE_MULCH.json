@@ -1,1 +1,1 @@
-{"id":"AMAZE_MULCH","name":"Amaze Mulch","price":200,"description":"A fertilizer Rich Surprising and Boosting as well.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":null,"locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"AMAZE_MULCH","name":"Amaze Mulch","price":200,"description":"A fertilizer Rich Surprising and Boosting as well.","pocket":"POCKET_ITEMS","pocketLabel":"Items","sortType":"Growth","icon":"sprites/items/amaze_mulch.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

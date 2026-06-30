@@ -1,1 +1,1 @@
-{"id":"TM_ENERGY_BALL","name":"TM119","price":0,"description":"Energy Ball","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_ENERGY_BALL","name":"TM119","price":0,"description":"Energy Ball","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_energy_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

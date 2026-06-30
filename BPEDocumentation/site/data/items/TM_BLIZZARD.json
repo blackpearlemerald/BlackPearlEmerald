@@ -1,1 +1,1 @@
-{"id":"TM_BLIZZARD","name":"TM14","price":5500,"description":"A snow-and-wind attack that may inflict frostbite.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_BLIZZARD","name":"TM14","price":5500,"description":"A snow-and-wind attack that may inflict frostbite.","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_blizzard.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

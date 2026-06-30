@@ -1,1 +1,1 @@
-{"id":"TM_FALSE_SWIPE","name":"TM57","price":0,"description":"False Swipe","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FALSE_SWIPE","name":"TM57","price":0,"description":"False Swipe","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_false_swipe.png","locations":{"marts":[],"overworld":[],"gifts":[]}}

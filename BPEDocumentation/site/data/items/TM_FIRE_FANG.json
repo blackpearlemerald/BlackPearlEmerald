@@ -1,1 +1,1 @@
-{"id":"TM_FIRE_FANG","name":"TM08","price":0,"description":"Fire Fang","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FIRE_FANG","name":"TM08","price":0,"description":"Fire Fang","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_fire_fang.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
