@@ -200,6 +200,17 @@
   border-color: rgba(77, 184, 122, 0.4);
 }
 
+/* Card arrived at via a global-search deep link (?focus=…): flash to draw the eye. */
+.tr-card.tr-focus {
+  border-color: #4db87a;
+  box-shadow: 0 0 0 2px rgba(77, 184, 122, 0.5), 0 6px 22px rgba(0, 0, 0, 0.4);
+  animation: tr-focus-pulse 2.2s ease-out;
+}
+@keyframes tr-focus-pulse {
+  0%   { box-shadow: 0 0 0 4px rgba(77, 184, 122, 0.7), 0 6px 22px rgba(0, 0, 0, 0.4); }
+  100% { box-shadow: 0 0 0 2px rgba(77, 184, 122, 0.0), 0 6px 22px rgba(0, 0, 0, 0.4); }
+}
+
 .tr-mon-detail {
   display: flex;
   align-items: flex-start;

@@ -100,7 +100,7 @@
         + '</div></div>';
     }).join('');
 
-    return '<div class="tr-card">'
+    return '<div class="tr-card" data-id="' + esc(t.id) + '">'
       + '<div class="tr-card-top">'
       + spriteHtml
       + '<div class="tr-card-info">'
@@ -128,6 +128,36 @@
       state.mapOnly = this.checked;
       render(applyFilters());
     });
+
+    // Honour deep links from the global search:
+    //   ?focus=TRAINER_ID  -> reveal, expand and highlight that exact trainer
+    //   ?q=text            -> pre-fill the search box
+    function applyDeepLink() {
+      var params = new URLSearchParams(location.search);
+      var focus = params.get('focus');
+      var q = params.get('q');
+
+      if (q) {
+        searchEl.value = q;
+        state.query = q.trim();
+        render(applyFilters());
+      }
+
+      if (focus) {
+        // A focused trainer may be battle/script-only, so drop the map-only
+        // filter (and any query) to guarantee its card is in the list.
+        if (state.mapOnly) { state.mapOnly = false; mapOnlyEl.checked = false; }
+        if (state.query) { state.query = ''; searchEl.value = ''; }
+        render(applyFilters());
+
+        var card = document.querySelector('.tr-card[data-id="' + focus.replace(/"/g, '') + '"]');
+        if (card) {
+          card.classList.add('expanded', 'tr-focus');
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(function () { card.classList.remove('tr-focus'); }, 2400);
+        }
+      }
+    }
 
     Promise.all([
       fetch('js/data/trainers.json').then(function (r) { return r.json(); }),
@@ -184,6 +214,7 @@
         });
 
       render(applyFilters());
+      applyDeepLink();
     }).catch(function () {
       document.getElementById('trainer-grid').innerHTML =
         '<div class="dex-empty">Failed to load trainer data. Run the build script first.</div>';

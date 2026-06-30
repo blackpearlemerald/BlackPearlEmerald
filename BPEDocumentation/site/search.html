@@ -5,13 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BPE Emerald — Global Search</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/pokedex.css" />
 </head>
-<body class="page-placeholder">
-  <div class="placeholder-content">
-    <div class="placeholder-badge">Coming Soon</div>
-    <h1>Global Search</h1>
-    <p>Search across all Pokémon, trainers, items, moves, and locations in BPE Emerald from a single place.</p>
-  </div>
+<body class="page-search">
   <script src="js/nav.js"></script>
+
+  <div class="search-page">
+    <header class="search-hero">
+      <h1>Global Search</h1>
+      <p>Search across every Pokémon, trainer, item, and location in BPE Emerald.</p>
+      <div class="search-box">
+        <span class="search-box-ic" aria-hidden="true">⌕</span>
+        <input id="global-search" class="search-input" type="search"
+               placeholder="Search Pokémon, trainers, items, locations…"
+               autocomplete="off" autofocus />
+      </div>
+      <div class="search-cats" id="search-cats"></div>
+    </header>
+
+    <div id="search-status" class="search-status"></div>
+    <div id="search-results" class="search-results"></div>
+  </div>
+
+  <script src="js/search.js"></script>
 </body>
 </html>
