@@ -44,6 +44,11 @@ bool8 IsMirageIslandPresent(void)
     u16 rnd = GetMirageRnd() >> 16;
     int i;
 
+    // Legendary Lottery Island: once the Elite Four has been beaten, Mirage
+    // Island is permanently present so it can host the rotating legendary.
+    if (FlagGet(FLAG_SYS_GAME_CLEAR))
+        return TRUE;
+
     for (i = 0; i < PARTY_SIZE; i++)
         if (GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_SPECIES) && (GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_PERSONALITY) & 0xFFFF) == rnd)
             return TRUE;

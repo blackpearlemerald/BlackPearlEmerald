@@ -45,6 +45,7 @@
 #include "rtc.h"
 #include "script.h"
 #include "script_menu.h"
+#include "script_pokemon_util.h"
 #include "sound.h"
 #include "starter_choose.h"
 #include "string_util.h"
@@ -65,6 +66,7 @@
 #include "constants/field_effects.h"
 #include "constants/field_specials.h"
 #include "constants/items.h"
+#include "constants/pokedex.h"
 #include "constants/heal_locations.h"
 #include "constants/mystery_gift.h"
 #include "constants/slot_machine.h"
@@ -5778,4 +5780,85 @@ bool8 CheckAddCoins(void)
         return FALSE;
     else
         return TRUE;
+}
+
+// ---------------------------------------------------------------------------
+// Legendary Lottery Island (Route 130 / Mirage Island, post-Elite Four).
+//
+// The pool is every legendary/mythical that has no other home in the hack (the
+// placed statics - Rayquaza, Kyogre, Groudon, the Regis, Latios/Latias, the
+// roaming beasts, etc. - are deliberately excluded). Each map entry the island
+// rolls a random pool member the player hasn't caught yet, manifests it as its
+// follower overworld sprite, and lets the player battle it at Level 70.
+// "Uncaught" is read straight from the Pokedex caught flags, so no per-legendary
+// bookkeeping flags are needed - catch it and it drops out of the pool forever.
+// ---------------------------------------------------------------------------
+#define ISLAND_LEGENDARY_LEVEL 70
+
+static const u16 sIslandLegendaryPool[] =
+{
+    SPECIES_ARTICUNO, SPECIES_ZAPDOS, SPECIES_MOLTRES, SPECIES_MEWTWO,
+    SPECIES_MEW, SPECIES_LUGIA, SPECIES_HO_OH, SPECIES_DEOXYS_NORMAL,
+    SPECIES_UXIE, SPECIES_MESPRIT, SPECIES_AZELF, SPECIES_DIALGA,
+    SPECIES_PALKIA, SPECIES_HEATRAN, SPECIES_REGIGIGAS, SPECIES_GIRATINA_ALTERED,
+    SPECIES_CRESSELIA, SPECIES_PHIONE, SPECIES_MANAPHY, SPECIES_DARKRAI,
+    SPECIES_SHAYMIN_LAND, SPECIES_VICTINI, SPECIES_COBALION, SPECIES_TERRAKION,
+    SPECIES_VIRIZION, SPECIES_TORNADUS_INCARNATE, SPECIES_THUNDURUS_INCARNATE, SPECIES_RESHIRAM,
+    SPECIES_ZEKROM, SPECIES_LANDORUS_INCARNATE, SPECIES_KYUREM, SPECIES_KELDEO_ORDINARY,
+    SPECIES_MELOETTA_ARIA, SPECIES_XERNEAS_NEUTRAL, SPECIES_YVELTAL, SPECIES_ZYGARDE_50,
+    SPECIES_DIANCIE, SPECIES_HOOPA_CONFINED, SPECIES_VOLCANION, SPECIES_TAPU_KOKO,
+    SPECIES_TAPU_LELE, SPECIES_TAPU_BULU, SPECIES_TAPU_FINI, SPECIES_COSMOG,
+    SPECIES_COSMOEM, SPECIES_SOLGALEO, SPECIES_LUNALA, SPECIES_NIHILEGO,
+    SPECIES_BUZZWOLE, SPECIES_PHEROMOSA, SPECIES_XURKITREE, SPECIES_CELESTEELA,
+    SPECIES_KARTANA, SPECIES_GUZZLORD, SPECIES_NECROZMA, SPECIES_MAGEARNA,
+    SPECIES_MARSHADOW, SPECIES_POIPOLE, SPECIES_NAGANADEL, SPECIES_STAKATAKA,
+    SPECIES_BLACEPHALON, SPECIES_ZERAORA, SPECIES_MELTAN, SPECIES_MELMETAL,
+    SPECIES_DRACOZOLT, SPECIES_ARCTOZOLT, SPECIES_ZACIAN_HERO, SPECIES_ZAMAZENTA_HERO,
+    SPECIES_ETERNATUS, SPECIES_KUBFU, SPECIES_URSHIFU_SINGLE_STRIKE, SPECIES_ZARUDE,
+    SPECIES_REGIELEKI, SPECIES_REGIDRAGO, SPECIES_GLASTRIER, SPECIES_SPECTRIER,
+    SPECIES_CALYREX, SPECIES_ENAMORUS_INCARNATE, SPECIES_WO_CHIEN, SPECIES_CHIEN_PAO,
+    SPECIES_TING_LU, SPECIES_CHI_YU, SPECIES_KORAIDON, SPECIES_MIRAIDON,
+    SPECIES_WALKING_WAKE, SPECIES_IRON_LEAVES, SPECIES_OKIDOGI, SPECIES_MUNKIDORI,
+    SPECIES_FEZANDIPITI, SPECIES_GOUGING_FIRE, SPECIES_RAGING_BOLT, SPECIES_IRON_BOULDER,
+    SPECIES_IRON_CROWN, SPECIES_TERAPAGOS_NORMAL, SPECIES_PECHARUNT,
+};
+
+// Picks a random pool legendary the player has not caught yet. On success sets
+// VAR_ISLAND_LEGENDARY to the species, points the island object's dynamic
+// graphics slot (VAR_OBJ_GFX_ID_0) at that species' follower sprite, and returns
+// the species in gSpecialVar_Result. If every pool member is caught, returns
+// SPECIES_NONE so the map script can hide the island object.
+void ChooseIslandLegendary(void)
+{
+    u16 uncaught[ARRAY_COUNT(sIslandLegendaryPool)];
+    u32 i, count = 0;
+
+    for (i = 0; i < ARRAY_COUNT(sIslandLegendaryPool); i++)
+    {
+        u16 species = sIslandLegendaryPool[i];
+        if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+            uncaught[count++] = species;
+    }
+
+    if (count == 0)
+    {
+        VarSet(VAR_ISLAND_LEGENDARY, SPECIES_NONE);
+        gSpecialVar_Result = SPECIES_NONE;
+        return;
+    }
+
+    {
+        u16 species = uncaught[Random() % count];
+        VarSet(VAR_ISLAND_LEGENDARY, species);
+        VarSet(VAR_OBJ_GFX_ID_0, species + OBJ_EVENT_MON);
+        gSpecialVar_Result = species;
+    }
+}
+
+// Builds the enemy party for the island legendary battle, mirroring what the
+// setwildbattle script command does but for the runtime-chosen species. The
+// caller follows this with the standard BattleSetup_StartLegendaryBattle.
+void SetupIslandLegendaryBattle(void)
+{
+    CreateScriptedWildMon(VarGet(VAR_ISLAND_LEGENDARY), ISLAND_LEGENDARY_LEVEL, ITEM_NONE);
 }

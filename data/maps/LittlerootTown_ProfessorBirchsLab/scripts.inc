@@ -463,12 +463,25 @@ LittlerootTown_ProfessorBirchsLab_EventScript_ReceivedJohtoStarter::
 LittlerootTown_ProfessorBirchsLab_EventScript_Birch::
 	lock
 	faceplayer
+@ Legendary Lottery Island: once the player is CHAMPION (FLAG_SYS_GAME_CLEAR),
+@ Birch gives a one-time hint that Mirage Island now hosts a legendary.
+@ FLAG_UNUSED_0x2A5 records that the hint has already been given.
+	call_if_set FLAG_SYS_GAME_CLEAR, LittlerootTown_ProfessorBirchsLab_EventScript_TryMirageLegendaryHint
 	goto_if_eq VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 5, LittlerootTown_ProfessorBirchsLab_EventScript_CanHaveAnyOneOfRarePokemon
 	goto_if_eq VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 2, LittlerootTown_ProfessorBirchsLab_EventScript_GrassyPatchWaiting
 	goto_if_unset FLAG_HAS_MATCH_CALL, LittlerootTown_ProfessorBirchsLab_EventScript_TryRatePokedexOrRegister
 	goto_if_unset FLAG_ENABLE_PROF_BIRCH_MATCH_CALL, EventScript_RegisterProfBirch
 	goto LittlerootTown_ProfessorBirchsLab_EventScript_TryRatePokedexOrRegister
 	end
+
+LittlerootTown_ProfessorBirchsLab_EventScript_TryMirageLegendaryHint::
+	goto_if_unset FLAG_UNUSED_0x2A5, LittlerootTown_ProfessorBirchsLab_EventScript_ShowMirageLegendaryHint
+	return
+
+LittlerootTown_ProfessorBirchsLab_EventScript_ShowMirageLegendaryHint::
+	msgbox LittlerootTown_ProfessorBirchsLab_Text_MirageLegendaryHint, MSGBOX_DEFAULT
+	setflag FLAG_UNUSED_0x2A5
+	return
 
 LittlerootTown_ProfessorBirchsLab_EventScript_CanHaveAnyOneOfRarePokemon::
 	msgbox LittlerootTown_ProfessorBirchsLab_Text_CanHaveAnyOneOfRarePokemon, MSGBOX_DEFAULT
@@ -996,3 +1009,14 @@ LittlerootTown_ProfessorBirchsLab_Text_ScottAboardSSTidalCall:
 	.string "we meet. I'll be waiting!\p"
 	.string "… … … … … …\n"
 	.string "… … … … … Click!$"
+
+LittlerootTown_ProfessorBirchsLab_Text_MirageLegendaryHint:
+	.string "Ah, {PLAYER}! Now that you're\n"
+	.string "the CHAMPION…\p"
+	.string "They say only a truly strong\n"
+	.string "TRAINER can lay eyes on the\l"
+	.string "legend of MIRAGE ISLAND.\p"
+	.string "It appears in the waters off\n"
+	.string "ROUTE 130.\p"
+	.string "Now that you're strong enough,\n"
+	.string "I bet you could see it at last!$"

@@ -333,6 +333,8 @@ gSpecials::
 	def_special ShakeCamera
 	def_special StartGroudonKyogreBattle
 	def_special BattleSetup_StartLegendaryBattle, waitstate=1
+	def_special ChooseIslandLegendary
+	def_special SetupIslandLegendaryBattle
 	def_special StartRegiBattle, waitstate=1
 	def_special SetTrainerFacingDirection
 	def_special DoSealedChamberShakingEffect_Short, waitstate=1
