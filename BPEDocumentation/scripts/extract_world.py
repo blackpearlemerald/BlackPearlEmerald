@@ -303,6 +303,15 @@ MART_FLAG_DESCRIPTIONS = {
         "set":   "Never unlocks (unused in-game)",
         "unset": "Always available",
     },
+    # Verdanturf "Beans Shop" evolution-item mart expands with gym progress.
+    "FLAG_BADGE03_GET": {
+        "set":   "After the 3rd Gym Badge",
+        "unset": "Before the 3rd Gym Badge",
+    },
+    "FLAG_BADGE04_GET": {
+        "set":   "After the 4th Gym Badge",
+        "unset": "Before the 4th Gym Badge",
+    },
 }
 
 
@@ -343,11 +352,17 @@ def parse_mart_scripts(content):
 
     clerk_body = scripts[clerk_label]
 
-    # 4. Conditional jumps in the clerk script → derive conditions. _rank keeps
-    # the earlier/basic tier (0) above the later/expanded tier (1).
+    # 4. Conditional jumps in the clerk script → derive conditions & ordering.
+    # 'unset' tiers are the early/basic state (rank 0). 'set' tiers unlock later;
+    # because the clerk checks the most-advanced flag FIRST, the set tiers are
+    # reversed so the earliest-unlocking one gets the lowest rank. This keeps
+    # multi-tier marts (e.g. the badge-gated Verdanturf "Beans Shop") in true
+    # progression order, which the item-location picker relies on to report the
+    # earliest tier an item becomes available.
     inventories, processed = [], set()
     first_flag = first_kind = None
 
+    cond_tiers = []
     for m in re.finditer(
             r"\bgoto_if_(set|unset)\s+(FLAG_\w+),\s*(\w+)", clerk_body):
         kind, flag, target = m.group(1), m.group(2), m.group(3)
@@ -355,10 +370,20 @@ def parse_mart_scripts(content):
         if list_label and list_label in item_lists and list_label not in processed:
             if first_flag is None:
                 first_flag, first_kind = flag, kind
-            inventories.append({"condition": _describe_condition(flag, kind),
-                                "items": item_lists[list_label],
-                                "_rank": 1 if kind == "set" else 0})
+            cond_tiers.append((kind, flag, list_label))
             processed.add(list_label)
+
+    n_set = sum(1 for k, _, _ in cond_tiers if k == "set")
+    seen_set = 0
+    for kind, flag, list_label in cond_tiers:
+        if kind == "set":
+            rank = n_set - seen_set   # first-checked (most advanced) → highest
+            seen_set += 1
+        else:
+            rank = 0
+        inventories.append({"condition": _describe_condition(flag, kind),
+                            "items": item_lists[list_label],
+                            "_rank": rank})
 
     # 5. Direct pokemart in clerk = fallthrough / opposite of the first jump
     direct_pm = re.search(r"\bpokemart\s+(\w+)", clerk_body)
