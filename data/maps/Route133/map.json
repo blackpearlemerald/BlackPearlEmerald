@@ -155,6 +155,19 @@
       "trainer_sight_or_berry_tree_id": "ITEM_CHARIZARDITE_Y",
       "script": "Common_EventScript_FindItem",
       "flag": "FLAG_ITEM_ROUTE_133_STAR_PIECE_2"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 31,
+      "y": 16,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_SCOLIPITE",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_UNUSED_0x29D"
     }
   ],
   "warp_events": [],

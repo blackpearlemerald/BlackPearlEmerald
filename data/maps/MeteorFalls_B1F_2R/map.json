@@ -40,6 +40,19 @@
       "trainer_sight_or_berry_tree_id": "0",
       "script": "Legendary_EventScript_BattleJirachi",
       "flag": "FLAG_HIDE_OVERWORLD_JIRACHI"
+    },
+    {
+      "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
+      "x": 6,
+      "y": 14,
+      "elevation": 3,
+      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_range_x": 0,
+      "movement_range_y": 0,
+      "trainer_type": "TRAINER_TYPE_NONE",
+      "trainer_sight_or_berry_tree_id": "ITEM_DELPHOXITE",
+      "script": "Common_EventScript_FindItem",
+      "flag": "FLAG_UNUSED_0x1E3"
     }
   ],
   "warp_events": [
@@ -51,10 +64,6 @@
       "dest_warp_id": "3"
     }
   ],
-  "coord_events": [
-
-  ],
-  "bg_events": [
-
-  ]
+  "coord_events": [],
+  "bg_events": []
 }
