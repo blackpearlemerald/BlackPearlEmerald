@@ -160,7 +160,7 @@ def annotate(trainers):
 
 def _mon_lists(enc):
     """Yield every list-of-mons inside one map's encounter structure."""
-    for key in ("land", "water", "rock_smash"):
+    for key in ("land", "water", "rock_smash", "mirage"):
         if isinstance(enc.get(key), dict) and enc[key].get("mons"):
             yield enc[key]["mons"]
     if isinstance(enc.get("fishing"), dict):

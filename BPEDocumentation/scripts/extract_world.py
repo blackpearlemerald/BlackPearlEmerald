@@ -88,6 +88,20 @@ def build_encounters():
     return out
 
 
+# Legendary Lottery Island: Mirage Island (Route 130) hosts a rotating,
+# post-Champion legendary encounter. The pool lives in the game source as
+# sIslandLegendaryPool[] so the site stays in sync with a single source of
+# truth. Level is fixed at ISLAND_LEGENDARY_LEVEL in the same file.
+def read_island_legendary_pool():
+    """(level, [SPECIES_* ...]) from src/field_specials.c, or (70, [])."""
+    txt = open(C.src("src", "field_specials.c"), encoding="utf-8").read()
+    lvl_m = re.search(r"#define\s+ISLAND_LEGENDARY_LEVEL\s+(\d+)", txt)
+    level = int(lvl_m.group(1)) if lvl_m else 70
+    arr = re.search(r"sIslandLegendaryPool\[\]\s*=\s*\{(.*?)\};", txt, re.S)
+    species = re.findall(r"SPECIES_[A-Z0-9_]+", arr.group(1)) if arr else []
+    return level, species
+
+
 # --------------------------------------------------------------------------- #
 # Source loading
 # --------------------------------------------------------------------------- #
@@ -822,6 +836,17 @@ def build():
     trainers_ship = {tid: trainers_db[tid]
                      for tid in used_trainers if tid in trainers_db}
     unresolved = len([t for t in used_trainers if t not in trainers_db])
+
+    # Legendary Lottery Island: attach the rotating Mirage Island legendary
+    # pool to Route 130 so it renders as a special encounter category.
+    mirage_level, mirage_pool = read_island_legendary_pool()
+    if mirage_pool:
+        r130 = next((e for e in out_maps if e["id"] == "MAP_ROUTE130"), None)
+        if r130 is not None:
+            r130.setdefault("enc", {})["mirage"] = {
+                "level": mirage_level,
+                "mons": [{"species": sp} for sp in mirage_pool],
+            }
 
     # annotate each party mon with its menu-icon filename (img/pokemon/*.png)
     pokemon_sprites.annotate(trainers_ship)

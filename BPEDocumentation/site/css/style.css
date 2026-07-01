@@ -679,6 +679,17 @@ body.page-search {
 .enc-sp { flex: 1 1 auto; }
 .enc-lvl { color: #5a6b7b; font-size: 11px; white-space: nowrap; }
 .enc-none { color: #5a6b7b; font-size: 13px; margin-top: 6px; }
+.enc-rand { color: #8a5cc0; font-size: 11px; font-style: italic; }
+.enc-note {
+  color: #5a6b7b;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 2px 0 6px;
+  padding: 6px 8px;
+  background: #f3eefaff;
+  border-left: 3px solid #a982e0;
+  border-radius: 4px;
+}
 
 /* ----- item ball sprite ----- */
 .item-ball-sprite {
@@ -1068,6 +1079,18 @@ body.page-search {
   font-size: 12.5px;
 }
 .detail-body .enc-none { color: #8aa0b6; font-size: 14px; margin-top: 8px; }
+.detail-body .enc-rand { color: #c4a5ec; font-style: italic; font-weight: 600; }
+.detail-body .enc-note {
+  color: #c7d3df;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 6px 0 10px;
+  padding: 9px 11px;
+  background: rgba(140, 92, 192, 0.12);
+  border-left: 3px solid #a982e0;
+  border-radius: 7px;
+}
+.detail-body .enc-note b { color: #e5d8f7; }
 
 /* ----- trainer stack nav (dark) ----- */
 .detail-body .stack-nav {

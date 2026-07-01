@@ -148,6 +148,21 @@ function monRows(mons) {
     }).join("");
 }
 
+// Mirage Island legendary pool: no fixed encounter rate — one random uncaught
+// legendary from the pool is present each visit, so show the whole pool with a
+// "random" tag instead of a percentage.
+function mirageRows(mons) {
+  return mons
+    .map(m => {
+      const id = monPageId(m);
+      const cellInner = encSprite(m) + `<span class="enc-sp">${prettify(m.species)}</span>`;
+      const cell = id
+        ? `<a class="enc-mon" href="pokemon.html?id=${encodeURIComponent(id)}">${cellInner}</a>`
+        : `<span class="enc-mon">${cellInner}</span>`;
+      return `<div class="enc-row">${cell}<span class="enc-pct enc-rand">random</span></div>`;
+    }).join("");
+}
+
 const ENC_LABELS = { land: "🌿 Grass", water: "🌊 Surf", rock_smash: "🪨 Rock Smash" };
 const ROD_LABELS = { old: "Old Rod", good: "Good Rod", super: "Super Rod" };
 
@@ -187,6 +202,16 @@ function encounterPopup(m) {
         html += `<div class="enc-rod">${ROD_LABELS[rod]}</div>${monRows(e.fishing[rod])}`;
       }
     }
+  }
+  if (e.mirage && e.mirage.mons && e.mirage.mons.length) {
+    html += `<div class="enc-cat">✨ Mirage Island Legendary` +
+      `<span class="enc-rate"> · Lv ${e.mirage.level}</span></div>`;
+    html += `<div class="enc-note">After you become Champion, Mirage Island always ` +
+      `appears off Route 130 and hosts <b>one legendary at a time</b>, picked at ` +
+      `<b>random</b> from the pool below — so which one you meet is a random chance ` +
+      `every visit. It's always one you haven't caught yet; leave and return to ` +
+      `re-roll. Catch it and it leaves the pool.</div>`;
+    html += mirageRows(e.mirage.mons);
   }
   return html;
 }
