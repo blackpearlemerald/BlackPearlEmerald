@@ -76,22 +76,27 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-12-06 by AlWar
 - **Details:** In Gym3 Split AmyAndLiv3 have wrong pokemon in the docs (I fought Jolteon and Lanturn) Joseph Pokemon are missing moves in the docs
 
-### EXP not gained after level 15
+### EXP not gained after level 15 — ✅ NOT A BUG (intended level cap, 2026-07-02)
 - **Category:** Battle
 - **Reports:** 3 reactions
 - **First reported:** 2025-03-16 by Dian-Keto
 - **Details:** Hello, my pokemon don’t reach exp. After level 15 every battle it takes 0 exp. Why????
+- **Triage (2026-07-02):** Working as intended. BPE uses a badge-gated **level cap** — Pokémon at or above the current cap gain 0 EXP until the next badge raises it. Confirmed by the tracker itself ("this rom uses lvl caps", furius2 2025-03-16, `#questions-or-help`); the level-15 reporters had simply hit the early-game cap. Same explanation covers the duplicate report "My pokemons are bugged at level 15, I can't lvl up them" (BRFernandes011, 2024-12-12). **No code change.**
 
 ### Got the wrong sprite
 - **Category:** Graphics
 - **Reports:** 2 similar reports
 - **First reported:** 2024-08-25 by Silvanor
 
-### I'm able to catch multiple pokemon on the one the same route all over sudden on nuzlock mode...
-- **Category:** Overworld
-- **Reports:** 1 confirmations
+### Nuzlocke per-route lock bypassed → infinite catches — 🔧 FIX APPLIED (2026-07-02, built clean, pending playtest)
+- **Category:** Overworld / Nuzlocke
+- **Reports:** multiple (nexo, AlphaBryce "fainted first slot" repro, + the broader "multi-catch" cluster)
 - **First reported:** 2024-08-25 by nexo
 - **Details:** I'm able to catch multiple pokemon on the one the same route all over sudden on nuzlock mode (the notice "already catched your encounter on this route" or whatever doesnt appear anymore) tested multiple old routes. It worked properly and stopped working after beating the 5th /petalburg gym). The nuzlock mode in general seems to work fine still. I tested some dead mons from my PC and they are still dead and stay dead even after using the...
+- **Root cause (confirmed 2026-07-02):** the ball-throw gate `GetBallThrowableState()` (`src/item_use.c`) reads the wild mon's shiny status with `GetMonData(&gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_IS_SHINY)`. `gBattlerTarget` is only reliably the wild mon on the turn a move targeted it; after the player's lead **faints** (and the wild mon's last attack left `gBattlerTarget` pointing at a *player* battler), `gBattlerPartyIndexes[gBattlerTarget]` is a non-zero *player* party index used to index the **opponent** party — which in a single wild battle only has the wild mon at slot 0. That reads a garbage/empty slot whose `IS_SHINY` comes back truthy, so the shiny catch-clause (`isWildShiny == 1 → BALL_THROW_ABLE`) fires and bypasses the Nuzlocke per-route lock entirely → catch anything, anywhere. Exactly matches AlphaBryce's "fainted party member in the first slot → infinite catches" repro (2024-12-14).
+- **Fix applied:** read the actual catching target via `GetCatchingBattler()` (always the alive opponent) instead of `gBattlerTarget`: `gBattlerPartyIndexes[GetCatchingBattler()]`. Preserves the intended shiny clause while closing the bypass.
+- **Also fixed (per author decision, same session):** the **dupes clause** was accidentally disabled — the tracker returns `2` for "duplicate species, allow the catch" but the consumer blocked on both `1` and `2`. Changed to block only on `== 1` so already-owned species stay catchable and don't consume the route encounter. Route-lock timing kept **encounter-based** (locks the instant you engage the first new wild mon) per author's choice — classic strict Nuzlocke; the "already caught" wording is cosmetic.
+- **Not yet playtested.** Verify: (a) after your lead faints, you still CANNOT catch a new species on a route you've used; (b) shinies remain catchable; (c) a species you already own is still catchable (dupes clause); (d) first new species per route locks that route. Files: `src/item_use.c`.
 
 ### I Just remembered this but this bugged/glitched pokemon Sprite shows up in the credits after you...
 - **Category:** Graphics
@@ -116,11 +121,12 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-09-18 by sirchuggs0100
 - **Details:** Not game breaking but in the fourth gym I can see a little bit of a head where a hidden trainer is
 
-### I don't know if others have mentioned it, but in the current version there's a bug in the first...
+### Bulldoze "misses" a Dig user — ✅ NOT A BUG (working as intended, 2026-07-02)
 - **Category:** Battle
 - **Reports:** 1 report
 - **First reported:** 2024-08-25 by Eric ǃ
 - **Details:** I don't know if others have mentioned it, but in the current version there's a bug in the first gym. Bulldoze is supposed to auto hit and deal double damage when the opponent is using Dig, but it still misses Onix when I try.
+- **Triage (2026-07-02):** Reporter's premise is a misconception — Bulldoze is being confused with Earthquake/Magnitude. Canonically, the ONLY moves that strike (and double against) a target during the semi-invulnerable turn of Dig are **Earthquake** and **Magnitude**; Bulldoze has never been able to hit an underground Pokémon. Verified the expansion models this correctly, three layers deep: (1) move data — `src/data/moves_info.h` `[MOVE_BULLDOZE]` has `target = TARGET_FOES_AND_ALLY` (so it does hit both foes in doubles) but has **no `.damagesUnderground` field** → defaults FALSE, vs. Earthquake (`.damagesUnderground = B_UPDATED_MOVE_FLAGS >= GEN_2`) and Magnitude (`.damagesUnderground = TRUE`); (2) hit check — `CanBreakThroughSemiInvulnerablityInternal` returns `MoveDamagesUnderground(move)` for `STATE_UNDERGROUND` (`src/battle_util.c:10480`), which is FALSE for Bulldoze, so it correctly misses the Dig user (the "misses Onix" the player saw); (3) damage — the ×2 underground bonus (`GetUndergroundModifier`, `src/battle_util.c:7329`) is gated on the same flag, so only EQ/Magnitude get it. Note Bulldoze uses `EFFECT_EARTHQUAKE`, but underground hitting/doubling is driven purely by the per-move `damagesUnderground` flag, not the effect, so sharing the effect doesn't leak the behavior. No expansion upgrade "fixed" this because there was never a code defect — the data has been canonical throughout. **Conclusion: working as intended, no code change. Bulldoze correctly hits multiple mons in doubles but cannot hit a Dig user.**
 
 ### Unless I’m missing something
 - **Category:** Misc
@@ -217,11 +223,14 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2026-04-09 by Kuro
 - **Details:** also i want to comment about Petalburg City encounter. I found out that Snorlax Encounter before going to the Petalburg City Gym and Petalburg City encounter are separated while Mirage Tower and Route 111 are not separated encounter
 
-### Where is Steven ? He's supposed to be here and help me with the invisible pokemon that blocked...
-- **Category:** Battle
+### "Where is Steven?" on the Route 120 bridge — 🔧 FIX APPLIED (bridge hint NPC added, 2026-07-02, pending playtest)
+- **Category:** Overworld / Progression
 - **Reports:** 1 report
 - **First reported:** 2026-04-11 by Kuro
 - **Details:** Where is Steven ? He's supposed to be here and help me with the invisible pokemon that blocked my way to gym 6
+- **Design context:** BPE intentionally relocated Steven (and the DEVON SCOPE hand-off) from the Route 120 bridge to the summit of Mt. Pyre, to force the player through the route/story before they can clear the invisible KECLEON blocking Fortree Gym (Gym 6). The Devon Scope is a hard gate for Gym 6 (`FortreeCity_EventScript_Kecleon` → `checkitem ITEM_DEVON_SCOPE`). Players accustomed to vanilla Emerald (Steven on the bridge) reported him "missing."
+- **Investigation (2026-07-02):** The Mt. Pyre questline is INTACT and was NOT lost in the 1.16.x upgrades — `MtPyre_Summit_EventScript_Steven` still gives `ITEM_DEVON_SCOPE`, sets `FLAG_RECEIVED_DEVON_SCOPE`, and self-removes via `setflag FLAG_HIDE_ROUTE_120_STEVEN`. However, the Route 120 map ALSO still carried the full vanilla Steven object (`LOCALID_ROUTE120_STEVEN`, gfx `OBJ_EVENT_GFX_STEVEN` at 13,15) + its complete bridge-Kecleon/Devon-Scope cutscene — and git history confirms this coexisted pre-merge too (both Stevens share `FLAG_HIDE_ROUTE_120_STEVEN`, which starts clear). Net effect: the vanilla Steven was still standing on the bridge handing out the scope early, undermining the "route/story-gated" design, while also being the source of the player's confusion. The Route 120 bridge itself is an OPTIONAL crossing (leads only to a small northern dead-end with a Revive; the Fortree↔Route 121 main path and the Ancient Tomb at y≈54 do not use it), so removing Steven's bridge cutscene cannot softlock progression.
+- **Fix applied:** repurposed the Route 120 Steven object into a bridge traveler NPC (`OBJ_EVENT_GFX_HIKER`, new `Route120_EventScript_MtPyreHintNPC` + `Route120_Text_MtPyreHint`) that redirects the player to Steven at Mt. Pyre's summit and ties the hint to the invisible-Pokémon problem. Kept `FLAG_HIDE_ROUTE_120_STEVEN` on it so the hint NPC disappears once the player has visited Mt. Pyre. Devon Scope is now obtainable ONLY at Mt. Pyre. Also upgraded `Route120_EventScript_BridgeKecleon` to a self-serve DEVON SCOPE reveal (mirrors `FortreeCity_EventScript_Kecleon`) so the optional northern item pocket stays reachable after the player returns with the scope. The legacy `Route120_EventScript_Steven` cutscene is retained but fully unreferenced/dead. Files: `data/maps/Route120/map.json`, `events.inc`, `scripts.inc`. map.json validated; symbols/labels resolve. **Not yet playtested in-game** — recommend verifying (a) hiker appears on the bridge and gives the Mt. Pyre hint, (b) Steven at Mt. Pyre summit still gives the scope, (c) Fortree Gym Kecleon clears with the scope, (d) optional: bridge Kecleon self-reveal works with the scope.
 
 ## Medium
 

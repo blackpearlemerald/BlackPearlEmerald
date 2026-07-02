@@ -1161,7 +1161,10 @@ void ItemUseOutOfBattle_EvolutionStone(u8 taskId)
 static u32 GetBallThrowableState(void)
 {
     //bool8 isWildShiny = GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)]], MON_DATA_IS_SHINY);
-    u32 isWildShiny = GetMonData(&gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_IS_SHINY);
+    // Use the catching battler (always the alive opponent) rather than gBattlerTarget, which can point at a
+    // player battler after the lead faints -- that misindexed the opponent party and read a garbage IS_SHINY,
+    // falsely tripping the shiny catch-clause and letting the Nuzlocke per-route lock be bypassed (infinite catches).
+    u32 isWildShiny = GetMonData(&gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[GetCatchingBattler()]], MON_DATA_IS_SHINY);
     DebugPrintf(" isWildShiny: %d", isWildShiny);
     DebugPrintf(" gNuzlockeCannotCatch: %d", gNuzlockeCannotCatch);
     //bool8 isWildShiny = GetMonData(&gEnemyParty[0], MON_DATA_IS_SHINY, NULL);
@@ -1180,7 +1183,7 @@ static u32 GetBallThrowableState(void)
         return BALL_THROW_UNABLE_DISABLED_FLAG;
     else if (isWildShiny == 1)
         return BALL_THROW_ABLE;
-    else if ((gNuzlockeCannotCatch == 1) || (gNuzlockeCannotCatch == 2))
+    else if (gNuzlockeCannotCatch == 1) // 1 = route encounter already used on a new species; 2 = duplicate species (dupes clause) stays catchable
         return BALL_THROW_UNABLE_NUZLOCKE;
     // else if ((GetSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[GetCatchingBattler()].species), FLAG_GET_CAUGHT)))
     //     return BALL_THROW_UNABLE_NUZLOCKE;

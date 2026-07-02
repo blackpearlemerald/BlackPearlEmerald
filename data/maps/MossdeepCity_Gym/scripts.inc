@@ -372,13 +372,12 @@ MossdeepCity_Gym_EventScript_RedFloorSwitch::
 MossdeepCity_Gym_Text_GymGuideAdvice:
 	.string "Yo, how's it going, CHAMPION-bound\n"
 	.string "{PLAYER}?\p"
-	.string "The GYM LEADERS here use\n"
-	.string "PSYCHIC-type POKéMON.\p"
-	.string "If you go up against them with\n"
-	.string "FIGHTING- or POISON-type POKéMON,\l"
-	.string "they'll inflict horrible damage!\p"
-	.string "Plus, they'll come at you with\n"
-	.string "outstanding combination attacks.\p"
+	.string "The GYM TRAINERS here use\n"
+	.string "NORMAL-type POKéMON.\p"
+	.string "Don't bother with GHOST-type moves.\n"
+	.string "They won't affect NORMAL-types at all!\p"
+	.string "Bring a strong FIGHTING-type POKéMON\n"
+	.string "to hit them where it hurts!\p"
 	.string "If you want to win, you'll need to show\n"
 	.string "them how tight you are with your\l"
 	.string "POKéMON. Go for it!$"
@@ -492,7 +491,7 @@ MossdeepCity_Gym_Text_SylviaPostBattle:
 MossdeepCity_Gym_Text_NateIntro:
 	.string "Hohoho.\p"
 	.string "You need me to show you how tenacious\n"
-	.string "the PSYCHIC type can be.$"
+	.string "the NORMAL type can be.$"
 
 MossdeepCity_Gym_Text_NateDefeat:
 	.string "Oh! My, my!\n"
@@ -535,7 +534,7 @@ MossdeepCity_Gym_Text_MaceyDefeat:
 
 MossdeepCity_Gym_Text_MaceyPostBattle:
 	.string "Humph! You may be strong, but you're\n"
-	.string "not suitable for the PSYCHIC type!\p"
+	.string "not suitable for the NORMAL type!\p"
 	.string "The way you battle is somehow brutal!$"
 
 MossdeepCity_Gym_Text_NicholasIntro:

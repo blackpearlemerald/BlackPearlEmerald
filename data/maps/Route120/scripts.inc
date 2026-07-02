@@ -151,6 +151,18 @@ Route120_EventScript_BerryNotLove::
 	msgbox Route120_Text_MakeYourOwnImpressions, MSGBOX_DEFAULT
 	return
 
+@ BPE: Steven was relocated to the summit of Mt. Pyre (MtPyre_Summit_EventScript_Steven),
+@ where he now hands over the DEVON SCOPE. This forces the player through the route/story
+@ before they can clear the invisible KECLEON blocking Fortree Gym. A traveler stands on the
+@ bridge in Steven's old spot to redirect players who go looking for him here.
+@ The legacy Route120_EventScript_Steven Devon Scope cutscene below is retained but UNUSED.
+Route120_EventScript_MtPyreHintNPC::
+	lock
+	faceplayer
+	msgbox Route120_Text_MtPyreHint, MSGBOX_DEFAULT
+	release
+	end
+
 Route120_EventScript_Steven::
 	lock
 	faceplayer
@@ -250,8 +262,63 @@ Route120_Movement_ApproachKecleonWest:
 	walk_left
 	step_end
 
+@ BPE: With Steven gone from the bridge, the player reveals this KECLEON themselves once they
+@ have the DEVON SCOPE from Mt. Pyre. Clears the bridge so the northern item pocket is reachable.
 Route120_EventScript_BridgeKecleon::
-	msgbox Kecleon_Text_SomethingUnseeable, MSGBOX_NPC
+	lock
+	faceplayer
+	checkitem ITEM_DEVON_SCOPE
+	goto_if_eq VAR_RESULT, TRUE, Route120_EventScript_BridgeKecleonUseDevonScope
+	msgbox Kecleon_Text_SomethingUnseeable, MSGBOX_DEFAULT
+	release
+	end
+
+Route120_EventScript_BridgeKecleonUseDevonScope::
+	msgbox Kecleon_Text_WantToUseDevonScope, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, Route120_EventScript_BridgeKecleonRelease
+	msgbox Kecleon_Text_UseDevonScopeMonAttacked, MSGBOX_DEFAULT
+	closemessage
+	applymovement LOCALID_BRIDGE_KECLEON, Common_Movement_WalkInPlaceFasterRight
+	waitmovement 0
+	applymovement LOCALID_BRIDGE_KECLEON, Movement_KecleonAppears
+	waitmovement 0
+	waitse
+	playmoncry SPECIES_KECLEON, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	setwildbattle SPECIES_KECLEON, 30
+	setvar VAR_0x8009, 0
+	setflag FLAG_SYS_CTRL_OBJ_DELETE
+	dowildbattle
+	clearflag FLAG_SYS_CTRL_OBJ_DELETE
+	specialvar VAR_RESULT, GetBattleOutcome
+	goto_if_eq VAR_RESULT, B_OUTCOME_WON, Route120_EventScript_BridgeKecleonCleared
+	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, Route120_EventScript_BridgeKecleonCleared
+	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, Route120_EventScript_BridgeKecleonCleared
+	goto Route120_EventScript_BridgeKecleonSetClearMetatiles
+	end
+
+Route120_EventScript_BridgeKecleonCleared::
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_BRIDGE_KECLEON
+	removeobject LOCALID_BRIDGE_KECLEON_SHADOW
+	fadescreenswapbuffers FADE_FROM_BLACK
+	goto Route120_EventScript_BridgeKecleonSetClearMetatiles
+	end
+
+Route120_EventScript_BridgeKecleonSetClearMetatiles::
+	setflag FLAG_HIDE_ROUTE_120_KECLEON_BRIDGE
+	setflag FLAG_HIDE_ROUTE_120_KECLEON_BRIDGE_SHADOW
+	setmetatile 13, 15, METATILE_Fortree_WoodBridge1_Top, FALSE
+	setmetatile 12, 16, METATILE_Fortree_WoodBridge1_Bottom, FALSE
+	setmetatile 12, 17, METATILE_General_ReflectiveWater, FALSE
+	setmetatile 13, 17, METATILE_General_ReflectiveWater, FALSE
+	special DrawWholeMapView
+	release
+	end
+
+Route120_EventScript_BridgeKecleonRelease::
+	release
 	end
 
 Route120_EventScript_RouteSignFortree::
@@ -419,6 +486,18 @@ Kecleon_Text_UseDevonScopeMonAttacked:
 	.string "An invisible POKéMON became completely\n"
 	.string "visible!\p"
 	.string "The startled POKéMON attacked!$"
+
+Route120_Text_MtPyreHint:
+	.string "Huh? You're after STEVEN?\p"
+	.string "He was resting here by the bridge not\n"
+	.string "long ago, but he hurried off.\p"
+	.string "Word is there's some kind of uproar\n"
+	.string "up on MT. PYRE-- TEAM AQUA and MAGMA,\l"
+	.string "if you can believe it.\p"
+	.string "If you've been running into POKéMON\n"
+	.string "you can't quite see…\p"
+	.string "STEVEN's the one to ask. You'll find\n"
+	.string "him at the summit of MT. PYRE.$"
 
 Route120_Text_RouteSignFortree:
 	.string "ROUTE 120\n"
