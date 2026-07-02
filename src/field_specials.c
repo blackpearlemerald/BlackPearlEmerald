@@ -5821,6 +5821,10 @@ static const u16 sIslandLegendaryPool[] =
     SPECIES_WALKING_WAKE, SPECIES_IRON_LEAVES, SPECIES_OKIDOGI, SPECIES_MUNKIDORI,
     SPECIES_FEZANDIPITI, SPECIES_GOUGING_FIRE, SPECIES_RAGING_BOLT, SPECIES_IRON_BOULDER,
     SPECIES_IRON_CROWN, SPECIES_TERAPAGOS_NORMAL, SPECIES_PECHARUNT,
+    // Mythicals/legendaries that BPE's data marks as breedable (so the initial
+    // non-breedable audit filter skipped them) but that have no other in-game
+    // home - they belong on the island too.
+    SPECIES_ARCEUS_NORMAL, SPECIES_GENESECT, SPECIES_OGERPON_TEAL,
 };
 
 // Picks a random pool legendary the player has not caught yet. On success sets
