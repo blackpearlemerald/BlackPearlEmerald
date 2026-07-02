@@ -6,7 +6,7 @@ _Distinct issues after deduplication: **256**_
 
 | Severity | Count |
 |----------|-------|
-| Critical | 7 (1 resolved emulator issue, 1 code fix applied) |
+| Critical | 7 (1 resolved emulator issue, 1 code fix applied, 1 already fixed/stale) |
 | High | 28 |
 | Medium | 221 |
 | Low | 0 |
@@ -31,11 +31,13 @@ _Distinct issues after deduplication: **256**_
 - **Verified against upstream:** BPE's `main` was 69 commits behind `RHH/master` (122 behind `upcoming`) at time of investigation. Upstream has already reworked this exact code as part of a large, unrelated 393-line MoveEnd/CalcValue refactor (commit `3e3b79d916`, "Fix Thousand Arrows not grounding both targets #10354") — too entangled to safely backport wholesale. But the corrected predicate upstream now uses (`IsBattlerTurnDamaged(battlerDef, ...)`) is a helper that already existed unchanged in BPE's current code (`include/battle.h:1102`), so the fix was portable as an isolated 2-line change.
 - **Fix applied:** swapped `IsAnyTargetTurnDamaged(cv->battlerAtk, EXCLUDING_SUBSTITUTES)` → `IsBattlerTurnDamaged(cv->battlerDef, EXCLUDING_SUBSTITUTES)` in both the `EFFECT_KNOCK_OFF` (line ~3459) and `EFFECT_STEAL_ITEM` (line ~3498) cases in `src/battle_move_resolution.c`. Confirmed clean incremental rebuild (32MB ROM, no new warnings/errors). **Not yet playtested in-game** — recommend a manual double-battle repro test (intentionally KO a Knock-Off/Thief target with one attacker while another attacker's Knock Off/Thief also targets it the same turn) before calling this fully verified.
 
-### Taxi Ticket softlock on Slateport Beach
+### Taxi Ticket softlock on Slateport Beach — ✅ ALREADY FIXED (stale report, resolved 2024-08-25)
 - **Category:** Overworld
 - **Reports:** 2 similar reports
 - **First reported:** 2024-08-23 by CD💿
 - **Details:** DO NOT USE TAXI TICKET ON SLATEPORT BEACH, PRIOR TO ENTERING SLATEPORT CITY. YOU WILL SOFTLOCK THE GAME, MR BRINEYS BOAT WILL BE ON SLATEPORT BEACH, AND YOU WILL HAVE NO WAY BACK THERE.
+- **Investigation (2026-07-01):** Root cause was that Route109 ("Slateport Beach," where Mr. Briney's boat lands you) has no fly spot of its own, and Slateport City itself wasn't yet marked "visited"/flyable until the player physically walked into its map — so using the Taxi Ticket immediately after landing at Route109 left no valid fly destination to reach that area again, stranding the boat. Confirmed via the raw Discord export that the dev (CD) diagnosed and fixed this personally: a teammate ("Danni") found the exploit, and CD's own follow-up two weeks later (2024-09-07) explains the fix as intentional ("before you could softlock if u took the boat to slateport beach, but then used the taxi ticket to fly back... The boat would be stuck at Slateport beach, and not reachable again"). `git blame` on `data/maps/DewfordTown/scripts.inc` confirms: line 33 (`setflag FLAG_VISITED_SLATEPORT_CITY`) was committed by CD on **2024-08-25**, two days after the original report — it fires the moment the player chooses to sail to Slateport, registering Slateport City as flyable before the boat animation even plays. Verified this line is still present and reachable from current `main` HEAD (last touched 2026-03-17, survived every subsequent version upgrade). **No further fix needed; this bug report is stale.**
+- **Unrelated bonus finding:** while tracing Mr. Briney's location-tracking (`VAR_BRINEY_LOCATION`), found that every boat-trip script (`DewfordTown_EventScript_SailToSlateport`, `Route109_EventScript_DoSailToDewford`, etc.) ends with `copyvar VAR_BRINEY_LOCATION, VAR_0x8008`, which restores the *pre-trip* location instead of the new destination (nothing ever writes the new value into `VAR_0x8008` first). This only affects `EventScript_ResetMrBriney`, which is exclusively called from the literal Teleport field effect (`fldeff_teleport.c`), not Fly/Taxi Ticket — so it's unrelated to this bug and not confirmed to cause any current player-facing issue (the `Common_EventScript_UpdateBrineyLocation` self-heal on Pokémon Center visits likely papers over it pre-Petalburg-Gym). Not actioned; flagging for awareness only.
 
 ### Lycanroc / Rockruff evolution freeze
 - **Category:** Pokémon/Species
