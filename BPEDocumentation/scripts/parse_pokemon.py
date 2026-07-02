@@ -221,6 +221,18 @@ def parse_hoenn_map_ids():
             hoenn.add(d["id"])
     return hoenn
 
+def read_island_legendary_pool():
+    """(level, [BARE_SPECIES ...]) for the Mirage Island legendary lottery,
+    parsed from sIslandLegendaryPool[] in src/field_specials.c so the site
+    stays in sync with the game's actual pool."""
+    txt = (REPO / "src" / "field_specials.c").read_text(encoding="utf-8")
+    lvl_m = re.search(r"#define\s+ISLAND_LEGENDARY_LEVEL\s+(\d+)", txt)
+    level = int(lvl_m.group(1)) if lvl_m else 70
+    arr = re.search(r"sIslandLegendaryPool\[\]\s*=\s*\{(.*?)\};", txt, re.S)
+    species = re.findall(r"SPECIES_([A-Z0-9_]+)", arr.group(1)) if arr else []
+    return level, species
+
+
 def parse_encounters():
     path = REPO / "src" / "data" / "wild_encounters.json"
     with open(path, "r", encoding="utf-8") as f:
@@ -260,6 +272,19 @@ def parse_encounters():
                             "maxLevel": mon["max_level"],
                             "type": enc_type,
                         })
+
+    # Legendary Lottery Island: every pool legendary gets a "Mirage Island"
+    # location (Route 130) whose link snaps to the island on the map.
+    mirage_level, mirage_pool = read_island_legendary_pool()
+    for sp in mirage_pool:
+        species_enc.setdefault(sp, []).append({
+            "map": "MAP_ROUTE130",  # Route 130 is drawn with the island layout
+            "mapName": "Mirage Island",
+            "minLevel": mirage_level,
+            "maxLevel": mirage_level,
+            "type": "mirage",
+        })
+
     return species_enc
 
 # ── 9. Species info ────────────────────────────────────────────────────────────

@@ -225,11 +225,13 @@
   // ── Encounters ────────────────────────────────────────────────
   var ENC_TYPE_LABELS = {
     'land_mons': 'Grass', 'water_mons': 'Surf',
-    'rock_smash_mons': 'Rock Smash', 'fishing_mons': 'Fishing'
+    'rock_smash_mons': 'Rock Smash', 'fishing_mons': 'Fishing',
+    'mirage': 'Mirage'
   };
   var ENC_TYPE_CSS = {
     'land_mons': 'land', 'water_mons': 'water_mons',
-    'rock_smash_mons': 'rock_smash_mons', 'fishing_mons': 'fishing'
+    'rock_smash_mons': 'rock_smash_mons', 'fishing_mons': 'fishing',
+    'mirage': 'mirage'
   };
 
   function renderEncounters(encounters) {
@@ -240,9 +242,12 @@
       var mapLink = 'index.html?map=' + enc.map;
       var typeLabel = ENC_TYPE_LABELS[enc.type] || enc.type;
       var typeCss = ENC_TYPE_CSS[enc.type] || 'land';
+      var levels = enc.minLevel === enc.maxLevel
+        ? String(enc.minLevel)
+        : enc.minLevel + '–' + enc.maxLevel;
       return '<tr>'
         + '<td><a class="enc-map-link" href="' + mapLink + '">' + esc(enc.mapName) + '</a></td>'
-        + '<td>' + enc.minLevel + '–' + enc.maxLevel + '</td>'
+        + '<td>' + levels + '</td>'
         + '<td><span class="enc-type-badge ' + typeCss + '">' + typeLabel + '</span></td>'
         + '</tr>';
     }).join('');

@@ -837,8 +837,9 @@ def build():
                      for tid in used_trainers if tid in trainers_db}
     unresolved = len([t for t in used_trainers if t not in trainers_db])
 
-    # Legendary Lottery Island: attach the rotating Mirage Island legendary
-    # pool to Route 130 so it renders as a special encounter category.
+    # Legendary Lottery Island: Route 130 is drawn with the Mirage Island layout
+    # (always present in BPE), so attach the rotating legendary pool to its
+    # encounter popup as a "Mirage Island Legendary" category.
     mirage_level, mirage_pool = read_island_legendary_pool()
     if mirage_pool:
         r130 = next((e for e in out_maps if e["id"] == "MAP_ROUTE130"), None)

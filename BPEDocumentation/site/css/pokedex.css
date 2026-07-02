@@ -597,6 +597,7 @@
 .enc-type-badge.water_mons { background: rgba(58,104,200,0.2); color: #6890F0; }
 .enc-type-badge.rock_smash_mons { background: rgba(184,160,56,0.2); color: #c8a820; }
 .enc-type-badge.fishing    { background: rgba(120,88,248,0.2); color: #9870f8; }
+.enc-type-badge.mirage     { background: rgba(169,130,224,0.22); color: #b98fe6; }
 
 /* Loading / Error states */
 .dex-loading {
