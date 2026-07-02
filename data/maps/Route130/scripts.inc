@@ -4,37 +4,23 @@ Route130_MapScripts::
 
 Route130_OnTransition:
 	call_if_ge VAR_SOOTOPOLIS_CITY_STATE, 4, Route130_EventScript_CheckSetAbnormalWeather
-	specialvar VAR_RESULT, IsMirageIslandPresent
-	goto_if_eq VAR_RESULT, TRUE, Route130_EventScript_SetMirageIslandLayout
-@ Mirage Island isn't currently visible, hide any objects on the island. Only the first flag is actually associated with anything.
-	setflag FLAG_TEMP_HIDE_MIRAGE_ISLAND_BERRY_TREE
+@ Mirage Island is always present in BPE - it is this map's default layout
+@ (LAYOUT_ROUTE130_MIRAGE_ISLAND, set in map.json). The rotating Legendary
+@ Lottery resident only appears once the player is Champion; before that, and
+@ once every pool legendary is caught, its object slot stays hidden.
+	goto_if_set FLAG_SYS_GAME_CLEAR, Route130_EventScript_SetupIslandLegendary
 	setflag FLAG_TEMP_12
-	setflag FLAG_TEMP_13
-	setflag FLAG_TEMP_14
-	setflag FLAG_TEMP_15
-	setflag FLAG_TEMP_16
-	setflag FLAG_TEMP_17
-	setflag FLAG_TEMP_18
-	setflag FLAG_TEMP_19
-	setflag FLAG_TEMP_1A
-	setflag FLAG_TEMP_1B
-	setflag FLAG_TEMP_1C
-	setflag FLAG_TEMP_1D
-	setflag FLAG_TEMP_1E
-	setflag FLAG_TEMP_1F
-	setmaplayoutindex LAYOUT_ROUTE130
 	end
 
-Route130_EventScript_SetMirageIslandLayout::
-	setmaplayoutindex LAYOUT_ROUTE130_MIRAGE_ISLAND
-@ Legendary Lottery Island: roll a random uncaught legendary for the island slot.
-@ ChooseIslandLegendary sets VAR_ISLAND_LEGENDARY + VAR_OBJ_GFX_ID_0 and returns
-@ the species in VAR_RESULT (SPECIES_NONE when every pool legendary is caught).
+Route130_EventScript_SetupIslandLegendary::
+@ Roll a random uncaught legendary. ChooseIslandLegendary sets VAR_ISLAND_LEGENDARY
+@ + VAR_OBJ_GFX_ID_0 and returns the species in VAR_RESULT (SPECIES_NONE when every
+@ pool legendary has been caught).
 	special ChooseIslandLegendary
 	goto_if_eq VAR_RESULT, SPECIES_NONE, Route130_EventScript_HideIslandLegendary
 	end
 
-@ Every pool legendary has been caught - keep the island's legendary slot hidden.
+@ Nothing to show (all caught) - keep the island's legendary slot hidden.
 Route130_EventScript_HideIslandLegendary::
 	setflag FLAG_TEMP_12
 	end
