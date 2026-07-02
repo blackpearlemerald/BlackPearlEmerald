@@ -52,6 +52,7 @@ void ItemUseOutOfBattle_TownMap(u8 taskId);
 void ItemUseOutOfBattle_PokeVial(u8 taskId);
 void ItemUseOutOfBattle_Fly(u8 taskId);
 void ItemUseOutOfBattle_PocketWatch(u8 taskId);
+void SetTimeOfDayFromPocketWatch(void);
 void ItemUseOutOfBattle_EvolutionCharm(u8 taskId);
 bool8 ItemfinderCheckForHiddenItems(const struct MapEvents *, u8);
 enum Direction GetDirectionToHiddenItem(s16, s16);

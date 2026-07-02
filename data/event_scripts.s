@@ -844,6 +844,36 @@ EventScript_RegionMap::
 	releaseall
 	end
 
+EventScript_PocketWatch::
+	lockall
+	message PocketWatch_Text_SetTimeQuestion
+	waitmessage
+	multichoicedefault 21, 6, MULTI_POCKET_WATCH, 4, FALSE
+	switch VAR_RESULT
+	case 0, EventScript_PocketWatch_ApplyChoice
+	case 1, EventScript_PocketWatch_ApplyChoice
+	case 2, EventScript_PocketWatch_ApplyChoice
+	case 3, EventScript_PocketWatch_ApplyChoice
+	case 4, EventScript_PocketWatch_Cancel
+	case MULTI_B_PRESSED, EventScript_PocketWatch_Cancel
+	end
+
+EventScript_PocketWatch_ApplyChoice::
+	callnative SetTimeOfDayFromPocketWatch
+	msgbox PocketWatch_Text_TimeHasBeenSet, MSGBOX_DEFAULT
+	releaseall
+	end
+
+EventScript_PocketWatch_Cancel::
+	releaseall
+	end
+
+PocketWatch_Text_SetTimeQuestion:
+	.string "What time should the watch show?$"
+
+PocketWatch_Text_TimeHasBeenSet:
+	.string "The time has been set!$"
+
 Common_EventScript_PlayBrineysBoatMusic::
 	setflag FLAG_DONT_TRANSITION_MUSIC
 	playbgm MUS_SAILING, FALSE
