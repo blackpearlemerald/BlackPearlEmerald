@@ -9,4 +9,5 @@
    - Aaron/Flint + all four Unova portraits are auto-devamps — replace if community packs ever cover them
    - Cameo trainers still use vanilla dialogue
 4. New auto-updating documentation on GitHub page
+5. Fill Mirage Island (Route 130) grass encounters — all 12 land slots are currently empty (`species: ""`/SPECIES_NONE; rate 20, Lv 56–62). This grass became reachable when Mirage Island was made always-visible, so it now needs mons. Decide the table (Wynaut = vanilla; or a curated rare / pseudo-legendary set fitting the endgame island), then populate `src/data/wild_encounters.json` and regenerate the doc site. Note: this table also feeds the Route 130 ambient-cry pool.
 
