@@ -6,7 +6,7 @@ _Distinct issues after deduplication: **256**_
 
 | Severity | Count |
 |----------|-------|
-| Critical | 7 |
+| Critical | 7 (1 resolved emulator issue, 1 code fix applied) |
 | High | 28 |
 | Medium | 221 |
 | Low | 0 |
@@ -15,17 +15,21 @@ _Distinct issues after deduplication: **256**_
 
 ## Critical
 
-### Starter battle (Zigzagoon) crash/freeze
+### Starter battle (Zigzagoon) crash/freeze — ✅ RESOLVED (not a code bug)
 - **Category:** Pokémon/Species
 - **Reports:** 12 similar reports, 3 reactions, 1 confirmations
 - **First reported:** 2024-08-31 by ItsJohn 😑
 - **Details:** May I asked? It's my first time playing Pokemon BlackPearl Emerald, it got me interested when I was reading the ROM, but when I played and picked my first pokemon the moment I'm going to battle the wild zigzagooon my game freezes I tried every starter
+- **Triage (2026-07-01):** Traced full code path (`Route101_EventScript_BirchsBag` → `ui_birch_case.c` → `StartFirstBattleOnly` → `SetUpBattleVarsAndBirchZigzagoon` → `CreateWildMon`) — matches upstream pokeemerald-expansion behavior, starter is correctly given to the party before the battle starts, Zigzagoon's species data is unremarkable (and wild Zigzagoon encounters work fine everywhere else in the game). Pulled the raw Discord export and found all 5 underlying threads: every reporter who disclosed their emulator was on **MyBoy** (or an unspecified "Game Boy emulator" a community member correctly guessed as MyBoy); switching to Pizza Boy or mGBA resolved it every time. Dev (Captain Cole) told reporters "MyBoy is not recommended for Romhacks" three separate times in these threads. No confirmed mGBA report of this freeze exists in the log. **Conclusion: MyBoy-specific emulator incompatibility (likely its imprecise HLE BIOS/DMA timing choking on the back-to-back custom-UI → battle-transition graphics teardown/reload unique to this scene), not a BPE code defect. Action: document as a known MyBoy incompatibility (README/pinned message: use mGBA or Pizza Boy) rather than a code fix.**
 
-### Bad Egg crash (electric arena)
+### Bad Egg crash (electric arena) — 🔧 FIX APPLIED (2026-07-01, pending in-game playtest)
 - **Category:** Battle
 - **Reports:** 6 similar reports
 - **First reported:** 2024-12-29 by ItsRegger
 - **Details:** my friend ran into it at the weather institute with the double battle of the aqua grunts. they both have 4 mons each, so when she went to the double battle, the 6th one got thrown out as a bad egg. i thought its some sort of overflow or underflow error
+- **Root cause (confirmed 2026-07-01):** `EFFECT_KNOCK_OFF` and `EFFECT_STEAL_ITEM` in `src/battle_move_resolution.c` gated their item-removal effect on `IsAnyTargetTurnDamaged(battlerAtk, ...)`, which loops over *every other battler on the field* and returns TRUE if *any* of them took damage this turn — not specifically whether the move's actual target did (`src/battle_util.c:10635`). In a double battle, if the target had already fainted earlier in the same turn from a different attacker, this guard still passed (because *someone* on the field was hurt that turn), so the move's item-removal effect fired against an already-vacated/about-to-be-replaced battler slot. The subsequent `BtlController_EmitSetMonData(..., REQUEST_HELDITEM_BATTLE, ...)` write is deferred and resolves the target party slot via `gBattlerPartyIndexes[battler]` read at processing time (`battle_controllers.c:2317`), so once the fainted mon's replacement was sent in, the held-item write landed on the new mon's encrypted party data instead — corrupting it into a checksum-invalid "Bad Egg." Only manifests in doubles (in singles there's only one "other battler," so the check is harmless there), matching every report (Weather Institute Aqua Grunts, a detailed Greninja/Basculegion report, Electric Arena).
+- **Verified against upstream:** BPE's `main` was 69 commits behind `RHH/master` (122 behind `upcoming`) at time of investigation. Upstream has already reworked this exact code as part of a large, unrelated 393-line MoveEnd/CalcValue refactor (commit `3e3b79d916`, "Fix Thousand Arrows not grounding both targets #10354") — too entangled to safely backport wholesale. But the corrected predicate upstream now uses (`IsBattlerTurnDamaged(battlerDef, ...)`) is a helper that already existed unchanged in BPE's current code (`include/battle.h:1102`), so the fix was portable as an isolated 2-line change.
+- **Fix applied:** swapped `IsAnyTargetTurnDamaged(cv->battlerAtk, EXCLUDING_SUBSTITUTES)` → `IsBattlerTurnDamaged(cv->battlerDef, EXCLUDING_SUBSTITUTES)` in both the `EFFECT_KNOCK_OFF` (line ~3459) and `EFFECT_STEAL_ITEM` (line ~3498) cases in `src/battle_move_resolution.c`. Confirmed clean incremental rebuild (32MB ROM, no new warnings/errors). **Not yet playtested in-game** — recommend a manual double-battle repro test (intentionally KO a Knock-Off/Thief target with one attacker while another attacker's Knock Off/Thief also targets it the same turn) before calling this fully verified.
 
 ### Taxi Ticket softlock on Slateport Beach
 - **Category:** Overworld
