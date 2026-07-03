@@ -229,6 +229,7 @@ PetalburgCity_EventScript_BattleSnorlax::
 	dowildbattle
 	fadescreenswapbuffers FADE_TO_BLACK
 	removeobject(10)
+	removeobject LOCALID_PETALBURG_ABRA
 	setflag FLAG_HIDE_OVERWORLD_SNORLAX
 	fadescreenswapbuffers FADE_FROM_BLACK
 	release
@@ -236,6 +237,26 @@ PetalburgCity_EventScript_BattleSnorlax::
 
 PetalburgCity_EventScript_SleepingSnorlax::
 	msgbox SnorlaxSleep_Text_Petalburg, MSGBOX_DEFAULT
+	release
+	end
+
+PetalburgCity_EventScript_Abra::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_ABRA, CRY_MODE_NORMAL
+	waitmoncry
+	msgbox PetalburgCity_Text_AbraTeleportPrompt, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, PetalburgCity_EventScript_AbraDeclined
+	closemessage
+	playse SE_WARP_OUT
+	warp MAP_ROUTE110, 11, 66
+	waitstate
+	release
+	end
+
+PetalburgCity_EventScript_AbraDeclined::
+	msgbox PetalburgCity_Text_AbraDoze, MSGBOX_DEFAULT
 	release
 	end
 
@@ -787,3 +808,13 @@ SnorlaxSleep_Text_Petalburg:
 	.string "(A familiar voice in your head says)\n"
 	.string "(you should visit the TRICK HOUSE)\l"
 	.string "(located on Route 110.)$"
+
+PetalburgCity_Text_AbraTeleportPrompt:
+	.string "An ABRA is dozing beside the GYM.\p"
+	.string "It seems willing to TELEPORT you to\n"
+	.string "the TRICK HOUSE on ROUTE 110.\p"
+	.string "Have it TELEPORT you there?$"
+
+PetalburgCity_Text_AbraDoze:
+	.string "The ABRA yawned and dozed off\n"
+	.string "again.$"
