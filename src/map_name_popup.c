@@ -50,6 +50,36 @@ static void LoadMapNamePopUpWindowBg(void);
 // EWRAM
 EWRAM_DATA u8 gPopupTaskId = 0;
 
+// BPE: Mirage Island is a raised sub-area inside MAP_ROUTE130 rather than a map of
+// its own, so it has no map header to take a popup name from. This override renames
+// just the popup - and its border theme - while the player is standing on the island.
+//
+// Deliberately NOT done by writing gMapHeader.regionMapSectionId: that would drag the
+// Town Map "you are here" cursor onto Pacifidlog Town's square (MAPSEC_MIRAGE_ISLAND
+// has a gRegionMapEntries slot but no square in sRegionMap_MapSectionLayout), and
+// src/tv.c copies that field permanently into tvShows[] save data whenever a show
+// fires on catching a Pokemon - i.e. on every island legendary capture.
+// Kept as a separate flag rather than a MAPSEC_NONE sentinel because EWRAM_DATA
+// only accepts zero initializers, and mapsec 0 is a real map section.
+static EWRAM_DATA bool8 sPopupMapSecIsOverridden = FALSE;
+static EWRAM_DATA mapsec_u16_t sPopupMapSecOverride = 0;
+
+void SetMapNamePopupOverride(mapsec_u16_t mapSec)
+{
+    sPopupMapSecIsOverridden = TRUE;
+    sPopupMapSecOverride = mapSec;
+}
+
+void ClearMapNamePopupOverride(void)
+{
+    sPopupMapSecIsOverridden = FALSE;
+}
+
+mapsec_u16_t GetMapNamePopupOverride(void)
+{
+    return sPopupMapSecIsOverridden ? sPopupMapSecOverride : MAPSEC_NONE;
+}
+
 // .rodata
 static const u8 sMapPopUp_Table[][960] =
 {
@@ -552,10 +582,17 @@ static bool32 IsCeladonDeptStore(const struct MapHeader *mapHeader)
 
 u8 *GetPopUpMapName(u8 *dest, const struct MapHeader *mapHeader)
 {
+    mapsec_u16_t mapSecId = mapHeader->regionMapSectionId;
+
+    // BPE: only rename the map the player is actually standing in. This function is
+    // also called with other headers, which must keep their own names.
+    if (mapHeader == &gMapHeader && sPopupMapSecIsOverridden)
+        mapSecId = sPopupMapSecOverride;
+
     if (IsCeladonDeptStore(mapHeader))
         StringCopy(dest, COMPOUND_STRING("CELADON DEPT."));
     else
-        GetMapName(dest, mapHeader->regionMapSectionId, 0);
+        GetMapName(dest, mapSecId, 0);
     if (mapHeader->floorNumber == 0)
         return dest;
     MapNamePopupAppendFloorNum(dest, mapHeader->floorNumber);
@@ -665,6 +702,11 @@ static void LoadMapNamePopUpWindowBg(void)
     u8 popupWindowId = GetMapNamePopUpWindowId();
     mapsec_u16_t regionMapSectionId = gMapHeader.regionMapSectionId;
     u8 secondaryPopUpWindowId;
+
+    // BPE: keep the border theme in step with the overridden name (see
+    // sPopupMapSecOverride). MAPSEC_MIRAGE_ISLAND already maps to MAPPOPUP_THEME_WOOD.
+    if (sPopupMapSecIsOverridden)
+        regionMapSectionId = sPopupMapSecOverride;
 
     if (OW_POPUP_GENERATION == GEN_5)
         secondaryPopUpWindowId = GetSecondaryPopUpWindowId();

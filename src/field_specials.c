@@ -28,6 +28,7 @@
 #include "load_save.h"
 #include "mail.h"
 #include "main.h"
+#include "map_name_popup.h"
 #include "match_call.h"
 #include "menu.h"
 #include "metatile_behavior.h"
@@ -66,7 +67,10 @@
 #include "constants/field_effects.h"
 #include "constants/field_specials.h"
 #include "constants/items.h"
+#include "constants/map_event_ids.h"
+#include "constants/metatile_behaviors.h"
 #include "constants/pokedex.h"
+#include "constants/region_map_sections.h"
 #include "constants/heal_locations.h"
 #include "constants/mystery_gift.h"
 #include "constants/slot_machine.h"
@@ -93,6 +97,10 @@
 
 EWRAM_DATA bool8 gBikeCyclingChallenge = FALSE;
 EWRAM_DATA u8 gBikeCollisions = 0;
+// BPE: armed while the player is off Mirage Island, so a KO'd or fled legendary
+// only rolls again once they have actually left and come back. See
+// UpdateMirageIslandNamePopup.
+static EWRAM_DATA bool8 sIslandLegendaryCanRespawn = FALSE;
 static EWRAM_DATA u32 sBikeCyclingTimer = 0;
 static EWRAM_DATA u8 sSlidingDoorNextFrameCounter = 0;
 static EWRAM_DATA u8 sSlidingDoorFrame = 0;
@@ -5828,11 +5836,80 @@ static const u16 sIslandLegendaryPool[] =
 };
 
 // Picks a random pool legendary the player has not caught yet. On success sets
-// VAR_ISLAND_LEGENDARY to the species, points the island object's dynamic
-// graphics slot (VAR_OBJ_GFX_ID_0) at that species' follower sprite, and returns
-// the species in gSpecialVar_Result. If every pool member is caught, returns
-// SPECIES_NONE so the map script can hide the island object.
-void ChooseIslandLegendary(void)
+// VAR_ISLAND_LEGENDARY to the species and points the island object's dynamic
+// graphics slot (VAR_OBJ_GFX_ID_0) at that species' follower sprite. Returns
+// SPECIES_NONE if every pool member is caught, so callers can hide the object.
+//
+// Points the island legendary's spawn template at a random tall-grass tile.
+//
+// Reads the raw layout instead of MapGridGetMetatileBehaviorAt because ON_TRANSITION
+// runs BEFORE InitMap() refills gBackupMapLayout - a map-grid read there would sample
+// the map the player just left. gMapHeader.mapLayout is already valid at both call
+// sites, and its coordinate space is the same raw map.json space the object event
+// template uses, so there is no MAP_OFFSET to get wrong in either direction.
+//
+// Scanned rather than driven from a baked coordinate table so it stays correct if the
+// grass patch is ever reshaped in porymap; a stale table would fail silently, putting
+// the legendary inside rock or out at sea with no build error.
+static void PlaceIslandLegendaryInGrass(void)
+{
+    const struct MapLayout *layout = gMapHeader.mapLayout;
+    const struct MapEvents *events = gMapHeader.events;
+    s32 x, y;
+    u32 seen = 0;
+    s16 pickX = 0, pickY = 0;
+
+    for (y = 0; y < layout->height; y++)
+    {
+        for (x = 0; x < layout->width; x++)
+        {
+            u16 block = layout->map[y * layout->width + x];
+            u32 i;
+
+            if (UNPACK_COLLISION(block) != 0)
+                continue;
+            // Matches the template's own elevation, so the mon stays on the player's layer.
+            if (UNPACK_ELEVATION(block) != ELEVATION_DEFAULT)
+                continue;
+            if (GetAttributeByMetatileIdAndMapLayout(UNPACK_METATILE(block), METATILE_ATTRIBUTE_BEHAVIOR, layout->isFrlg) != MB_TALL_GRASS)
+                continue;
+
+            // Keep clear of the player (and whatever is following them). pos is in the
+            // same unoffset space as the template, so compare it directly.
+            if (abs(x - gSaveBlock1Ptr->pos.x) <= 1 && abs(y - gSaveBlock1Ptr->pos.y) <= 1)
+                continue;
+
+            // Never land on another object - two events on one tile makes the lower
+            // slot swallow the A press, so the player could talk to the wrong one.
+            for (i = 0; i < events->objectEventCount; i++)
+            {
+                const struct ObjectEventTemplate *other = &gSaveBlock1Ptr->objectEventTemplates[i];
+                if (other->localId != LOCALID_ROUTE130_ISLAND_LEGENDARY && other->x == x && other->y == y)
+                    break;
+            }
+            if (i != events->objectEventCount)
+                continue;
+
+            // Reservoir sample, so no candidate array is needed.
+            seen++;
+            if (Random() % seen == 0)
+            {
+                pickX = x;
+                pickY = y;
+            }
+        }
+    }
+
+    // No candidate at all: leave the template on its map.json tile rather than
+    // stranding the legendary at (0,0) out in the ocean.
+    if (seen != 0)
+        SetObjEventTemplateCoords(LOCALID_ROUTE130_ISLAND_LEGENDARY, pickX, pickY);
+}
+
+// Kept separate from the ChooseIslandLegendary special because the respawn hook
+// below runs from the per-frame overworld callback, where writing gSpecialVar_Result
+// would clobber VAR_RESULT behind the back of whatever script is mid-run.
+static u16 RollIslandLegendary(void)
 {
     u16 uncaught[ARRAY_COUNT(sIslandLegendaryPool)];
     u32 i, count = 0;
@@ -5847,16 +5924,24 @@ void ChooseIslandLegendary(void)
     if (count == 0)
     {
         VarSet(VAR_ISLAND_LEGENDARY, SPECIES_NONE);
-        gSpecialVar_Result = SPECIES_NONE;
-        return;
+        return SPECIES_NONE;
     }
 
     {
         u16 species = uncaught[Random() % count];
         VarSet(VAR_ISLAND_LEGENDARY, species);
         VarSet(VAR_OBJ_GFX_ID_0, species + OBJ_EVENT_MON);
-        gSpecialVar_Result = species;
+        // Must precede the caller's FlagClear(FLAG_TEMP_12): the spawner reads the
+        // template, so the tile has to be chosen before the object is allowed to appear.
+        PlaceIslandLegendaryInGrass();
+        return species;
     }
+}
+
+// Returns the rolled species in gSpecialVar_Result for Route130_OnTransition.
+void ChooseIslandLegendary(void)
+{
+    gSpecialVar_Result = RollIslandLegendary();
 }
 
 // Builds the enemy party for the island legendary battle, mirroring what the
@@ -5865,4 +5950,82 @@ void ChooseIslandLegendary(void)
 void SetupIslandLegendaryBattle(void)
 {
     CreateScriptedWildMon(VarGet(VAR_ISLAND_LEGENDARY), ISLAND_LEGENDARY_LEVEL, ITEM_NONE);
+}
+
+// BPE: Mirage Island is part of the Route 130 map, so the engine never renames the
+// location popup when the player lands on it. Swap the popup's map section as the
+// player moves on and off the island.
+//
+// Route 130 is open ocean apart from the island, and the island has no stairs or
+// warps - the only way on is dismounting from Surf onto its beach - so "the player
+// is not surfing" is an exact test for "the player is standing on the island".
+// Polling that beats coord_events here: the island has ~50 separate shore tiles,
+// and this also covers loading a save while standing on it.
+//
+// Called every overworld frame from DoCB1_Overworld. The comparison against the
+// current override makes it idempotent, so the popup only fires on an actual
+// crossing, not once per step along the beach.
+//
+// This also drives the legendary respawn - see the second half of the function.
+void UpdateMirageIslandNamePopup(void)
+{
+    bool32 onIsland;
+
+    if (gSaveBlock1Ptr->location.mapGroup != MAP_GROUP(MAP_ROUTE130)
+     || gSaveBlock1Ptr->location.mapNum != MAP_NUM(MAP_ROUTE130))
+        return;
+
+    onIsland = !TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING);
+
+    if (onIsland != (GetMapNamePopupOverride() == MAPSEC_MIRAGE_ISLAND))
+    {
+        if (onIsland)
+            SetMapNamePopupOverride(MAPSEC_MIRAGE_ISLAND);
+        else
+            ClearMapNamePopupOverride();
+
+        ShowMapNamePopup();
+    }
+
+    // Stepping off the island and back on is movement WITHIN Route 130, so no map
+    // load happens: ClearTempFieldEventData never runs, FLAG_TEMP_12 stays set, and
+    // Route130_OnTransition never re-rolls. Without this the legendary a player KO'd
+    // or fled from would stay gone until they left Route 130 entirely.
+    //
+    // FLAG_TEMP_12 is the exact "this visit's resident has been used up" test: only
+    // the two removeobject calls in Route130's scripts.inc set it. Off-camera culling
+    // goes through raw RemoveObjectEvent, which sets no flag, so a legendary that has
+    // merely scrolled out of view is never mistaken for a consumed one. Testing for
+    // the object event itself would get that wrong - the legendary sits at (50,8) on
+    // the northern plateau, well outside the spawn window when the player is on the
+    // southern beach.
+    if (!onIsland)
+    {
+        sIslandLegendaryCanRespawn = TRUE;
+        return;
+    }
+
+    // Level-triggered rather than hung off the popup's one-shot edge above, so a
+    // frame that cannot complete the roll retries instead of losing it for the visit.
+    if (!sIslandLegendaryCanRespawn)
+        return;
+
+    // Re-checked here because only Route130_OnTransition gates on it. Spawning
+    // pre-Champion would use whatever species the last map left in VAR_OBJ_GFX_ID_0
+    // and start a CreateScriptedWildMon(SPECIES_NONE) battle.
+    if (!FlagGet(FLAG_SYS_GAME_CLEAR))
+        return;
+
+    sIslandLegendaryCanRespawn = FALSE;
+
+    if (!FlagGet(FLAG_TEMP_12))     // still out there - do not swap it under the player
+        return;
+
+    if (RollIslandLegendary() == SPECIES_NONE)
+        return;                     // whole pool caught - leave the slot hidden
+
+    // No explicit spawn call: TrySpawnObjectEvents re-scans every template on each
+    // camera step and spawns any whose hide flag is clear, resolving
+    // OBJ_EVENT_GFX_VAR_0 from the VAR_OBJ_GFX_ID_0 just written.
+    FlagClear(FLAG_TEMP_12);
 }

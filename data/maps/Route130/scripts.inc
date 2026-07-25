@@ -36,8 +36,13 @@ Route130_EventScript_IslandLegendary::
 	special BattleSetup_StartLegendaryBattle
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_CAUGHT, Route130_EventScript_IslandLegendaryCaught
-@ KO'd / ran / teleported: stays in the pool, re-rolled on the next map entry.
+@ KO'd / ran / teleported: it vanishes, but its Pokedex caught flag is untouched, so
+@ it stays in the pool. removeobject also sets this object's FLAG_TEMP_12, which is
+@ what UpdateMirageIslandNamePopup (src/field_specials.c) reads to know the island's
+@ resident has been used up and to roll a fresh one when the player steps back on.
+@ (Whiting out skips this script entirely - the warp out and back re-rolls anyway.)
 	msgbox Route130_Text_IslandLegendaryFled, MSGBOX_DEFAULT
+	removeobject VAR_LAST_TALKED
 	release
 	end
 
@@ -47,8 +52,8 @@ Route130_EventScript_IslandLegendaryCaught::
 	end
 
 Route130_Text_IslandLegendaryFled:
-	.string "The legendary slipped back\n"
-	.string "into the mirage…$"
+	.string "The Pokémon slipped back into the\n"
+	.string "mirage, awaiting its next return…$"
 
 Route130_EventScript_CheckSetAbnormalWeather::
 	call_if_set FLAG_SYS_WEATHER_CTRL, Common_EventScript_SetAbnormalWeather

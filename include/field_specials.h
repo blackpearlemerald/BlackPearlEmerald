@@ -41,4 +41,8 @@ bool32 CheckPartyHasSpecies(enum Species);
 bool8 CutMoveRuinValleyCheck(void);
 void CutMoveOpenDottedHoleDoor(void);
 
+// BPE: ticked every overworld frame from DoCB1_Overworld. Renames the location
+// popup while the player stands on Mirage Island, a sub-area of Route 130.
+void UpdateMirageIslandNamePopup(void);
+
 #endif // GUARD_FIELD_SPECIALS_H

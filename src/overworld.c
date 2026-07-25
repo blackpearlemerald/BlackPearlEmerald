@@ -668,6 +668,10 @@ struct MapHeader const *const GetDestinationWarpMapHeader(void)
 
 static void LoadCurrentMapData(void)
 {
+    // BPE: a sub-area popup name must never outlive the map it belongs to, or the
+    // next map's entry popup inherits it. UpdateMirageIslandNamePopup re-applies it
+    // on the following frame if the player is still on Mirage Island.
+    ClearMapNamePopupOverride();
     sLastMapSectionId = gMapHeader.regionMapSectionId;
     gMapHeader = *Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
     gSaveBlock1Ptr->mapLayoutId = gMapHeader.mapLayoutId;
@@ -676,6 +680,7 @@ static void LoadCurrentMapData(void)
 
 static void LoadSaveblockMapHeader(void)
 {
+    ClearMapNamePopupOverride();
     gMapHeader = *Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
     gMapHeader.mapLayout = GetMapLayout(gSaveBlock1Ptr->mapLayoutId);
 }
@@ -1670,6 +1675,12 @@ static void DoCB1_Overworld(u16 newKeys, u16 heldKeys)
     // If stop running but keep holding B -> fix follower frame.
     if (PlayerHasFollowerNPC() && (gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_ON_FOOT) && IsPlayerStandingStill())
         ObjectEventSetHeldMovement(&gObjectEvents[GetFollowerNPCObjectId()], GetFaceDirectionAnimNum(gObjectEvents[GetFollowerNPCObjectId()].facingDirection));
+
+    // BPE: rename the location popup while the player is on Mirage Island, which is
+    // a sub-area of Route 130 rather than a map of its own. Early-outs on any other
+    // map. Must run after the input handling above, whose HideMapNamePopUpWindow()
+    // would otherwise kill a popup raised in the same frame.
+    UpdateMirageIslandNamePopup();
 }
 
 void CB1_Overworld(void)
