@@ -4782,42 +4782,11 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Malva = {
     .images = sPicTable_Malva,
     .affineAnims = gDummySpriteAffineAnimTable,
 };
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Drasna = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_DRASNA,
-    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
-    .size = 256,
-    .width = 16,
-    .height = 32,
-    .paletteSlot = PALSLOT_NPC_4,
-    .shadowSize = SHADOW_SIZE_M,
-    .inanimate = FALSE,
-    .compressed = FALSE,
-    .tracks = TRACKS_FOOT,
-    .oam = &gObjectEventBaseOam_16x32,
-    .subspriteTables = sOamTables_16x32,
-    .anims = sAnimTable_Standard,
-    .images = sPicTable_Drasna,
-    .affineAnims = gDummySpriteAffineAnimTable,
-};
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Siebold = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_SIEBOLD,
-    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
-    .size = 256,
-    .width = 16,
-    .height = 32,
-    .paletteSlot = PALSLOT_NPC_4,
-    .shadowSize = SHADOW_SIZE_M,
-    .inanimate = FALSE,
-    .compressed = FALSE,
-    .tracks = TRACKS_FOOT,
-    .oam = &gObjectEventBaseOam_16x32,
-    .subspriteTables = sOamTables_16x32,
-    .anims = sAnimTable_Standard,
-    .images = sPicTable_Siebold,
-    .affineAnims = gDummySpriteAffineAnimTable,
-};
+// Drasna upgraded from a 16x32 single-pose sprite to a real 32x32 DS-style
+// 9-frame walk set, matching the Sinnoh/Unova cameos above.
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Drasna = DS_STYLE_OW_GRAPHICS_INFO(Drasna, OBJ_EVENT_PAL_TAG_DRASNA);
+// Upgraded from a 16x32 single-pose sprite to a real 32x32 DS-style 9-frame walk set.
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Siebold = DS_STYLE_OW_GRAPHICS_INFO(Siebold, OBJ_EVENT_PAL_TAG_SIEBOLD);
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wikstrom = {
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_WIKSTROM,

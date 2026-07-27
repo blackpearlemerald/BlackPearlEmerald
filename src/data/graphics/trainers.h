@@ -432,6 +432,8 @@ const u32 gTrainerFrontPic_EliteFourSiebold[] = INCGFX_U32("graphics/trainers/fr
 const u16 gTrainerPalette_EliteFourSiebold[] = INCGFX_U16("graphics/trainers/palettes/elite_four_siebold.pal", ".gbapal");
 const u32 gTrainerFrontPic_EliteFourWikstrom[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_wikstrom.png", ".4bpp.smol");
 const u16 gTrainerPalette_EliteFourWikstrom[] = INCGFX_U16("graphics/trainers/palettes/elite_four_wikstrom.pal", ".gbapal");
+const u32 gTrainerFrontPic_EliteFourDrasna[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_drasna.png", ".4bpp.smol");
+const u16 gTrainerPalette_EliteFourDrasna[] = INCGFX_U16("graphics/trainers/palettes/elite_four_drasna.pal", ".gbapal");
 const u32 gTrainerFrontPic_EliteFourNessa[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_nessa.png", ".4bpp.smol");
 const u16 gTrainerPalette_EliteFourNessa[] = INCGFX_U16("graphics/trainers/palettes/elite_four_nessa.pal", ".gbapal");
 const u32 gTrainerFrontPic_EliteFourHala[] = INCGFX_U32("graphics/trainers/front_pics/elite_four_hala.png", ".4bpp.smol");
@@ -1373,6 +1375,10 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_ELITE_FOUR_WIKSTROM] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourWikstrom, gTrainerPalette_EliteFourWikstrom),
+    },
+    [TRAINER_PIC_ELITE_FOUR_DRASNA] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_EliteFourDrasna, gTrainerPalette_EliteFourDrasna),
     },
     [TRAINER_PIC_ELITE_FOUR_NESSA] =
     {
