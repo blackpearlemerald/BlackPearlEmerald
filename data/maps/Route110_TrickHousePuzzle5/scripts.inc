@@ -28,31 +28,59 @@ Route110_TrickHousePuzzle5_EventScript_Yuji3::
 	end
 
 Route110_TrickHousePuzzle5_EventScript_Yuji4::
-	trainerbattle_single TRAINER_YUJI4, Route110_TrickHousePuzzle5_Text_YujiIntro, Route110_TrickHousePuzzle5_Text_YujiDefeat
-	msgbox Route110_TrickHousePuzzle5_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_YUJI4, Route110_TrickHousePuzzle5_Text_Yuji4Intro, Route110_TrickHousePuzzle5_Text_Yuji4Defeat
+	msgbox Route110_TrickHousePuzzle5_Text_Yuji4PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle5_EventScript_Yuji5::
-	trainerbattle_single TRAINER_YUJI5, Route110_TrickHousePuzzle5_Text_YujiIntro, Route110_TrickHousePuzzle5_Text_YujiDefeat
-	msgbox Route110_TrickHousePuzzle5_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_YUJI5, Route110_TrickHousePuzzle5_Text_Yuji5Intro, Route110_TrickHousePuzzle5_Text_Yuji5Defeat
+	msgbox Route110_TrickHousePuzzle5_Text_Yuji5PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle5_EventScript_Yuji6::
-	trainerbattle_single TRAINER_YUJI6, Route110_TrickHousePuzzle5_Text_YujiIntro, Route110_TrickHousePuzzle5_Text_YujiDefeat
-	msgbox Route110_TrickHousePuzzle5_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_YUJI6, Route110_TrickHousePuzzle5_Text_Yuji6Intro, Route110_TrickHousePuzzle5_Text_Yuji6Defeat
+	msgbox Route110_TrickHousePuzzle5_Text_Yuji6PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle5_Text_YujiIntro:
-	.string "Heh! Boulders like this, I can brush\n"
-	.string "aside with one finger!$"
+	.string "I'm Shauntal, member of the Unova\n"
+	.string "Elite 4. Let's battle!$"
 
 Route110_TrickHousePuzzle5_Text_YujiDefeat:
-	.string "I can push boulders, but I can't solve\n"
-	.string "the puzzle…$"
+	.string "You beat my Ghost type Pokemon...$"
 
 Route110_TrickHousePuzzle5_Text_YujiPostBattle:
-	.string "It's not good enough to be brawny…\n"
-	.string "You have to use your head. Be brainy!$"
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle5_Text_Yuji4Intro:
+	.string "I'm Marshal, member of the Unova Elite\n"
+	.string "4. Let's battle!$"
+
+Route110_TrickHousePuzzle5_Text_Yuji4Defeat:
+	.string "You beat my Fighting type Pokemon...$"
+
+Route110_TrickHousePuzzle5_Text_Yuji4PostBattle:
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle5_Text_Yuji5Intro:
+	.string "I'm Grimsley, member of the Unova\n"
+	.string "Elite 4. Let's battle!$"
+
+Route110_TrickHousePuzzle5_Text_Yuji5Defeat:
+	.string "You beat my Dark type Pokemon...$"
+
+Route110_TrickHousePuzzle5_Text_Yuji5PostBattle:
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle5_Text_Yuji6Intro:
+	.string "I'm Caitlin, member of the Unova Elite\n"
+	.string "4. Let's battle!$"
+
+Route110_TrickHousePuzzle5_Text_Yuji6Defeat:
+	.string "You beat my Psychic type Pokemon...$"
+
+Route110_TrickHousePuzzle5_Text_Yuji6PostBattle:
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle5_EventScript_Mechadoll1::
 	lockall

@@ -100,8 +100,8 @@ Route110_TrickHousePuzzle2_EventScript_Georgia::
 	end
 
 Route110_TrickHousePuzzle2_EventScript_Georgia2::
-	trainerbattle_single TRAINER_GEORGIA2, Route110_TrickHousePuzzle2_Text_GeorgiaIntro, Route110_TrickHousePuzzle2_Text_GeorgiaDefeat
-	msgbox Route110_TrickHousePuzzle2_Text_GeorgiaPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_GEORGIA2, Route110_TrickHousePuzzle2_Text_Georgia2Intro, Route110_TrickHousePuzzle2_Text_Georgia2Defeat
+	msgbox Route110_TrickHousePuzzle2_Text_Georgia2PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle2_Text_WroteSecretCodeLockOpened:
@@ -112,35 +112,42 @@ Route110_TrickHousePuzzle2_Text_WroteSecretCodeLockOpened:
 	.string "The lock clicked open!$"
 
 Route110_TrickHousePuzzle2_Text_TedIntro:
-	.string "Which switch closes which hole?$"
+	.string "I'm Will, member of the Johto Elite 4.\n"
+	.string "Let's battle!$"
 
 Route110_TrickHousePuzzle2_Text_TedDefeat:
-	.string "After that battle, I'm even more\n"
-	.string "confused!$"
+	.string "You beat my Psychic type Pokemon...$"
 
 Route110_TrickHousePuzzle2_Text_TedPostBattle:
-	.string "Can I get you to push all the buttons\n"
-	.string "for me?$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle2_Text_PaulIntro:
-	.string "Oh! You're on your second TRICK HOUSE\n"
-	.string "challenge!$"
+	.string "I'm Koga, member of the Johto Elite 4.\n"
+	.string "Let's battle!$"
 
 Route110_TrickHousePuzzle2_Text_PaulDefeat:
-	.string "You're good at battling too?$"
+	.string "You beat my Poison type Pokemon...$"
 
 Route110_TrickHousePuzzle2_Text_PaulPostBattle:
-	.string "The TRICK MASTER rigged all the tricks\n"
-	.string "in this house all by himself.$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle2_Text_GeorgiaIntro:
-	.string "I want to make my own GYM one day.\n"
-	.string "So, I'm studying how to set traps.$"
+	.string "I'm Bruno, member of the Johto Elite 4.\n"
+	.string "Let's battle!$"
 
 Route110_TrickHousePuzzle2_Text_GeorgiaDefeat:
-	.string "I didn't study battling enough!$"
+	.string "You beat my Fighting type Pokemon...$"
 
 Route110_TrickHousePuzzle2_Text_GeorgiaPostBattle:
-	.string "You're strong, aren't you?\n"
-	.string "Maybe even enough to be a GYM LEADER!$"
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle2_Text_Georgia2Intro:
+	.string "I'm Karen, member of the Johto Elite 4.\n"
+	.string "Let's battle!$"
+
+Route110_TrickHousePuzzle2_Text_Georgia2Defeat:
+	.string "You beat my Dark type Pokemon...$"
+
+Route110_TrickHousePuzzle2_Text_Georgia2PostBattle:
+	.string "Good luck on your journey!$"
 

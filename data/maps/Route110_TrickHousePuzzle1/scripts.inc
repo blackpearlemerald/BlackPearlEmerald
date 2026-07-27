@@ -32,8 +32,8 @@ Route110_TrickHousePuzzle1_EventScript_Eddie::
 	end
 
 Route110_TrickHousePuzzle1_EventScript_Eddie2::
-	trainerbattle_single TRAINER_EDDIE2, Route110_TrickHousePuzzle1_Text_EddieIntro, Route110_TrickHousePuzzle1_Text_EddieDefeat
-	msgbox Route110_TrickHousePuzzle1_Text_EddiePostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_EDDIE2, Route110_TrickHousePuzzle1_Text_Eddie2Intro, Route110_TrickHousePuzzle1_Text_Eddie2Defeat
+	msgbox Route110_TrickHousePuzzle1_Text_Eddie2PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle1_EventScript_Robin::
@@ -49,34 +49,42 @@ Route110_TrickHousePuzzle1_Text_WroteSecretCodeLockOpened::
 	.string "The lock clicked open!$"
 
 Route110_TrickHousePuzzle1_Text_SallyIntro:
-	.string "I'll hack and slash my way to victory\n"
-	.string "with the CUT we just learned!$"
+	.string "I'm Lorelei, member of the Kanto\n"
+	.string "Elite 4. Let's battle!$"
 
 Route110_TrickHousePuzzle1_Text_SallyDefeat:
-	.string "Why are you so serious?$"
+	.string "You beat my Ice type Pokemon...$"
 
 Route110_TrickHousePuzzle1_Text_SallyPostBattle:
-	.string "I never get tired of hacking\n"
-	.string "and slashing!$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle1_Text_EddieIntro:
-	.string "I wandered into this weird house\n"
-	.string "by accident…$"
+	.string "I'm Agatha, member of the Kanto\n"
+	.string "Elite 4. Let's battle!$"
 
 Route110_TrickHousePuzzle1_Text_EddieDefeat:
-	.string "And now I've lost…$"
+	.string "You beat my Ghost type Pokemon...$"
 
 Route110_TrickHousePuzzle1_Text_EddiePostBattle:
-	.string "I lost my way, I lost a battle, and I'm\n"
-	.string "now even more lost… I can't get out…$"
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle1_Text_Eddie2Intro:
+	.string "I'm Lance, member of the Kanto\n"
+	.string "Elite 4. Let's battle!$"
+
+Route110_TrickHousePuzzle1_Text_Eddie2Defeat:
+	.string "You beat my Dragon type Pokemon...$"
+
+Route110_TrickHousePuzzle1_Text_Eddie2PostBattle:
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle1_Text_RobinIntro:
-	.string "Just who is the TRICK MASTER?$"
+	.string "I'm Bruno, member of the Kanto\n"
+	.string "Elite 4. Let's battle!$"
 
 Route110_TrickHousePuzzle1_Text_RobinDefeat:
-	.string "I lost while I was lost in thought!$"
+	.string "You beat my Fighting type Pokemon...$"
 
 Route110_TrickHousePuzzle1_Text_RobinPostBattle:
-	.string "You're strong!\n"
-	.string "Just who are you?$"
+	.string "Good luck on your journey!$"
 

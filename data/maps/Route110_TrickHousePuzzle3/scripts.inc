@@ -302,8 +302,8 @@ Route110_TrickHousePuzzle3_EventScript_Alan::
 	end
 
 Route110_TrickHousePuzzle3_EventScript_Alan2::
-	trainerbattle_single TRAINER_ALAN2, Route110_TrickHousePuzzle3_Text_AlanIntro, Route110_TrickHousePuzzle3_Text_AlanDefeat
-	msgbox Route110_TrickHousePuzzle3_Text_AlanPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_ALAN2, Route110_TrickHousePuzzle3_Text_Alan2Intro, Route110_TrickHousePuzzle3_Text_Alan2Defeat
+	msgbox Route110_TrickHousePuzzle3_Text_Alan2PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle3_Text_WroteSecretCodeLockOpened:
@@ -314,37 +314,42 @@ Route110_TrickHousePuzzle3_Text_WroteSecretCodeLockOpened:
 	.string "The lock clicked open!$"
 
 Route110_TrickHousePuzzle3_Text_JustinIntro:
-	.string "I keep coming back to this same place!$"
+	.string "I'm Sidney, member of the Hoenn Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle3_Text_JustinDefeat:
-	.string "I'm already having trouble, and then\n"
-	.string "you have to beat me? It's not fair!$"
+	.string "You beat my Dark type Pokemon...$"
 
 Route110_TrickHousePuzzle3_Text_JustinPostBattle:
-	.string "It's full of doors here!\n"
-	.string "It's too small and dark in here! Help!$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle3_Text_MarthaIntro:
-	.string "I don't know what's going on here.\n"
-	.string "I'm starting to feel sad…$"
+	.string "I'm Phoebe, member of the Hoenn Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle3_Text_MarthaDefeat:
-	.string "You… You're awful!$"
+	.string "You beat my Ghost type Pokemon...$"
 
 Route110_TrickHousePuzzle3_Text_MarthaPostBattle:
-	.string "I know I'm weak!\n"
-	.string "And, I have no sense of direction!$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle3_Text_AlanIntro:
-	.string "I don't get it. What would anyone want\n"
-	.string "with a house this bizarre?$"
+	.string "I'm Glacia, member of the Hoenn Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle3_Text_AlanDefeat:
-	.string "I don't get it.\n"
-	.string "How did I lose?$"
+	.string "You beat my Ice type Pokemon...$"
 
 Route110_TrickHousePuzzle3_Text_AlanPostBattle:
-	.string "I don't get it.\n"
-	.string "How many traps are in this house?\p"
-	.string "You may be the one to solve that.$"
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle3_Text_Alan2Intro:
+	.string "I'm Drake, member of the Hoenn Elite\n"
+	.string "4. Let's battle!$"
+
+Route110_TrickHousePuzzle3_Text_Alan2Defeat:
+	.string "You beat my Dragon type Pokemon...$"
+
+Route110_TrickHousePuzzle3_Text_Alan2PostBattle:
+	.string "Good luck on your journey!$"
 

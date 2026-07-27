@@ -23,8 +23,8 @@ Route110_TrickHousePuzzle8_EventScript_Keira::
 	end
 
 Route110_TrickHousePuzzle8_EventScript_Keira2::
-	trainerbattle_single TRAINER_KEIRA2, Route110_TrickHousePuzzle8_Text_KeiraIntro, Route110_TrickHousePuzzle8_Text_KeiraDefeat
-	msgbox Route110_TrickHousePuzzle8_Text_KeiraPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_KEIRA2, Route110_TrickHousePuzzle8_Text_Keira2Intro, Route110_TrickHousePuzzle8_Text_Keira2Defeat
+	msgbox Route110_TrickHousePuzzle8_Text_Keira2PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle8_EventScript_Leroy::
@@ -40,37 +40,42 @@ Route110_TrickHousePuzzle8_Text_WroteSecretCodeLockOpened::
 	.string "The lock clicked open!$"
 
 Route110_TrickHousePuzzle8_Text_VincentIntro:
-	.string "Not many TRAINERS have made it\n"
-	.string "this far.$"
+	.string "I'm Poppy, member of the Paldea Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle8_Text_VincentDefeat:
-	.string "That must mean you're tough, too…$"
+	.string "You beat my Steel type Pokemon...$"
 
 Route110_TrickHousePuzzle8_Text_VincentPostBattle:
-	.string "You've beaten the POKéMON LEAGUE\n"
-	.string "CHAMPION? That's too much!$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle8_Text_KeiraIntro:
-	.string "Consider yourself lucky to be\n"
-	.string "battling me!$"
+	.string "I'm Rika, member of the Paldea Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle8_Text_KeiraDefeat:
-	.string "This isn't right!\n"
-	.string "I can't lose!$"
+	.string "You beat my Ground type Pokemon...$"
 
 Route110_TrickHousePuzzle8_Text_KeiraPostBattle:
-	.string "It's a miracle that you beat me.\n"
-	.string "You can brag about it.$"
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle8_Text_Keira2Intro:
+	.string "I'm Hassel, member of the Paldea Elite\n"
+	.string "4. Let's battle!$"
+
+Route110_TrickHousePuzzle8_Text_Keira2Defeat:
+	.string "You beat my Dragon type Pokemon...$"
+
+Route110_TrickHousePuzzle8_Text_Keira2PostBattle:
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle8_Text_LeroyIntro:
-	.string "You've been slugging through the TRICK\n"
-	.string "HOUSE challenge, too.$"
+	.string "I'm Larry, member of the Paldea Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle8_Text_LeroyDefeat:
-	.string "I see…\n"
-	.string "You possess an extraordinary style.$"
+	.string "You beat my Normal type Pokemon...$"
 
 Route110_TrickHousePuzzle8_Text_LeroyPostBattle:
-	.string "Seeing someone like you should please\n"
-	.string "the TRICK MASTER.$"
+	.string "Good luck on your journey!$"
 

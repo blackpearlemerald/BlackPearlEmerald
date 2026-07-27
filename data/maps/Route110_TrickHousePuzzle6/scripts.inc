@@ -38,8 +38,8 @@ Route110_TrickHousePuzzle6_EventScript_Benny::
 	end
 
 Route110_TrickHousePuzzle6_EventScript_Benny2::
-	trainerbattle_single TRAINER_BENNY2, Route110_TrickHousePuzzle6_Text_BennyIntro, Route110_TrickHousePuzzle6_Text_BennyDefeat
-	msgbox Route110_TrickHousePuzzle6_Text_BennyPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_BENNY2, Route110_TrickHousePuzzle6_Text_Benny2Intro, Route110_TrickHousePuzzle6_Text_Benny2Defeat
+	msgbox Route110_TrickHousePuzzle6_Text_Benny2PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle6_EventScript_Sebastian::
@@ -55,38 +55,42 @@ Route110_TrickHousePuzzle6_Text_WroteSecretCodeLockOpened:
 	.string "The lock clicked open!$"
 
 Route110_TrickHousePuzzle6_Text_SophiaIntro:
-	.string "When I heard there was a strange\n"
-	.string "house, I had to check it out.$"
+	.string "I'm Malva, member of the Kalos Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle6_Text_SophiaDefeat:
-	.string "I've discovered a tough TRAINER!$"
+	.string "You beat my Fire type Pokemon...$"
 
 Route110_TrickHousePuzzle6_Text_SophiaPostBattle:
-	.string "I'm sure having a good time checking\n"
-	.string "this place out.\p"
-	.string "It's a challenge I've found worth\n"
-	.string "repeating!$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle6_Text_BennyIntro:
-	.string "Maybe I could get my BIRD POKéMON\n"
-	.string "to fly over the wall…$"
+	.string "I'm Drasna, member of the Kalos Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle6_Text_BennyDefeat:
-	.string "Gwaaah! I blew it!$"
+	.string "You beat my Dragon type Pokemon...$"
 
 Route110_TrickHousePuzzle6_Text_BennyPostBattle:
-	.string "Ehehehe… I guess I lost because\n"
-	.string "I was trying to cheat.$"
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle6_Text_Benny2Intro:
+	.string "I'm Siebold, member of the Kalos\n"
+	.string "Elite 4. Let's battle!$"
+
+Route110_TrickHousePuzzle6_Text_Benny2Defeat:
+	.string "You beat my Water type Pokemon...$"
+
+Route110_TrickHousePuzzle6_Text_Benny2PostBattle:
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle6_Text_SebastianIntro:
-	.string "I'm getting dizzy from these rotating\n"
-	.string "doors…$"
+	.string "I'm Wikstrom, member of the Kalos\n"
+	.string "Elite 4. Let's battle!$"
 
 Route110_TrickHousePuzzle6_Text_SebastianDefeat:
-	.string "Everything's spinning around and\n"
-	.string "around. I can't take this anymore…$"
+	.string "You beat my Steel type Pokemon...$"
 
 Route110_TrickHousePuzzle6_Text_SebastianPostBattle:
-	.string "You don't seem to be affected at all.\n"
-	.string "Or do you have your poker face on?$"
+	.string "Good luck on your journey!$"
 

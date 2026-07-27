@@ -23,8 +23,8 @@ Route110_TrickHousePuzzle4_EventScript_Yuji::
 	end
 
 Route110_TrickHousePuzzle4_EventScript_Yuji2::
-	trainerbattle_single TRAINER_YUJI2, Route110_TrickHousePuzzle4_Text_YujiIntro, Route110_TrickHousePuzzle4_Text_YujiDefeat
-	msgbox Route110_TrickHousePuzzle4_Text_YujiPostBattle, MSGBOX_AUTOCLOSE
+	trainerbattle_single TRAINER_YUJI2, Route110_TrickHousePuzzle4_Text_Yuji2Intro, Route110_TrickHousePuzzle4_Text_Yuji2Defeat
+	msgbox Route110_TrickHousePuzzle4_Text_Yuji2PostBattle, MSGBOX_AUTOCLOSE
 	end
 
 Route110_TrickHousePuzzle4_EventScript_Paula::
@@ -40,36 +40,42 @@ Route110_TrickHousePuzzle4_Text_WroteSecretCodeLockOpened:
 	.string "The lock clicked open!$"
 
 Route110_TrickHousePuzzle4_Text_CoraIntro:
-	.string "It's too much bother to think this out.\n"
-	.string "I only wanted to battle!$"
+	.string "I'm Bertha, member of the Sinnoh Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle4_Text_CoraDefeat:
-	.string "Even though I lost, I still like battling\n"
-	.string "the best!$"
+	.string "You beat my Ground type Pokemon...$"
 
 Route110_TrickHousePuzzle4_Text_CoraPostBattle:
-	.string "Wouldn't you agree? You would go\n"
-	.string "anywhere if TRAINERS were there.$"
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle4_Text_YujiIntro:
-	.string "Heh! Boulders like this, I can brush\n"
-	.string "aside with one finger!$"
+	.string "I'm Lucian, member of the Sinnoh Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle4_Text_YujiDefeat:
-	.string "I can push boulders, but I can't solve\n"
-	.string "the puzzle…$"
+	.string "You beat my Psychic type Pokemon...$"
 
 Route110_TrickHousePuzzle4_Text_YujiPostBattle:
-	.string "It's not good enough to be brawny…\n"
-	.string "You have to use your head. Be brainy!$"
+	.string "Good luck on your journey!$"
+
+Route110_TrickHousePuzzle4_Text_Yuji2Intro:
+	.string "I'm Aaron, member of the Sinnoh Elite\n"
+	.string "4. Let's battle!$"
+
+Route110_TrickHousePuzzle4_Text_Yuji2Defeat:
+	.string "You beat my Bug type Pokemon...$"
+
+Route110_TrickHousePuzzle4_Text_Yuji2PostBattle:
+	.string "Good luck on your journey!$"
 
 Route110_TrickHousePuzzle4_Text_PaulaIntro:
-	.string "The TRICK HOUSE is getting trickier,\n"
-	.string "isn't it?$"
+	.string "I'm Flint, member of the Sinnoh Elite\n"
+	.string "4. Let's battle!$"
 
 Route110_TrickHousePuzzle4_Text_PaulaDefeat:
-	.string "Aaak!$"
+	.string "You beat my Fire type Pokemon...$"
 
 Route110_TrickHousePuzzle4_Text_PaulaPostBattle:
-	.string "Has anyone made it to the end?$"
+	.string "Good luck on your journey!$"
 
