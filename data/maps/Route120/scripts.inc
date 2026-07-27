@@ -1,4 +1,3 @@
-@ LOCALID_BRIDGE_KECLEON_SHADOW is a second object which is identical to LOCALID_BRIDGE_KECLEON but has a reflection palette tag for the bridge shadow
 Route120_MapScripts::
 	map_script MAP_SCRIPT_ON_RESUME, Route120_OnResume
 	map_script MAP_SCRIPT_ON_TRANSITION, Route120_OnTransition
@@ -10,19 +9,11 @@ Route120_OnResume:
 	end
 
 Route120_EventScript_RemoveKecleonObject::
-	call_if_eq VAR_0x8009, 0, Route120_EventScript_RemoveBridgeKecleon
 	call_if_eq VAR_0x8009, 1, Route120_EventScript_RemoveKecleon
 	call_if_eq VAR_0x8009, 2, Route120_EventScript_RemoveKecleon
 	call_if_eq VAR_0x8009, 3, Route120_EventScript_RemoveKecleon
 	call_if_eq VAR_0x8009, 4, Route120_EventScript_RemoveKecleon
 	call_if_eq VAR_0x8009, 5, Route120_EventScript_RemoveKecleon
-	return
-
-Route120_EventScript_RemoveBridgeKecleon::
-	specialvar VAR_RESULT, GetBattleOutcome
-	goto_if_ne VAR_RESULT, B_OUTCOME_CAUGHT, Common_EventScript_NopReturn
-	removeobject LOCALID_BRIDGE_KECLEON
-	removeobject LOCALID_BRIDGE_KECLEON_SHADOW
 	return
 
 Route120_EventScript_RemoveKecleon::
@@ -33,8 +24,7 @@ Route120_EventScript_RemoveKecleon::
 
 Route120_OnLoad:
 	call_if_unset FLAG_REGI_DOORS_OPENED, Route120_EventScript_CloseAncientTomb
-	call_if_set FLAG_RECEIVED_DEVON_SCOPE, Route120_EventScript_SetBridgeClearMetatiles
-	call_if_unset FLAG_RECEIVED_DEVON_SCOPE, Route120_EventScript_SetBridgeKecleonMovement
+	call Route120_EventScript_SetBridgeClearMetatiles
 	end
 
 Route120_EventScript_CloseAncientTomb::
@@ -47,10 +37,6 @@ Route120_EventScript_SetBridgeClearMetatiles::
 	setmetatile 12, 16, METATILE_Fortree_WoodBridge1_Bottom, FALSE
 	setmetatile 12, 17, METATILE_General_ReflectiveWater, FALSE
 	setmetatile 13, 17, METATILE_General_ReflectiveWater, FALSE
-	return
-
-Route120_EventScript_SetBridgeKecleonMovement::
-	setobjectmovementtype LOCALID_BRIDGE_KECLEON_SHADOW, MOVEMENT_TYPE_FACE_RIGHT
 	return
 
 Route120_OnTransition:
@@ -154,170 +140,12 @@ Route120_EventScript_BerryNotLove::
 @ BPE: Steven was relocated to the summit of Mt. Pyre (MtPyre_Summit_EventScript_Steven),
 @ where he now hands over the DEVON SCOPE. This forces the player through the route/story
 @ before they can clear the invisible KECLEON blocking Fortree Gym. A traveler stands on the
-@ bridge in Steven's old spot to redirect players who go looking for him here.
-@ The legacy Route120_EventScript_Steven Devon Scope cutscene below is retained but UNUSED.
+@ bridge in Steven's old spot to redirect players who go looking for him here. The bridge
+@ Kecleon that used to guard this spot has been removed entirely so the bridge stays passable.
 Route120_EventScript_MtPyreHintNPC::
 	lock
 	faceplayer
 	msgbox Route120_Text_MtPyreHint, MSGBOX_DEFAULT
-	release
-	end
-
-Route120_EventScript_Steven::
-	lock
-	faceplayer
-	goto_if_set FLAG_NOT_READY_FOR_BATTLE_ROUTE_120, Route120_EventScript_StevenAskReadyForBattle
-	msgbox Route120_Text_StevenGreeting, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, Route120_EventScript_StevenNotReady
-	goto Route120_EventScript_StevenBattleKecleon
-	end
-
-Route120_EventScript_StevenNotReady::
-	msgbox Route120_Text_StevenIllWaitHere, MSGBOX_DEFAULT
-	setflag FLAG_NOT_READY_FOR_BATTLE_ROUTE_120
-	release
-	end
-
-Route120_EventScript_StevenAskReadyForBattle::
-	msgbox Route120_Text_StevenReadyForBattle, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, Route120_EventScript_StevenNotReady
-	goto Route120_EventScript_StevenBattleKecleon
-	end
-
-Route120_EventScript_StevenBattleKecleon::
-	msgbox Route120_Text_StevenShowMeYourPower, MSGBOX_DEFAULT
-	closemessage
-	call_if_eq VAR_FACING, DIR_NORTH, Route120_EventScript_PlayerApproachKecleonNorth
-	call_if_eq VAR_FACING, DIR_WEST, Route120_EventScript_PlayerApproachKecleonWest
-	applymovement LOCALID_ROUTE120_STEVEN, Common_Movement_WalkInPlaceFasterLeft
-	waitmovement 0
-	delay 20
-	msgbox Route120_Text_StevenUsedDevonScope, MSGBOX_DEFAULT
-	closemessage
-	applymovement LOCALID_BRIDGE_KECLEON, Common_Movement_WalkInPlaceFasterRight
-	waitmovement 0
-	applymovement LOCALID_BRIDGE_KECLEON, Movement_KecleonAppears
-	waitmovement 0
-	waitse
-	playmoncry SPECIES_KECLEON, CRY_MODE_ENCOUNTER
-	delay 40
-	waitmoncry
-	setwildbattle SPECIES_KECLEON, 30
-	setvar VAR_0x8009, 0
-	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	dowildbattle
-	clearflag FLAG_SYS_CTRL_OBJ_DELETE
-	specialvar VAR_RESULT, GetBattleOutcome
-	goto_if_eq VAR_RESULT, B_OUTCOME_WON, Route120_EventScript_RemoveBridgeKecleonPostBattle
-	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, Route120_EventScript_RemoveBridgeKecleonPostBattle
-	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, Route120_EventScript_RemoveBridgeKecleonPostBattle
-	goto Route120_EventScript_StevenGiveDeconScope
-	end
-
-Route120_EventScript_RemoveBridgeKecleonPostBattle::
-	fadescreenswapbuffers FADE_TO_BLACK
-	removeobject LOCALID_BRIDGE_KECLEON
-	removeobject LOCALID_BRIDGE_KECLEON_SHADOW
-	fadescreenswapbuffers FADE_FROM_BLACK
-	goto Route120_EventScript_StevenGiveDeconScope
-	end
-
-Route120_EventScript_StevenGiveDeconScope::
-	applymovement LOCALID_ROUTE120_STEVEN, Common_Movement_WalkInPlaceFasterDown
-	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterUp
-	waitmovement 0
-	msgbox Route120_Text_StevenGiveDevonScope, MSGBOX_DEFAULT
-	giveitem ITEM_DEVON_SCOPE
-	setflag FLAG_RECEIVED_DEVON_SCOPE
-	msgbox Route120_Text_StevenGoodbye, MSGBOX_DEFAULT
-	closemessage
-	applymovement LOCALID_ROUTE120_STEVEN, Common_Movement_WalkInPlaceFasterDown
-	waitmovement 0
-	delay 50
-	setfieldeffectargument 0, 1
-	dofieldeffect FLDEFF_NPCFLY_OUT
-	delay 15
-	removeobject LOCALID_ROUTE120_STEVEN
-	waitfieldeffect FLDEFF_NPCFLY_OUT
-	setmetatile 13, 15, METATILE_Fortree_WoodBridge1_Top, FALSE
-	setmetatile 12, 16, METATILE_Fortree_WoodBridge1_Bottom, FALSE
-	setmetatile 12, 17, METATILE_General_ReflectiveWater, FALSE
-	setmetatile 13, 17, METATILE_General_ReflectiveWater, FALSE
-	special DrawWholeMapView
-	release
-	end
-
-Route120_EventScript_PlayerApproachKecleonNorth::
-	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterLeft
-	waitmovement 0
-	return
-
-Route120_EventScript_PlayerApproachKecleonWest::
-	applymovement LOCALID_PLAYER, Route120_Movement_ApproachKecleonWest
-	waitmovement 0
-	return
-
-Route120_Movement_ApproachKecleonWest:
-	walk_down
-	walk_left
-	step_end
-
-@ BPE: With Steven gone from the bridge, the player reveals this KECLEON themselves once they
-@ have the DEVON SCOPE from Mt. Pyre. Clears the bridge so the northern item pocket is reachable.
-Route120_EventScript_BridgeKecleon::
-	lock
-	faceplayer
-	checkitem ITEM_DEVON_SCOPE
-	goto_if_eq VAR_RESULT, TRUE, Route120_EventScript_BridgeKecleonUseDevonScope
-	msgbox Kecleon_Text_SomethingUnseeable, MSGBOX_DEFAULT
-	release
-	end
-
-Route120_EventScript_BridgeKecleonUseDevonScope::
-	msgbox Kecleon_Text_WantToUseDevonScope, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, Route120_EventScript_BridgeKecleonRelease
-	msgbox Kecleon_Text_UseDevonScopeMonAttacked, MSGBOX_DEFAULT
-	closemessage
-	applymovement LOCALID_BRIDGE_KECLEON, Common_Movement_WalkInPlaceFasterRight
-	waitmovement 0
-	applymovement LOCALID_BRIDGE_KECLEON, Movement_KecleonAppears
-	waitmovement 0
-	waitse
-	playmoncry SPECIES_KECLEON, CRY_MODE_ENCOUNTER
-	delay 40
-	waitmoncry
-	setwildbattle SPECIES_KECLEON, 30
-	setvar VAR_0x8009, 0
-	setflag FLAG_SYS_CTRL_OBJ_DELETE
-	dowildbattle
-	clearflag FLAG_SYS_CTRL_OBJ_DELETE
-	specialvar VAR_RESULT, GetBattleOutcome
-	goto_if_eq VAR_RESULT, B_OUTCOME_WON, Route120_EventScript_BridgeKecleonCleared
-	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, Route120_EventScript_BridgeKecleonCleared
-	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, Route120_EventScript_BridgeKecleonCleared
-	goto Route120_EventScript_BridgeKecleonSetClearMetatiles
-	end
-
-Route120_EventScript_BridgeKecleonCleared::
-	fadescreenswapbuffers FADE_TO_BLACK
-	removeobject LOCALID_BRIDGE_KECLEON
-	removeobject LOCALID_BRIDGE_KECLEON_SHADOW
-	fadescreenswapbuffers FADE_FROM_BLACK
-	goto Route120_EventScript_BridgeKecleonSetClearMetatiles
-	end
-
-Route120_EventScript_BridgeKecleonSetClearMetatiles::
-	setflag FLAG_HIDE_ROUTE_120_KECLEON_BRIDGE
-	setflag FLAG_HIDE_ROUTE_120_KECLEON_BRIDGE_SHADOW
-	setmetatile 13, 15, METATILE_Fortree_WoodBridge1_Top, FALSE
-	setmetatile 12, 16, METATILE_Fortree_WoodBridge1_Bottom, FALSE
-	setmetatile 12, 17, METATILE_General_ReflectiveWater, FALSE
-	setmetatile 13, 17, METATILE_General_ReflectiveWater, FALSE
-	special DrawWholeMapView
-	release
-	end
-
-Route120_EventScript_BridgeKecleonRelease::
 	release
 	end
 
@@ -426,54 +254,8 @@ Route120_EventScript_Callie::
 	msgbox Route120_Text_CalliePostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route120_Text_StevenGreeting:
-	.string "STEVEN: Hm? {PLAYER}{KUN}, hi.\n"
-	.string "It's been a while.\p"
-	.string "There's something here that you can't\n"
-	.string "see, right?\p"
-	.string "Now, if I were to use this device on\n"
-	.string "the invisible obstacle…\p"
-	.string "No, no. Rather than describing it,\n"
-	.string "I should just show you.\l"
-	.string "That would be more fun.\p"
-	.string "{PLAYER}{KUN}, are your POKéMON ready for\n"
-	.string "battle?$"
-
-Route120_Text_StevenIllWaitHere:
-	.string "STEVEN: No?\p"
-	.string "I'll wait here, so you can get ready.$"
-
-Route120_Text_StevenReadyForBattle:
-	.string "STEVEN: {PLAYER}{KUN}, are your POKéMON\n"
-	.string "ready for battle?$"
-
-Route120_Text_StevenShowMeYourPower:
-	.string "STEVEN: {PLAYER}{KUN}, show me your true\n"
-	.string "power as a TRAINER!$"
-
-Route120_Text_StevenUsedDevonScope:
-	.string "STEVEN used the DEVON SCOPE.\p"
-	.string "An invisible POKéMON became completely\n"
-	.string "visible!\p"
-	.string "The startled POKéMON attacked!$"
-
-Route120_Text_StevenGiveDevonScope:
-	.string "STEVEN: I see…\n"
-	.string "Your battle style is intriguing.\p"
-	.string "Your POKéMON have obviously grown\n"
-	.string "since I first met you in DEWFORD.\p"
-	.string "I'd like you to have this\n"
-	.string "DEVON SCOPE.\p"
-	.string "Who knows, there may be other\n"
-	.string "concealed POKéMON.$"
-
-Route120_Text_StevenGoodbye:
-	.string "STEVEN: {PLAYER}{KUN}.\p"
-	.string "I enjoy seeing POKéMON and TRAINERS\n"
-	.string "who strive together.\p"
-	.string "I think you're doing great.\p"
-	.string "Well, let's meet again somewhere.$"
-
+@ Referenced by the shared EventScript_Kecleon (data/scripts/kecleon.inc), used by the
+@ Route120/Route119 hidden camouflage Kecleon side-quest instances.
 Kecleon_Text_SomethingUnseeable:
 	.string "Something unseeable is in the way.$"
 
