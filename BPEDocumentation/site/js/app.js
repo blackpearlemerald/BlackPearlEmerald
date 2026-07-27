@@ -102,14 +102,47 @@ function itemPopup(it) {
 }
 
 function martPopup(mart) {
-  let html = `<div class="mart-head">🛒 ${mart.name} Poké Mart</div>`;
+  // Dedicated Poké Mart maps carry no title; NPC vendors (department stores,
+  // the Herb Shop, post-game shop NPCs) supply their own.
+  let html = `<div class="mart-head">🛒 ${mart.title || mart.name + " Poké Mart"}</div>`;
+  let lastVendor = null;
   for (const inv of mart.inventories) {
+    if (inv.vendor && inv.vendor !== lastVendor) {
+      html += `<div class="mart-vendor">${inv.vendor}</div>`;
+      lastVendor = inv.vendor;
+    }
     html += `<div class="mart-cond">${inv.condition}</div>`;
     html += `<div class="mart-list">`;
     for (const item of inv.items) {
       html += itemRow(item, 1);
     }
     html += `</div>`;
+  }
+  return html;
+}
+
+// A map can be both a shop and a wild-encounter area — Slateport's market
+// stalls, the post-game vendors on the Pokémon League approach — so show
+// whichever of the two it actually has instead of letting the shop hide the
+// encounter list.
+function mapPopup(m, marts) {
+  const mart = marts && marts[m.id];
+  if (!mart) return { title: "Wild Pokémon", html: encounterPopup(m) };
+  if (!m.enc) return { title: "Poké Mart", html: martPopup(mart) };
+  return { title: "Shop & Wild Pokémon",
+           html: martPopup(mart) + encounterPopup(m) };
+}
+
+// Curated "this moved in BPE" signpost. `goto` renders a button the click
+// handler wires up to focusMap, so one note can hand off to the next.
+function guidePopup(g) {
+  let html = `<div class="guide-head">🧭 ${g.title}</div>`;
+  html += `<div class="guide-body">${g.body}</div>`;
+  if (g.goto && g.goto.mapId) {
+    const label = g.goto.label || `Go to ${prettify(g.goto.mapId)}`;
+    html += `<button type="button" class="guide-goto"` +
+            ` data-map="${g.goto.mapId}"` +
+            ` data-guide="${g.goto.guide || ""}">${label} →</button>`;
   }
   return html;
 }
@@ -355,6 +388,27 @@ async function main() {
     return best;
   }
 
+  function guideAt(latlng) {
+    if (!map.hasLayer(guideLayer)) return null;
+    const p = map.latLngToContainerPoint(latlng);
+    let best = null, bestD = 22;   // matches the 36px marker
+    for (const h of guideHits) {
+      const d = p.distanceTo(map.latLngToContainerPoint(h.ll));
+      if (d < bestD) { bestD = d; best = h.guide; }
+    }
+    return best;
+  }
+
+  // Open a guide note and wire its "take me there" button to focusMap.
+  function openGuide(g, ll) {
+    openDetail("Guide", guidePopup(g), ll);
+    const btn = detailBody.querySelector(".guide-goto");
+    if (btn) btn.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      focusMap(btn.dataset.map, { guide: btn.dataset.guide || null });
+    });
+  }
+
   // show a trainer stack's current member; cycle via the marker or the button.
   // firstOpen=true pans/pulses the location; cycling just swaps the content.
   function showStack(st, firstOpen) {
@@ -394,6 +448,11 @@ async function main() {
       return;
     }
     openStack = null;
+    const gd = guideAt(e.latlng);
+    if (gd) {
+      openGuide(gd, e.latlng);
+      return;
+    }
     const it = itemAt(e.latlng);
     if (it) {
       openDetail("Item", itemPopup(it), e.latlng);
@@ -406,11 +465,8 @@ async function main() {
     }
     const m = mapAt(x, y);
     if (!m) return;
-    if (world.marts && world.marts[m.id]) {
-      openDetail("Poké Mart", martPopup(world.marts[m.id]), e.latlng);
-      return;
-    }
-    openDetail("Wild Pokémon", encounterPopup(m), e.latlng);
+    const pop = mapPopup(m, world.marts);
+    openDetail(pop.title, pop.html, e.latlng);
   });
   const worldBounds = L.latLngBounds(W2LL(minX, minY), W2LL(maxX, maxY));
   map.fitBounds(worldBounds.pad(0.05));
@@ -604,6 +660,25 @@ async function main() {
     giftHits.push({ ll, gift });
   }
 
+  // ---- guide notes ----
+  const guideLayer = L.layerGroup();
+  const guideHits = [];  // {ll, guide}
+  for (const g of (world.guides || [])) {
+    const ll = W2LL(g.gx, g.gy);
+    // The glyph lives in an inner span: Leaflet drives the outer div's
+    // `transform` for positioning, so nothing may animate transform on it.
+    L.marker(ll, {
+      interactive: false,
+      icon: L.divIcon({
+        className: "guide-badge",
+        html: '<span class="guide-mark">?</span>',
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
+      }),
+    }).addTo(guideLayer);
+    guideHits.push({ ll, guide: g });
+  }
+
   // ---- map labels ----
   const labelLayer = L.layerGroup();
   for (const m of world.maps) {
@@ -620,6 +695,7 @@ async function main() {
   trainerLayer.addTo(map);
   itemLayer.addTo(map);
   giftLayer.addTo(map);
+  guideLayer.addTo(map);
 
   // ---- toggles ----
   const bind = (id, layer) => {
@@ -635,13 +711,15 @@ async function main() {
   bind("t-warps", warpLayer);
   bind("t-labels", labelLayer);
   bind("t-gifts", giftLayer);
+  bind("t-guides", guideLayer);
 
   const giftCount = (world.gifts || []).length;
   const martCount = Object.keys(world.marts || {}).length;
+  const guideCount = (world.guides || []).length;
   document.getElementById("counts").innerHTML =
     `${world.maps.length} maps · ${world.trainers.length} trainers<br>` +
     `${world.items.length} items (${world.items.filter(i => i.hidden).length} hidden)<br>` +
-    `${martCount} marts · ${giftCount} gift NPCs`;
+    `${martCount} shops · ${giftCount} gift NPCs · ${guideCount} guides`;
 
   document.getElementById("panel-toggle").addEventListener("click", () => {
     document.getElementById("panel").classList.toggle("open");
@@ -677,11 +755,30 @@ async function main() {
   //   opts.item  -> the exact item-ball/hidden-item of that item id
   //   opts.gift  -> the gift NPC on that map (optionally giving that item)
   //   opts.mart  -> the map's Poké Mart popup
+  //   opts.guide -> a curated guide note (by id, or the first one on the map)
   // Falls back to the map's wild-encounter popup.
   function focusMap(id, opts) {
     opts = opts || {};
     const m = world.maps.find((mm) => mm.id === id);
     if (!m) return false;
+
+    // Snap to a curated guide note — used by the "take me there" hand-off.
+    if (opts.guide) {
+      const notes = world.guides || [];
+      const hit = notes.find((g) => g.id === opts.guide)
+               || notes.find((g) => g.mapId === id);
+      if (hit) {
+        ensureLayer(guideLayer, "t-guides");
+        const ll = W2LL(hit.gx, hit.gy);
+        // Deliberately unanimated: a guide hand-off usually crosses most of
+        // Hoenn, and Leaflet's pan animation stalls over offsets that large
+        // under CRS.Simple (same reason flyTarget interpolates by hand).
+        map.setView(ll, 2, { animate: false });
+        openGuide(hit, ll);
+        pulseAt(ll);
+        return true;
+      }
+    }
 
     // Snap to a specific item ball / hidden item on this map.
     if (opts.item) {
@@ -714,11 +811,8 @@ async function main() {
     const bounds = L.latLngBounds(W2LL(m.x, m.y), W2LL(m.x + m.w, m.y + m.h));
     map.fitBounds(bounds.pad(0.3), { maxZoom: 2, animate: true });
     const center = W2LL(m.x + m.w / 2, m.y + m.h / 2);
-    if (world.marts && world.marts[id]) {
-      openDetail("Poké Mart", martPopup(world.marts[id]), center);
-    } else {
-      openDetail("Wild Pokémon", encounterPopup(m), center);
-    }
+    const pop = mapPopup(m, world.marts);
+    openDetail(pop.title, pop.html, center);
     return true;
   }
 
@@ -734,6 +828,7 @@ async function main() {
       item: params.get("item"),
       gift: params.get("gift"),
       mart: params.get("mart"),
+      guide: params.get("guide"),
     }), 0);
   }
 }

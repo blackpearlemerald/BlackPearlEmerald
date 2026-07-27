@@ -17936,24 +17936,80 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Volt Switch
 - Foul Play
 
-=== TRAINER_GRUNT_UNUSED ===
-Name: GRUNT
-Class: Team Magma
-Pic: Aqua Grunt F
-Gender: Female
-Music: Aqua
+=== TRAINER_FURIUS2 ===
+Name: Furius2
+Class: Cooltrainer
+Pic: Cooltrainer M
+Gender: Male
+Music: Cool
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Wailmer
-Quirky Nature
-Level: 43
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Latios @ Soul Dew
+Timid Nature
+Level: 90
+Ability: Levitate
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 4 Def / 252 SpA / 252 Spe
+- Draco Meteor
+- Psychic Noise
+- Aura Sphere
+- Recover
 
-Zubat
-Quirky Nature
-Level: 43
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Primarina @ Assault Vest
+Modest Nature
+Level: 90
+Ability: Torrent
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 HP / 208 SpA / 48 SpD
+- Moonblast
+- Psychic Noise
+- Surf
+- Flip Turn
+
+Vikavolt @ Choice Specs
+Modest Nature
+Level: 90
+Ability: Levitate
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 HP / 252 SpA / 4 SpD
+- Thunderbolt
+- Bug Buzz
+- Energy Ball
+- Volt Switch
+
+Toxapex @ Heavy-Duty Boots
+Bold Nature
+Level: 90
+Ability: Regenerator
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 248 HP / 252 Def / 8 SpD
+- Toxic
+- Recover
+- Haze
+- Surf
+
+Ludicolo @ Life Orb
+Modest Nature
+Level: 90
+Ability: Swift Swim
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 SpA / 4 SpD / 252 Spe
+- Rain Dance
+- Hydro Pump
+- Giga Drain
+- Ice Beam
+
+Kingambit @ Black Glasses
+Adamant Nature
+Level: 90
+Ability: Supreme Overlord
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 HP / 252 Atk / 4 Def
+- Swords Dance
+- Sucker Punch
+- Kowtow Cleave
+- Iron Head
 
 === TRAINER_GRUNT_MT_PYRE_4 ===
 Name: GRUNT
@@ -28701,3 +28757,78 @@ Kyogre
 Quirky Nature
 Level: 12
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+
+=== TRAINER_CHAKAJACEK ===
+Name: ChakaJacek
+Class: Cooltrainer
+Pic: Cooltrainer M
+Gender: Male
+Music: Cool
+Battle Type: Singles
+AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
+
+Primarina @ Leftovers
+Modest Nature
+Level: 90
+Ability: Liquid Voice
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 HP / 248 SpA / 8 SpD
+- Calm Mind
+- Psychic Noise
+- Draining Kiss
+- Substitute
+
+Skeledirge @ Heavy-Duty Boots
+Bold Nature
+Level: 90
+Ability: Unaware
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 248 HP / 252 Def / 8 SpD
+- Torch Song
+- Hex
+- Will-O-Wisp
+- Slack Off
+
+Salamence @ Heavy-Duty Boots
+Jolly Nature
+Level: 90
+Ability: Moxie
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 Atk / 4 SpD / 252 Spe
+- Dragon Dance
+- Dual Wingbeat
+- Earthquake
+- Roost
+
+Lilligant @ Life Orb
+Modest Nature
+Level: 90
+Ability: Own Tempo
+IVs: 31 HP / 0 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 SpA / 4 SpD / 252 Spe
+- Quiver Dance
+- Giga Drain
+- Alluring Voice
+- Sleep Powder
+
+Garganacl @ Leftovers
+Impish Nature
+Level: 90
+Ability: Purifying Salt
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 HP / 252 Def / 4 SpD
+- Iron Defense
+- Body Press
+- Salt Cure
+- Recover
+
+Scizor @ Life Orb
+Adamant Nature
+Level: 90
+Ability: Technician
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 120 HP / 252 Atk / 136 Spe
+- Swords Dance
+- Bullet Punch
+- Close Combat
+- Knock Off

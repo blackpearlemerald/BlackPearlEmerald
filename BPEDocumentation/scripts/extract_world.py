@@ -326,6 +326,10 @@ MART_FLAG_DESCRIPTIONS = {
         "set":   "After the 4th Gym Badge",
         "unset": "Before the 4th Gym Badge",
     },
+    "FLAG_SYS_GAME_CLEAR": {
+        "set":   "After becoming Champion",
+        "unset": "Before becoming Champion",
+    },
 }
 
 
@@ -426,13 +430,120 @@ def parse_mart_scripts(content):
     return inventories
 
 
-def parse_marts():
-    """Return {map_id: {name, inventories}} for every mart map."""
+def _spaced(ident):
+    """`LilycoveCity_DepartmentStore_2F` → `Lilycove City Department Store 2F`.
+
+    The lookbehinds deliberately exclude digits so floor markers stay intact
+    ("2F", not "2 F").
+    """
+    s = ident.replace("_", " ")
+    s = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", s)       # cityMart → city Mart
+    s = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", s)  # TMClerk  → TM Clerk
+    s = re.sub(r"(?<=[a-z])(?=\d)", " ", s)          # Store2F  → Store 2F
+    return re.sub(r"\s+", " ", s).strip()
+
+
+# `checktrainerflag TRAINER_X` immediately followed by `goto_if TRUE, <shop>` —
+# the idiom for an NPC whose shop only opens once you have beaten them.
+SHOP_TRAINER_GATE_RE = re.compile(
+    r"\bchecktrainerflag\s+(TRAINER_[A-Z0-9_]+)\s*\n\s*goto_if\s+TRUE,\s*(\w+)")
+SHOP_FLAG_GATE_RE = re.compile(r"\bgoto_if_(set|unset)\s+(FLAG_\w+),\s*(\w+)")
+
+
+def parse_shop_scripts(content, trainer_names):
+    """Parse `pokemart` vendors in a map that is not a dedicated Poké Mart.
+
+    Returns [{vendor, condition, items}] — one entry per vendor per tier.
+
+    Unlike parse_mart_scripts this does not assume a single "Clerk": a map can
+    hold several independent vendors (the Lilycove department-store floors, the
+    Slateport market stalls, the two post-game NPCs outside the Pokémon League).
+    """
+    item_lists = {}
+    for m in re.finditer(
+            r"^(\w+):\s*\n((?:[ \t]+\.2byte ITEM_\w+[ \t]*\n)+)",
+            content, re.MULTILINE):
+        items_in_block = re.findall(r"\.2byte (ITEM_\w+)", m.group(2))
+        if items_in_block:
+            item_lists[m.group(1)] = items_in_block
+    if not item_lists:
+        return []
+
+    scripts = {}
+    for m in re.finditer(r"^(\w+)::(.*?)(?=^\w+::|\Z)",
+                          content, re.MULTILINE | re.DOTALL):
+        scripts[m.group(1)] = m.group(2)
+
+    # Which script opens which list.
+    opens = {}
+    for label, body in scripts.items():
+        pm = re.search(r"\bpokemart\s+(\w+)", body)
+        if pm and pm.group(1) in item_lists:
+            opens[label] = pm.group(1)
+    if not opens:
+        return []
+
+    # Which script gates which shop script, and under what condition. The
+    # gater is the NPC the player actually talks to, so it names the vendor.
+    gates = {}      # shop label -> (gater label, condition, vendor name or None)
+    gate_flags = {}  # gater label -> (flag, kind) of its first flag branch
+    for label, body in scripts.items():
+        for tflag, target in SHOP_TRAINER_GATE_RE.findall(body):
+            if target in opens:
+                # The trainer's own name beats a de-camel-cased script label
+                # ("ChakaJacek", not "Chaka Jacek").
+                who = (trainer_names.get(tflag) or {}).get("name")
+                gates[target] = (label,
+                                 f"After defeating {who}" if who
+                                 else "After defeating this trainer", who)
+        for kind, flag, target in SHOP_FLAG_GATE_RE.findall(body):
+            if target in opens:
+                gates[target] = (label, _describe_condition(flag, kind), None)
+                gate_flags.setdefault(label, (flag, kind))
+
+    vendors = {}     # entry label -> [{condition, items, _rank}]
+    vendor_names = {}  # entry label -> preferred display name
+    for shop_label, list_label in sorted(opens.items()):
+        if shop_label in gates:
+            entry, condition, who = gates[shop_label]
+            rank = 1
+            if who:
+                vendor_names[entry] = who
+        elif shop_label in gate_flags:
+            # This script opens a list AND branches to a gated one, so its own
+            # list is the other side of that branch (the tiered-clerk shape).
+            flag, kind = gate_flags[shop_label]
+            opp = "unset" if kind == "set" else "set"
+            entry, condition, rank = shop_label, _describe_condition(flag, opp), 0
+        else:
+            entry, condition, rank = shop_label, "Always available", 0
+        vendors.setdefault(entry, []).append(
+            {"condition": condition, "items": item_lists[list_label],
+             "_rank": rank})
+
+    out = []
+    for entry in sorted(vendors):
+        # `Map_EventScript_EnergyGuru` → `Energy Guru`
+        vendor = vendor_names.get(entry) \
+            or _spaced(re.sub(r"^.*?EventScript_", "", entry))
+        for inv in sorted(vendors[entry], key=lambda i: i["_rank"]):
+            inv.pop("_rank", None)
+            inv["vendor"] = vendor
+            out.append(inv)
+    return out
+
+
+def parse_marts(trainer_names=None):
+    """Return {map_id: {name, inventories}} for every map that sells items.
+
+    Dedicated `*_Mart` maps keep the clerk-based tier parsing; every other map
+    is scanned for NPC vendors (department stores, the Herb Shop, the Slateport
+    stalls, post-game shop NPCs), which the mart-only scan used to miss.
+    """
+    trainer_names = trainer_names or {}
     result = {}
     maps_dir = C.src("data", "maps")
     for dirname in sorted(os.listdir(maps_dir)):
-        if "mart" not in dirname.lower():
-            continue
         scripts_path = os.path.join(maps_dir, dirname, "scripts.inc")
         map_json_path = os.path.join(maps_dir, dirname, "map.json")
         if not os.path.isfile(scripts_path):
@@ -446,12 +557,23 @@ def parse_marts():
             continue
         with open(scripts_path, "r", encoding="utf-8", errors="replace") as f:
             content = f.read()
-        inventories = parse_mart_scripts(content)
+
+        if "mart" in dirname.lower():
+            inventories = parse_mart_scripts(content)
+            if inventories:
+                # "OldaleTown_Mart" → "Oldale Town"
+                raw = dirname.replace("_Mart", "").replace("_UnusedMart", "").replace("_", " ")
+                name = re.sub(r"([a-z])([A-Z])", r"\1 \2", raw)
+                result[map_id] = {"name": name, "inventories": inventories}
+            continue
+
+        inventories = parse_shop_scripts(content, trainer_names)
         if inventories:
-            # "OldaleTown_Mart" → "Oldale Town"
-            raw = dirname.replace("_Mart", "").replace("_UnusedMart", "").replace("_", " ")
-            name = re.sub(r"([a-z])([A-Z])", r"\1 \2", raw)
-            result[map_id] = {"name": name, "inventories": inventories}
+            name = _spaced(dirname)
+            title = name if re.search(r"\b(Shop|Store|Mart|Market)\b", name) \
+                else f"{name} Shops"
+            result[map_id] = {"name": name, "title": title,
+                               "inventories": inventories}
     return result
 
 
@@ -790,6 +912,70 @@ def assemble(maps):
     return placed, warp_links
 
 
+# --------------------------------------------------------------------------- #
+# Curated route notes
+# --------------------------------------------------------------------------- #
+# Hand-written signposts for the places where BPE deliberately diverges from
+# vanilla Emerald and a player working from old knowledge would get stuck.
+# Nothing in the game data says "this moved", so these are authored here and
+# pinned to a tile; `goto` chains a note to the map that now holds what the
+# player is after. Coordinates are map-local tiles, same as an object event.
+GUIDE_NOTES = [
+    {
+        "id": "route120-steven-moved",
+        "mapId": "MAP_ROUTE120", "x": 13, "y": 15,
+        "title": "Looking for Steven?",
+        "body": "In vanilla Emerald, Steven waits on this bridge and hands over "
+                "the Devon Scope. BPE moved him to the summit of Mt. Pyre, so "
+                "the Scope now comes later in the story — after the Team "
+                "Aqua/Magma clash up there. The bridge itself is clear: the "
+                "Kecleon that used to block it has been removed, and a "
+                "traveller stands here to point you the right way.",
+        "goto": {"mapId": "MAP_MT_PYRE_SUMMIT", "guide": "mtpyre-steven",
+                 "label": "Take me to Steven"},
+    },
+    {
+        "id": "mtpyre-steven",
+        "mapId": "MAP_MT_PYRE_SUMMIT", "x": 23, "y": 11,
+        "title": "Steven — Devon Scope",
+        "body": "Steven stands here at the summit. Talk to him to receive the "
+                "Devon Scope, which reveals the invisible Kecleon blocking the "
+                "way into Fortree City's Gym — so this is a hard "
+                "requirement for Badge 6.",
+        "goto": {"mapId": "MAP_FORTREE_CITY", "label": "On to Fortree Gym"},
+    },
+]
+
+
+def build_guides(placed):
+    """Pin each curated note to world pixel coordinates."""
+    out = []
+    known = {n["id"] for n in GUIDE_NOTES}
+    for note in GUIDE_NOTES:
+        mid = note["mapId"]
+        if mid not in placed:
+            print(f"  ! guide '{note['id']}': {mid} is not placed - skipped")
+            continue
+        dest = note.get("goto") or {}
+        if dest.get("mapId") and dest["mapId"] not in placed:
+            print(f"  ! guide '{note['id']}': target {dest['mapId']} "
+                  f"is not placed - link dropped")
+            dest = {}
+        if dest.get("guide") and dest["guide"] not in known:
+            print(f"  ! guide '{note['id']}': target note "
+                  f"'{dest['guide']}' does not exist - link dropped")
+            dest = {}
+        ox, oy = placed[mid]
+        entry = {"id": note["id"], "mapId": mid,
+                 "gx": ox + note["x"] * TILE + TILE // 2,
+                 "gy": oy + note["y"] * TILE + TILE // 2,
+                 "title": note["title"], "body": note["body"]}
+        if dest:
+            entry["goto"] = dest
+        out.append(entry)
+    return out
+
+
 def build():
     dims = load_layout_dims()
     maps = load_maps(dims)
@@ -862,7 +1048,8 @@ def build():
     sprite_map = sprites.extract_sprites(
         gfx_ids, os.path.join(C.SITE, "img", "sprites"))
 
-    marts = parse_marts()
+    marts = parse_marts(trainers_db)
+    guides = build_guides(placed)
 
     world = {
         "tile": TILE,
@@ -871,6 +1058,7 @@ def build():
         "items": out_items,
         "gifts": out_gifts,
         "marts": marts,
+        "guides": guides,
         "warpLinks": warp_links,
         "trainerData": trainers_ship,
         "sprites": sprite_map,
@@ -884,6 +1072,7 @@ def build():
           f"({sum(1 for i in out_items if i['hidden'])} hidden)")
     print(f"Gift NPCs:      {len(out_gifts)}")
     print(f"Marts parsed:   {len(marts)}")
+    print(f"Guide notes:    {len(guides)}")
     print(f"Warp links:     {len(warp_links)}")
     print(f"Maps w/ encs:   {enc_count}")
     print(f"Enc icons:      {enc_new} new"

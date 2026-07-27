@@ -64,6 +64,20 @@ py -m http.server -d site 8000
   extracted by `sprites.py`).
 - **Items** are `OBJ_EVENT_GFX_ITEM_BALL` object events (item id in the
   `trainer_sight_or_berry_tree_id` field) plus hidden items in `bg_events`.
+- **Shops** come from `pokemart` item lists in each map's `scripts.inc`.
+  Dedicated `*_Mart` maps are parsed clerk-first, with badge/story-flag branches
+  becoming inventory tiers ("Before the 3rd Gym Badge", …). Every other map is
+  scanned for NPC vendors, so the Lilycove department-store floors, the
+  Lavaridge Herb Shop, the Slateport stalls, the Trainer Hill counter and the
+  post-game shop NPCs outside the Pokémon League each appear as their own named
+  vendor. A vendor gated behind `checktrainerflag` reads "After defeating
+  &lt;trainer&gt;". Items list every shop that stocks them under "Where to Find".
+- **Guides** are the one hand-authored layer: the `GUIDE_NOTES` table at the
+  bottom of `extract_world.py`. Nothing in the game data records "BPE moved this
+  somewhere else", so relocations that would strand a player working from
+  vanilla knowledge get a 🧭 marker pinned to a tile, with an optional `goto`
+  that chains one note to the next (Route 120 bridge → Steven on Mt. Pyre →
+  Fortree Gym). Add new ones there; the build validates the target maps exist.
 - **Wild encounters** come from `src/data/wild_encounters.json`. Each map's
   grass/surf/rock-smash/fishing slots are converted to per-species percentages
   using the group's slot rate tables (fishing split into Old/Good/Super Rod).

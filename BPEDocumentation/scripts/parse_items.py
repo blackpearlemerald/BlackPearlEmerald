@@ -337,22 +337,37 @@ def build_locations(items_dict):
     # appears in (so an item only in the expanded list reads e.g. "After
     # meeting the Devon researcher", and a Petalburg-only expanded item reads
     # "Never unlocks (unused in-game)").
+    # A map may hold several independent NPC vendors (department-store floors,
+    # the Slateport stalls, the post-game shop NPCs), so tiers are grouped by
+    # vendor and each vendor is reported as its own location. Dedicated Poké
+    # Mart maps have no vendor on their tiers and fall into a single group,
+    # which keeps their output identical to before.
     for map_id, mart in world.get("marts", {}).items():
         mart_name = mart.get("name", _prettify_map(map_id))
-        invs = mart.get("inventories", [])
-        for key in locs:
-            item_const = "ITEM_" + key
-            present = [i for i, inv in enumerate(invs)
-                       if item_const in inv.get("items", [])]
-            if not present:
-                continue
-            if len(present) == len(invs):
-                condition = (invs[0]["condition"] if len(invs) == 1
-                             else "Always available")
+        groups = {}
+        for inv in mart.get("inventories", []):
+            groups.setdefault(inv.get("vendor"), []).append(inv)
+
+        for vendor, invs in groups.items():
+            if vendor and vendor.lower() not in ("clerk", "clerk left",
+                                                 "clerk right"):
+                label = f"{vendor} ({mart_name})"
             else:
-                condition = invs[present[0]]["condition"]
-            locs[key]["marts"].append(
-                {"mapId": map_id, "martName": mart_name, "condition": condition})
+                label = mart_name
+            for key in locs:
+                item_const = "ITEM_" + key
+                present = [i for i, inv in enumerate(invs)
+                           if item_const in inv.get("items", [])]
+                if not present:
+                    continue
+                if len(present) == len(invs):
+                    condition = (invs[0]["condition"] if len(invs) == 1
+                                 else "Always available")
+                else:
+                    condition = invs[present[0]]["condition"]
+                locs[key]["marts"].append(
+                    {"mapId": map_id, "martName": label,
+                     "condition": condition})
 
     # Overworld item ball pickups
     for it in world.get("items", []):

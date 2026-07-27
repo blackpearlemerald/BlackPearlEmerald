@@ -572,7 +572,10 @@
 #define TRAINER_CATHERINE_5                 565
 #define TRAINER_JULIO                       566
 #define TRAINER_GRUNT_SEAFLOOR_CAVERN_5     567
-#define TRAINER_GRUNT_UNUSED                568
+// BPE: repurposed vanilla's unused Team Aqua/Magma grunt slot (was TRAINER_GRUNT_UNUSED).
+// Reusing an existing id keeps MAX_TRAINERS_COUNT — and therefore SYSTEM_FLAGS — where they
+// are, so save files stay compatible. See the note above TRAINERS_COUNT_EMERALD below.
+#define TRAINER_FURIUS2                     568
 #define TRAINER_GRUNT_MT_PYRE_4             569
 #define TRAINER_GRUNT_JAGGED_PASS           570
 #define TRAINER_MARC                        571
@@ -867,12 +870,16 @@
 #define TRAINER_YUJI4                       860
 #define TRAINER_YUJI5                       861
 #define TRAINER_YUJI6                       862
+#define TRAINER_CHAKAJACEK                  863
 
 // NOTE: Because each Trainer uses a flag to determine when they are defeated, there is only space for 9 additional trainers before trainer flag space overflows
 //       More space can be made by shifting flags around in constants/flags.h or changing how trainer flags are handled
 //       MAX_TRAINERS_COUNT can be increased but will take up additional saveblock space
+// BPE: all 9 of those slots are now used (855-863). The next new trainer must either repurpose
+//      another unused vanilla id (as TRAINER_FURIUS2 does) or raise MAX_TRAINERS_COUNT_EMERALD,
+//      which shifts SYSTEM_FLAGS and breaks existing save files.
 
-#define TRAINERS_COUNT_EMERALD     863 // BPE: 863 (upstream 855 + 8 BPE custom trainers)
+#define TRAINERS_COUNT_EMERALD     864 // BPE: 864 (upstream 855 + 9 BPE custom trainers)
 #define MAX_TRAINERS_COUNT_EMERALD 864
 
 #if IS_FRLG

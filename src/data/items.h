@@ -1616,13 +1616,12 @@ const struct ItemInfo gItemsInfo[] =
     [ITEM_ABILITY_CAPSULE] =
     {
         .name = ITEM_NAME("Ability Capsule"),
-    #if I_PRICE >= GEN_9
-        .price = 100000,
-    #elif I_PRICE >= GEN_7
-        .price = 10000,
-    #else
+        // BPE: flat price, overriding the I_PRICE table (which would give 100000 at GEN_9).
+        // ChakaJacek outside the Pokemon League sells these in unlimited quantity, and a
+        // mart always charges the item's own price, so this is what the player pays.
+        // Keeping it low also keeps the sell-back value (price / ITEM_SELL_FACTOR) below
+        // the purchase price, so buying from him can't be flipped for profit.
         .price = 1000,
-    #endif
         .holdEffectParam = 0,
         .description = COMPOUND_STRING(
             "Switches a Poké-\n"
@@ -1639,7 +1638,10 @@ const struct ItemInfo gItemsInfo[] =
     {
         .name = ITEM_NAME("Ability Patch"),
         .pluralName = ITEM_PLURAL_NAME("Ability Patches"),
-        .price = (I_PRICE >= GEN_9) ? 250000 : 20,
+        // BPE: flat price, overriding the I_PRICE table (which would give 250000 at GEN_9).
+        // Sold in unlimited quantity by Furius2 outside the Pokemon League. See the note on
+        // ITEM_ABILITY_CAPSULE above.
+        .price = 2000,
         .holdEffectParam = 0,
         .description = COMPOUND_STRING(
             "Turns the ability\n"

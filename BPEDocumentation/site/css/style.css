@@ -717,6 +717,17 @@ body.page-search {
 }
 .mart-cond:first-of-type { border-top: none; margin-top: 0; }
 .mart-list { display: flex; flex-direction: column; gap: 2px; }
+/* Named NPC vendor heading, for maps with more than one shopkeeper. */
+.mart-vendor {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1a3a5c;
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+.mart-vendor:first-of-type { border-top: none; margin-top: 0; padding-top: 0; }
+.mart-vendor + .mart-cond { border-top: none; margin-top: 2px; padding-top: 0; }
 
 /* ----- gift NPC popup ----- */
 .gift-head {
@@ -757,6 +768,66 @@ body.page-search {
   transform: translate(-6px, -20px);
   filter: drop-shadow(0 1px 1px rgba(0,0,0,0.6));
 }
+
+/* ----- guide notes ("this moved in BPE" signposts) ----- */
+/* Leaflet drives this element's `transform` inline to position the marker, and
+   a CSS animation on transform outranks an inline style — so never set or
+   animate transform here. All styling lives on the inner .guide-mark. */
+.guide-badge { pointer-events: none; }
+
+.guide-mark {
+  display: block;
+  width: 36px;
+  height: 36px;
+  font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 36px;
+  text-align: center;
+  color: #fff;
+  /* Solid black ring around the glyph so it reads over grass, sand or cave. */
+  text-shadow:
+    -3px -3px 0 #000,  0px -3px 0 #000,  3px -3px 0 #000,
+    -3px  0px 0 #000,                    3px  0px 0 #000,
+    -3px  3px 0 #000,  0px  3px 0 #000,  3px  3px 0 #000,
+    -2px -3px 0 #000,  2px -3px 0 #000, -2px  3px 0 #000,  2px  3px 0 #000,
+    -3px -2px 0 #000, -3px  2px 0 #000,  3px -2px 0 #000,  3px  2px 0 #000,
+     0px  4px 7px rgba(0, 0, 0, 0.55);
+  animation: guide-bob 2.4s ease-in-out infinite;
+}
+@keyframes guide-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guide-mark { animation: none; }
+}
+.guide-head {
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: #1a3a5c;
+}
+.guide-body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #33465c;
+}
+.guide-goto {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 10px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  background: #2f7d4f;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.guide-goto:hover { background: #276a43; }
 
 /* ----- where to find (item.html) ----- */
 .item-where-card {
@@ -996,13 +1067,43 @@ body.page-search {
 }
 .detail-body .pop-item-link:hover { background: rgba(77, 184, 122, 0.2); }
 
-/* ----- mart + gift (dark) ----- */
+/* ----- mart + gift + guide (dark) ----- */
 .detail-body .mart-head,
-.detail-body .gift-head {
+.detail-body .gift-head,
+.detail-body .guide-head {
   font-weight: 700;
   font-size: 18px;
   color: #f3f7fb;
   margin-bottom: 10px;
+}
+.detail-body .guide-body {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: #c8d6e5;
+}
+.detail-body .guide-goto {
+  font-size: 14.5px;
+  margin-top: 14px;
+  padding: 10px 12px;
+}
+/* Named NPC vendor heading inside the dark detail panel. */
+.detail-body .mart-vendor {
+  font-weight: 700;
+  font-size: 15px;
+  color: #f3f7fb;
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.detail-body .mart-vendor:first-of-type {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+.detail-body .mart-vendor + .mart-cond {
+  border-top: none;
+  margin-top: 4px;
+  padding-top: 0;
 }
 .detail-body .mart-cond {
   font-size: 11px;
