@@ -121,7 +121,6 @@
 #define TRAINER_CINDY_1                     114
 #define TRAINER_DAPHNE                      115
 #define TRAINER_GRUNT_SPACE_CENTER_2        116
-#define TRAINER_CINDY_2                     117
 #define TRAINER_BRIANNA                     118
 #define TRAINER_NAOMI                       119
 #define TRAINER_CINDY_3                     120
@@ -177,7 +176,6 @@
 #define TRAINER_FRANKLIN                    170
 #define TRAINER_KEVIN                       171
 #define TRAINER_JACK                        172
-#define TRAINER_DUDLEY                      173
 #define TRAINER_CHAD                        174
 #define TRAINER_TONY_2                      175
 #define TRAINER_TONY_3                      176
@@ -466,7 +464,6 @@
 #define TRAINER_SIENNA                      459
 #define TRAINER_DEBRA                       460
 #define TRAINER_LINDA                       461
-#define TRAINER_KAYLEE                      462
 #define TRAINER_LAUREL                      463
 #define TRAINER_CARLEE                      464
 #define TRAINER_JENNY_2                     465
@@ -489,8 +486,6 @@
 #define TRAINER_AMY_AND_LIV_2               482
 #define TRAINER_GINA_AND_MIA_1              483
 #define TRAINER_MIU_AND_YUKI                484
-#define TRAINER_AMY_AND_LIV_3               485
-#define TRAINER_GINA_AND_MIA_2              486
 #define TRAINER_AMY_AND_LIV_4               487
 #define TRAINER_AMY_AND_LIV_5               488
 #define TRAINER_AMY_AND_LIV_6               489
@@ -588,7 +583,6 @@
 #define TRAINER_HARRISON                    578
 #define TRAINER_GRUNT_MT_CHIMNEY_2          579
 #define TRAINER_CLARENCE                    580
-#define TRAINER_TERRY                       581
 #define TRAINER_NATE                        582
 #define TRAINER_KATHLEEN                    583
 #define TRAINER_CLIFFORD                    584
@@ -640,8 +634,6 @@
 #define TRAINER_ALAN                        630
 #define TRAINER_CLARK                       631
 #define TRAINER_ERIC                        632
-#define TRAINER_LUCAS_2                     633
-#define TRAINER_MIKE_1                      634
 #define TRAINER_MIKE_2                      635
 #define TRAINER_TRENT_2                     636
 #define TRAINER_TRENT_3                     637
@@ -858,10 +850,8 @@
 #define TRAINER_MARIELA                     848
 #define TRAINER_KEIRA2                      849
 #define TRAINER_EVERETT                     850
-#define TRAINER_RED                         851
-#define TRAINER_LEAF                        852
-#define TRAINER_BRENDAN_PLACEHOLDER         853
-#define TRAINER_MAY_PLACEHOLDER             854
+// BPE: repurposed vanilla's unused Gen3-protagonist-rematch placeholder (was TRAINER_RED).
+#define TRAINER_SEAN                        851
 #define TRAINER_EDDIE2                      855
 #define TRAINER_GEORGIA2                    856
 #define TRAINER_ALAN2                       857
@@ -876,8 +866,12 @@
 //       More space can be made by shifting flags around in constants/flags.h or changing how trainer flags are handled
 //       MAX_TRAINERS_COUNT can be increased but will take up additional saveblock space
 // BPE: all 9 of those slots are now used (855-863). The next new trainer must either repurpose
-//      another unused vanilla id (as TRAINER_FURIUS2 does) or raise MAX_TRAINERS_COUNT_EMERALD,
-//      which shifts SYSTEM_FLAGS and breaks existing save files.
+//      a free id below (as TRAINER_FURIUS2 and TRAINER_SEAN do) or raise
+//      MAX_TRAINERS_COUNT_EMERALD, which shifts SYSTEM_FLAGS and breaks existing save files.
+// BPE: dead placeholder/rematch-gap ids removed 2026-07-27 (were empty-party stubs, verified
+//      unreferenced anywhere). Their numbers are free to reassign to a new #define TRAINER_X:
+//      117, 173, 462, 485, 486, 581, 633, 634, 852, 853, 854. See memory note
+//      trainer-id-budget-audit for the audit method if this list needs re-deriving.
 
 #define TRAINERS_COUNT_EMERALD     864 // BPE: 864 (upstream 855 + 9 BPE custom trainers)
 #define MAX_TRAINERS_COUNT_EMERALD 864

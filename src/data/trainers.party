@@ -4314,20 +4314,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earth Power
 - Toxic
 
-=== TRAINER_CINDY_2 ===
-Name: CINDY
-Class: Lady
-Pic: Lady
-Gender: Female
-Music: Female
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Zigzagoon
-Quirky Nature
-Level: 13
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
 === TRAINER_BRIANNA ===
 Name: BRIANNA
 Class: Lady
@@ -5730,30 +5716,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Wave Crash
 - Aqua Jet
 - Disable
-
-=== TRAINER_DUDLEY ===
-Name: DUDLEY
-Class: Swimmer M
-Pic: Swimmer M
-Gender: Male
-Music: Swimmer
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Tentacool
-Quirky Nature
-Level: 53
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
-Wingull
-Quirky Nature
-Level: 53
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
-Tentacruel
-Quirky Nature
-Level: 53
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_CHAD ===
 Name: CHAD
@@ -7215,6 +7177,26 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Power Gem
 - Thunder Wave
 - Iron Defense
+
+Aggron @ Leftovers
+Quirky Nature
+Level: 40
+Ability: Rock Head
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Head Smash
+- Heavy Slam
+- Earthquake
+- Roar
+
+Slowking @ Leftovers
+Quirky Nature
+Level: 40
+Ability: Regenerator
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Scald
+- Psychic
+- Slack Off
+- Calm Mind
 
 === TRAINER_ETHAN_2 ===
 Name: ETHAN
@@ -14467,25 +14449,6 @@ Quirky Nature
 Level: 53
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
-=== TRAINER_KAYLEE ===
-Name: KAYLEE
-Class: Swimmer F
-Pic: Swimmer F
-Gender: Female
-Music: Swimmer
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Lanturn
-Quirky Nature
-Level: 56
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
-Pelipper
-Quirky Nature
-Level: 56
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
 === TRAINER_LAUREL ===
 Name: LAUREL
 Class: Swimmer F
@@ -15111,74 +15074,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Headbutt
 - Skull Bash
 - Flash Cannon
-
-=== TRAINER_AMY_AND_LIV_3 ===
-Name: AMY & LIV
-Class: Twins
-Pic: Twins
-Gender: Male
-Music: Twins
-Battle Type: Doubles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Ampharos
-Quirky Nature
-Level: 30
-Ability: Plus
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Shock Wave
-- Power Gem
-- Protect
-- Signal Beam
-
-Manectric @ Cell Battery
-Quirky Nature
-Level: 30
-Ability: Minus
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Discharge
-- Electric Terrain
-- Body Slam
-- Quick Attack
-
-Linoone @ Toxic Orb
-Quirky Nature
-Level: 30
-Ability: Quick Feet
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Protect
-- Belly Drum
-- Quick Attack
-- Tail Slap
-
-Linoone-Galar @ Toxic Orb
-Quirky Nature
-Level: 30
-Ability: Quick Feet
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Detect
-- Hone Claws
-- Facade
-- Knock Off
-
-=== TRAINER_GINA_AND_MIA_2 ===
-Name: GINA & MIA
-Class: Twins
-Pic: Twins
-Gender: Male
-Music: Twins
-Battle Type: Doubles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Duskull
-Quirky Nature
-Level: 12
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
-Shroomish
-Quirky Nature
-Level: 12
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_AMY_AND_LIV_4 ===
 Name: AMY & LIV
@@ -18382,20 +18277,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earthquake
 - Meteor Beam
 
-=== TRAINER_TERRY ===
-Name: TERRY
-Class: Psychic
-Pic: Psychic F
-Gender: Female
-Music: Intense
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Girafarig
-Quirky Nature
-Level: 56
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
 === TRAINER_NATE ===
 Name: NATE
 Class: Gentleman
@@ -20347,52 +20228,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Claw
 - Iron Head
 - Stomping Tantrum
-
-=== TRAINER_LUCAS_2 ===
-Name: LUCAS
-Class: Hiker
-Pic: Hiker
-Gender: Male
-Music: Hiker
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Gigalith @ Custap Berry
-Quirky Nature
-Level: 40
-Ability: Sturdy
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Rock Slide
-- Earthquake
-- Body Press
-- Curse
-
-=== TRAINER_MIKE_1 ===
-Name: MIKE
-Class: Hiker
-Pic: Hiker
-Gender: Male
-Music: Hiker
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Lycanroc
-Quirky Nature
-Level: 31
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Rock Slide
-- Accelerock
-- Crunch
-- Fire Fang
-
-Marshtomp @ Eviolite
-Quirky Nature
-Level: 31
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Water Pulse
-- Mud Shot
-- Bulldoze
-- Headbutt
 
 === TRAINER_MIKE_2 ===
 Name: MIKE
@@ -28702,61 +28537,44 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Rock Tomb
 - Crunch
 
-=== TRAINER_RED ===
-Name: RED
-Class: Rival
-Pic: Red
+=== TRAINER_SEAN ===
+Name: SEAN
+Class: Cooltrainer
+Pic: Cooltrainer M
 Gender: Male
-Music: Male
+Music: Cool
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Charmander
+Beautifly
 Quirky Nature
 Level: 12
+Ability: Swarm
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Gust
+- Absorb
+- String Shot
+- Poison Sting
 
-=== TRAINER_LEAF ===
-Name: LEAF
-Class: Rival
-Pic: Leaf
-Gender: Female
-Music: Male
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Bulbasaur
+Nosepass
 Quirky Nature
 Level: 12
+Ability: Sturdy
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Rock Throw
+- Harden
+- Tackle
+- Block
 
-=== TRAINER_BRENDAN_PLACEHOLDER ===
-Name: BRENDAN
-Class: RS Protag
-Pic: RS Brendan
-Gender: Male
-Music: Male
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Groudon
+Machop
 Quirky Nature
 Level: 12
+Ability: No Guard
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-
-=== TRAINER_MAY_PLACEHOLDER ===
-Name: MAY
-Class: RS Protag
-Pic: RS May
-Gender: Female
-Music: Male
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Kyogre
-Quirky Nature
-Level: 12
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Karate Chop
+- Low Kick
+- Leer
+- Focus Energy
 
 === TRAINER_CHAKAJACEK ===
 Name: ChakaJacek
