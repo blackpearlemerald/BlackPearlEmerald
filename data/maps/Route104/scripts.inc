@@ -847,11 +847,6 @@ Route104_EventScript_Ivan::
 	msgbox Route104_Text_IvanPostBattle, MSGBOX_AUTOCLOSE
 	end
 
-Route104_EventScript_Sean::
-	trainerbattle_single TRAINER_SEAN, Route104_Text_SeanIntro, Route104_Text_SeanDefeat
-	msgbox Route104_Text_SeanPostBattle, MSGBOX_AUTOCLOSE
-	end
-
 Route104_EventScript_Billy::
 	trainerbattle_single TRAINER_BILLY, Route104_Text_BillyIntro, Route104_Text_BillyDefeat
 	msgbox Route104_Text_BillyPostBattle, MSGBOX_AUTOCLOSE

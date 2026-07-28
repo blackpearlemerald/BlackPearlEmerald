@@ -28537,45 +28537,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Rock Tomb
 - Crunch
 
-=== TRAINER_SEAN ===
-Name: SEAN
-Class: Cooltrainer
-Pic: Cooltrainer M
-Gender: Male
-Music: Cool
-Battle Type: Singles
-AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
-
-Beautifly
-Quirky Nature
-Level: 12
-Ability: Swarm
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Gust
-- Absorb
-- String Shot
-- Poison Sting
-
-Nosepass
-Quirky Nature
-Level: 12
-Ability: Sturdy
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Rock Throw
-- Harden
-- Tackle
-- Block
-
-Machop
-Quirky Nature
-Level: 12
-Ability: No Guard
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Karate Chop
-- Low Kick
-- Leer
-- Focus Energy
-
 === TRAINER_CHAKAJACEK ===
 Name: ChakaJacek
 Class: Cooltrainer

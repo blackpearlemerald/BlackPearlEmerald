@@ -294,21 +294,6 @@ Route104_Text_IvanPostBattle:
 	.string "I got too into fishing.\n"
 	.string "I forgot I had to raise my POKéMON…$"
 
-Route104_Text_SeanIntro:
-	.string "Hold it right there, trainer.\n"
-	.string "Nobody strolls past me and my three\l"
-	.string "POKéMON without a fight!$"
-
-Route104_Text_SeanDefeat:
-	.string "What?! I trained these three myself,\n"
-	.string "and you still…\p"
-	.string "You're the real deal.$"
-
-Route104_Text_SeanPostBattle:
-	.string "Go on, then, you've earned it.\n"
-	.string "RUSTBORO's just up ahead, so don't\l"
-	.string "get comfortable!$"
-
 Route104_Text_BillyIntro:
 	.string "Leaving footprints in the sand is\n"
 	.string "so fun!$"

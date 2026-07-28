@@ -850,8 +850,6 @@
 #define TRAINER_MARIELA                     848
 #define TRAINER_KEIRA2                      849
 #define TRAINER_EVERETT                     850
-// BPE: repurposed vanilla's unused Gen3-protagonist-rematch placeholder (was TRAINER_RED).
-#define TRAINER_SEAN                        851
 #define TRAINER_EDDIE2                      855
 #define TRAINER_GEORGIA2                    856
 #define TRAINER_ALAN2                       857
@@ -866,12 +864,13 @@
 //       More space can be made by shifting flags around in constants/flags.h or changing how trainer flags are handled
 //       MAX_TRAINERS_COUNT can be increased but will take up additional saveblock space
 // BPE: all 9 of those slots are now used (855-863). The next new trainer must either repurpose
-//      a free id below (as TRAINER_FURIUS2 and TRAINER_SEAN do) or raise
-//      MAX_TRAINERS_COUNT_EMERALD, which shifts SYSTEM_FLAGS and breaks existing save files.
+//      a free id below (as TRAINER_FURIUS2 does) or raise MAX_TRAINERS_COUNT_EMERALD, which
+//      shifts SYSTEM_FLAGS and breaks existing save files.
 // BPE: dead placeholder/rematch-gap ids removed 2026-07-27 (were empty-party stubs, verified
 //      unreferenced anywhere). Their numbers are free to reassign to a new #define TRAINER_X:
-//      117, 173, 462, 485, 486, 581, 633, 634, 852, 853, 854. See memory note
-//      trainer-id-budget-audit for the audit method if this list needs re-deriving.
+//      117, 173, 462, 485, 486, 581, 633, 634, 851, 852, 853, 854 (851 freed again 2026-07-27
+//      when the Route 104 Sean mini-boss was removed). See memory note trainer-id-budget-audit
+//      for the audit method if this list needs re-deriving.
 
 #define TRAINERS_COUNT_EMERALD     864 // BPE: 864 (upstream 855 + 9 BPE custom trainers)
 #define MAX_TRAINERS_COUNT_EMERALD 864
