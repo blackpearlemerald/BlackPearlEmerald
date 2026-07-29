@@ -70,6 +70,51 @@ def extract_compound_string(text):
     joined = joined.replace(r"\n", " ").replace("  ", " ").strip()
     return joined
 
+_GEN_CONFIG_CACHE = {}
+
+def gen_config():
+    """Resolve GEN_* and every `#define NAME GEN_x` config to its integer value.
+
+    moves_info.h writes gen-gated fields as `FIELD = B_UPDATED_MOVE_DATA >= GEN_9 ? a : b`,
+    so evaluating those needs the numeric value of both sides of the comparison.
+    """
+    if _GEN_CONFIG_CACHE:
+        return _GEN_CONFIG_CACHE
+    general = strip_c_comments(read_file(REPO / "include" / "config" / "general.h"))
+    for m in re.finditer(r"#define\s+(GEN_\w+)\s+(\d+)\s*$", general, re.M):
+        _GEN_CONFIG_CACHE[m.group(1)] = int(m.group(2))
+    # GEN_LATEST is defined in terms of another GEN_ constant.
+    m = re.search(r"#define\s+GEN_LATEST\s+(GEN_\w+)", general)
+    if m:
+        _GEN_CONFIG_CACHE["GEN_LATEST"] = _GEN_CONFIG_CACHE.get(m.group(1), 8)
+    # Config toggles that gate move data, e.g. B_UPDATED_MOVE_DATA, B_HIDDEN_POWER_DMG.
+    for cfg in ("battle.h", "pokemon.h"):
+        text = strip_c_comments(read_file(REPO / "include" / "config" / cfg))
+        for m in re.finditer(r"#define\s+([A-Z]\w+)\s+(GEN_\w+)\s*$", text, re.M):
+            if m.group(2) in _GEN_CONFIG_CACHE:
+                _GEN_CONFIG_CACHE[m.group(1)] = _GEN_CONFIG_CACHE[m.group(2)]
+    return _GEN_CONFIG_CACHE
+
+def read_num_field(block, field, default=0):
+    """Read `.field = N` or `.field = CONFIG >= GEN_x ? a : b` from a struct block."""
+    m = re.search(r"\.%s\s*=\s*([^,;}]+)" % field, block)
+    if not m:
+        return default
+    expr = m.group(1).strip()
+    if expr.isdigit():
+        return int(expr)
+    t = re.match(r"\(?\s*(\w+)\s*(>=|>|<=|<|==|!=)\s*(GEN_\w+)\s*\)?\s*\?\s*(\d+)\s*:\s*(\d+)", expr)
+    if t:
+        cfg = gen_config()
+        lhs, op, rhs = cfg.get(t.group(1)), t.group(2), cfg.get(t.group(3))
+        if lhs is None or rhs is None:
+            return int(t.group(4))  # unknown config: assume the modern branch
+        ok = {">=": lhs >= rhs, ">": lhs > rhs, "<=": lhs <= rhs,
+              "<": lhs < rhs, "==": lhs == rhs, "!=": lhs != rhs}[op]
+        return int(t.group(4) if ok else t.group(5))
+    m = re.search(r"\d+", expr)
+    return int(m.group(0)) if m else default
+
 def prettify_map(map_id):
     """MAP_ROUTE101 -> 'Route 101',  MAP_RUSTBORO_CITY -> 'Rustboro City'."""
     name = map_id.replace("MAP_", "").replace("_", " ").title()
@@ -119,16 +164,13 @@ def parse_moves():
             continue
         # Type: may be a conditional; grab the first TYPE_X token after '.type ='
         type_m = re.search(r'\.type\s*=\s*(?:[^;]*?)\bTYPE_(\w+)', block)
-        power_m = re.search(r'\.power\s*=\s*(\d+)', block)
-        acc_m = re.search(r'\.accuracy\s*=\s*(\d+)', block)
-        pp_m = re.search(r'\.pp\s*=\s*(\d+)', block)
         cat_m = re.search(r'\.category\s*=\s*DAMAGE_CATEGORY_(\w+)', block)
         moves[key] = {
             "name": name_m.group(1),
             "type": type_m.group(1) if type_m else "NORMAL",
-            "power": int(power_m.group(1)) if power_m else 0,
-            "accuracy": int(acc_m.group(1)) if acc_m else 0,
-            "pp": int(pp_m.group(1)) if pp_m else 0,
+            "power": read_num_field(block, "power"),
+            "accuracy": read_num_field(block, "accuracy"),
+            "pp": read_num_field(block, "pp"),
             "category": cat_m.group(1) if cat_m else "STATUS",
         }
     return moves

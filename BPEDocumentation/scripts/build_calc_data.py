@@ -178,11 +178,11 @@ def main():
             sprite_src_for[name] = d["sprite"].replace("/", os.sep)
 
     # ── moves ────────────────────────────────────────────────────────────────
-    # NOTE: the doc's moves.json carries power=0 for ~100 damaging moves
-    # (Flamethrower, Thunderbolt, Surf, ...) — a parse artifact, not a BPE
-    # rebalance. The calc copies basePower unconditionally, so emitting those
-    # would zero out their damage. We only override moves with a real power and
-    # let the calc's accurate built-in Gen 9 data fill in the rest.
+    # NOTE: power=0 in moves.json now means a genuinely non-damaging move
+    # (parse_pokemon.read_num_field resolves the B_UPDATED_MOVE_DATA ternaries
+    # that used to zero out ~100 damaging moves). The calc copies basePower
+    # unconditionally, so emitting a 0 would zero out a move's damage — keep
+    # skipping those and let the calc's built-in Gen 9 data fill them in.
     out_moves = {}
     for mid, m in moves_data.items():
         nm = m.get("name")
