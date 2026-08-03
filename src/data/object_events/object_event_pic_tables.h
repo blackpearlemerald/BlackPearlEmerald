@@ -1572,15 +1572,7 @@ static const struct SpriteFrameImage sPicTable_Marshal[] = {
     overworld_ascending_frames(gObjectEventPic_Marshal, 4, 4),
 };
 static const struct SpriteFrameImage sPicTable_Malva[] = {
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Malva, 2, 4, 0),
+    overworld_ascending_frames(gObjectEventPic_Malva, 4, 4),
 };
 // Real 9-frame walk set (was a single static frame repeated 9x, so she never
 // turned or animated); source sheet has all 4 directions x 3 poses.
@@ -1592,37 +1584,13 @@ static const struct SpriteFrameImage sPicTable_Siebold[] = {
     overworld_ascending_frames(gObjectEventPic_Siebold, 4, 4),
 };
 static const struct SpriteFrameImage sPicTable_Wikstrom[] = {
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Wikstrom, 2, 4, 0),
+    overworld_ascending_frames(gObjectEventPic_Wikstrom, 4, 4),
 };
 static const struct SpriteFrameImage sPicTable_Nessa[] = {
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Nessa, 2, 4, 0),
+    overworld_ascending_frames(gObjectEventPic_Nessa, 4, 4),
 };
 static const struct SpriteFrameImage sPicTable_Hala[] = {
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Hala, 2, 4, 0),
+    overworld_ascending_frames(gObjectEventPic_Hala, 4, 4),
 };
 static const struct SpriteFrameImage sPicTable_Hop[] = {
     overworld_frame(gObjectEventPic_Hop, 2, 4, 0),
@@ -1636,15 +1604,7 @@ static const struct SpriteFrameImage sPicTable_Hop[] = {
     overworld_frame(gObjectEventPic_Hop, 2, 4, 0),
 };
 static const struct SpriteFrameImage sPicTable_Olivia[] = {
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
-    overworld_frame(gObjectEventPic_Olivia, 2, 4, 0),
+    overworld_ascending_frames(gObjectEventPic_Olivia, 4, 4),
 };
 static const struct SpriteFrameImage sPicTable_Rika[] = {
     overworld_frame(gObjectEventPic_Rika, 2, 4, 0),

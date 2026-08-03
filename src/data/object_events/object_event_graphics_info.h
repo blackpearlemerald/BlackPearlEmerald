@@ -4762,86 +4762,17 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Shauntal = DS_STYL
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Grimsley = DS_STYLE_OW_GRAPHICS_INFO(Grimsley, OBJ_EVENT_PAL_TAG_GRIMSLEY);
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Caitlin = DS_STYLE_OW_GRAPHICS_INFO(Caitlin, OBJ_EVENT_PAL_TAG_CAITLIN);
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Marshal = DS_STYLE_OW_GRAPHICS_INFO(Marshal, OBJ_EVENT_PAL_TAG_MARSHAL);
-// Kalos E4 cameos (Trick House Puzzle 6) - 16x32 single-frame
-
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Malva = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_MALVA,
-    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
-    .size = 256,
-    .width = 16,
-    .height = 32,
-    .paletteSlot = PALSLOT_NPC_4,
-    .shadowSize = SHADOW_SIZE_M,
-    .inanimate = FALSE,
-    .compressed = FALSE,
-    .tracks = TRACKS_FOOT,
-    .oam = &gObjectEventBaseOam_16x32,
-    .subspriteTables = sOamTables_16x32,
-    .anims = sAnimTable_Standard,
-    .images = sPicTable_Malva,
-    .affineAnims = gDummySpriteAffineAnimTable,
-};
+// Kalos E4 cameos (Trick House Puzzle 6)
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Malva = DS_STYLE_OW_GRAPHICS_INFO(Malva, OBJ_EVENT_PAL_TAG_MALVA);
 // Drasna upgraded from a 16x32 single-pose sprite to a real 32x32 DS-style
 // 9-frame walk set, matching the Sinnoh/Unova cameos above.
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Drasna = DS_STYLE_OW_GRAPHICS_INFO(Drasna, OBJ_EVENT_PAL_TAG_DRASNA);
 // Upgraded from a 16x32 single-pose sprite to a real 32x32 DS-style 9-frame walk set.
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Siebold = DS_STYLE_OW_GRAPHICS_INFO(Siebold, OBJ_EVENT_PAL_TAG_SIEBOLD);
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wikstrom = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_WIKSTROM,
-    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
-    .size = 256,
-    .width = 16,
-    .height = 32,
-    .paletteSlot = PALSLOT_NPC_4,
-    .shadowSize = SHADOW_SIZE_M,
-    .inanimate = FALSE,
-    .compressed = FALSE,
-    .tracks = TRACKS_FOOT,
-    .oam = &gObjectEventBaseOam_16x32,
-    .subspriteTables = sOamTables_16x32,
-    .anims = sAnimTable_Standard,
-    .images = sPicTable_Wikstrom,
-    .affineAnims = gDummySpriteAffineAnimTable,
-};
-// Alola/Galar cameos (Trick House Puzzle 7) - 16x32 single-frame
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Nessa = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_NESSA,
-    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
-    .size = 256,
-    .width = 16,
-    .height = 32,
-    .paletteSlot = PALSLOT_NPC_4,
-    .shadowSize = SHADOW_SIZE_M,
-    .inanimate = FALSE,
-    .compressed = FALSE,
-    .tracks = TRACKS_FOOT,
-    .oam = &gObjectEventBaseOam_16x32,
-    .subspriteTables = sOamTables_16x32,
-    .anims = sAnimTable_Standard,
-    .images = sPicTable_Nessa,
-    .affineAnims = gDummySpriteAffineAnimTable,
-};
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hala = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_HALA,
-    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
-    .size = 256,
-    .width = 16,
-    .height = 32,
-    .paletteSlot = PALSLOT_NPC_4,
-    .shadowSize = SHADOW_SIZE_M,
-    .inanimate = FALSE,
-    .compressed = FALSE,
-    .tracks = TRACKS_FOOT,
-    .oam = &gObjectEventBaseOam_16x32,
-    .subspriteTables = sOamTables_16x32,
-    .anims = sAnimTable_Standard,
-    .images = sPicTable_Hala,
-    .affineAnims = gDummySpriteAffineAnimTable,
-};
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Wikstrom = DS_STYLE_OW_GRAPHICS_INFO(Wikstrom, OBJ_EVENT_PAL_TAG_WIKSTROM);
+// Alola/Galar cameos (Trick House Puzzle 7)
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Nessa = DS_STYLE_OW_GRAPHICS_INFO(Nessa, OBJ_EVENT_PAL_TAG_NESSA);
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hala = DS_STYLE_OW_GRAPHICS_INFO(Hala, OBJ_EVENT_PAL_TAG_HALA);
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hop = {
     .tileTag = TAG_NONE,
     .paletteTag = OBJ_EVENT_PAL_TAG_HOP,
@@ -4860,24 +4791,7 @@ const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hop = {
     .images = sPicTable_Hop,
     .affineAnims = gDummySpriteAffineAnimTable,
 };
-const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Olivia = {
-    .tileTag = TAG_NONE,
-    .paletteTag = OBJ_EVENT_PAL_TAG_OLIVIA,
-    .reflectionPaletteTag = OBJ_EVENT_PAL_TAG_NONE,
-    .size = 256,
-    .width = 16,
-    .height = 32,
-    .paletteSlot = PALSLOT_NPC_4,
-    .shadowSize = SHADOW_SIZE_M,
-    .inanimate = FALSE,
-    .compressed = FALSE,
-    .tracks = TRACKS_FOOT,
-    .oam = &gObjectEventBaseOam_16x32,
-    .subspriteTables = sOamTables_16x32,
-    .anims = sAnimTable_Standard,
-    .images = sPicTable_Olivia,
-    .affineAnims = gDummySpriteAffineAnimTable,
-};
+const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Olivia = DS_STYLE_OW_GRAPHICS_INFO(Olivia, OBJ_EVENT_PAL_TAG_OLIVIA);
 // Paldea E4 cameos (Trick House Puzzle 8) - 16x32 single-frame
 const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Rika = {
     .tileTag = TAG_NONE,

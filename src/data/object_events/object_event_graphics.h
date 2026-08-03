@@ -519,21 +519,21 @@ const u16 gObjectEventPal_Shauntal[] = INCGFX_U16("graphics/object_events/palett
 const u16 gObjectEventPal_Grimsley[] = INCGFX_U16("graphics/object_events/palettes/grimsley.pal", ".gbapal");
 const u16 gObjectEventPal_Caitlin[] = INCGFX_U16("graphics/object_events/palettes/caitlin.pal", ".gbapal");
 const u16 gObjectEventPal_Marshal[] = INCGFX_U16("graphics/object_events/palettes/marshal.pal", ".gbapal");
-// Kalos E4 cameos (Trick House Puzzle 6). Drasna/Siebold are full 9-frame 32x32
-// DS-style walk sets; Malva/Wikstrom are still single-frame front-facing 16x32.
-const u16 gObjectEventPic_Malva[] = INCGFX_U16("graphics/object_events/pics/people/malva.png", ".4bpp", "-mwidth 2 -mheight 4");
+// Kalos E4 cameos (Trick House Puzzle 6) use full nine-frame 32x32 walk sets.
+const u16 gObjectEventPic_Malva[] = INCGFX_U16("graphics/object_events/pics/people/malva.png", ".4bpp", "-mwidth 4 -mheight 4");
 const u16 gObjectEventPic_Drasna[] = INCGFX_U16("graphics/object_events/pics/people/drasna.png", ".4bpp", "-mwidth 4 -mheight 4");
 const u16 gObjectEventPic_Siebold[] = INCGFX_U16("graphics/object_events/pics/people/siebold.png", ".4bpp", "-mwidth 4 -mheight 4");
-const u16 gObjectEventPic_Wikstrom[] = INCGFX_U16("graphics/object_events/pics/people/wikstrom.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Wikstrom[] = INCGFX_U16("graphics/object_events/pics/people/wikstrom.png", ".4bpp", "-mwidth 4 -mheight 4");
 const u16 gObjectEventPal_Malva[] = INCGFX_U16("graphics/object_events/palettes/malva.pal", ".gbapal");
 const u16 gObjectEventPal_Drasna[] = INCGFX_U16("graphics/object_events/palettes/drasna.pal", ".gbapal");
 const u16 gObjectEventPal_Siebold[] = INCGFX_U16("graphics/object_events/palettes/siebold.pal", ".gbapal");
 const u16 gObjectEventPal_Wikstrom[] = INCGFX_U16("graphics/object_events/palettes/wikstrom.pal", ".gbapal");
-// Alola/Galar cameos (Trick House Puzzle 7) - single-frame front-facing OW sprites
-const u16 gObjectEventPic_Nessa[] = INCGFX_U16("graphics/object_events/pics/people/nessa.png", ".4bpp", "-mwidth 2 -mheight 4");
-const u16 gObjectEventPic_Hala[] = INCGFX_U16("graphics/object_events/pics/people/hala.png", ".4bpp", "-mwidth 2 -mheight 4");
+// Alola/Galar cameos (Trick House Puzzle 7). Nessa, Hala, and Olivia use full
+// nine-frame 32x32 Gen 3 walk sets; Hop remains a single-frame sprite.
+const u16 gObjectEventPic_Nessa[] = INCGFX_U16("graphics/object_events/pics/people/nessa.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Hala[] = INCGFX_U16("graphics/object_events/pics/people/hala.png", ".4bpp", "-mwidth 4 -mheight 4");
 const u16 gObjectEventPic_Hop[] = INCGFX_U16("graphics/object_events/pics/people/hop.png", ".4bpp", "-mwidth 2 -mheight 4");
-const u16 gObjectEventPic_Olivia[] = INCGFX_U16("graphics/object_events/pics/people/olivia.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Olivia[] = INCGFX_U16("graphics/object_events/pics/people/olivia.png", ".4bpp", "-mwidth 4 -mheight 4");
 const u16 gObjectEventPal_Nessa[] = INCGFX_U16("graphics/object_events/palettes/nessa.pal", ".gbapal");
 const u16 gObjectEventPal_Hala[] = INCGFX_U16("graphics/object_events/palettes/hala.pal", ".gbapal");
 const u16 gObjectEventPal_Hop[] = INCGFX_U16("graphics/object_events/palettes/hop.pal", ".gbapal");
