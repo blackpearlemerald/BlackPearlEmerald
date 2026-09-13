@@ -1,1 +1,1 @@
-{"id":"TM_FLIP_TURN","name":"TM196","price":0,"description":"Flip Turn","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_flip_turn.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FLIP_TURN","name":"TM196","price":0,"description":"Flip Turn","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_flip_turn.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

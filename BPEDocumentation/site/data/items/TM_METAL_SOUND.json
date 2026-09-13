@@ -1,1 +1,1 @@
-{"id":"TM_METAL_SOUND","name":"TM223","price":0,"description":"Metal Sound","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_metal_sound.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_METAL_SOUND","name":"TM223","price":0,"description":"Metal Sound","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_metal_sound.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

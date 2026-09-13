@@ -1,0 +1,533 @@
+html {
+  min-height: 100%;
+  background: #09131e;
+}
+
+body.page-patcher {
+  min-height: 100%;
+  height: auto;
+  box-sizing: border-box;
+  padding-top: 48px;
+  color: #e8eef5;
+  background:
+    radial-gradient(circle at 16% 8%, rgba(35, 132, 84, 0.18), transparent 29rem),
+    radial-gradient(circle at 90% 28%, rgba(30, 100, 148, 0.13), transparent 25rem),
+    #09131e;
+}
+
+.patcher-shell {
+  width: min(1040px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 46px 0 32px;
+}
+
+.patcher-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.patcher-kicker {
+  color: #61d391;
+  font-size: 0.78rem;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.patcher-header h1 {
+  margin: 6px 0 6px;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.patcher-header p {
+  max-width: 650px;
+  margin: 0;
+  color: #9fb3c8;
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.release-chip {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 9px;
+  padding: 9px 13px;
+  border: 1px solid rgba(97, 211, 145, 0.24);
+  border-radius: 999px;
+  background: rgba(34, 95, 65, 0.28);
+  color: #b9eccd;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.release-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #61d391;
+  box-shadow: 0 0 0 4px rgba(97, 211, 145, 0.12);
+}
+
+.patcher-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(260px, 0.8fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.patcher-card,
+.help-card {
+  border: 1px solid rgba(159, 179, 200, 0.14);
+  border-radius: 16px;
+  background: rgba(18, 31, 45, 0.94);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.24);
+}
+
+.patcher-card {
+  overflow: hidden;
+}
+
+.patcher-card-heading {
+  display: flex;
+  gap: 14px;
+  padding: 24px 26px 18px;
+  border-bottom: 1px solid rgba(159, 179, 200, 0.1);
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: #238454;
+  color: #fff;
+  font-weight: 800;
+}
+
+.patcher-card-heading h2,
+.help-card h2 {
+  margin: 0;
+  color: #f4f8fb;
+  font-size: 1.05rem;
+}
+
+.patcher-card-heading p {
+  margin: 5px 0 0;
+  color: #8fa6bc;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.page-patcher code {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+}
+
+.page-patcher #rom-patcher-container {
+  max-width: none;
+  margin: 0;
+  padding: 24px 26px 22px;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.page-patcher #rom-patcher-container #rom-patcher-row-file-rom {
+  display: block;
+}
+
+.page-patcher #rom-patcher-container #rom-patcher-row-file-rom > div {
+  width: auto;
+}
+
+.rom-file-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 9px;
+}
+
+.rom-file-label label {
+  color: #dce7f0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.rom-file-label span {
+  color: #6f879d;
+  font-size: 0.78rem;
+}
+
+.page-patcher #rom-patcher-container input[type="file"] {
+  min-height: 58px;
+  padding: 17px 18px;
+  border: 1px dashed rgba(117, 151, 180, 0.42);
+  border-radius: 11px;
+  background-color: rgba(7, 19, 30, 0.72);
+  color: #c8d7e4;
+  font-size: 0.94rem;
+  transition: border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+
+.page-patcher #rom-patcher-container input[type="file"]:hover:not(:disabled) {
+  border-color: rgba(97, 211, 145, 0.62);
+  background-color: rgba(22, 61, 44, 0.48);
+}
+
+.page-patcher #rom-patcher-container input[type="file"]:focus:not(:disabled) {
+  box-shadow: 0 0 0 3px rgba(97, 211, 145, 0.18);
+}
+
+.page-patcher #rom-patcher-container input[type="file"]:disabled {
+  opacity: 0.56;
+}
+
+.page-patcher #rom-patcher-container input[type="file"].empty,
+.page-patcher #rom-patcher-container input[type="file"].loading {
+  padding-left: 42px;
+}
+
+.page-patcher #rom-patcher-container input[type="file"].valid {
+  padding-right: 42px;
+  border-style: solid;
+  border-color: rgba(97, 211, 145, 0.64);
+  background-color: rgba(22, 82, 53, 0.55);
+  color: #d9f8e6;
+}
+
+.page-patcher #rom-patcher-container input[type="file"].invalid {
+  padding-right: 42px;
+  border-style: solid;
+  border-color: rgba(244, 116, 116, 0.64);
+  background-color: rgba(101, 35, 42, 0.46);
+  color: #ffe3e3;
+}
+
+.patcher-internal {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  white-space: nowrap !important;
+}
+
+.patcher-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px 15px;
+  border: 1px solid rgba(117, 151, 180, 0.2);
+  border-radius: 11px;
+  background: rgba(7, 19, 30, 0.52);
+}
+
+.patcher-status-icon {
+  flex: 0 0 auto;
+  width: 11px;
+  height: 11px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #7890a7;
+  box-shadow: 0 0 0 4px rgba(120, 144, 167, 0.11);
+}
+
+.patcher-status strong,
+.patcher-status span:not(.patcher-status-icon) {
+  display: block;
+}
+
+.patcher-status strong {
+  color: #e8eef5;
+  font-size: 0.9rem;
+}
+
+.patcher-status span:not(.patcher-status-icon) {
+  margin-top: 3px;
+  color: #8199af;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.patcher-status.is-loading .patcher-status-icon,
+.patcher-status.is-checking .patcher-status-icon,
+.patcher-status.is-working .patcher-status-icon {
+  border: 2px solid rgba(97, 211, 145, 0.2);
+  border-top-color: #61d391;
+  background: transparent;
+  box-shadow: none;
+  animation: patcher-spin 0.8s linear infinite;
+}
+
+.patcher-status.is-ready .patcher-status-icon,
+.patcher-status.is-success .patcher-status-icon {
+  background: #61d391;
+  box-shadow: 0 0 0 4px rgba(97, 211, 145, 0.12);
+}
+
+.patcher-status.is-invalid .patcher-status-icon,
+.patcher-status.is-error .patcher-status-icon {
+  background: #f47474;
+  box-shadow: 0 0 0 4px rgba(244, 116, 116, 0.12);
+}
+
+.patcher-status.is-success {
+  border-color: rgba(97, 211, 145, 0.25);
+  background: rgba(22, 82, 53, 0.34);
+}
+
+.page-patcher #rom-patcher-row-apply {
+  margin-top: 15px;
+}
+
+.page-patcher #rom-patcher-row-error-message.show {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(244, 116, 116, 0.25);
+  border-radius: 8px;
+  background: rgba(101, 35, 42, 0.32);
+  text-align: left;
+}
+
+.page-patcher #rom-patcher-error-message {
+  color: #ffb3b3;
+  font-size: 0.84rem;
+}
+
+.page-patcher #rom-patcher-container button {
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  border-radius: 10px;
+  background: #238454;
+  color: #fff;
+  font-weight: 750;
+}
+
+.page-patcher #rom-patcher-container button:not(:disabled):hover {
+  background: #2a9a63;
+}
+
+.page-patcher #rom-patcher-container button:disabled {
+  background: #34485a;
+}
+
+.patcher-technical {
+  margin-top: 16px;
+  border-top: 1px solid rgba(159, 179, 200, 0.1);
+  padding-top: 13px;
+}
+
+.patcher-technical summary {
+  width: fit-content;
+  color: #8199af;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.patcher-technical #rom-patcher-rom-info {
+  margin-top: 11px;
+  padding: 11px 13px;
+  border-radius: 8px;
+  background: rgba(5, 14, 23, 0.52);
+  font-size: 0.75rem;
+}
+
+.patcher-technical .rom-patcher-row {
+  gap: 12px;
+}
+
+.patcher-technical .rom-patcher-row > div:first-child {
+  width: 64px;
+  color: #6f879d;
+}
+
+.patcher-technical .rom-patcher-row > div:last-child {
+  width: calc(100% - 76px);
+  color: #b8c8d6;
+}
+
+.patcher-help {
+  display: grid;
+  gap: 14px;
+}
+
+.help-card {
+  padding: 21px;
+  box-shadow: none;
+}
+
+.patcher-steps {
+  display: grid;
+  gap: 16px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.patcher-steps li {
+  display: flex;
+  gap: 11px;
+}
+
+.patcher-steps li > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(97, 211, 145, 0.26);
+  border-radius: 50%;
+  color: #61d391;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.patcher-steps strong,
+.patcher-steps small {
+  display: block;
+}
+
+.patcher-steps strong {
+  color: #dce7f0;
+  font-size: 0.85rem;
+}
+
+.patcher-steps small {
+  margin-top: 3px;
+  color: #7890a7;
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.help-card-quiet {
+  background: rgba(13, 27, 40, 0.78);
+}
+
+.base-details {
+  margin: 16px 0 0;
+}
+
+.base-details > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 0;
+  border-top: 1px solid rgba(159, 179, 200, 0.09);
+  font-size: 0.78rem;
+}
+
+.base-details dt {
+  color: #6f879d;
+}
+
+.base-details dd {
+  margin: 0;
+  color: #b8c8d6;
+  text-align: right;
+}
+
+.patcher-notes {
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  margin-top: 22px;
+  padding: 0 4px;
+}
+
+.patcher-notes p {
+  max-width: 540px;
+  margin: 0;
+  color: #71899f;
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.patcher-notes strong {
+  color: #91a8bd;
+}
+
+.patcher-notes a {
+  color: #75d69c;
+}
+
+.patcher-noscript {
+  position: fixed;
+  inset: 60px 12px auto;
+  z-index: 3000;
+  padding: 14px;
+  border-radius: 8px;
+  background: #702d34;
+  color: white;
+  text-align: center;
+}
+
+@keyframes patcher-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .patcher-status.is-loading .patcher-status-icon,
+  .patcher-status.is-checking .patcher-status-icon,
+  .patcher-status.is-working .patcher-status-icon {
+    animation-duration: 1.8s;
+  }
+}
+
+@media (max-width: 780px) {
+  .patcher-shell {
+    width: min(100% - 28px, 620px);
+    padding-top: 30px;
+  }
+
+  .patcher-header {
+    display: block;
+  }
+
+  .release-chip {
+    margin-top: 16px;
+  }
+
+  .patcher-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .patcher-notes {
+    display: grid;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .patcher-shell {
+    width: calc(100% - 20px);
+    padding-top: 24px;
+  }
+
+  .patcher-card-heading,
+  .page-patcher #rom-patcher-container {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .rom-file-label {
+    display: block;
+  }
+
+  .rom-file-label span {
+    display: block;
+    margin-top: 3px;
+  }
+}

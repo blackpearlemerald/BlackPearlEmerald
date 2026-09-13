@@ -114,58 +114,7 @@
 
 <div class="wrapper" style="margin-top: 20px;">
 
-    <div aria-label="Settings" role="region" class="header-settings">
-        
-        <img src="./img/menu.svg" id="open-menu">
-
-        <div id="settings-menu">
-            <div id="sprite-toggle" class="menu-item">
-              <div class="menu-label">
-                Showdown Sprites
-              </div> 
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div id="toggle-boxroll" class="menu-item">
-              <div class="menu-label">
-                Box Filters
-              </div> 
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-              </label>
-            </div>
-             <div id="toggle-battle-notes" class="menu-item">
-              <div class="menu-label">
-                Battle Notes
-              </div> 
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div id="show-mid" class="menu-item">
-              <div class="menu-label">
-                Field/Import
-              </div> 
-              <label class="switch">
-                <input type="checkbox" checked="true">
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div id="theme-toggle" class="menu-item">
-              <div class="menu-label">
-                Use New Layout
-              </div> 
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-              </label>
-            </div>
-            <div id="ms-btn" class="menu-item">Go to Mastersheet</div>
-        </div>
+    <div aria-label="Calculator controls" role="region" class="header-settings">
 
         <span class="title-text">
         <input id="lvl-cap" placeholder="Lvl Cap">
@@ -183,63 +132,6 @@
             <input class="gen visually-hidden" type="radio" name="gen" value="7" id="gen7" /><label class="btn btn-small btn-mid" for="gen7">S/M</label>
             <input class="gen visually-hidden" type="radio" name="gen" value="8" id="gen8" checked="checked" /><label class="btn btn-small btn-right" for="gen8">S/S</label>
         </span>
-        <select class="calc-select">
-            
-            <optgroup label="Romhacks">
-                <option selected="selected" >Other Romhacks</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=7a1ed35468b22ea01103&dmgGen=6&gen=6">Ancestral X</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=9aa37533b7c000992d92&gen=5&types=5">Blaze Black</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=04770c9a89687b02a9f5&gen=8&types=5">Blaze Black 2 Original</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=11c4eeca5a94f8edf413&gen=8&challengeMode=true&types=6">Blaze Black 2 Redux Challenge Mode</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=945a33720dbd6bc04488&gen=8&types=6">Blaze Black 2 Redux 1.4</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=945a33720dbd6bc04488&gen=8&challengeMode=true&types=6">Blaze Black 2 Redux Challenge Mode 1.4</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=imp13&dmgGen=8&gen=8&types=6&evs=0">Emerald Imperium 1.3 No EVs</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=imp13&dmgGen=8&gen=8&types=6&evs=1">Emerald Imperium 1.3 w/ EVs</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=ek">Emerald Kaizo</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=8d1ab90a3b3c494d8485&dmgGen=6&gen=6">Eternal X/Wilting Y Insanity Rebalanced</option>  
-                 <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=fro">Fire Red Omega</option>  
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=68bfb2ccba14b7f6b1f0&gen=8&types=6&dmgGen=8&noSwitch=1">Inclement Emerald</option>   
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=6875151cfa5eea00eafa&gen=8&types=6&dmgGen=8&noSwitch=1">Inclement Emerald No EVs</option>  
-
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=e9030beba9c1ba8804e8&dmgGen=3&gen=8&noSwitch=1&misc=Orre&types=5">Kaizo Colloseum</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=006ac04e900ccb3110df&dmgGen=8&gen=8&switchIn=6&types=6">Luminescent Platinum</option>  
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=9fd7b1ba4583a9ba7166&dmgGen=8&gen=8&noSwitch=1&types=6&customPoks=1">Mariomon</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=de22f896c09fceb0b273&gen=8&switchIn=4&types=5&dmgGen=4">Maximum Platinum</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=b60bd402cbb993ed3b77&gen=8&types=6&dmgGen=8&noSwitch=1&type_mod=par_em">Parallel Emerald ATO</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=17af2cc6ec56f8f293bd&gen=8&types=6&dmgGen=8&noSwitch=1&type_mod=par_em">Parallel Emerald Hard</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=a0e5b4fa06d9e7762210&gen=8&types=6&dmgGen=8&noSwitch=1&type_mod=par_em">Parallel Emerald Normal</option>   
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/index.html?data=ee9b421600cd6487e4e3&dmgGen=7&gen=7">Photonic Sun/Prismatic Moon</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=eae4ac1396d4b82d8b87&gen=8&dmgGen=5&types=5">Pitch Black 2 Normal Mode</option>
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=5b789b0056c18c5c668b&gen=8&switchIn=4&types=6&dmgGen=4&type_mod=plat_redux">Platinum Redux 2.6</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=e91164d90d06a009e6cc&dmgGen=8&gen=8&types=6&noSwitch=1">Radical Red 4.1 Hardcore</option>  
-                 <option data-source="https://hzla.github.io/Dynamic-Calc-Decomps/?data=ced457ba9aa55731616c&dmgGen=8&gen=8&types=6&noSwitch=1 ">Radical Red 4.1 Normal</option>  
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=26138cc1d500b0cf7334&gen=7&switchIn=4&types=6&dmgGen=4">Renegade Platinum</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=4d69b577b07a86fe790c&dmgGen=1&gen=7&noSwitch=1&types=6">Righteous Red</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=f109940e5639c3702e6d&dmgGen=6&gen=6&types=6">Rising Ruby/Sinking Saphire</option> 
-                 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=03e577af7cc9856a1f42&gen=7&switchIn=4&types=4&dmgGen=4">Sacred Gold/Storm Silver No Fairy</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/?data=03e577af7cc9856a1f42&gen=7&switchIn=4&types=6&dmgGen=4&fairy=1">Sacred Gold/Storm Silver Fairy Patch</option> 
-                 <option data-source="https://hzla.github.io/Dynamic-Calc/index.html?customPoks=1&data=ster117&dmgGen=4&gen=7&switchIn=4&types=5">Sterling Silver 1.17</option>  
-                 <option data-source="https://hzla.github.io/Dynamic-Calc-Unbound/?data=68bfb2ccba14b7f6b1f0&gen=8&types=6&dmgGen=8&switchIn=11&m=insane">Unbound 2.1.1</option> 
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=da1eedc0e39ea07b75bf&gen=5&types=5">Vintage White</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=vwplus&gen=5&types=5">Vintage White Plus</option>
-                
-            </optgroup>
-            
-
-            <optgroup label="Vanilla Games">
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=aeb373b7631d4afd7a53&dmgGen=3&gen=3&noSwitch=1&types=3">Emerald</option>  
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=12f82557ed0e08145660&dmgGen=3&gen=3&noSwitch=1&types=3">Fire Red</option>  
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=13fc25a3b19071978dd6&gen=7&switchIn=4&types=5&dmgGen=4">Platinum</option> 
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=be0a4fedbe0ff31e47b0&gen=7&switchIn=4&types=5&dmgGen=4">Heart Gold/Soul Silver</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=78381c312866ee2e6ff9&gen=5&types=5">Black/White</option>
-                <option data-source="https://hzla.github.io/Dynamic-Calc/?data=83c196dce6759252b3f4&gen=5&types=5">Black 2/White 2</option> 
-            </optgroup>
-            
-
-
-               
-        </select>
     </div>
     <hr />
 
@@ -1949,50 +1841,7 @@
 
 
 
-<div id="footer">
-    <div class="credits">
-        <br><br>
-        <a href="https://github.com/hzla/Dynamic-Calc/wiki/Save-Reading-and-Editing-(Gen-4-5)" class="pokeweb-link save-editor-guide" target="_blank">How to use save editor for in party statusing, pre-damaging, edging and more</a>
-
-
-
-        
-        <br><br>
-            <a href="https://discord.gg/HCXJFBANV2" class="pokeweb-link" target="_blank">Click here to join the discord for announcements, feature/game requests, and bug reports</a>
-        <br><br>
-        Created by Honko, maintained by Austin and Kris, modified for Pokeweb by Hzla.
-        <br><br>
-        <script type='text/javascript' src='https://storage.ko-fi.com/cdn/widget/Widget_2.js'></script><script type='text/javascript'>kofiwidget2.init('Support Me on Ko-fi', '#29abe0', 'P5P4H04EL');kofiwidget2.draw();</script> <br>
-
-
-    </div>
-
-    <div class="shortcut-info">
-        <h3 class="footer-title">Shortcuts/ Info</h3>
-        alt + b: "B"edtime presleep full party if gen 4 save is uploaded
-        <br><br>
-        alt + c: "C"ritical hits
-        <br><br>
-        alt + p: Set current trainer as an opposing doubles "P"artner (for multibattles)
-        <br><br><br>
-        Right click box icon to add to party view.
-        <br><br>
-        Right click trainer pok party icon to mark as fainted.
-        <br><br>
-        Lead Pokemon has purple border.
-        <br><br>
-        For generation 4-8 games, trainer preview is shown in switchin in order
-        <br><br>
-    </div>
-
-</div>
-
-
-
-
-
 </body>
 
 
 </html>
-

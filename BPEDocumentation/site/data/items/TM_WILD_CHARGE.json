@@ -1,1 +1,1 @@
-{"id":"TM_WILD_CHARGE","name":"TM147","price":0,"description":"Wild Charge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_wild_charge.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_WILD_CHARGE","name":"TM147","price":0,"description":"Wild Charge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_wild_charge.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_LAVARIDGE_TOWN_GYM_1F","mapName":"Lavaridge Town Gym 1F","qty":1,"carePackage":true}]}}

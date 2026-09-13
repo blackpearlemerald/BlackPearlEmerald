@@ -26,7 +26,21 @@ BPEDocumentation/            (lives inside the pokeemerald-expansion repo)
     js/data/world.json  generated: map positions, trainers, items, warp links
     img/maps/*.png      generated map images (one per layout)
     lib/                vendored Leaflet 1.9.4 (offline-capable)
+    patcher.html        self-hosted BPE v1.0.1 browser patcher
+    rom-patcher-js/     vendored RomPatcher.js browser runtime + MIT license
+    patches/            self-hosted BPE release patch archive
 ```
+
+## Browser patcher
+
+`site/patcher.html` contains a BPE-specific, self-hosted RomPatcher.js setup.
+The official v1.0.1 UPS patch is preloaded from `site/patches/`; visitors only
+provide their own clean US Pokémon Emerald ROM. The ROM is validated against
+CRC32 `1F1C08FB`, patched locally in the browser, and never uploaded.
+
+RomPatcher.js is pinned to the upstream revision recorded in
+`site/rom-patcher-js/NOTICE.md`. Keep the vendored `LICENSE` file and visible
+creator credit when updating or restyling the patcher.
 
 ## Regenerate
 
@@ -86,6 +100,9 @@ py -m http.server -d site 8000
 ## Publish to GitHub Pages
 
 The `site/` folder is fully static and committed (including the generated
-images + JSON), so no build step runs on GitHub. To host it, enable GitHub
-Pages on this repo and point it at the `BPEDocumentation/site` directory on the
-branch you publish.
+images, JSON, patcher runtime, and release patch), so no site build runs on
+GitHub. The repository's `.github/workflows/docs.yml` workflow uploads only
+`BPEDocumentation/site` and deploys it to GitHub Pages whenever that directory
+changes on `main`. In the repository's Pages settings, select **GitHub
+Actions** as the source once; no separate documentation repository or branch
+is needed.

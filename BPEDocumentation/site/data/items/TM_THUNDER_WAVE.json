@@ -1,1 +1,1 @@
-{"id":"TM_THUNDER_WAVE","name":"TM82","price":0,"description":"Thunder Wave","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_thunder_wave.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_THUNDER_WAVE","name":"TM82","price":0,"description":"Thunder Wave","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_thunder_wave.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_MAUVILLE_CITY_GYM","mapName":"Mauville City Gym","qty":2,"carePackage":true}]}}

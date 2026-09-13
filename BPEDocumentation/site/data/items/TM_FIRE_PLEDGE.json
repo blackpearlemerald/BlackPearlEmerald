@@ -1,1 +1,1 @@
-{"id":"TM_FIRE_PLEDGE","name":"TM144","price":0,"description":"Fire Pledge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_fire_pledge.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FIRE_PLEDGE","name":"TM144","price":0,"description":"Fire Pledge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_fire_pledge.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

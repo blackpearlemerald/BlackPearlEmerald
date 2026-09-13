@@ -1,1 +1,1 @@
-{"id":"TM_TAILWIND","name":"TM113","price":0,"description":"Tailwind","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_tailwind.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_TAILWIND","name":"TM113","price":0,"description":"Tailwind","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_tailwind.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_LAVARIDGE_TOWN_GYM_1F","mapName":"Lavaridge Town Gym 1F","qty":1,"carePackage":true}]}}

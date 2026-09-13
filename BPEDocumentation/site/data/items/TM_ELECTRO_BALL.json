@@ -1,1 +1,1 @@
-{"id":"TM_ELECTRO_BALL","name":"TM72","price":0,"description":"Electro Ball","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_electro_ball.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_ELECTRO_BALL","name":"TM72","price":0,"description":"Electro Ball","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_electro_ball.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_MAUVILLE_CITY_GYM","mapName":"Mauville City Gym","qty":1,"carePackage":true}]}}

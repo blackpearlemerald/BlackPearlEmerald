@@ -1,1 +1,1 @@
-{"id":"TM_GIGA_IMPACT","name":"TM152","price":0,"description":"Giga Impact","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_giga_impact.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_GIGA_IMPACT","name":"TM152","price":0,"description":"Giga Impact","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_giga_impact.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

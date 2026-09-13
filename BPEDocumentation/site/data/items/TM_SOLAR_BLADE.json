@@ -1,1 +1,1 @@
-{"id":"TM_SOLAR_BLADE","name":"TM190","price":0,"description":"Solar Blade","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_solar_blade.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SOLAR_BLADE","name":"TM190","price":0,"description":"Solar Blade","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_solar_blade.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

@@ -1,1 +1,1 @@
-{"id":"TM_FUTURE_SIGHT","name":"TM217","price":0,"description":"Future Sight","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_future_sight.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FUTURE_SIGHT","name":"TM217","price":0,"description":"Future Sight","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_future_sight.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

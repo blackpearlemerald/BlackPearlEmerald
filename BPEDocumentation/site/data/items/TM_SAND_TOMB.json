@@ -1,1 +1,1 @@
-{"id":"TM_SAND_TOMB","name":"TM176","price":0,"description":"Sand Tomb","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_sand_tomb.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SAND_TOMB","name":"TM176","price":0,"description":"Sand Tomb","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_sand_tomb.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

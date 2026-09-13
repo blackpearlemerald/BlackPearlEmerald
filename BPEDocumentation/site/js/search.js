@@ -32,6 +32,22 @@
   }
   function pad4(n) { return '#' + String(n || 0).padStart(4, '0'); }
 
+  function itemDisplayName(item, moves) {
+    var name = item.name || item.id;
+    if (item.pocket !== 'POCKET_TM_HM' || !/^(?:TM|HM)\d+$/i.test(name) || !/^(?:TM|HM)_/.test(item.id || '')) {
+      return name;
+    }
+
+    var moveId = item.id.slice(3);
+    var move = moves && moves[moveId];
+    var moveName = move && move.name;
+    if (!moveName) {
+      moveName = moveId.replace(/_/g, ' ').toLowerCase()
+        .replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+    }
+    return name + ' - ' + moveName;
+  }
+
   // Highlight the matched run of the query within a display name.
   function highlight(name, q) {
     var safe = esc(name);
@@ -84,19 +100,20 @@
     totals.pokemon = Object.keys(dex).length;
   }
 
-  function buildItems(items) {
+  function buildItems(items, moves) {
     Object.keys(items).forEach(function (k) {
       var it = items[k];
+      var displayName = itemDisplayName(it, moves);
       records.push({
         cat: 'item',
-        name: it.name || it.id,
+        name: displayName,
         id: it.id,
         sub: it.pocketLabel || '',
         icon: it.icon || '',
         iconKind: 'item',
         badges: '',
         href: 'item.html?id=' + encodeURIComponent(it.id),
-        hay: ((it.id || '') + ' ' + (it.description || '')).toLowerCase(),
+        hay: (displayName + ' ' + (it.id || '') + ' ' + (it.description || '')).toLowerCase(),
       });
     });
     totals.item = Object.keys(items).length;
@@ -375,9 +392,10 @@
       fetch('data/items_index.json').then(function (r) { return r.json(); }),
       fetch('js/data/trainers.json').then(function (r) { return r.json(); }),
       fetch('js/data/world.json').then(function (r) { return r.json(); }),
+      fetch('data/moves.json').then(function (r) { return r.json(); }).catch(function () { return {}; }),
     ]).then(function (res) {
       buildPokemon(res[0]);
-      buildItems(res[1]);
+      buildItems(res[1], res[4]);
       buildTrainers(res[2], res[3]);
       buildLocations(res[3]);
       if (qp) { state.q = qp.trim().toLowerCase(); }

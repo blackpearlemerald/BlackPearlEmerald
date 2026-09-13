@@ -1,1 +1,1 @@
-{"id":"TM_POLTERGEIST","name":"TM198","price":0,"description":"Poltergeist","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_poltergeist.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_POLTERGEIST","name":"TM198","price":0,"description":"Poltergeist","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_poltergeist.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

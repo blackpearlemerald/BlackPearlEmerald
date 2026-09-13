@@ -1,1 +1,1 @@
-{"id":"TM_MAGICAL_LEAF","name":"TM33","price":0,"description":"Magical Leaf","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_magical_leaf.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_MAGICAL_LEAF","name":"TM33","price":0,"description":"Magical Leaf","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_magical_leaf.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_RUSTBORO_CITY_GYM","mapName":"Rustboro City Gym","qty":1,"carePackage":true}]}}

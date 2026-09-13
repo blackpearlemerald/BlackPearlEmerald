@@ -1,1 +1,1 @@
-{"id":"TM_LIQUIDATION","name":"TM110","price":0,"description":"Liquidation","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_liquidation.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_LIQUIDATION","name":"TM110","price":0,"description":"Liquidation","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_liquidation.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

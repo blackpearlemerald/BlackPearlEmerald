@@ -1,1 +1,1 @@
-{"id":"TM_PSYCHIC_FANGS","name":"TM63","price":0,"description":"Psychic Fangs","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_psychic_fangs.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_PSYCHIC_FANGS","name":"TM63","price":0,"description":"Psychic Fangs","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_psychic_fangs.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_DEWFORD_TOWN_GYM","mapName":"Dewford Town Gym","qty":1,"carePackage":true}]}}

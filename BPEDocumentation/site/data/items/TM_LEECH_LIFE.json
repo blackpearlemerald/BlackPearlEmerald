@@ -1,1 +1,1 @@
-{"id":"TM_LEECH_LIFE","name":"TM95","price":0,"description":"Leech Life","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_leech_life.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_LEECH_LIFE","name":"TM95","price":0,"description":"Leech Life","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_leech_life.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_LAVARIDGE_TOWN_GYM_1F","mapName":"Lavaridge Town Gym 1F","qty":1,"carePackage":true}]}}

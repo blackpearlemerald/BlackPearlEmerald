@@ -133,6 +133,39 @@ def parse_scripts_inc(path):
                 buf.append(line)
     if cur:
         out[cur] = "".join(buf)
+
+    # Most executable scripts use global ``::`` labels. A few map files also
+    # expose callable script labels with a single ``:`` (while text and
+    # movement labels use that form routinely). Index those labels in a
+    # second pass without changing the global-script bodies above; this keeps
+    # the normal fall-through behavior while allowing goto/call targets such
+    # as Dewford's retry reward script to resolve.
+    cur = None
+    buf = []
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        for line in f:
+            m = re.match(r"^(\w+)::?", line)
+            if m:
+                if cur:
+                    out.setdefault(cur, "".join(buf))
+                cur = m.group(1) if line.startswith(m.group(1) + ":") \
+                    and not line.startswith(m.group(1) + "::") else None
+                buf = []
+            elif cur:
+                buf.append(line)
+    if cur:
+        out.setdefault(cur, "".join(buf))
+    return out
+
+
+def load_shared_scripts():
+    """Load globally included script labels used by multiple maps."""
+    out = {}
+    root = C.src("data", "scripts")
+    for dirpath, _, filenames in os.walk(root):
+        for filename in sorted(filenames):
+            if filename.endswith(".inc"):
+                out.update(parse_scripts_inc(os.path.join(dirpath, filename)))
     return out
 
 
@@ -580,35 +613,70 @@ def parse_marts(trainer_names=None):
 # --------------------------------------------------------------------------- #
 # NPC care-package (gift) detection
 # --------------------------------------------------------------------------- #
-def collect_gifts(script_label, scripts, _seen=None):
-    """Recursively follow calls/gotos; return list of (ITEM_*, qty) tuples."""
+def script_refs(body, scripts):
+    """Yield local/global script labels referenced by executable commands."""
+    for line in body.splitlines():
+        if not re.match(
+                r"\s*(?:(?:goto|call|case)\w*|map_script(?:_2)?)\b", line):
+            continue
+        toks = re.findall(r"[A-Za-z_]\w*", line)
+        if toks and toks[-1] in scripts:
+            yield toks[-1]
+
+
+def collect_gift_packages(script_label, scripts, _seen=None, _depth=0):
+    """Return multi-item reward groups reachable from an object's script.
+
+    A script that can award several mutually exclusive items (bike/fossil
+    choices, prize counters, etc.) is not a care package. Only a single script
+    block that actually grants at least two distinct items qualifies; callers
+    are followed so story-event and Gym reward helper scripts are still found.
+    """
     if not script_label:
         return []
     if _seen is None:
         _seen = set()
-    if script_label in _seen or len(_seen) > 24:
+    if script_label in _seen or _depth > 24:
         return []
     _seen.add(script_label)
     body = scripts.get(script_label)
     if body is None:
         return []
-    gifts = []
+    direct = []
     for m in GIVEITEM_RE.finditer(body):
-        gifts.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
+        direct.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
     for m in ADDITEM_RE.finditer(body):
-        gifts.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
-    for line in body.splitlines():
-        if not re.match(r"\s*(?:goto|call|case)\w*\b", line):
-            continue
-        toks = re.findall(r"[A-Za-z_]\w*", line)
-        if toks and toks[-1] in scripts:
-            gifts.extend(collect_gifts(toks[-1], scripts, _seen))
-    return gifts
+        direct.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
+    packages = ([(script_label, direct)]
+                if len({item for item, _ in direct}) >= 2 else [])
+    for target in script_refs(body, scripts):
+        packages.extend(collect_gift_packages(
+            target, scripts, _seen, _depth + 1))
+    return packages
+
+
+def find_script_path(start, target, scripts, _seen=None, _depth=0):
+    """Return one call/goto/map-script path from start to target."""
+    if not start or _depth > 24:
+        return None
+    if start == target:
+        return [start]
+    if _seen is None:
+        _seen = set()
+    if start in _seen:
+        return None
+    seen = _seen | {start}
+    for child in script_refs(scripts.get(start, ""), scripts):
+        path = find_script_path(child, target, scripts, seen, _depth + 1)
+        if path:
+            return [start] + path
+    return None
 
 
 def load_maps(dims):
     """Return dict name -> map record with objects/items resolved."""
     maps = {}
+    shared_scripts = load_shared_scripts()
     for dirname, mj in C.iter_map_jsons():
         layout_id = mj.get("layout")
         if layout_id not in dims:
@@ -617,10 +685,42 @@ def load_maps(dims):
         img = layout_name + ".png"
         if not os.path.isfile(os.path.join(C.SITE_MAPS_IMG, img)):
             continue
-        scripts = parse_scripts_inc(
+        local_scripts = parse_scripts_inc(
             C.src("data", "maps", dirname, "scripts.inc"))
+        scripts = local_scripts
+        gift_scripts = dict(shared_scripts)
+        gift_scripts.update(local_scripts)
 
         trainers, items, gifts = [], [], []
+        claimed_package_scripts = set()
+        objects_by_local_id = {
+            ev.get("local_id"): ev for ev in mj.get("object_events", [])
+            if ev.get("local_id")
+        }
+
+        def add_care_package(script, x, y, gfx=None, direction="down"):
+            packages = collect_gift_packages(script, gift_scripts)
+            packages = [(source, items) for source, items in packages
+                        if source not in claimed_package_scripts]
+            if not packages:
+                return
+            merged = {}
+            for source, package in packages:
+                claimed_package_scripts.add(source)
+                group = {}
+                for item_id, qty in package:
+                    group[item_id] = group.get(item_id, 0) + qty
+                for item_id, qty in group.items():
+                    # Retry/alternate paths can reach the same package; do not
+                    # count those as extra physical copies.
+                    merged[item_id] = max(merged.get(item_id, 0), qty)
+            if len(merged) >= 2:
+                gifts.append({"x": x, "y": y, "gfx": gfx,
+                              "dir": direction, "script": script,
+                              "carePackage": True,
+                              "items": [{"item": it, "qty": qty}
+                                        for it, qty in merged.items()]})
+
         for ev in mj.get("object_events", []):
             x, y = int(ev.get("x", 0)), int(ev.get("y", 0))
             # resolve any object whose script starts a battle (covers gym
@@ -631,16 +731,13 @@ def load_maps(dims):
                     trainers.append({"x": x, "y": y, "trainerId": tid,
                                      "gfx": ev.get("graphics_id"),
                                      "dir": facing_dir(ev.get("movement_type"))})
-                # Gift NPC: script that recursively gives 2+ items
-                elif ev.get("graphics_id") != "OBJ_EVENT_GFX_ITEM_BALL":
-                    gift_items = collect_gifts(ev.get("script"), scripts)
-                    if len(gift_items) >= 2:
-                        gifts.append({"x": x, "y": y,
-                                      "gfx": ev.get("graphics_id"),
-                                      "dir": facing_dir(ev.get("movement_type")),
-                                      "script": ev.get("script"),
-                                      "items": [{"item": it, "qty": qty}
-                                                 for it, qty in gift_items]})
+                # Care package: an NPC/event script that recursively gives 2+
+                # items. Trainer objects can also award packages (notably Gym
+                # Leaders), so this must be independent of trainer detection.
+                if ev.get("graphics_id") != "OBJ_EVENT_GFX_ITEM_BALL":
+                    add_care_package(
+                        ev.get("script"), x, y, ev.get("graphics_id"),
+                        facing_dir(ev.get("movement_type")))
             if ev.get("graphics_id") == "OBJ_EVENT_GFX_ITEM_BALL":
                 items.append({"x": x, "y": y,
                               "item": ev.get("trainer_sight_or_berry_tree_id"),
@@ -655,6 +752,46 @@ def load_maps(dims):
                 items.append({"x": int(ev.get("x", 0)),
                               "y": int(ev.get("y", 0)),
                               "item": ev.get("item"), "hidden": True})
+            elif ev.get("script"):
+                add_care_package(ev.get("script"), int(ev.get("x", 0)),
+                                 int(ev.get("y", 0)))
+
+        # Triggered events can be the actual handoff point for a package.
+        for ev in mj.get("coord_events", []):
+            if ev.get("script"):
+                add_care_package(ev.get("script"), int(ev.get("x", 0)),
+                                 int(ev.get("y", 0)))
+
+        # Finally include packages awarded by map-script cutscenes. Prefer a
+        # referenced character's exact tile; otherwise use the map center.
+        for root in (label for label in local_scripts
+                     if label.endswith("_MapScripts")):
+            packages = collect_gift_packages(root, gift_scripts)
+            unseen_sources = [source for source, _ in packages
+                              if source not in claimed_package_scripts]
+            if not unseen_sources:
+                continue
+            anchor = None
+            for source in unseen_sources:
+                path = find_script_path(root, source, gift_scripts) or []
+                for label in reversed(path):
+                    local_ids = re.findall(
+                        r"\bLOCALID_[A-Z0-9_]+\b",
+                        gift_scripts.get(label, ""))
+                    for local_id in reversed(local_ids):
+                        if local_id in objects_by_local_id:
+                            anchor = objects_by_local_id[local_id]
+                            break
+                    if anchor:
+                        break
+                if anchor:
+                    break
+            add_care_package(
+                root,
+                int(anchor.get("x")) if anchor else max(0, int(w) // 2),
+                int(anchor.get("y")) if anchor else max(0, int(h) // 2),
+                anchor.get("graphics_id") if anchor else None,
+                facing_dir(anchor.get("movement_type")) if anchor else "down")
 
         warps = [{"x": int(w0.get("x", 0)), "y": int(w0.get("y", 0)),
                   "dest": w0.get("dest_map")}
@@ -937,6 +1074,7 @@ GUIDE_NOTES = [
     {
         "id": "mtpyre-steven",
         "mapId": "MAP_MT_PYRE_SUMMIT", "x": 23, "y": 11,
+        "gfx": "OBJ_EVENT_GFX_STEVEN", "dir": "down",
         "title": "Steven — Devon Scope",
         "body": "Steven stands here at the summit. Talk to him to receive the "
                 "Devon Scope, which reveals the invisible Kecleon blocking the "
@@ -970,6 +1108,9 @@ def build_guides(placed):
                  "gx": ox + note["x"] * TILE + TILE // 2,
                  "gy": oy + note["y"] * TILE + TILE // 2,
                  "title": note["title"], "body": note["body"]}
+        if note.get("gfx"):
+            entry["gfx"] = note["gfx"]
+            entry["dir"] = note.get("dir", "down")
         if dest:
             entry["goto"] = dest
         out.append(entry)
@@ -1016,6 +1157,7 @@ def build():
                               "gfx": g.get("gfx"),
                               "dir": g.get("dir", "down"),
                               "script": g.get("script", ""),
+                              "carePackage": g.get("carePackage", False),
                               "items": g["items"]})
 
     # only ship trainer data actually referenced on the map
@@ -1041,15 +1183,17 @@ def build():
     # annotate each wild-encounter mon with its menu-icon filename
     enc_new, enc_missing = pokemon_sprites.annotate_encounters(out_maps)
 
-    # render overworld sprites for trainers + gift NPCs + item ball
+    guides = build_guides(placed)
+
+    # render overworld sprites for trainers + gift NPCs + guides + item ball
     gfx_ids = {t["gfx"] for t in out_trainers if t.get("gfx")}
     gfx_ids |= {g["gfx"] for g in out_gifts if g.get("gfx")}
+    gfx_ids |= {g["gfx"] for g in guides if g.get("gfx")}
     gfx_ids.add("OBJ_EVENT_GFX_ITEM_BALL")  # for item pickups
     sprite_map = sprites.extract_sprites(
         gfx_ids, os.path.join(C.SITE, "img", "sprites"))
 
     marts = parse_marts(trainers_db)
-    guides = build_guides(placed)
 
     world = {
         "tile": TILE,
@@ -1070,7 +1214,7 @@ def build():
           f"({len(trainers_ship)} unique teams, {unresolved} unresolved)")
     print(f"Items shown:    {len(out_items)} "
           f"({sum(1 for i in out_items if i['hidden'])} hidden)")
-    print(f"Gift NPCs:      {len(out_gifts)}")
+    print(f"Care packages:  {len(out_gifts)}")
     print(f"Marts parsed:   {len(marts)}")
     print(f"Guide notes:    {len(guides)}")
     print(f"Warp links:     {len(warp_links)}")

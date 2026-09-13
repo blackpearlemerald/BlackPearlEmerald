@@ -1,1 +1,1 @@
-{"id":"TM_UPPER_HAND","name":"TM229","price":0,"description":"Upper Hand","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_upper_hand.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_UPPER_HAND","name":"TM229","price":0,"description":"Upper Hand","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_upper_hand.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_MAUVILLE_CITY_GYM","mapName":"Mauville City Gym","qty":1,"carePackage":true}]}}

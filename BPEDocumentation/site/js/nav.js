@@ -12,6 +12,8 @@
     { href: prefix + 'trainers.html', label: 'Trainers',        key: 'trainers' },
     { href: prefix + 'items.html',    label: 'Items',           key: 'items'    },
     { href: calcHref,                 label: 'Damage Calculator', key: 'calc'   },
+    { href: prefix + 'patcher.html',  label: 'The Patcher',     key: 'patcher'  },
+    { href: prefix + 'socials.html',  label: 'Socials',         key: 'socials'  },
   ];
 
   // Resolve which nav item is active.

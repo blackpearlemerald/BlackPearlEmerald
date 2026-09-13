@@ -1,1 +1,1 @@
-{"id":"TM_SCORCHING_SANDS","name":"TM215","price":0,"description":"Scorching Sands","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_scorching_sands.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SCORCHING_SANDS","name":"TM215","price":0,"description":"Scorching Sands","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_scorching_sands.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_MAUVILLE_CITY_GYM","mapName":"Mauville City Gym","qty":1,"carePackage":true}]}}

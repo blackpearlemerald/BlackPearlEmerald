@@ -1,1 +1,1 @@
-{"id":"TM_DUAL_WINGBEAT","name":"TM197","price":0,"description":"Dual Wingbeat","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_dual_wingbeat.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_DUAL_WINGBEAT","name":"TM197","price":0,"description":"Dual Wingbeat","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_dual_wingbeat.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

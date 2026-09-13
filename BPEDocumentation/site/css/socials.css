@@ -1,0 +1,216 @@
+body.page-socials {
+  min-height: 100vh;
+  height: auto;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding-top: 48px;
+  color: #e8eef5;
+  background:
+    radial-gradient(circle at 12% 14%, rgba(77, 184, 122, 0.12), transparent 32rem),
+    radial-gradient(circle at 88% 90%, rgba(88, 101, 242, 0.12), transparent 30rem),
+    #0d1b2a;
+}
+
+.socials-page {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 52px 0 72px;
+}
+
+.socials-hero {
+  max-width: 700px;
+  margin-bottom: 30px;
+}
+
+.socials-kicker,
+.social-platform-name {
+  margin: 0;
+  color: #63d393;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.socials-hero h1 {
+  margin: 8px 0 10px;
+  color: #f3f7fb;
+  font-size: clamp(32px, 5vw, 50px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.socials-hero > p:last-child {
+  margin: 0;
+  color: #9fb3c8;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.socials-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.85fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+.social-card {
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 18px;
+  background: linear-gradient(150deg, rgba(28, 42, 57, 0.98), rgba(17, 28, 42, 0.98));
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24);
+}
+
+.social-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+}
+
+.youtube-card::before { background: linear-gradient(90deg, #ff0033, #ff5d76); }
+.discord-card::before { background: linear-gradient(90deg, #5865f2, #8c96ff); }
+
+.social-card-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.social-card-heading h2 {
+  margin: 4px 0 0;
+  color: #f3f7fb;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.social-platform-icon {
+  display: grid;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 13px;
+}
+
+.social-platform-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: currentColor;
+}
+
+.youtube-icon {
+  color: #fff;
+  background: rgba(255, 0, 51, 0.9);
+}
+
+.discord-icon {
+  color: #fff;
+  background: rgba(88, 101, 242, 0.9);
+}
+
+.trailer-frame {
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: #080d13;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+.trailer-frame iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}
+
+.discord-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.discord-card::after {
+  content: "";
+  position: absolute;
+  right: -85px;
+  bottom: -90px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  background: rgba(88, 101, 242, 0.12);
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+.discord-copy {
+  position: relative;
+  z-index: 1;
+  margin: 8px 0 28px;
+  color: #aebdd0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.social-button {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: fit-content;
+  min-height: 44px;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: auto;
+  padding: 11px 16px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-decoration: none;
+  transition: transform 0.14s ease, filter 0.14s ease, box-shadow 0.14s ease;
+}
+
+.youtube-button { background: #d9002b; }
+.discord-button { background: #5865f2; }
+
+.social-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.09);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24);
+}
+
+.social-button:focus-visible {
+  outline: 3px solid rgba(99, 211, 147, 0.75);
+  outline-offset: 3px;
+}
+
+@media (max-width: 820px) {
+  .socials-page { padding-top: 36px; }
+  .socials-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 520px) {
+  .socials-page {
+    width: min(100% - 24px, 1120px);
+    padding: 30px 0 52px;
+  }
+
+  .socials-hero { margin-bottom: 24px; }
+  .socials-hero h1 { font-size: 32px; }
+  .socials-hero > p:last-child { font-size: 16px; }
+  .social-card { padding: 18px; border-radius: 15px; }
+  .social-card-heading h2 { font-size: 20px; }
+  .social-button { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .social-button { transition: none; }
+}

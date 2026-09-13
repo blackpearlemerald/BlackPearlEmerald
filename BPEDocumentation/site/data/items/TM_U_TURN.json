@@ -1,1 +1,1 @@
-{"id":"TM_U_TURN","name":"TM60","price":0,"description":"U-turn","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_u_turn.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_U_TURN","name":"TM60","price":0,"description":"U-turn","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_u_turn.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_DEWFORD_TOWN_GYM","mapName":"Dewford Town Gym","qty":1,"carePackage":true}]}}

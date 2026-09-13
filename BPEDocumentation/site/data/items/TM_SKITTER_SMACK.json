@@ -1,1 +1,1 @@
-{"id":"TM_SKITTER_SMACK","name":"TM219","price":0,"description":"Skitter Smack","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_skitter_smack.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SKITTER_SMACK","name":"TM219","price":0,"description":"Skitter Smack","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_skitter_smack.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

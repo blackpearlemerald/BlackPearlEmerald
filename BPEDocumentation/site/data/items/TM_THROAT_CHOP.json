@@ -1,1 +1,1 @@
-{"id":"TM_THROAT_CHOP","name":"TM221","price":0,"description":"Throat Chop","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_throat_chop.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_THROAT_CHOP","name":"TM221","price":0,"description":"Throat Chop","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_throat_chop.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

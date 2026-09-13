@@ -1,1 +1,1 @@
-{"id":"TM_FRENZY_PLANT","name":"TM155","price":0,"description":"Frenzy Plant","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_frenzy_plant.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FRENZY_PLANT","name":"TM155","price":0,"description":"Frenzy Plant","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_frenzy_plant.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

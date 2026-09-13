@@ -1,1 +1,1 @@
-{"id":"TM_FAKE_TEARS","name":"TM03","price":0,"description":"Fake Tears","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_fake_tears.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FAKE_TEARS","name":"TM03","price":0,"description":"Fake Tears","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_fake_tears.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

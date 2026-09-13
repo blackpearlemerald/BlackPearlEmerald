@@ -389,7 +389,8 @@ def build_locations(items_dict):
             if key in locs:
                 qty = gi.get("qty", 1)
                 entry = {"mapId": gift["mapId"], "mapName": map_name,
-                         "qty": qty}
+                         "qty": qty,
+                         "carePackage": gift.get("carePackage", False)}
                 locs[key]["gifts"].append(entry)
 
     return locs

@@ -1,1 +1,1 @@
-{"id":"TM_THIEF","name":"TM18","price":0,"description":"Thief","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_thief.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_THIEF","name":"TM18","price":0,"description":"Thief","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_thief.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_RUSTBORO_CITY_GYM","mapName":"Rustboro City Gym","qty":1,"carePackage":true}]}}

@@ -1,1 +1,1 @@
-{"id":"TM_FOUL_PLAY","name":"TM62","price":0,"description":"Foul Play","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_foul_play.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_FOUL_PLAY","name":"TM62","price":0,"description":"Foul Play","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_foul_play.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_MAUVILLE_CITY_GYM","mapName":"Mauville City Gym","qty":1,"carePackage":true}]}}

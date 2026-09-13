@@ -1,1 +1,1 @@
-{"id":"TM_SWORDS_DANCE","name":"TM88","price":0,"description":"Swords Dance","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_swords_dance.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_SWORDS_DANCE","name":"TM88","price":0,"description":"Swords Dance","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_swords_dance.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_LAVARIDGE_TOWN_GYM_1F","mapName":"Lavaridge Town Gym 1F","qty":1,"carePackage":true}]}}

@@ -444,6 +444,7 @@ body.page-search {
   inset: 0;
   background: #0d1b2a;            /* dark void around the world */
 }
+#map.sprite-hover { cursor: pointer; }
 
 /* ----- control panel ----- */
 #panel {
@@ -530,7 +531,6 @@ body.page-search {
 .sprite {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.5));
 }
 .marker-trainer { background: #e23b3b; }
 .marker-item    { background: #f4c542; }
@@ -695,7 +695,6 @@ body.page-search {
 .item-ball-sprite {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));
 }
 
 /* ----- mart popup ----- */

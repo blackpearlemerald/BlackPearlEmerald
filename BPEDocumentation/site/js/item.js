@@ -65,7 +65,7 @@
     }
 
     if (gifts.length) {
-      html += '<div class="where-section"><div class="where-section-label">🎁 Gift NPC</div>';
+      html += '<div class="where-section"><div class="where-section-label">🎁 Care Package</div>';
       gifts.forEach(function(g) {
         var qtyLabel = g.qty > 1 ? ' <span class="where-qty">×' + g.qty + '</span>' : '';
         html += link(g.mapId, '&gift=' + encodeURIComponent(itemId), g.mapName, qtyLabel);

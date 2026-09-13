@@ -1,1 +1,1 @@
-{"id":"TM_WATER_PLEDGE","name":"TM145","price":0,"description":"Water Pledge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_water_pledge.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_WATER_PLEDGE","name":"TM145","price":0,"description":"Water Pledge","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_water_pledge.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_PETALBURG_CITY_GYM","mapName":"Petalburg City Gym","qty":1,"carePackage":true}]}}

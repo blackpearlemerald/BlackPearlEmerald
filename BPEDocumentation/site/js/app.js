@@ -148,8 +148,7 @@ function guidePopup(g) {
 }
 
 function giftPopup(gift) {
-  const src = prettify(gift.script || gift.mapId);
-  let html = `<div class="gift-head">🎁 ${prettify(gift.mapId)} Gift</div>`;
+  let html = `<div class="gift-head">🎁 ${prettify(gift.mapId)} Care Package</div>`;
   html += `<div class="gift-items">`;
   for (const gi of gift.items) {
     html += itemRow(gi.item, gi.qty);
@@ -260,6 +259,9 @@ async function main() {
     zoomSnap: 0.25,
     wheelPxPerZoomLevel: 80,
     preferCanvas: true,
+    zoomAnimation: false,
+    fadeAnimation: false,
+    markerZoomAnimation: false,
     attributionControl: false,
     maxBoundsViscosity: 0.6,
   });
@@ -288,7 +290,30 @@ async function main() {
   const detailKind = document.getElementById("detail-kind");
   let detailHideTimer = null;
   let openStack = null;
+  let selectionOutline = null;
   const isPhone = () => window.matchMedia("(max-width: 640px)").matches;
+
+  function spriteBoundsAt(gx, gy, sp) {
+    const sw = sp ? sp.w : TILE, sh = sp ? sp.h : TILE;
+    const yBot = gy + TILE / 2;
+    return [W2LL(gx - sw / 2, yBot), W2LL(gx + sw / 2, yBot - sh)];
+  }
+
+  function selectBounds(bounds) {
+    if (selectionOutline) {
+      map.removeLayer(selectionOutline);
+      selectionOutline = null;
+    }
+    if (!bounds) return;
+    selectionOutline = L.rectangle(L.latLngBounds(bounds).pad(0.1), {
+      color: "#a855f7",
+      weight: 3,
+      opacity: 1,
+      fillColor: "#c084fc",
+      fillOpacity: 0.12,
+      interactive: false,
+    }).addTo(map).bringToFront();
+  }
 
   // Pan a point target into the open area beside the desktop card so it isn't
   // hidden behind it. No-op on phones (the sheet covers the map anyway).
@@ -311,14 +336,15 @@ async function main() {
     detailBody.scrollTop = 0;
   }
 
-  // Open (or re-target) the panel. Pass a latlng to pulse + reveal the spot.
-  function openDetail(kind, html, ll) {
+  // Open (or re-target) the panel and outline the selected map object.
+  function openDetail(kind, html, ll, selectionBounds) {
     if (detailHideTimer) { clearTimeout(detailHideTimer); detailHideTimer = null; }
     updateDetail(kind, html);
     detailRoot.hidden = false;
     detailRoot.setAttribute("aria-hidden", "false");
     requestAnimationFrame(() => detailRoot.classList.add("open"));
-    if (ll) { revealAt(ll); pulseAt(ll); }
+    selectBounds(selectionBounds);
+    if (ll) revealAt(ll);
     return detailBody;
   }
 
@@ -326,6 +352,7 @@ async function main() {
     detailRoot.classList.remove("open");
     detailRoot.setAttribute("aria-hidden", "true");
     openStack = null;
+    selectBounds(null);
     detailHideTimer = setTimeout(() => { detailRoot.hidden = true; }, 220);
   }
 
@@ -350,6 +377,19 @@ async function main() {
   // clicks bubble to the map, so all object clicks go through one handler.
   const trainerHits = [];  // {x0,x1,yTop,yBot, gxTop, trainerId}
   const itemHits = [];     // {ll, it}
+  const spriteHoverHits = [];
+
+  function addSpriteHover(layer, hitBounds, displayBounds, stack, priority) {
+    const b = L.latLngBounds(hitBounds);
+    spriteHoverHits.push({
+      layer,
+      x0: b.getWest(), x1: b.getEast(),
+      yTop: -b.getNorth(), yBot: -b.getSouth(),
+      bounds: displayBounds,
+      stack: stack || null,
+      priority,
+    });
+  }
 
   function trainerAt(x, y) {
     if (!map.hasLayer(trainerLayer)) return null;
@@ -400,8 +440,10 @@ async function main() {
   }
 
   // Open a guide note and wire its "take me there" button to focusMap.
-  function openGuide(g, ll) {
-    openDetail("Guide", guidePopup(g), ll);
+  function openGuide(g) {
+    const sp = g.gfx && world.sprites && world.sprites[g.gfx];
+    const bounds = spriteBoundsAt(g.gx, g.gy, sp);
+    openDetail("Guide", guidePopup(g), L.latLngBounds(bounds).getCenter(), bounds);
     const btn = detailBody.querySelector(".guide-goto");
     if (btn) btn.addEventListener("click", (ev) => {
       ev.preventDefault();
@@ -411,7 +453,7 @@ async function main() {
 
   // show a trainer stack's current member; cycle via the marker or the button.
   // firstOpen=true pans/pulses the location; cycling just swaps the content.
-  function showStack(st, firstOpen) {
+  function showStack(st, firstOpen, gift) {
     const t = st.trainers[st.idx];
     renderStack(st);                          // map sprite matches the panel
     const sp = spriteFor(t);
@@ -420,15 +462,22 @@ async function main() {
       ? `<div class="stack-nav">Trainer ${st.idx + 1} / ${n}` +
         `<button type="button" class="stack-cycle">Next ▸</button></div>`
       : "";
-    const html = nav + trainerPopup(world.trainerData[t.trainerId], sp.file);
-    if (firstOpen) openDetail("Trainer", html, W2LL(t.gx, sp.yTop));
-    else updateDetail("Trainer", html);
+    const html = nav + trainerPopup(world.trainerData[t.trainerId], sp.file)
+      + (gift ? giftPopup(gift) : "");
+    const title = gift ? "Trainer & Care Package" : "Trainer";
+    if (firstOpen) {
+      const bounds = sp.bounds;
+      openDetail(title, html, L.latLngBounds(bounds).getCenter(), bounds);
+    } else {
+      updateDetail(title, html);
+      selectBounds(sp.bounds);
+    }
     if (n > 1) {
       const btn = detailBody.querySelector(".stack-cycle");
       if (btn) btn.addEventListener("click", (ev) => {
         ev.preventDefault();
         st.idx = (st.idx + 1) % n;
-        showStack(st, false);
+        showStack(st, false, gift);
       });
     }
   }
@@ -438,29 +487,35 @@ async function main() {
     const target = warpEndAt(e.latlng);
     if (target) { flyTarget(target); return; }
     const x = e.latlng.lng, y = -e.latlng.lat;
+    const gf = giftAt(e.latlng);
     const hit = trainerAt(x, y);
     if (hit) {
       const st = hit.stack;
+      const coLocatedGift = gf
+        && Math.abs(gf.gx - st.gx) < 1
+        && Math.abs(gf.gy - st.gy) < 1 ? gf : null;
       if (st === openStack)                  // tapping the same marker cycles
         st.idx = (st.idx + 1) % st.trainers.length;
       openStack = st;
-      showStack(st, true);
+      showStack(st, true, coLocatedGift);
       return;
     }
     openStack = null;
     const gd = guideAt(e.latlng);
     if (gd) {
-      openGuide(gd, e.latlng);
+      openGuide(gd);
       return;
     }
     const it = itemAt(e.latlng);
     if (it) {
-      openDetail("Item", itemPopup(it), e.latlng);
+      const bounds = spriteBoundsAt(it.gx, it.gy, it.hidden ? null : ballSprite);
+      openDetail("Item", itemPopup(it), L.latLngBounds(bounds).getCenter(), bounds);
       return;
     }
-    const gf = giftAt(e.latlng);
     if (gf) {
-      openDetail("Gift", giftPopup(gf), e.latlng);
+      const sp = world.sprites && world.sprites[gf.gfx];
+      const bounds = spriteBoundsAt(gf.gx, gf.gy, sp);
+      openDetail("Care Package", giftPopup(gf), L.latLngBounds(bounds).getCenter(), bounds);
       return;
     }
     const m = mapAt(x, y);
@@ -591,6 +646,12 @@ async function main() {
     const yBot = st.gy + TILE / 2;
     trainerHits.push({ x0: st.gx - maxW / 2, x1: st.gx + maxW / 2,
                        yTop: yBot - maxH, yBot, stack: st });
+    if (st.overlay) {
+      addSpriteHover(trainerLayer,
+        [W2LL(st.gx - maxW / 2, yBot),
+         W2LL(st.gx + maxW / 2, yBot - maxH)],
+        sp.bounds, st, 0);
+    }
     if (st.trainers.length > 1) {
       L.marker(W2LL(st.gx + maxW / 2, yBot - maxH), {
         interactive: false,
@@ -618,6 +679,7 @@ async function main() {
       L.imageOverlay("img/sprites/" + file, bounds, {
         className: "sprite item-ball-sprite", interactive: false,
       }).addTo(itemLayer);
+      addSpriteHover(itemLayer, bounds, bounds, null, 2);
     } else {
       L.circleMarker(ll, {
         radius: hidden ? 4 : 5,
@@ -639,12 +701,11 @@ async function main() {
     const ll = W2LL(gift.gx, gift.gy);
     const sp = world.sprites && world.sprites[gift.gfx];
     if (sp) {
-      const sw = sp.w, sh = sp.h;
       const file = (sp.dirs && (sp.dirs[gift.dir] || sp.dirs.down)) || sp.file;
-      const yBot = gift.gy + TILE / 2;
-      L.imageOverlay("img/sprites/" + file,
-        [W2LL(gift.gx - sw / 2, yBot), W2LL(gift.gx + sw / 2, yBot - sh)],
+      const bounds = spriteBoundsAt(gift.gx, gift.gy, sp);
+      L.imageOverlay("img/sprites/" + file, bounds,
         { className: "sprite", interactive: false }).addTo(giftLayer);
+      addSpriteHover(giftLayer, bounds, bounds, null, 3);
     } else {
       L.circleMarker(ll, {
         radius: 5, color: "#004d33", weight: 1.5,
@@ -665,17 +726,26 @@ async function main() {
   const guideHits = [];  // {ll, guide}
   for (const g of (world.guides || [])) {
     const ll = W2LL(g.gx, g.gy);
-    // The glyph lives in an inner span: Leaflet drives the outer div's
-    // `transform` for positioning, so nothing may animate transform on it.
-    L.marker(ll, {
-      interactive: false,
-      icon: L.divIcon({
-        className: "guide-badge",
-        html: '<span class="guide-mark">?</span>',
-        iconSize: [36, 36],
-        iconAnchor: [18, 18],
-      }),
-    }).addTo(guideLayer);
+    const sp = g.gfx && world.sprites && world.sprites[g.gfx];
+    if (sp) {
+      const file = (sp.dirs && (sp.dirs[g.dir] || sp.dirs.down)) || sp.file;
+      const bounds = spriteBoundsAt(g.gx, g.gy, sp);
+      L.imageOverlay("img/sprites/" + file, bounds,
+        { className: "sprite guide-sprite", interactive: false }).addTo(guideLayer);
+      addSpriteHover(guideLayer, bounds, bounds, null, 1);
+    } else {
+      // The glyph lives in an inner span: Leaflet drives the outer div's
+      // `transform` for positioning, so nothing may animate transform on it.
+      L.marker(ll, {
+        interactive: false,
+        icon: L.divIcon({
+          className: "guide-badge",
+          html: '<span class="guide-mark">?</span>',
+          iconSize: [36, 36],
+          iconAnchor: [18, 18],
+        }),
+      }).addTo(guideLayer);
+    }
     guideHits.push({ ll, guide: g });
   }
 
@@ -697,12 +767,86 @@ async function main() {
   giftLayer.addTo(map);
   guideLayer.addTo(map);
 
+  // Hover feedback uses world-space sprite rectangles and is throttled to one
+  // update per animation frame, avoiding hundreds of DOM pointer listeners.
+  let hoveredSprite = null;
+  let hoverOutline = null;
+  let hoverFrame = null;
+  let hoverLatLng = null;
+  let hoverSuspended = false;
+
+  function spriteHoverAt(x, y) {
+    let best = null, bestD = Infinity;
+    for (const hit of spriteHoverHits) {
+      if (!map.hasLayer(hit.layer)) continue;
+      if (x < hit.x0 || x > hit.x1 || y < hit.yTop || y > hit.yBot) continue;
+      const dx = x - (hit.x0 + hit.x1) / 2;
+      const dy = y - (hit.yTop + hit.yBot) / 2;
+      const d = dx * dx + dy * dy;
+      if (d < bestD || (d === bestD && hit.priority < best.priority)) {
+        best = hit;
+        bestD = d;
+      }
+    }
+    return best;
+  }
+
+  function setHovered(hit) {
+    if (hit === hoveredSprite) return;
+    if (hoverOutline) {
+      map.removeLayer(hoverOutline);
+      hoverOutline = null;
+    }
+    hoveredSprite = hit;
+    map.getContainer().classList.toggle("sprite-hover", Boolean(hit));
+    if (!hit) return;
+    const bounds = hit.stack
+      ? spriteFor(hit.stack.trainers[hit.stack.idx]).bounds
+      : hit.bounds;
+    hoverOutline = L.rectangle(L.latLngBounds(bounds).pad(0.1), {
+      color: "#e9d5ff",
+      weight: 2,
+      opacity: 1,
+      fillColor: "#e9d5ff",
+      fillOpacity: 0.06,
+      interactive: false,
+    }).addTo(map).bringToFront();
+    if (selectionOutline) selectionOutline.bringToFront();
+  }
+
+  function clearHovered() {
+    hoverLatLng = null;
+    if (hoverFrame !== null) {
+      cancelAnimationFrame(hoverFrame);
+      hoverFrame = null;
+    }
+    setHovered(null);
+  }
+
+  map.on("mousemove", (e) => {
+    if (hoverSuspended) return;
+    hoverLatLng = e.latlng;
+    if (hoverFrame !== null) return;
+    hoverFrame = requestAnimationFrame(() => {
+      hoverFrame = null;
+      if (!hoverLatLng || hoverSuspended) return;
+      setHovered(spriteHoverAt(hoverLatLng.lng, -hoverLatLng.lat));
+    });
+  });
+  map.on("mouseout", clearHovered);
+  map.on("movestart", () => {
+    hoverSuspended = true;
+    clearHovered();
+  });
+  map.on("moveend", () => { hoverSuspended = false; });
+
   // ---- toggles ----
   const bind = (id, layer) => {
     const el = document.getElementById(id);
     if (!el) return;
     el.addEventListener("change", () => {
       if (el.checked) layer.addTo(map); else map.removeLayer(layer);
+      setHovered(null);
     });
   };
   bind("t-trainers", trainerLayer);
@@ -719,29 +863,13 @@ async function main() {
   document.getElementById("counts").innerHTML =
     `${world.maps.length} maps · ${world.trainers.length} trainers<br>` +
     `${world.items.length} items (${world.items.filter(i => i.hidden).length} hidden)<br>` +
-    `${martCount} shops · ${giftCount} gift NPCs · ${guideCount} guides`;
+    `${martCount} shops · ${giftCount} care packages · ${guideCount} guides`;
 
   document.getElementById("panel-toggle").addEventListener("click", () => {
     document.getElementById("panel").classList.toggle("open");
   });
 
   document.getElementById("loading").style.display = "none";
-
-  // Briefly pulse a ring at a location so a deep-linked target is easy to spot.
-  function pulseAt(ll) {
-    const pm = L.circleMarker(ll, {
-      radius: 7, color: "#ffd54a", weight: 3,
-      fillColor: "#ffd54a", fillOpacity: 0.35, interactive: false,
-    }).addTo(map);
-    let r = 7, grow = true, n = 0;
-    const iv = setInterval(() => {
-      r += grow ? 3 : -3;
-      if (r >= 22) grow = false;
-      else if (r <= 7) grow = true;
-      pm.setRadius(r);
-      if (++n > 26) { clearInterval(iv); map.removeLayer(pm); }
-    }, 80);
-  }
 
   // Make a layer visible and tick its toggle (deep-links may target a layer
   // the user has turned off — e.g. hidden items).
@@ -774,8 +902,7 @@ async function main() {
         // Hoenn, and Leaflet's pan animation stalls over offsets that large
         // under CRS.Simple (same reason flyTarget interpolates by hand).
         map.setView(ll, 2, { animate: false });
-        openGuide(hit, ll);
-        pulseAt(ll);
+        openGuide(hit);
         return true;
       }
     }
@@ -790,19 +917,26 @@ async function main() {
                     hit.hidden ? "t-hidden" : "t-items");
         const ll = W2LL(hit.gx, hit.gy);
         map.setView(ll, 2, { animate: true });
-        openDetail("Item", itemPopup(hit), ll);
+        const bounds = spriteBoundsAt(hit.gx, hit.gy,
+          hit.hidden ? null : ballSprite);
+        openDetail("Item", itemPopup(hit), L.latLngBounds(bounds).getCenter(), bounds);
         return true;
       }
     }
 
-    // Snap to a gift NPC on this map.
+    // Snap to the care package on this map that contains the requested item.
     if (opts.gift) {
-      const g = (world.gifts || []).find((gg) => gg.mapId === id);
+      const want = String(opts.gift).replace(/^ITEM_/, "");
+      const g = (world.gifts || []).find((gg) =>
+        gg.mapId === id && (gg.items || []).some((gi) =>
+          String(gi.item || "").replace(/^ITEM_/, "") === want));
       if (g) {
         ensureLayer(giftLayer, "t-gifts");
         const ll = W2LL(g.gx, g.gy);
         map.setView(ll, 2, { animate: true });
-        openDetail("Gift", giftPopup(g), ll);
+        const sp = world.sprites && world.sprites[g.gfx];
+        const bounds = spriteBoundsAt(g.gx, g.gy, sp);
+        openDetail("Care Package", giftPopup(g), L.latLngBounds(bounds).getCenter(), bounds);
         return true;
       }
     }

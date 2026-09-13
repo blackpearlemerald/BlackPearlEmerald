@@ -1,1 +1,1 @@
-{"id":"TM_X_SCISSOR","name":"TM105","price":0,"description":"X-Scissor","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_x_scissor.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_X_SCISSOR","name":"TM105","price":0,"description":"X-Scissor","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_x_scissor.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_LAVARIDGE_TOWN_GYM_1F","mapName":"Lavaridge Town Gym 1F","qty":1,"carePackage":true}]}}

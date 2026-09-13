@@ -1,1 +1,1 @@
-{"id":"TM_EARTHQUAKE","name":"TM149","price":0,"description":"Earthquake","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_earthquake.png","locations":{"marts":[],"overworld":[],"gifts":[]}}
+{"id":"TM_EARTHQUAKE","name":"TM149","price":0,"description":"Earthquake","pocket":"POCKET_TM_HM","pocketLabel":"TMs & HMs","sortType":"","icon":"sprites/items/tm_earthquake.png","locations":{"marts":[],"overworld":[],"gifts":[{"mapId":"MAP_LAVARIDGE_TOWN_GYM_1F","mapName":"Lavaridge Town Gym 1F","qty":1,"carePackage":true}]}}
