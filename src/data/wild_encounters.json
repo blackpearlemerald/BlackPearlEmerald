@@ -2784,7 +2784,7 @@
               {
                 "min_level": 29,
                 "max_level": 35,
-                "species": "SPECIES_NUMEL"
+                "species": "SPECIES_ACCELGOR"
               },
               {
                 "min_level": 29,
@@ -7137,7 +7137,7 @@
               {
                 "min_level": 40,
                 "max_level": 46,
-                "species": "SPECIES_SPINDA"
+                "species": "SPECIES_ESCAVALIER"
               },
               {
                 "min_level": 40,
@@ -7196,7 +7196,7 @@
               {
                 "min_level": 40,
                 "max_level": 46,
-                "species": "SPECIES_SENTRET"
+                "species": "SPECIES_SLURPUFF"
               },
               {
                 "min_level": 40,
