@@ -21,11 +21,11 @@ documentation export, version selector, patcher, or publication workflows.
 
 ## Implementation status and operating instructions
 
-- The local helper, title label, exporters, selector, patcher, archive builder and Actions workflows are implemented. End-to-end hosted publication is being verified as part of the initial rollout; do not confuse a local preview with a deployed release.
+- The release workflow is implemented and deployed. Initial hosted publication passed for `1.0.1` (documentation revision 2) and `2.0.0-beta` (revision 1). Beta is the newest published release. The maintainer verified its smaller bottom-left title label and normal game startup/loading in mGBA.
 - Read [RELEASING.md](BPEDocumentation/RELEASING.md) for the concrete commands, validation, retries and documentation corrections. Keep that operator guide current when changing the workflow.
 - `BPE_VERSION.json` is the shared version setting. Use `python BPETools/prepare_release.py set-version <version>`, commit the source, then `python BPETools/prepare_release.py build --base-rom "<local clean ROM>"`. The default package output is `.release-work/packages/`.
 - Publish only the generated package by adding it to `releases/packages/` on `main`. Never stage `.release-work/`, a `.gba` or `BPETools/release.local.json`. Verify the active GitHub account and local author before committing or pushing.
-- Before release tooling changes, run `python -m unittest discover -s BPETools/tests -v` and `python BPEDocumentation/scripts/releases.py --validate-only`, plus an actual export/browser check when the change affects publication or the site. Hosted success must be confirmed in the BPE Documentation workflow.
+- Before release tooling changes, run `python -m unittest discover -s BPETools/tests -v`, `node BPETools/tests/test_release_context.cjs` and `python BPEDocumentation/scripts/releases.py --validate-only`, plus an actual export/browser check when the change affects publication or the site. Hosted success must be confirmed in the BPE Documentation workflow.
 
 ## Release procedure
 

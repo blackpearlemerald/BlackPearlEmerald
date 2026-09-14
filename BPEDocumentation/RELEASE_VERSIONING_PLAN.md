@@ -1,9 +1,11 @@
 # BPE patch-package releases and versioned documentation
 
-Status: implemented; initial hosted rollout verification is in progress. The
-local build, patch verification, historical export and versioned preview have
-passed their initial checks. See [RELEASING.md](RELEASING.md) for the operating
-procedure. This document preserves the accepted design and acceptance criteria.
+Status: implemented and deployed. Version `1.0.1` (documentation revision 2)
+and `2.0.0-beta` (revision 1) are live, with Beta selected for new visitors.
+Local build/patch verification, maintainer mGBA testing, hosted publication,
+archive recovery and a documentation-only correction passed. See
+[RELEASING.md](RELEASING.md) for the operating procedure and rollout checks.
+This document preserves the accepted design and acceptance criteria.
 
 ## Outcome and maintainer workflow
 

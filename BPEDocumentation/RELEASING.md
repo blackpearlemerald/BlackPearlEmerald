@@ -95,6 +95,7 @@ Calculator teams and battle state are stored separately for each version.
 
 ```powershell
 python -m unittest discover -s BPETools/tests -v
+node BPETools/tests/test_release_context.cjs
 python BPEDocumentation/scripts/releases.py --validate-only
 python -m pip install -r BPEDocumentation/requirements.txt
 python BPEDocumentation/scripts/releases.py --output .release-work/preview --work-dir .release-work/preview-build
@@ -116,3 +117,28 @@ source archive. Applying the official patch to the verified base reproduced the
 archive's game byte for byte (output CRC32 `033F628D`). The archived ROM itself
 is never published. Older C data formats are handled by the exporters; newer
 handwritten guide notes are not applied to this historical release.
+
+## Initial rollout verification
+
+The [public website](https://blackpearlemerald.github.io/BlackPearlEmerald/)
+serves `1.0.1` at documentation revision 2 and `2.0.0-beta` at revision 1.
+Beta is the default for new visitors. The historical correction retains both
+archive revisions and its original game patch.
+
+- The local release helper rebuilt Beta from
+  `4f39a49bd4e8cb1adead8b8f2e7999d957c6bcb1` and verified the patch round trip.
+  The maintainer confirmed the smaller bottom-left title label and normal
+  startup/loading in mGBA. The public patch bytes and output metadata match
+  that tested ROM exactly.
+- All 17 Python integrity/export regression tests and the JavaScript version
+  routing/storage checks passed. Browser checks covered the prominent selector,
+  mobile layout, version-specific Pokémon data, missing-form fallback,
+  calculator loading and matching patcher selection.
+- The [historical documentation correction](https://github.com/blackpearlemerald/BlackPearlEmerald/actions/runs/34800612310)
+  and [Beta package publication](https://github.com/blackpearlemerald/BlackPearlEmerald/actions/runs/34800673413)
+  completed successfully. The first historical run also exercised recovery
+  from an interrupted publication through its verified draft release.
+
+For local access, the tested Beta ROM is copied to the ignored project-root
+file `BlackPearlEmerald_v2.0.0-beta.gba`. This local convenience copy must never
+be committed or uploaded.
