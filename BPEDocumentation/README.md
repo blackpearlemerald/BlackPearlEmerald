@@ -99,6 +99,12 @@ py -m http.server -d site 8000
 
 ## Publish to GitHub Pages
 
+The planned replacement for the current publication process is documented in
+[Release versioning plan](RELEASE_VERSIONING_PLAN.md): build and create a patch
+locally, then upload one patch package to publish the matching documentation
+and patch as a selectable release. That automation is not implemented yet;
+the description below documents the current behavior.
+
 The `site/` folder is fully static and committed (including the generated
 images, JSON, patcher runtime, and release patch), so no site build runs on
 GitHub. The repository's `.github/workflows/docs.yml` workflow uploads only
