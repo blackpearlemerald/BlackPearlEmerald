@@ -81,7 +81,7 @@ def copy_frontend(destination):
     shutil.copytree(SITE, destination, ignore=ignored)
 
 
-def validate_snapshot(path, shared=False):
+def validate_snapshot(path, shared=False, require_encounters=False):
     path = Path(path)
     required = ["index.html", "pokedex.html", "items.html", "trainers.html", "patcher.html", "search.html",
                 "calc/index.html", "js/nav.js", "js/release-context.js", "css/header.css",
@@ -95,11 +95,16 @@ def validate_snapshot(path, shared=False):
     world = read_json(path / "js/data/world.json")
     if len(pokedex) < 300 or len(items) < 100 or len(world.get("maps", [])) < 100:
         raise ValueError("Documentation export is unexpectedly incomplete.")
+    species_with_encounters = 0
     for species in pokedex:
         if not (path / "data/species" / (species + ".json")).is_file():
             raise ValueError(f"Missing species detail: {species}")
         if any(stat <= 0 for stat in pokedex[species]["baseStats"].values()):
             raise ValueError(f"Unresolved base stats: {species}")
+        if require_encounters and read_json(path / "data/species" / (species + ".json")).get("encounters"):
+            species_with_encounters += 1
+    if require_encounters and any(entry.get("enc") for entry in world["maps"]) and not species_with_encounters:
+        raise ValueError("Wild encounters exist on the map but are missing from the Pokedex export.")
     for item in items:
         if not (path / "data/items" / (item + ".json")).is_file():
             raise ValueError(f"Missing item detail: {item}")
@@ -165,7 +170,7 @@ def build_snapshot(metadata, patch, destination, work, revision, exporter):
     release["patch"].update(url=patch_url, archiveSha256=sha256((destination / patch_url).read_bytes()))
     write_json(destination / "release.json", release)
     write_json(destination / "package.json", metadata)
-    validate_snapshot(destination)
+    validate_snapshot(destination, require_encounters=True)
     return release
 
 

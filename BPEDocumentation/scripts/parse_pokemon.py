@@ -257,8 +257,8 @@ def parse_hoenn_map_ids():
 
     BPE removed the FRLG (Kanto / Sevii Islands) maps, but
     `wild_encounters.json` still carries stale encounter entries for them.
-    Those maps have no `map.json` (or a REGION_KANTO one), so we keep only maps
-    whose `map.json` declares `REGION_HOENN`."""
+    Those maps have no `map.json` (or a REGION_KANTO one). Historical Emerald
+    sources omit `region` entirely because every included map is in Hoenn."""
     hoenn = set()
     for mj in (REPO / "data" / "maps").glob("*/map.json"):
         try:
@@ -266,7 +266,7 @@ def parse_hoenn_map_ids():
                 d = json.load(f)
         except (OSError, ValueError):
             continue
-        if d.get("region") == "REGION_HOENN" and d.get("id"):
+        if d.get("region", "REGION_HOENN") == "REGION_HOENN" and d.get("id"):
             hoenn.add(d["id"])
     return hoenn
 

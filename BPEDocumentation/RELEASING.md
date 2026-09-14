@@ -71,6 +71,14 @@ Calculator teams and battle state are stored separately for each version.
   version for game changes.
 - A failed run leaves the existing Pages deployment in place. Rerun the failed
   Action after fixing the cause; the same package can resume publication.
+- GitHub's Actions token cannot create a release at a source commit whose
+  workflow files differ from current `main`. This affects the initial historical
+  import and can affect delayed uploads after workflow changes. Using the
+  approved `blackpearlemerald` account, create a **draft** GitHub Release named
+  `bpe/v<version>` targeting the package's exact `sourceCommit`, then rerun the
+  failed Action. It verifies that draft's source, adds the archive and publishes
+  it. Do not change the source mapping or upload a ROM to work around this.
+  See [GitHub's release API permission rules](https://docs.github.com/en/rest/releases/releases#create-a-release).
 - Existing snapshots are restored from `documentation-rN.zip` release assets,
   including on a frontend-only change. They are not silently regenerated from
   today's game source. Do not delete those assets or their `bpe/v...` tags.

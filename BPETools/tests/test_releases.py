@@ -169,6 +169,28 @@ class VersionTests(unittest.TestCase):
 
 
 class ArchiveTests(unittest.TestCase):
+    def test_encounters_support_historical_maps_without_region(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import parse_pokemon
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for name, region in (("Route101", None), ("Route102", "REGION_HOENN"), ("PalletTown", "REGION_KANTO")):
+                directory = root / "data/maps" / name
+                directory.mkdir(parents=True)
+                entry = {"id": "MAP_" + name.upper()}
+                if region:
+                    entry["region"] = region
+                (directory / "map.json").write_text(json.dumps(entry))
+            (root / "src/data").mkdir(parents=True)
+            (root / "src/field_specials.c").write_text("")
+            encounters = [{"map": "MAP_" + name, "land_mons": {"mons": [
+                {"species": "SPECIES_POOCHYENA", "min_level": 2, "max_level": 3}
+            ]}} for name in ("ROUTE101", "ROUTE102", "PALLETTOWN", "MISSING_MAP")]
+            (root / "src/data/wild_encounters.json").write_text(json.dumps({"wild_encounter_groups": [{"encounters": encounters}]}))
+            with mock_patch.object(parse_pokemon, "REPO", root):
+                result = parse_pokemon.parse_encounters()
+            self.assertEqual({entry["map"] for entry in result["POOCHYENA"]}, {"MAP_ROUTE101", "MAP_ROUTE102"})
+
     def test_conditional_stat_macros_match_release_configuration(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
         import parse_pokemon
