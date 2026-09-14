@@ -37,6 +37,7 @@ documentation export, version selector, patcher, or publication workflows.
 
 ## Invariants for future work
 
+- Ask the maintainer to perform mGBA testing. Do not control mGBA or automate its UI unless the maintainer explicitly changes this preference. Put requested test ROM copies in the project root with a clear versioned filename, keep them ignored by Git, and report the path.
 - Ordinary game commits do not create public releases, require a new public version per commit, or replace published documentation. A new patch package is the release trigger. Renaming an old patch does not change the version inside the game.
 - Never generate a release's documentation from whichever commit happens to be latest when its patch is uploaded. Use the package's recorded game source commit and record the exporter revision separately.
 - One prominent, persistent version selector controls the entire site, including maps, Pokemon, items, trainers, guides, search, calculator data/rules, and the patcher. Explicit versioned URLs take precedence over remembered preferences.

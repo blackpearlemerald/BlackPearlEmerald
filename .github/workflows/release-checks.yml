@@ -28,5 +28,7 @@ jobs:
           python-version: '3.12'
       - name: Test package integrity and version behavior
         run: python -m unittest discover -s BPETools/tests -v
+      - name: Test website version routing and calculator storage
+        run: node BPETools/tests/test_release_context.cjs
       - name: Validate committed release packages
         run: python BPEDocumentation/scripts/releases.py --validate-only

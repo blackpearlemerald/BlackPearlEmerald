@@ -169,6 +169,14 @@ class VersionTests(unittest.TestCase):
 
 
 class ArchiveTests(unittest.TestCase):
+    def test_conditional_stat_macros_match_release_configuration(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import parse_pokemon
+        source = "#if P_UPDATED_STATS >= GEN_6\n#define ALAKAZAM_SP_DEF 95\n#elif P_UPDATED_STATS >= GEN_2\n#define ALAKAZAM_SP_DEF 85\n#else\n#define ALAKAZAM_SP_DEF 135\n#endif\n"
+        for generation, expected in ((9, 95), (3, 85), (1, 135)):
+            with mock_patch.object(parse_pokemon, "gen_config", return_value={"P_UPDATED_STATS":generation,"GEN_6":6,"GEN_2":2}):
+                self.assertEqual(parse_pokemon._collect_stat_macros(source)["ALAKAZAM_SP_DEF"], expected)
+
     def test_archive_checksums_inventory_and_traversal(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
         import releases

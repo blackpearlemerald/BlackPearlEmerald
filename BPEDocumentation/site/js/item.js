@@ -142,7 +142,7 @@
       .catch(function () {
         document.getElementById('item-content').innerHTML =
           '<div class="dex-empty">Could not load data for <strong>' + esc(itemId) + '</strong>.<br>'
-          + 'Run the parser script first, or '
+          + 'This item may be unavailable in this release. Please reload, or '
           + '<a href="items.html" style="color:#4db87a">go back</a>.</div>';
       });
   }

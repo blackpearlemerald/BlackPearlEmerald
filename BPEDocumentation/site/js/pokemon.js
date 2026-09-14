@@ -462,7 +462,7 @@
     }).catch(function (e) {
       document.getElementById('pokemon-content').innerHTML =
         '<div class="dex-empty">Could not load data for <strong>' + esc(speciesId) + '</strong>.<br>'
-        + 'Run the parser script first, or <a href="pokedex.html" style="color:#4db87a">go back</a>.</div>';
+        + 'This Pokémon may be unavailable in this release. Please reload, or <a href="pokedex.html" style="color:#4db87a">go back</a>.</div>';
     });
   }
 

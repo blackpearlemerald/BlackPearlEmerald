@@ -98,6 +98,8 @@ def validate_snapshot(path, shared=False):
     for species in pokedex:
         if not (path / "data/species" / (species + ".json")).is_file():
             raise ValueError(f"Missing species detail: {species}")
+        if any(stat <= 0 for stat in pokedex[species]["baseStats"].values()):
+            raise ValueError(f"Unresolved base stats: {species}")
     for item in items:
         if not (path / "data/items" / (item + ".json")).is_file():
             raise ValueError(f"Missing item detail: {item}")
@@ -186,17 +188,24 @@ def download_archives(archive_dir):
 
 def upload_archive(release, archive, work):
     tag = "bpe/v" + release["version"]
-    found = subprocess.run(["gh", "release", "view", tag, "--repo", REPOSITORY, "--json", "tagName,assets"], capture_output=True)
+    found = subprocess.run(["gh", "release", "view", tag, "--repo", REPOSITORY, "--json", "tagName,assets,isDraft,targetCommitish"], capture_output=True)
     if found.returncode:
         notes = work / "release-notes.md"
         notes.write_text(f"BPE Emerald {release['label']}. Documentation and patch were built from source `{release['sourceCommit']}`. Supply your own clean US Emerald ROM to the website patcher.\n", encoding="utf-8")
         subprocess.run(["gh", "release", "create", tag, "--repo", REPOSITORY, "--target", release["sourceCommit"], "--draft", "--title", "BPE Emerald " + release["label"], "--notes-file", str(notes)], check=True)
     else:
-        ref = json.loads(gh("api", f"repos/{REPOSITORY}/git/ref/tags/{tag}"))["object"]
-        while ref["type"] == "tag":
-            ref = json.loads(gh("api", f"repos/{REPOSITORY}/git/tags/{ref['sha']}"))["object"]
-        if ref["sha"] != release["sourceCommit"]:
-            raise ValueError(f"Release tag {tag} points to a different source commit.")
+        record = json.loads(found.stdout)
+        lookup = subprocess.run(["gh", "api", f"repos/{REPOSITORY}/git/ref/tags/{tag}"], capture_output=True)
+        if lookup.returncode:
+            # GitHub does not create a new tag until its draft is published.
+            if b"404" not in lookup.stderr or not record["isDraft"] or record["targetCommitish"] != release["sourceCommit"]:
+                raise ValueError(f"Cannot verify source for release tag {tag}.")
+        else:
+            ref = json.loads(lookup.stdout)["object"]
+            while ref["type"] == "tag":
+                ref = json.loads(gh("api", f"repos/{REPOSITORY}/git/tags/{ref['sha']}"))["object"]
+            if ref["sha"] != release["sourceCommit"]:
+                raise ValueError(f"Release tag {tag} points to a different source commit.")
     assets = json.loads(found.stdout)["assets"] if found.returncode == 0 else []
     if not any(asset["name"] == archive.name for asset in assets):
         subprocess.run(["gh", "release", "upload", tag, str(archive), "--repo", REPOSITORY], check=True)
@@ -314,7 +323,7 @@ def main():
             previous = restore_snapshot(latest, args.work_dir / ("previous-" + release_id))
             if release_id in available:
                 metadata, _ = available[release_id]
-                if previous["sourceCommit"] != metadata["sourceCommit"] or previous["patch"]["sha256"] != metadata["patch"]["sha256"]:
+                if any(previous[field] != metadata[field] for field in ("sourceCommit", "baseRom", "outputRom")) or previous["patch"]["sha256"] != metadata["patch"]["sha256"]:
                     raise ValueError(f"Release {release_id} is immutable; choose a new version.")
         revision = args.docs_revision if args.correct_version == release_id else 1
         requested = directory / f"documentation-r{revision}.zip"

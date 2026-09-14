@@ -311,7 +311,7 @@ static const struct SpritePalette sSpritePalette_PressStart[] =
 
 // The label and this build identity are generated from the same BPE version.
 static const char sBpeReleaseIdentity[] = BPE_RELEASE_MARKER;
-static const u16 sBpeReleasePalette[16] = {RGB_BLACK, RGB_WHITE};
+static const u16 sBpeReleasePalette[16] = {RGB_BLACK, RGB_WHITE, RGB_BLACK};
 static const struct SpriteSheet sBpeReleaseSheet = {sBpeReleaseTiles, sizeof(sBpeReleaseTiles), TAG_BPE_RELEASE};
 static const struct SpritePalette sBpeReleaseSpritePalette = {sBpeReleasePalette, TAG_BPE_RELEASE};
 static const struct SpriteTemplate sBpeReleaseTemplate =
@@ -334,7 +334,8 @@ static void CreateBpeReleaseLabel(void)
     LoadSpritePalette(&sBpeReleaseSpritePalette);
     for (i = 0; i < 5; i++)
     {
-        u8 spriteId = CreateSprite(&sBpeReleaseTemplate, 56 + 32 * i, 130, 0);
+        // Native screen coordinates: 4px left margin, text at y=153..157.
+        u8 spriteId = CreateSprite(&sBpeReleaseTemplate, 20 + 32 * i, 156, 0);
         if (spriteId != MAX_SPRITES)
             gSprites[spriteId].oam.tileNum += i * 4;
     }

@@ -431,6 +431,17 @@ def _collect_stat_macros(content):
     # BPE uses P_UPDATED_STATS >= GEN_LATEST so always take the first (modern) branch
     for m in re.finditer(r"#define\s+(\w+)\s+\(.*?P_UPDATED_STATS.*?\?\s*(\d+)\s*:", content):
         macros[m.group(1)] = int(m.group(2))
+    # Newer source also places numeric stat macros in #if/#elif branches.
+    def select_branch(match):
+        branches = re.split(r"^\s*#(?:if|elif)\s+(P_UPDATED_STATS[^\n]+)\n|^\s*#(else)\s*\n", match[0], flags=re.M)
+        for i in range(1, len(branches), 3):
+            condition, otherwise, body = branches[i:i + 3]
+            if otherwise or read_num_field(".choice = " + condition + " ? 1 : 0,", "choice"):
+                return body
+        return ""
+    selected = re.sub(r"^\s*#if\s+P_UPDATED_STATS[^\n]+\n.*?^\s*#endif[^\n]*", select_branch, content, flags=re.M | re.S)
+    for m in re.finditer(r"^\s*#define\s+(\w+)\s+(\d+)\s*$", selected, re.M):
+        macros.setdefault(m[1], int(m[2]))
     return macros
 
 # ── Macro-defined species expansion ─────────────────────────────────────────────

@@ -59,7 +59,11 @@
     removeItem: function (key) { delete memory[key]; try { window.localStorage.removeItem(keyFor(key)); } catch (_) {} }
   };
   window.BPEStorage = new Proxy(storage, {
-    get: function (object, key) { return key in object ? object[key] : object.getItem(key); },
+    get: function (object, key) {
+      if (key in object) return object[key];
+      var value = object.getItem(key);
+      return value === null ? undefined : value;
+    },
     set: function (object, key, value) { object.setItem(key, value); return true; },
     deleteProperty: function (object, key) { object.removeItem(key); return true; }
   });
