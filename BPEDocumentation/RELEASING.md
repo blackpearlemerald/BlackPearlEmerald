@@ -96,6 +96,7 @@ Calculator teams and battle state are stored separately for each version.
 ```powershell
 python -m unittest discover -s BPETools/tests -v
 node BPETools/tests/test_release_context.cjs
+node BPETools/tests/test_world_images.cjs
 python BPEDocumentation/scripts/releases.py --validate-only
 python -m pip install -r BPEDocumentation/requirements.txt
 python BPEDocumentation/scripts/releases.py --output .release-work/preview --work-dir .release-work/preview-build
@@ -107,6 +108,16 @@ selects persistent local snapshots; omit `--github` for a local-only build.
 Guide notes live in `BPEDocumentation/content/guides.json` at each game's pinned
 source commit. Existing calculator mechanics remain those of the bundled engine;
 versioning preserves its code and inputs, not a promise of perfect game parity.
+
+For map rendering corrections, check pinch zoom on iPhone Safari as well as
+desktop navigation before announcing the improvement. Append `?map-perf=1`
+(or `&map-perf=1` when the URL already has a query) to show frame timing and
+mounted-image counts inside the map's toggle panel. Measurements appear after
+each pinch. Frame callbacks are a proxy for smoothness; confirm the visible
+motion, accurate taps, image coverage and final artwork on the phone too.
+The diagnostics are inactive on normal map URLs. Renderer changes use the same
+documentation correction procedure above; a frontend push alone does not update
+the archived map pages.
 
 ## Historical 1.0.1
 

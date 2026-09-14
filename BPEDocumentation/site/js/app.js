@@ -249,7 +249,8 @@ function encounterPopup(m) {
 }
 
 async function main() {
-  const world = await fetch("js/data/world.json").then(r => r.json());
+  // A documentation correction can update this release's renderer and assets.
+  const world = await fetch("js/data/world.json", { cache: "no-cache" }).then(r => r.json());
   const TILE = world.tile || 16;
 
   const map = L.map("map", {
@@ -257,21 +258,30 @@ async function main() {
     zoomControl: false,
     minZoom: -6,
     maxZoom: 4,
-    zoomSnap: 0.25,
+    zoomSnap: 0,
+    bounceAtZoomLimits: false,
     wheelPxPerZoomLevel: 80,
     preferCanvas: true,
-    zoomAnimation: false,
+    zoomAnimation: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     fadeAnimation: false,
-    markerZoomAnimation: false,
+    markerZoomAnimation: true,
     attributionControl: false,
     maxBoundsViscosity: 0.6,
   });
+
+  const overview = world.overview;
+  const terrainImages = BPEWorldImages.renderer(overview && {
+    url: overview.url,
+    bounds: L.latLngBounds(W2LL(overview.x, overview.y), W2LL(overview.x + overview.w, overview.y + overview.h)),
+    detailZoom: overview.detailZoom,
+  });
+  const spriteImages = BPEWorldImages.renderer();
 
   // ---- map images ----
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   for (const m of world.maps) {
     const bounds = [W2LL(m.x, m.y), W2LL(m.x + m.w, m.y + m.h)];
-    L.imageOverlay("img/maps/" + m.img, bounds, {
+    BPEWorldImages.image("img/maps/" + m.img, bounds, terrainImages, {
       className: "map-img", interactive: false,
     }).addTo(map);
     minX = Math.min(minX, m.x); minY = Math.min(minY, m.y);
@@ -537,8 +547,17 @@ async function main() {
   // offsets between distant map ends, so we interpolate the centre ourselves.
   // (CRS.Simple is linear, so a linear latlng lerp gives a constant-speed pan.)
   let flyToken = 0;
+  const cancelFlight = () => { ++flyToken; };
+  map.on("dragstart zoomstart", cancelFlight);
+  map.getContainer().addEventListener("touchstart", cancelFlight, { passive: true });
+  map.getContainer().addEventListener("pointerdown", cancelFlight, { passive: true });
   function flyTarget(ll) {
     const z = map.getZoom();          // keep the current zoom; pan only
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      cancelFlight();
+      map.setView(ll, z, { animate: false });
+      return;
+    }
     const start = map.getCenter();
     const dur = 650;
     const t0 = performance.now();
@@ -630,7 +649,7 @@ async function main() {
   for (const st of stackMap.values()) {
     const sp = spriteFor(st.trainers[0]);
     if (sp.file) {
-      st.overlay = L.imageOverlay("img/sprites/" + sp.file, sp.bounds,
+      st.overlay = BPEWorldImages.image("img/sprites/" + sp.file, sp.bounds, spriteImages,
         { className: "sprite", interactive: false }).addTo(trainerLayer);
     } else {
       L.circleMarker(W2LL(st.gx, st.gy), {
@@ -677,7 +696,7 @@ async function main() {
         W2LL(it.gx - sw / 2, it.gy + TILE / 2),
         W2LL(it.gx + sw / 2, it.gy + TILE / 2 - sh),
       ];
-      L.imageOverlay("img/sprites/" + file, bounds, {
+      BPEWorldImages.image("img/sprites/" + file, bounds, spriteImages, {
         className: "sprite item-ball-sprite", interactive: false,
       }).addTo(itemLayer);
       addSpriteHover(itemLayer, bounds, bounds, null, 2);
@@ -704,7 +723,7 @@ async function main() {
     if (sp) {
       const file = (sp.dirs && (sp.dirs[gift.dir] || sp.dirs.down)) || sp.file;
       const bounds = spriteBoundsAt(gift.gx, gift.gy, sp);
-      L.imageOverlay("img/sprites/" + file, bounds,
+      BPEWorldImages.image("img/sprites/" + file, bounds, spriteImages,
         { className: "sprite", interactive: false }).addTo(giftLayer);
       addSpriteHover(giftLayer, bounds, bounds, null, 3);
     } else {
@@ -731,7 +750,7 @@ async function main() {
     if (sp) {
       const file = (sp.dirs && (sp.dirs[g.dir] || sp.dirs.down)) || sp.file;
       const bounds = spriteBoundsAt(g.gx, g.gy, sp);
-      L.imageOverlay("img/sprites/" + file, bounds,
+      BPEWorldImages.image("img/sprites/" + file, bounds, spriteImages,
         { className: "sprite guide-sprite", interactive: false }).addTo(guideLayer);
       addSpriteHover(guideLayer, bounds, bounds, null, 1);
     } else {
@@ -837,9 +856,13 @@ async function main() {
   map.on("mouseout", clearHovered);
   map.on("movestart", () => {
     hoverSuspended = true;
+    map.getContainer().classList.add("map-moving");
     clearHovered();
   });
-  map.on("moveend", () => { hoverSuspended = false; });
+  map.on("moveend", () => {
+    hoverSuspended = false;
+    map.getContainer().classList.remove("map-moving");
+  });
 
   // ---- toggles ----
   const bind = (id, layer) => {
@@ -951,8 +974,15 @@ async function main() {
     return true;
   }
 
-  window.bpe = { map, world, W2LL, focusMap };
-  window.addEventListener('bpe:headerresize', function () { map.invalidateSize({ pan: false }); });
+  window.bpe = { map, world, W2LL, focusMap, terrainImages, spriteImages };
+  window.bpe.performance = BPEMapPerformance(map, [terrainImages, spriteImages]);
+  let mapWidth = map.getContainer().clientWidth, mapHeight = map.getContainer().clientHeight;
+  window.addEventListener('bpe:headerresize', function () {
+    const el = map.getContainer();
+    if (el.clientWidth === mapWidth && el.clientHeight === mapHeight) return;
+    mapWidth = el.clientWidth; mapHeight = el.clientHeight;
+    map.invalidateSize({ pan: false });
+  });
 
   // Honour ?map=MAP_ID (+ optional &item=/&gift=/&mart=) — clicking a location
   // in the Pokédex / item pages deep-links here.

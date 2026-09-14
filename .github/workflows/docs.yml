@@ -58,6 +58,8 @@ jobs:
         run: python -m unittest discover -s BPETools/tests -v
       - name: Test website version routing and calculator storage
         run: node BPETools/tests/test_release_context.cjs
+      - name: Test map image geometry and viewport rendering
+        run: node BPETools/tests/test_world_images.cjs
       - name: Assemble all published releases and new patch packages
         shell: bash
         run: |

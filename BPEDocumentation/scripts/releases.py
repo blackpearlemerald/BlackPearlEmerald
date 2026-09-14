@@ -4,11 +4,13 @@ import argparse
 import hashlib
 import html
 import json
+import math
 import os
 from pathlib import Path, PurePosixPath
 import re
 import shutil
 import subprocess
+import struct
 import sys
 import zipfile
 
@@ -81,6 +83,36 @@ def copy_frontend(destination):
     shutil.copytree(SITE, destination, ignore=ignored)
 
 
+def validate_map_overview(path, world, shared=False):
+    overview = world.get("overview")
+    if overview is None:  # Older immutable snapshots predate this optimization.
+        return
+    path = Path(path).resolve()
+    fields = ("x", "y", "w", "h", "width", "height", "detailZoom")
+    if any(not isinstance(overview.get(key), (int, float)) or not math.isfinite(overview[key]) for key in fields):
+        raise ValueError("Invalid map overview geometry.")
+    width, height, zoom = overview["width"], overview["height"], overview["detailZoom"]
+    if not (0 < width <= 2048 and 0 < height <= 2048 and -20 <= zoom <= 0):
+        raise ValueError("Map overview dimensions exceed the rendering budget.")
+    if overview["w"] != width * 2 ** -zoom or overview["h"] != height * 2 ** -zoom:
+        raise ValueError("Map overview scale disagrees with its geometry.")
+    for m in world["maps"]:
+        if (m["x"] < overview["x"] or m["y"] < overview["y"]
+                or m["x"] + m["w"] > overview["x"] + overview["w"]
+                or m["y"] + m["h"] > overview["y"] + overview["h"]):
+            raise ValueError("Map overview does not cover every map.")
+    url = overview.get("url")
+    if not isinstance(url, str) or "\\" in url or ":" in url:
+        raise ValueError("Invalid map overview URL.")
+    image = (path / url).resolve()
+    allowed = path.parents[1] / "assets" if shared else path / "img/maps"
+    if not image.is_relative_to(allowed) or not image.is_file():
+        raise ValueError("Missing or unsafe map overview image.")
+    header = image.read_bytes()[:24]
+    if len(header) != 24 or header[:8] != b"\x89PNG\r\n\x1a\n" or struct.unpack(">II", header[16:24]) != (width, height):
+        raise ValueError("Map overview image dimensions disagree with its metadata.")
+
+
 def validate_snapshot(path, shared=False, require_encounters=False):
     path = Path(path)
     required = ["index.html", "pokedex.html", "items.html", "trainers.html", "patcher.html", "search.html",
@@ -90,9 +122,14 @@ def validate_snapshot(path, shared=False, require_encounters=False):
     for name in required:
         if not (path / name).is_file():
             raise ValueError(f"Incomplete documentation: {name}")
+    map_page = (path / "index.html").read_text(encoding="utf-8")
+    for script in ("js/world-images.js", "js/map-performance.js"):
+        if script in map_page and not (path / script).is_file():
+            raise ValueError(f"Missing map renderer dependency: {script}")
     pokedex = read_json(path / "data/pokedex_index.json")
     items = read_json(path / "data/items_index.json")
     world = read_json(path / "js/data/world.json")
+    validate_map_overview(path, world, shared)
     if len(pokedex) < 300 or len(items) < 100 or len(world.get("maps", [])) < 100:
         raise ValueError("Documentation export is unexpectedly incomplete.")
     species_with_encounters = 0

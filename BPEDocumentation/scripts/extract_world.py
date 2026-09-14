@@ -1184,6 +1184,8 @@ def build():
         "trainerData": trainers_ship,
         "sprites": sprite_map,
     }
+    import map_overview
+    map_overview.build(world, C.SITE)
     C.write_json(os.path.join(C.SITE_DATA, "world.json"), world)
 
     print(f"Maps placed:    {len(out_maps)}")
