@@ -254,6 +254,7 @@ async function main() {
 
   const map = L.map("map", {
     crs: L.CRS.Simple,
+    zoomControl: false,
     minZoom: -6,
     maxZoom: 4,
     zoomSnap: 0.25,

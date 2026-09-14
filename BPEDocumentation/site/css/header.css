@@ -18,11 +18,14 @@
 .bpe-release-notice[hidden] { display: none; }
 body.page-calc { padding-top: var(--bpe-header-height); }
 @media (max-width: 640px) {
-  :root { --bpe-header-height: 170px; }
-  #site-header .bpe-version-bar { align-items: stretch; flex-direction: column; gap: 8px; padding: 10px 14px; }
-  .bpe-current-version { font-size: 22px; }
-  .bpe-version-control label { flex: 1; }
-  #bpe-version-select { min-width: 185px; flex: 1; }
+  :root { --bpe-header-height: 96px; }
+  #site-header .bpe-version-bar { gap: 8px; padding: 6px 10px; }
+  #site-header .bpe-version-bar > div:first-child { min-width: 0; }
+  .bpe-version-caption { display: none; }
+  .bpe-current-version { overflow: hidden; font-size: 17px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .bpe-version-control { flex: 1 1 160px; min-width: 0; }
+  .bpe-version-control label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  #bpe-version-select { min-width: 0; min-height: 38px; flex: 1; padding: 6px 30px 6px 10px; font-size: 14px; }
   #site-header #site-nav { padding: 0 8px; }
   #site-header .nav-brand { display: none; }
 }
