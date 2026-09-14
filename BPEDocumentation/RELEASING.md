@@ -18,9 +18,12 @@ itself requires Python 3.12 or newer. The hosted documentation build needs no RO
    python BPETools/prepare_release.py set-version 2.0.1-beta
    ```
 
-2. Commit the game changes and `BPE_VERSION.json`. This one setting generates
-   the title-screen label and the package version. Ordinary development commits
-   do not need public version bumps and do not change the published website.
+2. Add a matching entry to `releases/version-history.json` with only the main
+   player-facing changes, written as short one-line summaries. Commit the game
+   changes, `BPE_VERSION.json`, and the version-history entry together. The shared
+   version setting generates the title-screen label and package version. Ordinary
+   development commits do not need public version bumps and do not change the
+   published website.
 
 3. Build and verify from the clean committed source:
 
@@ -56,7 +59,9 @@ the package must already be part of `main` when publication runs.
 The **BPE Documentation** Action validates the filename, source version, patch
 and checksums; exports data from the package's recorded source; archives a
 complete snapshot under GitHub Release `bpe/v<version>`; and deploys all versions
-together. Check that Action's successful deployment before announcing the release.
+together. It also requires concise release notes for every published version so
+the Version History page can offer a manual patch download and changelog. Check
+that Action's successful deployment before announcing the release.
 The workflow's repository token performs automated publication; local GitHub
 operations must use `blackpearlemerald`.
 

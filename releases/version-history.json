@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "releases": {
+    "2.0.1": [
+      "Increased the base Shiny rate from 1 in 8,192 to 1 in 512."
+    ],
+    "2.0.0-beta": [
+      "Upgraded the game engine to pokeemerald-expansion 1.16.3 and enabled follower Pokémon and Terastallization.",
+      "Made every regular Pokémon and regional form obtainable, with remaining special cases added to the Bean Shop.",
+      "Added a postgame Legendary Lottery Island and dozens of Mega Stones to discover across Hoenn.",
+      "Reworked all eight Trick House puzzles with 32 region-themed Elite Four cameos, matching sprites, music, and dialogue.",
+      "Added new Ace Trainer boss battles and postgame challengers around Hoenn.",
+      "Fixed key progression issues involving starters, time-based evolutions, and Nuzlocke catches."
+    ],
+    "1.0.1": [
+      "Published the first official release of Pokémon Black Pearl Emerald.",
+      "Introduced a reworked Emerald adventure with custom trainer teams, sprites, dialogue, maps, and music.",
+      "Added expanded Pokémon content and modern battle mechanics through pokeemerald-expansion 1.8.6.",
+      "Added the Bean Shop, Lilycove event-ticket ferry, and expanded legendary encounters.",
+      "Improved egg and daycare behavior and polished graphics throughout the game."
+    ]
+  }
+}

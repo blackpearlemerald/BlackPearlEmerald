@@ -167,6 +167,14 @@ class VersionTests(unittest.TestCase):
             self.assertNotEqual(first, header.read_text())
             self.assertIn('BPE_RELEASE:2.0.1-beta', header.read_text())
 
+    def test_version_history_covers_published_releases_with_concise_notes(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import releases
+        history = releases.release_history()
+        self.assertTrue({"1.0.1", "2.0.0-beta", "2.0.1"}.issubset(history))
+        self.assertEqual(history["2.0.1"], ["Increased the base Shiny rate from 1 in 8,192 to 1 in 512."])
+        self.assertTrue(all("\n" not in note and len(note) <= 220 for notes in history.values() for note in notes))
+
 
 class ArchiveTests(unittest.TestCase):
     def test_encounters_support_historical_maps_without_region(self):

@@ -179,6 +179,12 @@ Use addresses such as `versions/2.0.0-beta/pokemon.html?id=SPECIES_PIKACHU` and
 `versions/1.0.1/patcher.html`, relative to the GitHub Pages repository base path.
 These are planned URL shapes; adapt query names to the actual existing routes.
 
+The main navigation includes a **Version History** page. It reads the validated
+global release catalog, lists every published game version newest-first, links
+directly to that version's hosted patch archive, and shows only curated,
+player-facing one-line changes. Publication requires a matching history entry so
+a release cannot appear without its download and changelog.
+
 - Explicit versioned URLs win over saved preferences and remain shareable.
 - Unversioned entry links preserve the page/query/hash and choose the remembered
   release; new visitors use the newest published release, including Beta.

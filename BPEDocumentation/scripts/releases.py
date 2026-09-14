@@ -20,6 +20,7 @@ from release_lib import VERSION_KEY, describe, git, inspect_ups, json_bytes, lab
 from prepare_release import export_source
 
 SITE = ROOT / "BPEDocumentation/site"
+VERSION_HISTORY = ROOT / "releases/version-history.json"
 REPOSITORY = "blackpearlemerald/BlackPearlEmerald"
 PAGES_LIMIT = 1_000_000_000
 
@@ -36,6 +37,22 @@ def write_json(path, value):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(json_bytes(value))
+
+
+def release_history():
+    data = read_json(VERSION_HISTORY)
+    if not isinstance(data, dict) or data.get("schemaVersion") != 1 or not isinstance(data.get("releases"), dict):
+        raise ValueError("Invalid version history format.")
+    result = {}
+    for release_id, changes in data["releases"].items():
+        release_id = version(release_id)
+        if release_id in result or not isinstance(changes, list) or not changes:
+            raise ValueError(f"Invalid version history entry: {release_id}")
+        if any(not isinstance(change, str) or not change.strip() or change != change.strip()
+               or "\n" in change or len(change) > 220 for change in changes):
+            raise ValueError(f"Version history notes must be concise one-line summaries: {release_id}")
+        result[release_id] = changes
+    return result
 
 
 def candidates():
@@ -113,12 +130,14 @@ def validate_map_overview(path, world, shared=False):
         raise ValueError("Map overview image dimensions disagree with its metadata.")
 
 
-def validate_snapshot(path, shared=False, require_encounters=False):
+def validate_snapshot(path, shared=False, require_encounters=False, require_history=False):
     path = Path(path)
     required = ["index.html", "pokedex.html", "items.html", "trainers.html", "patcher.html", "search.html",
                 "calc/index.html", "js/nav.js", "js/release-context.js", "css/header.css",
                 "data/pokedex_index.json", "data/items_index.json", "data/moves.json", "data/abilities.json",
                 "js/data/world.json", "js/data/trainers.json", "calc/data/bpe_calc_data.json"]
+    if require_history:
+        required += ["version-history.html", "js/version-history.js", "css/version-history.css"]
     for name in required:
         if not (path / name).is_file():
             raise ValueError(f"Incomplete documentation: {name}")
@@ -207,7 +226,7 @@ def build_snapshot(metadata, patch, destination, work, revision, exporter):
     release["patch"].update(url=patch_url, archiveSha256=sha256((destination / patch_url).read_bytes()))
     write_json(destination / "release.json", release)
     write_json(destination / "package.json", metadata)
-    validate_snapshot(destination, require_encounters=True)
+    validate_snapshot(destination, require_encounters=True, require_history=True)
     return release
 
 
@@ -331,6 +350,10 @@ def main():
     parser.add_argument("--docs-revision", type=int, default=1)
     args = parser.parse_args()
     available = candidates()
+    history = release_history()
+    missing_history = set(available) - set(history)
+    if missing_history:
+        raise ValueError("Missing version history for: " + ", ".join(sorted(missing_history, key=VERSION_KEY)))
     if args.validate_only:
         print(f"Validated {len(available)} release packages/imports.")
         return
@@ -351,6 +374,9 @@ def main():
     versions = set(available) | {p.name for p in args.archive_dir.iterdir() if p.is_dir()}
     if not versions:
         raise ValueError("No verified release packages are available. Existing site must remain deployed.")
+    missing_history = versions - set(history)
+    if missing_history:
+        raise ValueError("Missing version history for: " + ", ".join(sorted(missing_history, key=VERSION_KEY)))
     if args.correct_version and args.correct_version not in available:
         raise ValueError("The selected correction needs its original package/import record.")
     releases, uploads = [], []
@@ -384,7 +410,10 @@ def main():
             release = build_snapshot(metadata, patch, dest, args.work_dir, revision, exporter)
             freeze_snapshot(dest, requested)
         uploads.append((release, requested if correction or not previous else latest))
-        releases.append(dict(version=release_id, label=release["label"], path=f"versions/{release_id}/", documentationRevision=release["documentationRevision"]))
+        release_path = f"versions/{release_id}/"
+        releases.append(dict(version=release_id, label=release["label"], path=release_path,
+                             patchUrl=release_path + release["patch"]["url"], changes=history[release_id],
+                             documentationRevision=release["documentationRevision"]))
     catalog = {"schemaVersion": 1, "latest": releases[0]["version"], "releases": releases}
     share_assets(args.output)
     write_entry_pages(args.output, catalog)
