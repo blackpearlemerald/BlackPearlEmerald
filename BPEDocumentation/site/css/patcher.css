@@ -56,8 +56,24 @@ body.page-patcher {
   outline: 2px solid #61d391;
   outline-offset: 3px;
 }
-.page-patcher #rom-patcher-container input[type="file"].valid { border-color: #61d391; }
-.page-patcher #rom-patcher-container input[type="file"].invalid { border-color: #ff9393; }
+.page-patcher #rom-patcher-container input[type="file"]:hover:not(:disabled) {
+  border-color: #61d391;
+  background-color: #102538;
+}
+.page-patcher #rom-patcher-container input[type="file"].valid {
+  border-color: #61d391;
+  background-color: #102c21;
+}
+.page-patcher #rom-patcher-container input[type="file"].valid:hover:not(:disabled):not(.empty) {
+  background-color: #153828;
+}
+.page-patcher #rom-patcher-container input[type="file"].invalid {
+  border-color: #ff9393;
+  background-color: #31191f;
+}
+.page-patcher #rom-patcher-container input[type="file"].invalid:hover:not(:disabled):not(.empty) {
+  background-color: #411f27;
+}
 .page-patcher #rom-patcher-container input[type="file"]:disabled { opacity: .5; cursor: wait; }
 .patcher-symbol { color: #87a2b8; font-size: 1.7rem; }
 .page-patcher #rom-patcher-button-apply {
