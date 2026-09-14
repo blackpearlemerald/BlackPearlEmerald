@@ -52,8 +52,8 @@ def build(args):
     source = work / "source"
     export_source(commit, source)
     if os.name == "nt":
-        linux_path = subprocess.check_output(["wsl", "-d", args.distro, "--", "wslpath", "-a", str(source)]).decode().strip()
-        prefix = ["wsl", "-d", args.distro, "--cd", linux_path, "--"]
+        linux_path = subprocess.check_output(["wsl", "-d", args.distro, "--exec", "wslpath", "-a", source.as_posix()]).decode().strip()
+        prefix = ["wsl", "-d", args.distro, "--cd", linux_path, "--exec"]
     else:
         prefix = []
     compiler = subprocess.check_output(prefix + ["arm-none-eabi-gcc", "--version"], cwd=source).decode().splitlines()[0]
