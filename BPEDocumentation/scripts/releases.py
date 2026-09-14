@@ -41,18 +41,28 @@ def write_json(path, value):
 
 def release_history():
     data = read_json(VERSION_HISTORY)
-    if not isinstance(data, dict) or data.get("schemaVersion") != 1 or not isinstance(data.get("releases"), dict):
+    if not isinstance(data, dict) or data.get("schemaVersion") != 2 or not isinstance(data.get("releases"), dict):
         raise ValueError("Invalid version history format.")
     result = {}
-    for release_id, changes in data["releases"].items():
+    for release_id, entry in data["releases"].items():
         release_id = version(release_id)
-        if release_id in result or not isinstance(changes, list) or not changes:
+        if release_id in result or not isinstance(entry, dict) or set(entry) != {"channel", "changes"}:
+            raise ValueError(f"Invalid version history entry: {release_id}")
+        channel, changes = entry["channel"], entry["changes"]
+        if channel not in {"stable", "beta"} or not isinstance(changes, list) or not changes:
             raise ValueError(f"Invalid version history entry: {release_id}")
         if any(not isinstance(change, str) or not change.strip() or change != change.strip()
                or "\n" in change or len(change) > 220 for change in changes):
             raise ValueError(f"Version history notes must be concise one-line summaries: {release_id}")
-        result[release_id] = changes
+        result[release_id] = {"channel": channel, "changes": changes}
     return result
+
+
+def website_label(release):
+    release_label = release["label"]
+    if release["channel"] == "beta" and not release_label.lower().endswith(" beta"):
+        return release_label + " Beta"
+    return release_label
 
 
 def candidates():
@@ -279,7 +289,8 @@ def write_entry_pages(output, catalog):
         target = output / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         prefix = "../" if relative.startswith("calc/") else ""
-        links = ''.join(f'<li><a href="{prefix}{html.escape(r["path"])}{relative}">{html.escape(r["label"])}</a></li>' for r in catalog["releases"])
+        links = ''.join(f'<li><a href="{prefix}{html.escape(r["path"])}{relative}">{html.escape(website_label(r))}</a></li>'
+                        for r in catalog["releases"])
         body = '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BPE Emerald releases</title>'
         body += '<body style="background:#101c27;color:#eaf8f0;font:18px system-ui;padding:32px"><h1>Choose your game version</h1><ul>' + links + '</ul>'
         body += '<script>fetch(' + json.dumps(prefix + 'versions.json') + ',{cache:"no-cache"}).then(function(r){if(!r.ok)throw Error();return r.json()}).then(function(c){var base=new URL(' + json.dumps(prefix or './') + ',location.href),saved;try{saved=localStorage.getItem("bpe:"+base.pathname+":selected-release")}catch(e){}var r=c.releases.find(function(x){return x.version===saved})||c.releases.find(function(x){return x.version===c.latest});if(r){var u=new URL(r.path+' + json.dumps(relative) + ',base);u.search=location.search;u.hash=location.hash;location.replace(u.href)}}).catch(function(){});</script></body></html>'
@@ -411,8 +422,8 @@ def main():
             freeze_snapshot(dest, requested)
         uploads.append((release, requested if correction or not previous else latest))
         release_path = f"versions/{release_id}/"
-        releases.append(dict(version=release_id, label=release["label"], path=release_path,
-                             patchUrl=release_path + release["patch"]["url"], changes=history[release_id],
+        releases.append(dict(version=release_id, label=release["label"], channel=history[release_id]["channel"], path=release_path,
+                             patchUrl=release_path + release["patch"]["url"], changes=history[release_id]["changes"],
                              documentationRevision=release["documentationRevision"]))
     catalog = {"schemaVersion": 1, "latest": releases[0]["version"], "releases": releases}
     share_assets(args.output)

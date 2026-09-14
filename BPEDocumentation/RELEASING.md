@@ -18,8 +18,10 @@ itself requires Python 3.12 or newer. The hosted documentation build needs no RO
    python BPETools/prepare_release.py set-version 2.0.1-beta
    ```
 
-2. Add a matching entry to `releases/version-history.json` with only the main
-   player-facing changes, written as short one-line summaries. Commit the game
+2. Add a matching entry to `releases/version-history.json`, set its website
+   `channel` to `stable` or `beta`, and include only the main player-facing
+   changes as short one-line summaries. The website channel may mark a release as
+   Beta without changing the version text embedded in the game. Commit the game
    changes, `BPE_VERSION.json`, and the version-history entry together. The shared
    version setting generates the title-screen label and package version. Ordinary
    development commits do not need public version bumps and do not change the

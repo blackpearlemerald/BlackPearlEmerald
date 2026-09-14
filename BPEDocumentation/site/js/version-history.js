@@ -26,7 +26,7 @@
 
     title.appendChild(element('h2', '', release.label));
     if (release.version === catalog.latest) title.appendChild(badge('Latest'));
-    if (release.version.indexOf('-') >= 0) title.appendChild(badge('Beta', 'is-beta'));
+    if (release.channel === 'beta') title.appendChild(badge('Beta', 'is-beta'));
     if (release.version === context.id) title.appendChild(badge('Selected', 'is-selected'));
 
     download.href = new URL(release.patchUrl, context.siteRoot).href;

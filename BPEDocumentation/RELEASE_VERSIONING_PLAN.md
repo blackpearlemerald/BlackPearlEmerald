@@ -183,7 +183,9 @@ The main navigation includes a **Version History** page. It reads the validated
 global release catalog, lists every published game version newest-first, links
 directly to that version's hosted patch archive, and shows only curated,
 player-facing one-line changes. Publication requires a matching history entry so
-a release cannot appear without its download and changelog.
+a release cannot appear without its download and changelog. Each entry also
+declares its website channel (`stable` or `beta`), which can label a release as
+Beta on the site independently of the version text embedded in the game.
 
 - Explicit versioned URLs win over saved preferences and remain shareable.
 - Unversioned entry links preserve the page/query/hash and choose the remembered

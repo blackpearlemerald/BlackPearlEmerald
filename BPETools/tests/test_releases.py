@@ -172,8 +172,14 @@ class VersionTests(unittest.TestCase):
         import releases
         history = releases.release_history()
         self.assertTrue({"1.0.1", "2.0.0-beta", "2.0.1"}.issubset(history))
-        self.assertEqual(history["2.0.1"], ["Increased the base Shiny rate from 1 in 8,192 to 1 in 512."])
-        self.assertTrue(all("\n" not in note and len(note) <= 220 for notes in history.values() for note in notes))
+        self.assertEqual(history["2.0.1"]["channel"], "beta")
+        self.assertEqual(history["2.0.1"]["changes"], ["Increased the base Shiny rate from 1 in 8,192 to 1 in 512."])
+        self.assertEqual(history["2.0.0-beta"]["channel"], "beta")
+        self.assertNotIn("Terastallization", " ".join(history["2.0.0-beta"]["changes"]))
+        self.assertTrue(all("\n" not in note and len(note) <= 220
+                            for entry in history.values() for note in entry["changes"]))
+        self.assertEqual(releases.website_label({"label": "2.0.1", "channel": "beta"}), "2.0.1 Beta")
+        self.assertEqual(releases.website_label({"label": "2.0.0 Beta", "channel": "beta"}), "2.0.0 Beta")
 
 
 class ArchiveTests(unittest.TestCase):

@@ -26,6 +26,10 @@
   var select = document.getElementById('bpe-version-select');
   var title = document.getElementById('bpe-current-version');
   var notice = header.querySelector('.bpe-release-notice');
+  var baseDocumentTitle = document.title;
+  function displayLabel(release) {
+    return release.label + (release.channel === 'beta' && !/\bbeta$/i.test(release.label) ? ' Beta' : '');
+  }
   function showNotice(text) { notice.textContent = text; notice.hidden = false; }
   function resize() { document.documentElement.style.setProperty('--bpe-header-height', header.offsetHeight + 'px'); window.dispatchEvent(new Event('bpe:headerresize')); }
   if (window.ResizeObserver) new ResizeObserver(resize).observe(header);
@@ -35,15 +39,20 @@
   if (!context) { title.textContent = 'Version unavailable'; return; }
   context.ready.then(function (release) {
     title.textContent = release.label;
-    document.title = document.title + ' — ' + release.label;
+    document.title = baseDocumentTitle + ' — ' + release.label;
     context.remember(release.version);
     if (release.notice) showNotice(release.notice);
     select.replaceChildren(new Option(release.label, release.version));
     return context.catalog();
   }).then(function (catalog) {
+    var selectedRelease = catalog.releases.find(function (release) { return release.version === context.id; });
+    if (selectedRelease) {
+      title.textContent = displayLabel(selectedRelease);
+      document.title = baseDocumentTitle + ' — ' + displayLabel(selectedRelease);
+    }
     select.replaceChildren();
     catalog.releases.forEach(function (release) {
-      select.add(new Option(release.label + (release.version === catalog.latest ? ' · Latest' : ''), release.version, false, release.version === context.id));
+      select.add(new Option(displayLabel(release) + (release.version === catalog.latest ? ' · Latest' : ''), release.version, false, release.version === context.id));
     });
     if (!catalog.releases.some(function (release) { return release.version === context.id; })) select.add(new Option(title.textContent + ' · Archived', context.id, true, true));
     select.disabled = false;
