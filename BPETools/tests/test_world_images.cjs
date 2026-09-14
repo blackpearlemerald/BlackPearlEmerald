@@ -5,7 +5,7 @@ const vm = require('node:vm');
 // A small Leaflet/DOM adapter exercises layer lifetime and geometry without
 // substituting browser performance measurements for a real rendering engine.
 function element() {
-  return {style:{}, children:[], appendChild(child){ this.children.push(child);child.parent=this; },
+  return {width:0,height:0,style:{},setAttribute(){},getContext(){return this.ctx ||= {calls:[],clearRect(){this.calls=[];},drawImage(...args){this.calls.push(args);}};}, children:[], appendChild(child){ this.children.push(child);child.parent=this; },
     remove(){ if(this.parent)this.parent.children=this.parent.children.filter(c=>c!==this); },
     getAttribute(key){ return this[key]; }};
 }
@@ -16,8 +16,8 @@ function leafBounds(b) { return {getWest:()=>b.x0,getEast:()=>b.x1,getNorth:()=>
   pad(r){const dx=(b.x1-b.x0)*r,dy=(b.y1-b.y0)*r;return leafBounds({x0:b.x0-dx,x1:b.x1+dx,y0:b.y0-dy,y1:b.y1+dy});}}; }
 const L={Layer:{extend(spec){ function Layer(...args){this.options={};spec.initialize?.apply(this,args);} Object.assign(Layer.prototype,spec);return Layer;}},
   setOptions(obj,options){Object.assign(obj.options,options);},latLngBounds:b=>b,
-  DomUtil:{create:()=>element(),setTransform(el,point,scale){el.transform={point,scale};}}};
-const scope={L,window:{},document:{createElement:()=>element()},performance,requestAnimationFrame:cb=>{const id=++nextFrame;raf.set(id,cb);return id;},cancelAnimationFrame:id=>raf.delete(id)};
+  DomUtil:{create:()=>element(),setPosition(el,point){el.position=point;}}};
+const scope={L,window:{addEventListener(){},removeEventListener(){}},AbortController,document:{hidden:false,addEventListener(){},removeEventListener(){},createElement:()=>element()},performance,requestAnimationFrame:cb=>{const id=++nextFrame;raf.set(id,cb);return id;},cancelAnimationFrame:id=>raf.delete(id)};
 vm.runInNewContext(fs.readFileSync('BPEDocumentation/site/js/world-images.js','utf8'),scope);
 const api=scope.window.BPEWorldImages;
 const index=new api.WorldIndex(64), records=[];
@@ -32,35 +32,90 @@ index.remove(records[0]);assert.ok(!index.query({x0:-1000,y0:-1000,x1:1000,y1:10
 records[0].box={x0:0,y0:0,x1:16,y1:32};index.add(records[0]);
 assert.ok(index.query({x0:16,y0:32,x1:20,y1:35}).includes(records[0]));
 
-const map={options:{crs:{scale:z=>2**z}},getPane:()=>pane,getZoom:()=>-4,
-  getZoomScale:(z,ref)=>2**(z-ref),latLngToLayerPoint:()=>({x:0,y:0}),getBounds:()=>leafBounds(bounds)};
-function drain(){for(let i=0;raf.size&&i<100;i++){const batch=Array.from(raf);raf.clear();for(const [,cb]of batch)cb();}assert.equal(raf.size,0);}
-const renderer=api.renderer();renderer._map=map;renderer.onAdd(map);
-const near=api.image('near.png',leafBounds({x0:-16,y0:-32,x1:0,y1:0}),renderer,{});
-const far=api.image('far.png',leafBounds({x0:2000,y0:2000,x1:2016,y1:2032}),renderer,{});
-renderer.addImage(near);renderer.addImage(far);drain();
-assert.equal(renderer.mounted.size,1);assert.equal(near.element.style.width,'16px');assert.equal(near.element.style.left,'-16px');
-assert.equal(renderer.root.transform.scale,1/16);
-const node=near.element,geometry=JSON.stringify(node.style);
-map.getZoom=()=>2.125;renderer.transform();
-assert.equal(near.element,node);assert.equal(JSON.stringify(node.style),geometry,'pinching must not resize or rewrite image geometry');
-assert.equal(renderer.root.transform.scale,2**2.125);
-const order=near.order;renderer.removeImage(near);renderer.addImage(near);drain();assert.equal(near.order,order);
-renderer.removeImage(near);drain();assert.equal(renderer.mounted.size,0);
-// A stale mount queue must not resurrect a toggled-off layer.
-renderer.pending=[near];renderer.schedule();drain();assert.equal(near.element,null);
-bounds={x0:1950,y0:1950,x1:2050,y1:2050};renderer.settle();drain();assert.equal(renderer.mounted.size,1);assert.ok(far.element);
-renderer.removeImage(far);assert.equal(renderer.index.records.size,0);
-renderer.onRemove();assert.equal(pane.children.length,0);assert.equal(raf.size,0);
-// The overview covers distant zooms; detail is loaded only when useful and is
-// restored if the overview image fails. Crossing back must cancel stale work.
-bounds={x0:-200,y0:-200,x1:200,y1:200};map.getZoom=()=>-5;
-const overviewRenderer=api.renderer({url:'overview.png',bounds:leafBounds(bounds),detailZoom:-4});
-overviewRenderer._map=map;overviewRenderer.onAdd(map);
-const detail=api.image('detail.png',leafBounds({x0:0,y0:0,x1:16,y1:32}),overviewRenderer,{});
-overviewRenderer.addImage(detail);drain();assert.equal(overviewRenderer.mounted.size,0);
-map.getZoom=()=>-3.5;overviewRenderer.checkCoverage();drain();assert.equal(overviewRenderer.mounted.size,1);
-map.getZoom=()=>-4.5;overviewRenderer.checkCoverage();drain();assert.equal(overviewRenderer.mounted.size,0);
-overviewRenderer.root.children[0].onerror();drain();assert.equal(overviewRenderer.mounted.size,1);
-overviewRenderer.onRemove();assert.equal(pane.children.length,0);assert.equal(raf.size,0);
-console.log('Passed spatial lookup, edge contacts, native pixel geometry, fractional zoom, stable order, viewport release, stale queues and cleanup.');
+async function run() {
+  const closed=[];
+  const bitmap=(url,width=16,height=32)=>({width,height,close(){closed.push(url);}});
+  const request=(url,width=16,height=32)=>({url,width,height});
+  const next=async()=>{for(let n=0;n<8;n++)await Promise.resolve();};
+  // Loading, canceled decoding and ready images share the same hard budget.
+  const loads=[];
+  const cache=new api.ImageCache(4096,()=>{},(url,signal)=>new Promise(resolve=>loads.push({url,signal,resolve})));
+  cache.select([request('a'),request('b'),request('c'),request('too-large',64,64)]);
+  assert.equal(cache.bytes,4096);assert.equal(loads.length,2);assert.equal(cache.active,2);
+  cache.select([request('c'),request('d')]);
+  assert.ok(loads[0].signal.aborted);assert.equal(loads.length,2,'obsolete decodes still occupy the budget');
+  loads[0].resolve(bitmap('a'));await next();
+  assert.ok(closed.includes('a'));assert.equal(loads.length,3);assert.equal(cache.activeBytes,4096);
+  loads[1].resolve(bitmap('b'));await next();
+  loads[2].resolve(bitmap('c'));loads[3].resolve(bitmap('d'));await next();
+  assert.equal(cache.active,0);assert.ok(cache.get('c'));assert.ok(cache.get('d'));
+  cache.select([request('d'),request('d')]);assert.equal(cache.bytes,2048);assert.ok(closed.includes('c'));
+  cache.clear();assert.equal(cache.bytes,0);assert.ok(closed.includes('d'));
+  const failed=new api.ImageCache(4096,()=>{},async()=>{throw new Error('offline');});
+  failed.select([request('missing')]);await next();failed.select([request('missing')]);
+  assert.equal(failed.entries.get('missing').state,'failed');assert.equal(failed.active,0);
+  const wrong=new api.ImageCache(4096,()=>{},async()=>bitmap('wrong',32,32));
+  wrong.select([request('wrong')]);await next();assert.ok(closed.includes('wrong'));assert.equal(wrong.get('wrong'),undefined);
+  // Retina, large desktop windows and zoom never enlarge the backing surface.
+  for(const [w,h] of [[390,747],[844,273],[7680,4320],[100000,100000]]) {
+    const surface=api.surfaceSize(w,h);
+    assert.ok(surface.width<=2048&&surface.height<=2048&&surface.width*surface.height<=2097152);
+  }
+  assert.equal(api.surfaceSize(390,747).width,390);
+  for(const zoom of [-6,-3.125,0,4]) {
+    const extent=390/2**zoom, view={x0:-100,y0:-50,x1:-100+extent,y1:-50+extent};
+    const args=api.crop(bitmap('world',1074,1208),{x0:-1200,y0:-1248,x1:15984,y1:18080},view,390,747);
+    assert.ok(args[4]>=0&&args[5]>=0&&args[4]+args[6]<=390.00001&&args[5]+args[7]<=747.00001);
+  }
+  assert.equal(api.crop(bitmap('offscreen'),{x0:1000,y0:1000,x1:1016,y1:1032},bounds,390,747),null);
+  assert.deepEqual(Array.from(api.crop(bitmap('negative',16,32),{x0:-16,y0:-32,x1:0,y1:0},
+    {x0:-8,y0:-16,x1:8,y1:16},160,320)),[8,16,8,16,0,0,80,160]);
+
+  let position={x:0,y:0};
+  const map={getPane:()=>pane,getZoom:()=>-1,getSize:()=>({x:390,y:747}),
+    containerPointToLayerPoint:()=>position,getBounds:()=>leafBounds(bounds)};
+  async function drain(){for(let n=0;n<20;n++){await next();const batch=Array.from(raf);raf.clear();for(const[,cb]of batch)cb();}assert.equal(raf.size,0);}
+  const renderer=api.renderer();renderer._map=map;renderer.onAdd(map);
+  renderer.cache.loader=async url=>bitmap(url);
+  const near=api.image('near',leafBounds({x0:-16,y0:-32,x1:0,y1:0}),renderer,{});
+  const far=api.image('far',leafBounds({x0:2000,y0:2000,x1:2016,y1:2032}),renderer,{});
+  renderer.addImage(near);renderer.addImage(far);await drain();
+  assert.equal(renderer.drawn,1);assert.equal(renderer.root.width,390);assert.equal(renderer.root.height,747);
+  assert.equal(renderer.root.children.length,0,'no world-sized image elements');
+  const root=renderer.root;
+  bounds={x0:-10,y0:-10,x1:10,y1:10};map.getZoom=()=>4;renderer.redraw();
+  assert.equal(renderer.root,root);assert.equal(root.width,390);assert.equal(root.style.transform,undefined);
+  assert.equal(root.ctx.imageSmoothingEnabled,false);
+  position={x:20,y:30};renderer.redraw();assert.equal(root.position,position,'pane rebasing must update even with unchanged world bounds');
+  const order=near.order;renderer.removeImage(near);renderer.addImage(near);await drain();assert.equal(near.order,order);
+  renderer.removeImage(near);await drain();assert.equal(renderer.drawn,0);assert.ok(closed.includes('near'));
+  bounds={x0:1950,y0:1950,x1:2050,y1:2050};renderer.redraw();await drain();assert.equal(renderer.drawn,1);
+  far._map=map;far.setUrl('changed');far.setBounds(leafBounds({x0:1980,y0:1980,x1:1996,y1:2012}));await drain();
+  assert.ok(renderer.cache.get('changed'));assert.equal(renderer.cache.get('far'),undefined);
+  scope.document.hidden=true;renderer.hidden();assert.equal(renderer.cache.bytes,0);assert.equal(root.width,1);
+  scope.document.hidden=false;renderer.hidden();await drain();assert.equal(root.width,390);assert.equal(renderer.drawn,1);
+  renderer.suspend();renderer.schedule();await drain();assert.equal(root.width,1);assert.equal(renderer.cache.bytes,0);
+  renderer.resume();await drain();assert.equal(root.width,390);assert.equal(renderer.drawn,1);
+  renderer.onRemove();await drain();assert.equal(root.width,1);assert.equal(pane.children.length,0);
+  assert.equal(renderer.cache.bytes,0);
+
+  // Missing overviews fall back to bounded native detail without an error loop.
+  bounds={x0:-200,y0:-200,x1:200,y1:200};map.getZoom=()=>-5;
+  const overview=api.renderer({url:'overview',bounds:leafBounds({x0:-1600,y0:-1600,x1:1600,y1:1600}),detailZoom:-4});
+  overview._map=map;overview.onAdd(map);
+  overview.cache.loader=async url=>url==='overview'?Promise.reject(new Error('offline')):bitmap(url);
+  overview.addImage(api.image('detail',leafBounds({x0:0,y0:0,x1:16,y1:32}),overview,{}));await drain();
+  assert.equal(overview.coarse,false);assert.equal(overview.drawn,1);assert.ok(overview.cache.bytes<=overview.budget);
+  overview.onRemove();await drain();assert.equal(pane.children.length,0);
+  scope.fetch=async url=>({ok:true,blob:async()=>url});
+  scope.createImageBitmap=async url=>url==='overview-ok'?bitmap(url,200,200):bitmap(url);
+  const valid=api.renderer({url:'overview-ok',bounds:leafBounds({x0:-1600,y0:-1600,x1:1600,y1:1600}),detailZoom:-4});
+  valid._map=map;valid.onAdd(map);
+  valid.addImage(api.image('native',leafBounds({x0:0,y0:0,x1:16,y1:32}),valid,{}));await drain();
+  assert.equal(valid.coarse,true);assert.equal(valid.drawn,1);assert.equal(valid.cache.entries.size,1);
+  map.getZoom=()=>-3;valid.redraw();await drain();assert.equal(valid.drawn,2);assert.ok(valid.cache.get('native'));
+  map.getZoom=()=>-5;valid.redraw();await drain();assert.equal(valid.drawn,1);assert.ok(closed.includes('native'));
+  valid.onRemove();await drain();assert.ok(closed.includes('overview-ok'));
+  console.log('Passed spatial lookup, bounded decoding, canceled work, bitmap release, source cropping, screen-sized rendering, rebasing, toggles, geometry updates, background cleanup and fallback.');
+}
+run().catch(error=>{console.error(error);process.exitCode=1;});

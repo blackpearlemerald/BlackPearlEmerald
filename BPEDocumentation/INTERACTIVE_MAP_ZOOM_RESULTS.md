@@ -1,4 +1,53 @@
-**Interactive map zoom implementation — September 14, 2026**
+**Safari crash correction — September 14, 2026**
+
+The maintainer reported repeated Safari page crashes on iPhone 12, both on initial
+load and while pinching, after the first optimization was published. The desktop
+timings below did not establish device stability. The earlier grouped DOM-image
+renderer has therefore been replaced; those timings describe the superseded code.
+
+The likely pressure point was a transformed group containing a world overview
+with a 17,184 × 19,328 CSS-pixel box, plus native images without a decoded-pixel
+budget. This is a source-based hypothesis, not a captured Safari crash trace.
+WebKit documents how large compositing layers increase memory use in its
+[layer inspection guidance](https://webkit.org/blog/8262/visualizing-layers-in-web-inspector/).
+
+The replacement uses two canvases fixed to the visible screen. Each uses at most
+one backing pixel per CSS pixel, 2048 pixels per axis and 2,097,152 pixels total
+(8 MiB RGBA). Source rectangles are cropped before drawing, so even the world
+overview never requests a world-sized destination. Pinch drawing occurs within
+Leaflet's existing input frame; CSS zoom animations are disabled. Continuous
+pinch scale and the hidden +/− controls remain.
+
+Terrain, including its overview, has a 32 MiB decoded-pixel budget; sprites have
+4 MiB. Each cache permits two concurrent loads and counts canceled decodes until
+they settle. Old ImageBitmaps are explicitly closed. Older browsers use a bounded
+image-element fallback. Backgrounding or removing a layer clears the cache and
+shrinks its canvas. These limits cover owned image/surface allocations; they are
+not a measurement or bound for Safari's total process memory.
+
+Nearby native artwork takes priority within the budget. The overview covers
+terrain still loading or outside that budget; zooming closer prioritizes its
+full-resolution detail. World data, selection and hit targets remain separate.
+
+Regression tests cover the decode budget, cancellation, explicit bitmap release,
+failed loads, source cropping, maximum surface dimensions, pane rebasing, layer
+toggles, trainer geometry updates and background cleanup. Existing release and
+version checks also pass. Physical iPhone Safari confirmation is still required.
+
+A five-minute Chromium run at a 390 × 844 iframe completed 282 rapid pinch and
+camera-movement cycles across Mauville, Route 124, Rustboro and Mt. Pyre. It
+recorded no failed image loads or budget violations. Peak terrain reservations
+were 33,553,344 bytes (below 32 MiB); sprite reservations peaked at 436,224 bytes.
+Each image canvas stayed at 272,610 pixels (390 × 699, about 1.04 MiB RGBA).
+This run exercises the bounded drawing/cache implementation; separate unit tests
+cover the final pagehide/pageshow cleanup and viewport-key guard.
+
+The first bounded-canvas timing run recorded 6.2 ms p95 frame intervals in all
+three original scenarios, with p95 movement scripting of 1.8, 0.5 and 0.5 ms.
+No tasks over 50 ms were recorded. These are desktop diagnostics only and do not
+replace the maintainer's iPhone test after the correction is published.
+
+**Superseded implementation and original desktop measurements**
 
 The map now scales terrain and sprites through two shared parent transforms.
 Image positions and native pixel dimensions stay fixed during pinching. A

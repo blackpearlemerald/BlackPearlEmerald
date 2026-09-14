@@ -1299,8 +1299,7 @@ a.enc-mon { cursor: pointer; }
   .detail-body .enc-icon { width: 40px; height: 40px; }
 }
 
-/* Only the parent moves during pinch zoom; child image geometry stays fixed. */
-.world-images { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; }
-.world-images img { position: absolute; max-width: none !important; max-height: none !important; image-rendering: pixelated; user-select: none; -webkit-user-drag: none; }
+/* Screen-sized canvases never scale up to the world's native dimensions. */
+.world-images { position: absolute; left: 0; top: 0; pointer-events: none; image-rendering: pixelated; }
 .map-moving .guide-mark { animation-play-state: paused; }
 .map-performance { white-space: pre-wrap; max-height: 240px; overflow: auto; font-size: 11px; }

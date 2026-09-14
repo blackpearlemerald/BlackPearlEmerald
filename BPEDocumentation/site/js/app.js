@@ -262,9 +262,10 @@ async function main() {
     bounceAtZoomLimits: false,
     wheelPxPerZoomLevel: 80,
     preferCanvas: true,
-    zoomAnimation: !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    // Pinch frames draw directly into bounded canvases; avoid CSS surface scaling.
+    zoomAnimation: false,
     fadeAnimation: false,
-    markerZoomAnimation: true,
+    markerZoomAnimation: false,
     attributionControl: false,
     maxBoundsViscosity: 0.6,
   });
@@ -274,7 +275,7 @@ async function main() {
     url: overview.url,
     bounds: L.latLngBounds(W2LL(overview.x, overview.y), W2LL(overview.x + overview.w, overview.y + overview.h)),
     detailZoom: overview.detailZoom,
-  });
+  }, { budget: 32 * 1024 * 1024 });
   const spriteImages = BPEWorldImages.renderer();
 
   // ---- map images ----

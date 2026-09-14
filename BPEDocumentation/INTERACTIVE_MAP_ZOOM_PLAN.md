@@ -1,10 +1,11 @@
 **Interactive map: smooth pinch zoom on iPhone 12 Safari**
 
 Plan prepared September 14, 2026, from repository commit `12b58897f9` and the
-maintainer's report. Implementation now uses two shared image transforms,
-viewport culling, a small generated overview, continuous pinch scale, and
-optional phone diagnostics. See `INTERACTIVE_MAP_ZOOM_RESULTS.md` for measured
-results and remaining physical-device verification. The original plan below
+maintainer's report. Following a reported iPhone Safari crash, implementation now
+uses screen-sized canvases, bounded image decoding, a small generated overview,
+continuous pinch scale, and optional phone diagnostics. See
+`INTERACTIVE_MAP_ZOOM_RESULTS.md` for the correction, measured results and
+remaining physical-device verification. The original plan below
 records the intended stages and acceptance targets.
 
 The intended result is a map that follows both fingers immediately, keeps the

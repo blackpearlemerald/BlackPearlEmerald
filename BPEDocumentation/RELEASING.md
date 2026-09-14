@@ -111,13 +111,19 @@ versioning preserves its code and inputs, not a promise of perfect game parity.
 
 For map rendering corrections, check pinch zoom on iPhone Safari as well as
 desktop navigation before announcing the improvement. Append `?map-perf=1`
-(or `&map-perf=1` when the URL already has a query) to show frame timing and
-mounted-image counts inside the map's toggle panel. Measurements appear after
+(or `&map-perf=1` when the URL already has a query) to show frame timing, canvas
+dimensions, cache reservations and decode counts inside the map's toggle panel. Measurements appear after
 each pinch. Frame callbacks are a proxy for smoothness; confirm the visible
 motion, accurate taps, image coverage and final artwork on the phone too.
 The diagnostics are inactive on normal map URLs. Renderer changes use the same
 documentation correction procedure above; a frontend push alone does not update
 the archived map pages.
+The image renderer uses screen-sized canvases capped at 2 megapixels each and
+decoded-image budgets of 32 MiB for terrain (including the overview) and 4 MiB
+for sprites. Never replace those surfaces with a scaled world-sized DOM layer:
+that earlier approach passed desktop timing tests but crashed the maintainer's
+iPhone Safari. Test repeated cold loads, pinches, background/resume and rotation
+on the phone before treating a rendering correction as device-verified.
 
 ## Historical 1.0.1
 
