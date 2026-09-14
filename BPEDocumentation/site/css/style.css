@@ -1272,13 +1272,13 @@ a.enc-mon { cursor: pointer; }
   .detail-backdrop { display: block; }
   .detail.open .detail-backdrop { opacity: 1; }
   .detail-card {
-    top: 0;
+    top: var(--bpe-header-height, 96px);
     right: 0;
     bottom: 0;
     left: 0;
     width: 100%;
     max-width: 100%;
-    max-height: 100%;
+    max-height: calc(100% - var(--bpe-header-height, 96px));
     border: none;
     border-radius: 0;
     transform: translateY(100%);
