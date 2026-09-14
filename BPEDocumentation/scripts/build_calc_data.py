@@ -44,6 +44,9 @@ FORM_TOKENS = [
     ("_PRIMAL", "Primal"),
     ("_GIGANTAMAX", "Gmax"), ("_GMAX", "Gmax"),
     ("_ALOLA", "Alola"), ("_GALAR", "Galar"), ("_HISUI", "Hisui"),
+    ("_ALOLAN", "Alola"), ("_GALARIAN", "Galar"), ("_HISUIAN", "Hisui"),
+    ("_PALDEAN_BLAZE_BREED", "Paldea-Blaze"), ("_PALDEAN_AQUA_BREED", "Paldea-Aqua"),
+    ("_PALDEAN_COMBAT_BREED", "Paldea-Combat"),
     ("_PALDEA_BLAZE", "Paldea-Blaze"), ("_PALDEA_AQUA", "Paldea-Aqua"),
     ("_PALDEA_COMBAT", "Paldea-Combat"), ("_PALDEAN", "Paldea"),
     ("_HEAT", "Heat"), ("_WASH", "Wash"), ("_MOW", "Mow"),
@@ -140,6 +143,7 @@ def main():
         name = canon_name(sid, d["name"])
         if name in poks:
             # keep first; alt/totem dupes fall through to the base entry
+            norm_index.setdefault(normalize(sid), name)
             continue
 
         abilities = {}
@@ -176,6 +180,20 @@ def main():
         norm_index.setdefault(normalize(sid), name)
         if d.get("sprite"):
             sprite_src_for[name] = d["sprite"].replace("/", os.sep)
+
+    # Resolve source aliases (including older #define syntax) before matching
+    # trainer display names. A missing game species must never use another dex.
+    with open(common.src("include/constants/species.h"), encoding="utf-8") as source:
+        constants = source.read()
+    aliases = re.findall(r"SPECIES_(\w+)\s*(?:=\s*|\s+)SPECIES_(\w+)", constants)
+    for _ in range(len(aliases) + 1):
+        changed = False
+        for alias, target in aliases:
+            if normalize(alias) not in norm_index and normalize(target) in norm_index:
+                norm_index[normalize(alias)] = norm_index[normalize(target)]
+                changed = True
+        if not changed:
+            break
 
     # ── moves ────────────────────────────────────────────────────────────────
     # NOTE: power=0 in moves.json now means a genuinely non-damaging move
@@ -244,7 +262,7 @@ def main():
                 "moves": [m for m in (mon.get("moves") or []) if m] or ["-"],
                 "nature": mon.get("nature", "Hardy"),
                 "evs": evs,
-                "ivs": {},
+                "ivs": {short: mon["ivs"][long] for long, short in EV_KEYS if long in mon.get("ivs", {})},
                 "form": 0,
                 "noCh": False,
                 "battle_type": "Singles",
@@ -274,6 +292,8 @@ def main():
         "moves": out_moves,
         "formatted_sets": formatted_sets,
     }
+    if unmatched:
+        raise ValueError("Trainer species missing from this release's calculator data: " + ", ".join(sorted(unmatched)))
     common.write_json(OUT_JSON, blob)
 
     # ── sprites: copy BPE pokemon sprites into calc/img/newhd named per JS ─────

@@ -65,6 +65,10 @@ tools/aif2pcm/aif2pcm
 *.fastSmol
 *.smolTM
 __pycache__
+include/generated/bpe_release.h
+/.release-work/
+/BPETools/release.local.json
+/.release-build.log
 src/data/pokemon/teachable_learnsets.h
 .map_version
 
@@ -73,3 +77,5 @@ BPETools/Resources/
 
 # Claude Code local state (git worktrees, agent state)
 .claude/
+
+/.release-*.log

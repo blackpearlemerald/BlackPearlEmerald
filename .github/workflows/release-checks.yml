@@ -1,0 +1,32 @@
+name: Release checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "BPETools/**"
+      - "BPEDocumentation/scripts/**"
+      - "BPEDocumentation/site/**"
+      - "releases/**"
+      - "BPE_VERSION.json"
+      - ".github/workflows/release-checks.yml"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  release-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Test package integrity and version behavior
+        run: python -m unittest discover -s BPETools/tests -v
+      - name: Validate committed release packages
+        run: python BPEDocumentation/scripts/releases.py --validate-only

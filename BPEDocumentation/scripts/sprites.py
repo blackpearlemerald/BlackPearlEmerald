@@ -24,7 +24,7 @@ INFO_RE = re.compile(
 # pic tables are named sPicTable_X (vanilla) or gObjectEventPicTable_X
 # (custom/expansion); both contain "PicTable".
 PICTBL_RE = re.compile(r"(\w*PicTable\w*)\[\]\s*=\s*\{(.*?)\};", re.DOTALL)
-PIC_RE = re.compile(r"(gObjectEventPic_\w+)\[\]\s*=\s*INCGFX_\w+\(\"([^\"]+)\"")
+PIC_RE = re.compile(r"(gObjectEventPic_\w+)\[\]\s*=\s*INC(?:GFX|BIN)_\w+\(\"([^\"]+)\"")
 
 
 def _read(*parts):
@@ -59,7 +59,8 @@ def build_index():
         if m:
             pictbl[sym] = m.group(0)
 
-    pics = dict((s, p) for s, p in PIC_RE.findall(_read(*OEDIR, "object_event_graphics.h")))
+    pics = dict((s, re.sub(r"\.(?:4|8)bpp(?:\.lz)?$", ".png", p))
+                for s, p in PIC_RE.findall(_read(*OEDIR, "object_event_graphics.h")))
 
     return pointers, info, pictbl, pics
 

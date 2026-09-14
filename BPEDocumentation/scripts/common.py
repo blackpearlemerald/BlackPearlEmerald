@@ -13,11 +13,11 @@ DOC_ROOT = os.path.dirname(HERE)                      # BPEDocumentation/
 PROJECT_ROOT = os.path.dirname(DOC_ROOT)              # repo root (pokeemerald-expansion)
 # BPEDocumentation lives inside the game source repo, so the repo root is the
 # source root. Fall back to the old top-level layout if run from there.
-SRC_ROOT = PROJECT_ROOT
+SRC_ROOT = os.path.abspath(os.environ.get("BPE_SOURCE_ROOT", PROJECT_ROOT))
 if not os.path.isdir(os.path.join(SRC_ROOT, "data", "maps")):
     SRC_ROOT = os.path.join(PROJECT_ROOT, "BPE Emerald V1.0.1", "pokeemerald-expansion")
 
-SITE = os.path.join(DOC_ROOT, "site")
+SITE = os.path.abspath(os.environ.get("BPE_SITE_ROOT", os.path.join(DOC_ROOT, "site")))
 SITE_DATA = os.path.join(SITE, "js", "data")
 SITE_MAPS_IMG = os.path.join(SITE, "img", "maps")
 
@@ -66,8 +66,8 @@ def iter_map_jsons():
         if os.path.isfile(mj):
             try:
                 yield name, load_json(mj)
-            except Exception as e:  # pragma: no cover - corrupt/non-map dirs
-                print(f"  ! skip {name}: {e}")
+            except Exception as e:
+                raise ValueError(f"Cannot read map {name}: {e}") from e
 
 
 def load_jasc_pal(path):

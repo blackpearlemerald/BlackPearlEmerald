@@ -57,6 +57,9 @@ def _flush_mon(block):
             mon["ability"] = ln.split(":", 1)[1].strip()
         elif ln.lower().startswith("tera type:"):
             mon["tera"] = ln.split(":", 1)[1].strip()
+        elif ln.lower().startswith(("evs:", "ivs:")):
+            key, values = ln.split(":", 1)
+            mon[key.lower()] = {stat.lower(): int(value) for value, stat in re.findall(r"(\d+)\s+(HP|Atk|Def|SpA|SpD|Spe)", values, re.I)}
         elif ln.endswith("Nature"):
             mon["nature"] = ln.rsplit(" ", 1)[0].strip()
     if moves:
@@ -122,8 +125,63 @@ def parse_file(path, out):
 
 def build():
     out = {}
+    if not os.path.isfile(C.src("src", "data", "trainers.party")):
+        return build_legacy()
     parse_file(C.src("src", "data", "trainers.party"), out)
     parse_file(C.src("src", "data", "trainers_frlg.party"), out)
+    return out
+
+
+def build_legacy():
+    """Import the pre-trainerproc C format used by the official 1.0.1 source."""
+    with open(C.src("src/data/trainer_parties.h"), encoding="utf-8") as f:
+        parties_text = f.read()
+    with open(C.src("src/data/trainers.h"), encoding="utf-8") as f:
+        trainers_text = f.read()
+    pretty = lambda s: s.replace("_", " ").title()
+    parties = {}
+    for name, body in re.findall(r"(?:static )?const struct TrainerMon\w*\s+(\w+)\[\]\s*=\s*\{(.*?)\n\};", parties_text, re.S):
+        party = []
+        for mon_block in re.findall(r"\{\s*(\.\w+.*?)\n\s*\}(?:,|\s*$)", body, re.S):
+            species = re.search(r"\.species\s*=\s*SPECIES_(\w+)", mon_block)
+            level = re.search(r"\.lvl\s*=\s*(\d+)", mon_block)
+            if not species or not level:
+                raise ValueError(f"Cannot parse legacy trainer party {name}")
+            mon = {"species": pretty(species[1]), "level": int(level[1])}
+            for source_field, key in (("ev", "evs"), ("iv", "ivs")):
+                stats = {}
+                macro = re.search(r"\." + source_field + r"\s*=\s*TRAINER_PARTY_\w+\(([^)]+)\)", mon_block)
+                if macro:
+                    values = [int(value.strip()) for value in macro[1].split(",")]
+                    if len(values) != 6:
+                        raise ValueError(f"Invalid legacy trainer stats in {name}")
+                    stats.update(zip(("hp", "atk", "def", "spe", "spa", "spd"), values))
+                for suffix, stat in (("HP", "hp"), ("Attack", "atk"), ("Defense", "def"), ("Speed", "spe"), ("SpAttack", "spa"), ("SpDefense", "spd")):
+                    value = re.search(r"\." + source_field + suffix + r"\s*=\s*(\d+)", mon_block)
+                    if value:
+                        stats[stat] = int(value[1])
+                if stats:
+                    mon[key] = stats
+            for field, prefix, key in (("heldItem", "ITEM_", "item"), ("ability", "ABILITY_", "ability"), ("nature", "NATURE_", "nature")):
+                m = re.search(r"\." + field + r"\s*=\s*" + prefix + r"(\w+)", mon_block)
+                if m and m[1] != "NONE":
+                    mon[key] = pretty(m[1])
+            moves = re.search(r"\.moves\s*=\s*\{([^}]+)\}", mon_block)
+            mon["moves"] = [pretty(m) for m in re.findall(r"MOVE_(\w+)", moves[1] if moves else "") if m != "NONE"]
+            party.append(mon)
+        parties[name] = party
+    out = {}
+    for key, body in re.findall(r"\[(TRAINER_\w+)\]\s*=\s*\{(.*?)\n\s*\},", trainers_text, re.S):
+        name = re.search(r'\.trainerName\s*=\s*_\("([^"]*)"\)', body)
+        cls = re.search(r"\.trainerClass\s*=\s*(TRAINER_CLASS_\w+)", body)
+        pic = re.search(r"\.trainerPic\s*=\s*(TRAINER_PIC_\w+)", body)
+        party = re.search(r"\.party\s*=\s*TRAINER_PARTY\((\w+)\)", body)
+        if party and party[1] not in parties:
+            raise ValueError(f"Missing legacy party {party[1]}")
+        out[key] = {"name": name[1] if name else "", "class": pretty(cls[1].removeprefix("TRAINER_CLASS_")) if cls else "",
+                    "pic": pretty(pic[1].removeprefix("TRAINER_PIC_")) if pic else "", "party": parties.get(party[1], []) if party else []}
+    if not out or not parties:
+        raise ValueError("No legacy trainer data could be imported.")
     return out
 
 

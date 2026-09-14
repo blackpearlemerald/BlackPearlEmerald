@@ -33,10 +33,25 @@
     });
   }
 
-  window.addEventListener('load', function () {
+  window.addEventListener('load', async function () {
     watchForPatcherErrors();
 
     try {
+      var release = await window.BPERelease.ready;
+      if (!release.patch) throw new Error('No patch is available for this release.');
+      document.querySelector('.patcher-kicker').textContent = 'BPE Emerald ' + release.label;
+      document.getElementById('bpe-patch-label').textContent = release.label + ' (UPS)';
+      var controller = new AbortController();
+      window.addEventListener('bpe:versionchange', function () { controller.abort(); autoPatchQueued = true; applyButton.disabled = true; });
+      setStatus('checking', 'Checking the ' + release.label + ' patch…', 'Please wait before choosing your Emerald ROM.');
+      var response = await fetch(new URL(release.patch.url, window.BPERelease.root), { signal: controller.signal });
+      if (!response.ok) throw new Error('The selected release patch could not be downloaded.');
+      var bytes = await response.arrayBuffer();
+      var digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))).map(function (n) { return n.toString(16).padStart(2, '0'); }).join('');
+      if (digest !== release.patch.archiveSha256) throw new Error('The selected release patch failed its checksum check.');
+      if (window.BPERelease.leaving) return;
+      var patchUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/zip' }));
+      window.addEventListener('pagehide', function () { URL.revokeObjectURL(patchUrl); });
       RomPatcherWeb.initialize({
         language: 'en',
         requireValidation: true,
@@ -65,7 +80,7 @@
 
           window.setTimeout(function () {
             try {
-              RomPatcherWeb.applyPatch();
+              if (!window.BPERelease.leaving) RomPatcherWeb.applyPatch();
             } catch (error) {
               autoPatchQueued = false;
               setStatus('error', 'The ROM could not be patched', error.message || 'Please choose the ROM again and retry.');
@@ -78,19 +93,20 @@
           applyButton.textContent = 'Download again';
         }
       }, {
-        file: 'patches/BlackPearlEmerald_v1.0.1.zip',
+        file: patchUrl,
         patches: [
           {
-            file: 'BlackPearlEmerald_v1.0.1.ups',
-            name: 'Pokémon Black Pearl Emerald v1.0.1',
-            inputCrc32: 0x1f1c08fb,
-            description: 'Official BPE Emerald v1.0.1 release patch',
-            outputName: 'Pokemon Black Pearl Emerald v1.0.1',
+            file: release.patch.file,
+            name: 'Pokémon Black Pearl Emerald ' + release.label,
+            inputCrc32: parseInt(release.baseRom.crc32, 16),
+            description: 'BPE Emerald ' + release.label + ' release patch',
+            outputName: 'Pokemon Black Pearl Emerald v' + release.version,
             outputExtension: 'gba'
           }
         ]
       });
     } catch (error) {
+      if (window.BPERelease.leaving) return;
       setStatus('error', 'The patcher could not start', error.message || 'Reload the page and try again.');
     }
   });

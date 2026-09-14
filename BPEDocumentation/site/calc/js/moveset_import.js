@@ -793,8 +793,8 @@ function addToDex(poke) {
 	}
 
 	var customsets;
-	if (localStorage.customsets) {
-		customsets = JSON.parse(localStorage.customsets);
+	if (BPEStorage.customsets) {
+		customsets = JSON.parse(BPEStorage.customsets);
 	} else {
 		customsets = {};
 	}
@@ -841,7 +841,7 @@ function updateDex(customsets) {
 			SETDEX_RBY[pokemon][moveset] = customsets[pokemon][moveset];
 		}
 	}
-	localStorage.customsets = JSON.stringify(customsets);
+	BPEStorage.customsets = JSON.stringify(customsets);
 }
 
 function isValidJSON(str) {
@@ -856,7 +856,7 @@ function isValidJSON(str) {
 function addSets(pokes, name) {
 	if (isValidJSON(pokes)) {
 		newSets = JSON.parse(pokes)
-		localStorage.customsets = newSets
+		BPEStorage.customsets = newSets
 		location.reload()
 		return
 
@@ -923,7 +923,7 @@ function addSets(pokes, name) {
 		get_box()
 		// alert("Successfully imported " + addedpokes + " set(s)");
 		$('.player-poks').addClass('shake')
-		customSets = JSON.parse(localStorage.customsets);
+		customSets = JSON.parse(BPEStorage.customsets);
 		setTimeout(function(){
 			$('.player-poks').removeClass('shake')
 		}, 500)
@@ -1021,7 +1021,7 @@ function checkExeptions(poke) {
 }
 
 $("#clearSets").click(function () {
-	localStorage.removeItem("customsets");
+	BPEStorage.removeItem("customsets");
 	$("#importedSetsOptions").hide();
 	
 	// Remove Set Data from Dropdown
@@ -1055,8 +1055,8 @@ $("#importedSets").click(function () {
 $(document).ready(function () {
 	// customSets;
 	placeBsBtn();
-	if (localStorage.customsets) {
-		customSets = JSON.parse(localStorage.customsets);
+	if (BPEStorage.customsets) {
+		customSets = JSON.parse(BPEStorage.customsets);
 
 		// updateDex(customSets);
 		$(allPokemon("#importedSetsOptions")).css("display", "inline");

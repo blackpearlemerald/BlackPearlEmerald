@@ -52,9 +52,9 @@ function initializeSplits() {
     }
 
     lvlcaps = splitData[TITLE]["lvls"]
-    if (typeof localStorage.encounters != "undefined" && localStorage.encounters != "") {
+    if (typeof BPEStorage.encounters != "undefined" && BPEStorage.encounters != "") {
 
-        encounters = JSON.parse(localStorage.encounters)
+        encounters = JSON.parse(BPEStorage.encounters)
     }
     else {
         encounters = {}
@@ -93,18 +93,18 @@ const splitsCellRenderer = (params) => {
 
 function updateEncounter(field, species, value) {
     encounters[species][field] = value
-    localStorage.encounters = JSON.stringify(encounters)
+    BPEStorage.encounters = JSON.stringify(encounters)
 }
 
 function updateEncounterSetData(field, species, value) {
     encounters[species].setData["My Box"][field] = value
-    localStorage.encounters = JSON.stringify(encounters)
+    BPEStorage.encounters = JSON.stringify(encounters)
 }
 
 
 function watchLocalStorageProperty(propertyName, callback) {
   window.addEventListener('storage', (event) => {
-    // The storage event only fires when localStorage is changed in OTHER tabs/windows
+    // The storage event only fires when BPEStorage is changed in OTHER tabs/windows
     if (event.key === propertyName) {
       callback({
         key: event.key,
@@ -118,7 +118,7 @@ function watchLocalStorageProperty(propertyName, callback) {
 
 watchLocalStorageProperty('encounters', (data) => {
   console.log("Encounter Data Updated, refreshing table")
-  encounters = JSON.parse(localStorage.encounters)
+  encounters = JSON.parse(BPEStorage.encounters)
   refreshTables();
 });
 
@@ -514,7 +514,7 @@ function createRowData() {
        } 
 
        if (typeof setData == "undefined" || setData == {}) {
-            setData = JSON.parse(localStorage.customsets)[enc]
+            setData = JSON.parse(BPEStorage.customsets)[enc]
        }
 
        if (typeof setData == "undefined") {
@@ -667,16 +667,16 @@ $('#delete-enc').click(function() {
     let speciesName = $(this).text().split("Delete ")[1]
     if (confirm(`Delete ${speciesName} from your encounters and custom sets?`)) {
         delete encounters[speciesName]
-        localStorage.encounters = JSON.stringify(encounters);
+        BPEStorage.encounters = JSON.stringify(encounters);
 
         createRowData()
         gridApi.setGridOption('rowData', rowData);
 
-        var sets = JSON.parse(localStorage.customsets)
+        var sets = JSON.parse(BPEStorage.customsets)
 
         delete sets[speciesName]['My Box']
-        localStorage.toDelete = speciesName
-        localStorage.customsets = JSON.stringify(sets)
+        BPEStorage.toDelete = speciesName
+        BPEStorage.customsets = JSON.stringify(sets)
 
 
 

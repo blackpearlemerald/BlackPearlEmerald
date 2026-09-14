@@ -29,10 +29,10 @@ if (!Array.prototype.indexOf) {
 
 boxSprites = ["newhd"]
 fainted = []
-if (!localStorage.boxspriteindex) {
-localStorage.boxspriteindex = 0
+if (!BPEStorage.boxspriteindex) {
+BPEStorage.boxspriteindex = 0
 }
-sprite_style = boxSprites[parseInt(localStorage.boxspriteindex)] || boxSprites[0]
+sprite_style = boxSprites[parseInt(BPEStorage.boxspriteindex)] || boxSprites[0]
 
 function startsWith(string, target) {
 	return (string || '').slice(0, target.length) === target;
@@ -1471,14 +1471,14 @@ function getFirstValidSetOption(side="left") {
 	var sets = getSetOptions();
 
 	console.log(side)
-	if (localStorage[side]) {
+	if (BPEStorage[side]) {
 		var setData = {}
-		console.log(localStorage[side])
-		setData["pokemon"] = localStorage[side].split(" (")[0]
-		setData["set"] = localStorage[side].split(" (")[1].split(")")[0]
+		console.log(BPEStorage[side])
+		setData["pokemon"] = BPEStorage[side].split(" (")[0]
+		setData["set"] = BPEStorage[side].split(" (")[1].split(")")[0]
 		setData["nickname"] = ""
-		setData["text"] = localStorage[side]
-		setData["id"] = localStorage[side]
+		setData["text"] = BPEStorage[side]
+		setData["id"] = BPEStorage[side]
 		return setData
 	} 
 

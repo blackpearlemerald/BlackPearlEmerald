@@ -31,7 +31,7 @@ OUT_DIR = os.path.join(C.SITE, "img", "pokemon")
 
 BLOCK_RE = re.compile(r"\[(SPECIES_\w+)\]\s*=\s*\{(.*?)\n    \},", re.DOTALL)
 ICON_FIELD_RE = re.compile(r"\.iconSprite\s*=\s*(\w+)")
-INCGFX_RE = re.compile(r"(gMonIcon_\w+)\[\]\s*=\s*INCGFX_U8\(\"([^\"]+)\"")
+INCGFX_RE = re.compile(r"(gMonIcon_\w+)\[\]\s*=\s*INC(?:GFX|BIN)_U8\(\"([^\"]+)\"")
 ALIAS_RE = re.compile(r"(SPECIES_\w+)\s*=\s*(SPECIES_\w+)\s*,")
 
 # Showdown uses short regional tags; BPE/expansion enums sometimes use the long
@@ -64,6 +64,7 @@ def _build_species_index():
     with open(C.src("src", "data", "graphics", "pokemon.h"),
               "r", encoding="utf-8", errors="replace") as fh:
         for sym, path in INCGFX_RE.findall(fh.read()):
+            path = re.sub(r"\.(?:4|8)bpp(?:\.lz)?$", ".png", path)
             if "_gba" in path:
                 sym_png.setdefault(sym, path)
             else:

@@ -24,11 +24,13 @@
 #include "graphics.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "generated/bpe_release.h"
 
 enum {
     TAG_VERSION = 1000,
     TAG_PRESS_START_COPYRIGHT,
     TAG_LOGO_SHINE,
+    TAG_BPE_RELEASE,
 };
 
 #define VERSION_BANNER_RIGHT_TILEOFFSET 64
@@ -306,6 +308,37 @@ static const struct SpritePalette sSpritePalette_PressStart[] =
     },
     {},
 };
+
+// The label and this build identity are generated from the same BPE version.
+static const char sBpeReleaseIdentity[] = BPE_RELEASE_MARKER;
+static const u16 sBpeReleasePalette[16] = {RGB_BLACK, RGB_WHITE};
+static const struct SpriteSheet sBpeReleaseSheet = {sBpeReleaseTiles, sizeof(sBpeReleaseTiles), TAG_BPE_RELEASE};
+static const struct SpritePalette sBpeReleaseSpritePalette = {sBpeReleasePalette, TAG_BPE_RELEASE};
+static const struct SpriteTemplate sBpeReleaseTemplate =
+{
+    .tileTag = TAG_BPE_RELEASE,
+    .paletteTag = TAG_BPE_RELEASE,
+    .oam = &sOamData_CopyrightBanner,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy,
+};
+
+static void CreateBpeReleaseLabel(void)
+{
+    u32 i;
+    // Keep the ASCII identity in the release ROM, including when LTO is enabled.
+    asm volatile("" : : "r"(sBpeReleaseIdentity));
+    LoadSpriteSheet(&sBpeReleaseSheet);
+    LoadSpritePalette(&sBpeReleaseSpritePalette);
+    for (i = 0; i < 5; i++)
+    {
+        u8 spriteId = CreateSprite(&sBpeReleaseTemplate, 56 + 32 * i, 130, 0);
+        if (spriteId != MAX_SPRITES)
+            gSprites[spriteId].oam.tileNum += i * 4;
+    }
+}
 
 static const struct OamData sPokemonLogoShineOamData =
 {
@@ -757,6 +790,7 @@ static void Task_TitleScreenPhase2(u8 taskId)
                                     | DISPCNT_OBJ_ON);
         CreatePressStartBanner(START_BANNER_X, 108);
         CreateCopyrightBanner(START_BANNER_X, 148);
+        CreateBpeReleaseLabel();
         if (QUICKSTART && QUICKSTART_HUD)
             CreateQuickstartHud();
         gTasks[taskId].tBg1Y = 0;

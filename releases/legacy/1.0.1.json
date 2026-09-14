@@ -1,0 +1,29 @@
+{
+  "baseRom": {
+    "crc32": "1F1C08FB",
+    "sha256": "a9dec84dfe7f62ab2220bafaef7479da0929d066ece16a6885f6226db19085af",
+    "size": 16777216
+  },
+  "legacyArchive": "BPEDocumentation/site/patches/BlackPearlEmerald_v1.0.1.zip",
+  "legacyArchiveSha256": "860de27a0e69e9bd73e58f05ccf2290b3c32ad3dc7670b483278d1b444e7ab05",
+  "outputRom": {
+    "crc32": "033F628D",
+    "sha256": "fe706ff40cabdc020ad971c5a0e8f10f55139ef51b39ac82b244b3d7072b9a28",
+    "size": 33554432
+  },
+  "patch": {
+    "crc32": "2144DF1C",
+    "file": "BlackPearlEmerald_v1.0.1.ups",
+    "format": "ups",
+    "sha256": "3e39eda746db92a87d9a7291b92c9f8844ceddda4b0401fc35fd26eacabbf648",
+    "size": 33448933
+  },
+  "provenance": {
+    "gameInputFilesVerified": 18718,
+    "method": "Original source archive with matching Git game inputs; official patch applied locally matches the archived release ROM byte for byte.",
+    "sourceTree": "1d0fd3425a6192053daf55777b664a1438170191"
+  },
+  "schemaVersion": 1,
+  "sourceCommit": "ed784bef37b5d37431867c57fb03c958913398a0",
+  "version": "1.0.1"
+}

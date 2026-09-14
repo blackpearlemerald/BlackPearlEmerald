@@ -951,6 +951,7 @@ async function main() {
   }
 
   window.bpe = { map, world, W2LL, focusMap };
+  window.addEventListener('bpe:headerresize', function () { map.invalidateSize({ pan: false }); });
 
   // Honour ?map=MAP_ID (+ optional &item=/&gift=/&mart=) — clicking a location
   // in the Pokédex / item pages deep-links here.

@@ -19,19 +19,21 @@ The agreed design is **upload a patch package to publish a release**. Read
 before implementing or changing the game version, release packaging,
 documentation export, version selector, patcher, or publication workflows.
 
-## Implementation status
+## Implementation status and operating instructions
 
-- The linked document is an approved direction and implementation plan, not a description of working automation. No release packaging helper or versioned publishing pipeline has been implemented by this documentation change.
-- The existing patcher loads the official 1.0.1 patch. The existing documentation workflow publishes committed site files without running the exporters.
-- Update this status and the linked plan when implementation changes those facts. Do not tell the user that uploading a package will publish a release until the complete workflow has been implemented and verified.
+- The local helper, title label, exporters, selector, patcher, archive builder and Actions workflows are implemented. End-to-end hosted publication is being verified as part of the initial rollout; do not confuse a local preview with a deployed release.
+- Read [RELEASING.md](BPEDocumentation/RELEASING.md) for the concrete commands, validation, retries and documentation corrections. Keep that operator guide current when changing the workflow.
+- `BPE_VERSION.json` is the shared version setting. Use `python BPETools/prepare_release.py set-version <version>`, commit the source, then `python BPETools/prepare_release.py build --base-rom "<local clean ROM>"`. The default package output is `.release-work/packages/`.
+- Publish only the generated package by adding it to `releases/packages/` on `main`. Never stage `.release-work/`, a `.gba` or `BPETools/release.local.json`. Verify the active GitHub account and local author before committing or pushing.
+- Before release tooling changes, run `python -m unittest discover -s BPETools/tests -v` and `python BPEDocumentation/scripts/releases.py --validate-only`, plus an actual export/browser check when the change affects publication or the site. Hosted success must be confirmed in the BPE Documentation workflow.
 
-## Release procedure to implement
+## Release procedure
 
 1. The maintainer chooses a BPE version before building locally. One version configuration must generate the in-game title-screen label, package filename, and release metadata. Do not repurpose the upstream `GAME_VERSION` setting, which selects Emerald/FireRed/LeafGreen.
 2. Commit the release source, including its version configuration. Build and package from that exact clean source commit; ensure the commit is available in the remote repository before publication.
 3. Build the game and create and round-trip-test the patch locally, using the maintainer's local clean Emerald ROM. Keep both the original ROM and compiled `.gba` files on the maintainer's PC. Never put either ROM in Git, GitHub Releases, Actions artifacts, caches, packages, or uploads.
 4. Produce one ZIP, such as `BlackPearlEmerald_v2.0.0-beta.zip`, containing the patch and generated `release.json`. Metadata must identify the source commit, version, patch checksum, expected base-ROM checksum, and expected output checksum. The filename determines the public release identifier but must agree with the metadata and the version at the recorded source commit.
-5. Upload/commit the package under the planned `releases/packages/` directory. Publication starts when that package reaches `main`. GitHub exports documentation from the recorded source commit, validates the package and site, and publishes the matching documentation and patch together. A separate local Actions runner is not part of this design.
+5. Upload/commit the package under `releases/packages/`. Publication starts when that package reaches `main`. GitHub exports documentation from the recorded source commit, validates the package and site, and publishes the matching documentation and patch together. A separate local Actions runner is not part of this design.
 
 ## Invariants for future work
 
@@ -42,5 +44,5 @@ documentation export, version selector, patcher, or publication workflows.
 - Released patch bytes and their source/version mapping are immutable. Reject reused version identifiers with different content. Exact reruns may resume a failed publication without creating a duplicate.
 - Preserve older release documentation and patches. Documentation-only corrections may retain the game version, with a separate documentation revision rebuilt against that release's pinned source. Never silently replace historical data with current game data.
 - Publish only complete, validated documentation/patch pairs. Missing or invalid patches must not silently fall back to another version. Failed builds or deployments must leave the previous public site intact.
-- Backfill 1.0.1 from verified historical source. Commit `3adfc461062b48b6cd0218f05d07baee32872572` (`1.0.1 OFFICIAL`) and the original local source archive are candidates, not yet proven exact matches to the official patch. Older formats require importer support; current documentation is not a valid substitute.
+- The verified 1.0.1 source is `ed784bef37b5d37431867c57fb03c958913398a0`, retained by tag `bpe/source/1.0.1`. Its 18,718 tracked inputs match the original archive, and the official patch reproduces that archive's game exactly. Keep the legacy record and source tag; current documentation is not a substitute.
 - Game/save compatibility is separate from documentation version selection. Do not promise that saves can move between game versions without separate testing.

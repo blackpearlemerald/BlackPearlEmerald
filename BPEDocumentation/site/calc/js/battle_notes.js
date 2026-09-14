@@ -100,8 +100,8 @@ $('#save-state').click(function(){
 
     // $('#battle-notes .notes-text').append(stateHTML)
 
-    localStorage.notes = $('#battle-notes .notes-text').html()
-    localStorage.states = JSON.stringify(states)
+    BPEStorage.notes = $('#battle-notes .notes-text').html()
+    BPEStorage.states = JSON.stringify(states)
 })
 
 
@@ -117,7 +117,7 @@ $('.notes-text').on("mouseup keyup", function () {
 
 
 $('#battle-notes .notes-text').blur(function() {
-    localStorage.notes = $('#battle-notes .notes-text').html()
+    BPEStorage.notes = $('#battle-notes .notes-text').html()
 })
 
 $(document).on('click', '.state', function() {

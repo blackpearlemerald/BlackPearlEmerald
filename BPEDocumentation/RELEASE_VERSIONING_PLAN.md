@@ -1,8 +1,9 @@
 # BPE patch-package releases and versioned documentation
 
-Status: agreed design; implementation pending. This plan and the repository's
-`AGENTS.md` record the maintainer's decisions. They do not enable the proposed
-automation by themselves.
+Status: implemented; initial hosted rollout verification is in progress. The
+local build, patch verification, historical export and versioned preview have
+passed their initial checks. See [RELEASING.md](RELEASING.md) for the operating
+procedure. This document preserves the accepted design and acceptance criteria.
 
 ## Outcome and maintainer workflow
 
@@ -31,7 +32,7 @@ does not require a self-hosted Actions runner, remote ROM storage, or a GitHub
 game-build job for publication. Existing unrelated CI can be reviewed separately;
 it must never upload original or compiled ROMs.
 
-## Current repository findings
+## Original repository findings (before implementation)
 
 - `site/js/patcher.js` and `site/patcher.html` hard-code 1.0.1. Its official UPS
   patch is in `site/patches/BlackPearlEmerald_v1.0.1.zip`.

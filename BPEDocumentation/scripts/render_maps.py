@@ -12,7 +12,7 @@ from PIL import Image
 import common as C
 
 TILES_RE = re.compile(
-    r'(gTilesetTiles_\w+)\[\]\s*=\s*INCGFX_\w+\("([^"]+tiles\.png)"')
+    r'(gTilesetTiles_\w+)\[\]\s*=\s*INC(?:GFX|BIN)_\w+\("([^"]+tiles\.(?:png|4bpp(?:\.lz)?))"')
 # in headers.h: "gTileset_X =" struct ... ".tiles = gTilesetTiles_Y,"
 HEADER_TILESET_RE = re.compile(
     r'gTileset_(\w+)\s*=\s*\{.*?\.tiles\s*=\s*(gTilesetTiles_\w+)',

@@ -5,8 +5,8 @@ dbName = "Frags"
 // Adds frag count of prevos to any new mons found
 function importEncounters() {
 	// Initialize encounter list if doesn't exist
-	if (localStorage.encounters) {
-		currentEncounters = JSON.parse(localStorage.encounters)
+	if (BPEStorage.encounters) {
+		currentEncounters = JSON.parse(BPEStorage.encounters)
 	} else {
 		currentEncounters = {}
 	}
@@ -43,13 +43,13 @@ function importEncounters() {
 	  	}	  	
 	  } 
 	}
-	localStorage.encounters = JSON.stringify(currentEncounters)  	
+	BPEStorage.encounters = JSON.stringify(currentEncounters)
 	return currentEncounters
 }
 
 function watchLocalStorageProperty(propertyName, callback) {
   window.addEventListener('storage', (event) => {
-    // The storage event only fires when localStorage is changed in OTHER tabs/windows
+    // The storage event only fires when BPEStorage is changed in OTHER tabs/windows
     if (event.key === propertyName) {
       callback({
         key: event.key,
@@ -62,8 +62,8 @@ function watchLocalStorageProperty(propertyName, callback) {
 }
 
 function getEncounters() {
-	if (localStorage.encounters && localStorage.encounters != "" ) {
-		return JSON.parse(localStorage.encounters)
+	if (BPEStorage.encounters && BPEStorage.encounters != "" ) {
+		return JSON.parse(BPEStorage.encounters)
 	} else {
 		return {}
 	}
@@ -72,7 +72,7 @@ function getEncounters() {
 }
 
 function resetEncounters() {
-	localStorage.encounters = ""
+	BPEStorage.encounters = ""
 	if (typeof customSets != "undefined") {
 		return importEncounters()
 	}
@@ -102,12 +102,12 @@ function addFrag(e) {
 
 
 
-	let currentEncounters = JSON.parse(localStorage.encounters)
+	let currentEncounters = JSON.parse(BPEStorage.encounters)
 
 	if (currentEncounters[speciesName] && currentEncounters[speciesName].frags.indexOf(fragged) == -1 ) {
 		currentEncounters[speciesName].fragCount += 1
 		currentEncounters[speciesName].frags.push(fragged) 
-		localStorage.encounters = JSON.stringify(currentEncounters)
+		BPEStorage.encounters = JSON.stringify(currentEncounters)
 
 		$('#p2 .frag-text').show()
 
@@ -121,7 +121,7 @@ function addFrag(e) {
 	} else if (currentEncounters[speciesName].frags.indexOf(fragged) != -1) {
 		currentEncounters[speciesName].frags = currentEncounters[speciesName].frags.filter(item => item !== fragged)
 		currentEncounters[speciesName].fragCount -= 1
-		localStorage.encounters = JSON.stringify(currentEncounters)
+		BPEStorage.encounters = JSON.stringify(currentEncounters)
 
 		$('#p2 .unfrag-text').show()
 
@@ -144,10 +144,10 @@ function toggleEncounterStatus(e) {
 		return
 	}
 	let speciesName = $('.select2-chosen')[0].innerHTML.split(" (")[0]
-	let currentEncounters = JSON.parse(localStorage.encounters)
+	let currentEncounters = JSON.parse(BPEStorage.encounters)
 
 	currentEncounters[speciesName].alive = !currentEncounters[speciesName].alive
-	localStorage.encounters = JSON.stringify(currentEncounters)
+	BPEStorage.encounters = JSON.stringify(currentEncounters)
 
 	if (currentEncounters[speciesName].alive) {
 		$('#p1 .unfrag-text').show()
@@ -192,7 +192,7 @@ function prevoData(speciesName, encounters) {
 
 $(document).ready(function(){
 	$(document).on('click', '#p2 .poke-sprite', addFrag)
-	if (localStorage.encounters && localStorage.encounters != "") {
+	if (BPEStorage.encounters && BPEStorage.encounters != "") {
 		$('#fragsheet-howto').show()
 	}
 	// $(document).on('contextmenu', '#p1 .poke-sprite', toggleEncounterStatus)
@@ -208,9 +208,9 @@ $(document).ready(function(){
 	watchLocalStorageProperty('customsets', (data) => {
 	  console.log("Customsets Updated, refreshing table")
 
-	  customSets = JSON.parse(localStorage.customsets)
+	  customSets = JSON.parse(BPEStorage.customsets)
 
-	  delete SETDEX_BW[localStorage.toDelete]['My Box']
+	  delete SETDEX_BW[BPEStorage.toDelete]['My Box']
 
             // $(`[data-id='${$('.set-selector')[0].value}']`).remove()
 

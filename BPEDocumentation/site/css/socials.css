@@ -3,7 +3,7 @@ body.page-socials {
   height: auto;
   box-sizing: border-box;
   overflow-y: auto;
-  padding-top: 48px;
+  padding-top: var(--bpe-header-height, 48px);
   color: #e8eef5;
   background:
     radial-gradient(circle at 12% 14%, rgba(77, 184, 122, 0.12), transparent 32rem),

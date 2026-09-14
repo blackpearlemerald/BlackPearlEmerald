@@ -86,8 +86,7 @@ py -m http.server -d site 8000
   post-game shop NPCs outside the Pokémon League each appear as their own named
   vendor. A vendor gated behind `checktrainerflag` reads "After defeating
   &lt;trainer&gt;". Items list every shop that stocks them under "Where to Find".
-- **Guides** are the one hand-authored layer: the `GUIDE_NOTES` table at the
-  bottom of `extract_world.py`. Nothing in the game data records "BPE moved this
+- **Guides** are the one hand-authored layer: `BPEDocumentation/content/guides.json` at the selected game source commit. Nothing in the game data records "BPE moved this
   somewhere else", so relocations that would strand a player working from
   vanilla knowledge get a 🧭 marker pinned to a tile, with an optional `goto`
   that chains one note to the next (Route 120 bridge → Steven on Mt. Pyre →
@@ -99,16 +98,11 @@ py -m http.server -d site 8000
 
 ## Publish to GitHub Pages
 
-The planned replacement for the current publication process is documented in
-[Release versioning plan](RELEASE_VERSIONING_PLAN.md): build and create a patch
-locally, then upload one patch package to publish the matching documentation
-and patch as a selectable release. That automation is not implemented yet;
-the description below documents the current behavior.
+Follow [RELEASING.md](RELEASING.md): choose a version, build and verify locally,
+then upload the generated ZIP under `releases/packages/` on `main`. The
+**BPE Documentation** Action exports the pinned game source and publishes all
+release snapshots together. The original and compiled ROMs stay on your PC.
 
-The `site/` folder is fully static and committed (including the generated
-images, JSON, patcher runtime, and release patch), so no site build runs on
-GitHub. The repository's `.github/workflows/docs.yml` workflow uploads only
-`BPEDocumentation/site` and deploys it to GitHub Pages whenever that directory
-changes on `main`. In the repository's Pages settings, select **GitHub
-Actions** as the source once; no separate documentation repository or branch
-is needed.
+The [accepted versioning plan](RELEASE_VERSIONING_PLAN.md) records the design
+and acceptance checks. `site/` contains frontend source and local preview data;
+publication assembles fresh versioned snapshots into `.release-work/site/`.

@@ -19,41 +19,41 @@ function init_calc() {
 
 
   // local storage settings defaults
-  if (typeof localStorage.boxspriteindex === 'undefined') {
-    localStorage.boxspriteindex = 0
+  if (typeof BPEStorage.boxspriteindex === 'undefined') {
+    BPEStorage.boxspriteindex = 0
   }
-  if (typeof localStorage.themeIndex === 'undefined') {
-    localStorage.themeIndex = 1
+  if (typeof BPEStorage.themeIndex === 'undefined') {
+    BPEStorage.themeIndex = 1
   }
 
-  localStorage.toDelete = ""
+  BPEStorage.toDelete = ""
 
-  if (parseInt(localStorage.themeIndex) == 0) {
+  if (parseInt(BPEStorage.themeIndex) == 0) {
     $('body, html').addClass('old')
   }
-  sprite_style = boxSprites[parseInt(localStorage.boxspriteindex)] || boxSprites[0]
+  sprite_style = boxSprites[parseInt(BPEStorage.boxspriteindex)] || boxSprites[0]
   
-  if (!parseInt(localStorage.boxrolls)) {
-    localStorage.boxrolls = 0
+  if (!parseInt(BPEStorage.boxrolls)) {
+    BPEStorage.boxrolls = 0
   } else {
     $('#player-poks-filter').show()
   }
 
   // if first time
-  if (typeof localStorage.battlenotes === 'undefined') {
-    localStorage.battlenotes = '1'
-  } else if (localStorage.battlenotes == '0'){
+  if (typeof BPEStorage.battlenotes === 'undefined') {
+    BPEStorage.battlenotes = '1'
+  } else if (BPEStorage.battlenotes == '0'){
     $('.poke-import').first().hide()
   } 
 
-  if (localStorage.states && isValidJSON(localStorage.states)) {
-    states = JSON.parse(localStorage.states)
+  if (BPEStorage.states && isValidJSON(BPEStorage.states)) {
+    states = JSON.parse(BPEStorage.states)
   } else {
     states = {}
   }
   
-  if (localStorage.notes) {
-    $('#battle-notes .notes-text').html(localStorage.notes);
+  if (BPEStorage.notes) {
+    $('#battle-notes .notes-text').html(BPEStorage.notes);
   }
 
   setSettingsTogglesFromLocalStorage()
@@ -63,13 +63,13 @@ function setSettingsTogglesFromLocalStorage() {
     if (sprite_style == "pokesprite") {
         $('#sprite-toggle input').prop('checked', true)
     }
-    if (localStorage.themeIndex == '1') {
+    if (BPEStorage.themeIndex == '1') {
         $('#theme-toggle input').prop('checked', true)
     }
-    if (localStorage.boxrolls == '1') {
+    if (BPEStorage.boxrolls == '1') {
         $('#toggle-boxroll input').prop('checked', true)
     }
-    if (localStorage.battlenotes == '1') {
+    if (BPEStorage.battlenotes == '1') {
         $('#toggle-battle-notes input').prop('checked', true)
     }
 }
@@ -157,7 +157,7 @@ function setOpposing(id) {
     
 
     currentTrainerSet = id
-    localStorage["right"] = currentTrainerSet
+    BPEStorage["right"] = currentTrainerSet
 
     $('.opposing').val(currentTrainerSet)
     $('.opposing').change()
@@ -367,7 +367,7 @@ function get_trainer_poks(trainer_name)
 
 
 function box_rolls() {
-    if (!parseInt(localStorage.boxrolls)) {
+    if (!parseInt(BPEStorage.boxrolls)) {
         return
     }
     var box = get_box()
@@ -569,7 +569,7 @@ function get_current_learnset() {
 }
 
 function exportAll() {
-    $('.import-team-text').val(JSON.stringify(localStorage.customsets))
+    $('.import-team-text').val(JSON.stringify(BPEStorage.customsets))
 }
 
 
@@ -607,9 +607,9 @@ function displayParty() {
 }
 
 function toggleBoxSpriteStyle() {
-    var oldStyle = boxSprites[parseInt(localStorage.boxspriteindex)] || boxSprites[0]
-    localStorage.boxspriteindex = (parseInt(localStorage.boxspriteindex) + 1) % 2
-    sprite_style = boxSprites[parseInt(localStorage.boxspriteindex)] || boxSprites[0]
+    var oldStyle = boxSprites[parseInt(BPEStorage.boxspriteindex)] || boxSprites[0]
+    BPEStorage.boxspriteindex = (parseInt(BPEStorage.boxspriteindex) + 1) % 2
+    sprite_style = boxSprites[parseInt(BPEStorage.boxspriteindex)] || boxSprites[0]
 
     $('.player-poks').removeClass(oldStyle)
     $('.player-poks').addClass(sprite_style)
@@ -624,16 +624,16 @@ function toggleBoxSpriteStyle() {
 $('#theme-toggle .slider').click(toggleThemes)
 
 function toggleThemes() {
-    var oldStyle = themes[parseInt(localStorage.themeIndex)]
-    localStorage.themeIndex = (parseInt(localStorage.themeIndex) + 1) % 2
-    themeStyle = themes[parseInt(localStorage.themeIndex)]
+    var oldStyle = themes[parseInt(BPEStorage.themeIndex)]
+    BPEStorage.themeIndex = (parseInt(BPEStorage.themeIndex) + 1) % 2
+    themeStyle = themes[parseInt(BPEStorage.themeIndex)]
 
     $('html, body').removeClass(oldStyle)
     $('html, body').addClass(themeStyle)
 }
 
 function toggle_box_rolls() {
-    localStorage.boxrolls = (parseInt(localStorage.boxrolls) + 1) % 2   
+    BPEStorage.boxrolls = (parseInt(BPEStorage.boxrolls) + 1) % 2
 }
 
 $('#toggle-boxroll .slider').click(function(){
@@ -645,7 +645,7 @@ $('#toggle-boxroll .slider').click(function(){
 })
 
 $('#toggle-battle-notes .slider').click(function(){
-    localStorage.battlenotes = (parseInt(localStorage.battlenotes) + 1) % 2   
+    BPEStorage.battlenotes = (parseInt(BPEStorage.battlenotes) + 1) % 2
     $('.poke-import').first().toggle()
 })
 
@@ -1083,9 +1083,9 @@ function loadDataSource(data) {
     init_calc() 
 
 
-    if (localStorage.customsets) {
+    if (BPEStorage.customsets) {
         console.log("loading box")
-        customSets = JSON.parse(localStorage.customsets);
+        customSets = JSON.parse(BPEStorage.customsets);
         updateDex(customSets)   
         get_box()
     }
@@ -1350,8 +1350,8 @@ $(document).ready(function() {
                     }
 
                     setTimeout(function() {
-                        if (localStorage["left"]) {
-                            var set = localStorage["right"]
+                        if (BPEStorage["left"]) {
+                            var set = BPEStorage["right"]
                             $('.opposing').val(set)
                             $('.opposing').change()
                             $('.opposing .select2-chosen').text(set)
@@ -1371,8 +1371,8 @@ $(document).ready(function() {
                           })
                         }
 
-                        if (localStorage["right"]) {
-                            $(`[data-id='${localStorage["left"]}']`).click()
+                        if (BPEStorage["right"]) {
+                            $(`[data-id='${BPEStorage["left"]}']`).click()
                         }             
                     }, 20)
 
@@ -1394,8 +1394,8 @@ $(document).ready(function() {
             final_type_chart = construct_type_chart()
 
             setTimeout(function() {
-                if (localStorage["left"]) {
-                    var set = localStorage["right"]
+                if (BPEStorage["left"]) {
+                    var set = BPEStorage["right"]
                     $('.opposing').val(set)
                     $('.opposing').change()
                     $('.opposing .select2-chosen').text(set)
@@ -1404,8 +1404,8 @@ $(document).ready(function() {
                     }
                 }
 
-                if (localStorage["right"]) {
-                    $(`[data-id='${localStorage["left"]}']`).click()
+                if (BPEStorage["right"]) {
+                    $(`[data-id='${BPEStorage["left"]}']`).click()
                 }             
             }, 100)
            
@@ -1420,7 +1420,7 @@ $(document).ready(function() {
 
         currentTrainerSet = customLeads[tr_id].split("[")[0]
 
-        localStorage["right"] = currentTrainerSet
+        BPEStorage["right"] = currentTrainerSet
 
         $('.opposing').val(currentTrainerSet)
         $('.opposing').change()
@@ -1469,11 +1469,11 @@ $(document).ready(function() {
 
    $(document).on('click', '#box-remove', function() {
         var species = $('.set-selector')[0].value.split(" (")[0]
-        var sets = JSON.parse(localStorage.customsets)
+        var sets = JSON.parse(BPEStorage.customsets)
         if (confirm(`Delete ${species} from imported sets?`)) {
             delete sets[species]['My Box']
             delete SETDEX_BW[species]['My Box']
-            localStorage.customsets = JSON.stringify(sets)
+            BPEStorage.customsets = JSON.stringify(sets)
             $(`[data-id='${$('.set-selector')[0].value}']`).remove()
         }
    })
@@ -1735,12 +1735,12 @@ $(document).ready(function() {
 
     $(document).on('click', '.trainer-pok.left-side', function() {
         var set = $(this).attr('data-id')
-        localStorage["left"] = set 
+        BPEStorage["left"] = set
         $('.player').val(set)
 
         let speciesName = extractPokemonName(set)
 
-        if (typeof localStorage.encounters != "undefined") {
+        if (typeof BPEStorage.encounters != "undefined") {
             let encounters = getEncounters()
 
             if (encounters[speciesName] && encounters[speciesName].setData && encounters[speciesName].setData["My Box"] && encounters[speciesName].setData["My Box"].met) {

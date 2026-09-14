@@ -389,7 +389,7 @@ def parse_mart_scripts(content):
     if not item_lists:
         return []
 
-    # 2. Build script label→body map
+    # 2. Build script labelâ†’body map
     scripts = {}
     for m in re.finditer(r"^(\w+)::(.*?)(?=^\w+::|\Z)",
                           content, re.MULTILINE | re.DOTALL):
@@ -403,7 +403,7 @@ def parse_mart_scripts(content):
 
     clerk_body = scripts[clerk_label]
 
-    # 4. Conditional jumps in the clerk script → derive conditions & ordering.
+    # 4. Conditional jumps in the clerk script â†’ derive conditions & ordering.
     # 'unset' tiers are the early/basic state (rank 0). 'set' tiers unlock later;
     # because the clerk checks the most-advanced flag FIRST, the set tiers are
     # reversed so the earliest-unlocking one gets the lowest rank. This keeps
@@ -428,7 +428,7 @@ def parse_mart_scripts(content):
     seen_set = 0
     for kind, flag, list_label in cond_tiers:
         if kind == "set":
-            rank = n_set - seen_set   # first-checked (most advanced) → highest
+            rank = n_set - seen_set   # first-checked (most advanced) â†’ highest
             seen_set += 1
         else:
             rank = 0
@@ -464,19 +464,19 @@ def parse_mart_scripts(content):
 
 
 def _spaced(ident):
-    """`LilycoveCity_DepartmentStore_2F` → `Lilycove City Department Store 2F`.
+    """`LilycoveCity_DepartmentStore_2F` â†’ `Lilycove City Department Store 2F`.
 
     The lookbehinds deliberately exclude digits so floor markers stay intact
     ("2F", not "2 F").
     """
     s = ident.replace("_", " ")
-    s = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", s)       # cityMart → city Mart
-    s = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", s)  # TMClerk  → TM Clerk
-    s = re.sub(r"(?<=[a-z])(?=\d)", " ", s)          # Store2F  → Store 2F
+    s = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", s)       # cityMart â†’ city Mart
+    s = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", s)  # TMClerk  â†’ TM Clerk
+    s = re.sub(r"(?<=[a-z])(?=\d)", " ", s)          # Store2F  â†’ Store 2F
     return re.sub(r"\s+", " ", s).strip()
 
 
-# `checktrainerflag TRAINER_X` immediately followed by `goto_if TRUE, <shop>` —
+# `checktrainerflag TRAINER_X` immediately followed by `goto_if TRUE, <shop>` â€”
 # the idiom for an NPC whose shop only opens once you have beaten them.
 SHOP_TRAINER_GATE_RE = re.compile(
     r"\bchecktrainerflag\s+(TRAINER_[A-Z0-9_]+)\s*\n\s*goto_if\s+TRUE,\s*(\w+)")
@@ -484,13 +484,13 @@ SHOP_FLAG_GATE_RE = re.compile(r"\bgoto_if_(set|unset)\s+(FLAG_\w+),\s*(\w+)")
 
 
 def parse_shop_scripts(content, trainer_names):
-    """Parse `pokemart` vendors in a map that is not a dedicated Poké Mart.
+    """Parse `pokemart` vendors in a map that is not a dedicated PokÃ© Mart.
 
-    Returns [{vendor, condition, items}] — one entry per vendor per tier.
+    Returns [{vendor, condition, items}] â€” one entry per vendor per tier.
 
     Unlike parse_mart_scripts this does not assume a single "Clerk": a map can
     hold several independent vendors (the Lilycove department-store floors, the
-    Slateport market stalls, the two post-game NPCs outside the Pokémon League).
+    Slateport market stalls, the two post-game NPCs outside the PokÃ©mon League).
     """
     item_lists = {}
     for m in re.finditer(
@@ -556,7 +556,7 @@ def parse_shop_scripts(content, trainer_names):
 
     out = []
     for entry in sorted(vendors):
-        # `Map_EventScript_EnergyGuru` → `Energy Guru`
+        # `Map_EventScript_EnergyGuru` â†’ `Energy Guru`
         vendor = vendor_names.get(entry) \
             or _spaced(re.sub(r"^.*?EventScript_", "", entry))
         for inv in sorted(vendors[entry], key=lambda i: i["_rank"]):
@@ -594,7 +594,7 @@ def parse_marts(trainer_names=None):
         if "mart" in dirname.lower():
             inventories = parse_mart_scripts(content)
             if inventories:
-                # "OldaleTown_Mart" → "Oldale Town"
+                # "OldaleTown_Mart" â†’ "Oldale Town"
                 raw = dirname.replace("_Mart", "").replace("_UnusedMart", "").replace("_", " ")
                 name = re.sub(r"([a-z])([A-Z])", r"\1 \2", raw)
                 result[map_id] = {"name": name, "inventories": inventories}
@@ -1057,32 +1057,9 @@ def assemble(maps):
 # Nothing in the game data says "this moved", so these are authored here and
 # pinned to a tile; `goto` chains a note to the map that now holds what the
 # player is after. Coordinates are map-local tiles, same as an object event.
-GUIDE_NOTES = [
-    {
-        "id": "route120-steven-moved",
-        "mapId": "MAP_ROUTE120", "x": 13, "y": 15,
-        "title": "Looking for Steven?",
-        "body": "In vanilla Emerald, Steven waits on this bridge and hands over "
-                "the Devon Scope. BPE moved him to the summit of Mt. Pyre, so "
-                "the Scope now comes later in the story — after the Team "
-                "Aqua/Magma clash up there. The bridge itself is clear: the "
-                "Kecleon that used to block it has been removed, and a "
-                "traveller stands here to point you the right way.",
-        "goto": {"mapId": "MAP_MT_PYRE_SUMMIT", "guide": "mtpyre-steven",
-                 "label": "Take me to Steven"},
-    },
-    {
-        "id": "mtpyre-steven",
-        "mapId": "MAP_MT_PYRE_SUMMIT", "x": 23, "y": 11,
-        "gfx": "OBJ_EVENT_GFX_STEVEN", "dir": "down",
-        "title": "Steven — Devon Scope",
-        "body": "Steven stands here at the summit. Talk to him to receive the "
-                "Devon Scope, which reveals the invisible Kecleon blocking the "
-                "way into Fortree City's Gym — so this is a hard "
-                "requirement for Badge 6.",
-        "goto": {"mapId": "MAP_FORTREE_CITY", "label": "On to Fortree Gym"},
-    },
-]
+# Guides belong to the selected game source, including historical exports.
+_guides_path = C.src("BPEDocumentation", "content", "guides.json")
+GUIDE_NOTES = C.load_json(_guides_path) if os.path.isfile(_guides_path) else []
 
 
 def build_guides(placed):

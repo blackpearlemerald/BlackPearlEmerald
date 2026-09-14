@@ -6,7 +6,7 @@
   background: #0d1b2a;
   color: #e8eef5;
   min-height: 100vh;
-  padding-top: 48px;
+  padding-top: var(--bpe-header-height, 48px);
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }

@@ -10,32 +10,7 @@
     <link type="text/css" rel="stylesheet" href="./css/encounters.css?2f51c970" />
     <link type="text/css" rel="stylesheet" href="./css/settings-ui.css?2f51c970" />
     <link type="text/css" rel="stylesheet" href="./css/vendor/bootstrap.css?1" />
-    <!-- Shared BPE docs nav bar (injected by ../js/nav.js). Nav-only styles,
-         copied from ../css/style.css to avoid pulling in page-level globals. -->
-    <style>
-      body { padding-top: 48px; }
-      #site-nav {
-        position: fixed; top: 0; left: 0; right: 0; height: 48px; z-index: 4000;
-        background: #141c28; border-bottom: 1px solid rgba(255,255,255,0.09);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.45);
-        display: flex; align-items: center; padding: 0 18px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      }
-      #site-nav .nav-brand {
-        font-weight: 700; font-size: 15px; color: #4db87a; letter-spacing: 0.2px;
-        margin-right: 20px; white-space: nowrap; flex-shrink: 0; text-decoration: none;
-      }
-      #site-nav .nav-links {
-        display: flex; align-items: center; gap: 2px; overflow-x: auto; scrollbar-width: none;
-      }
-      #site-nav .nav-links::-webkit-scrollbar { display: none; }
-      #site-nav .nav-link {
-        color: #9fb3c8; text-decoration: none; padding: 6px 14px; border-radius: 7px;
-        font-size: 14px; font-weight: 500; white-space: nowrap; transition: color .12s, background .12s;
-      }
-      #site-nav .nav-link:hover { color: #e8eef5; background: rgba(255,255,255,0.07); }
-      #site-nav .nav-link.active { color: #4db87a; background: rgba(77,184,122,0.13); font-weight: 600; }
-    </style>
+
     <script>
         params = new URLSearchParams(window.location.search)
         SOURCES = {"bpe": "BPE Emerald",
@@ -97,9 +72,11 @@
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
 
+  <script src="../js/release-context.js"></script>
+  <link rel="stylesheet" href="../css/header.css" />
 </head>
 
-<body>
+<body class="page-calc">
 <script src="../js/nav.js"></script>
 
 <!-- <div id="encounter-container">

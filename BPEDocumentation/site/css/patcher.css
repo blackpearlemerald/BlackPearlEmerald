@@ -7,7 +7,7 @@ body.page-patcher {
   min-height: 100%;
   height: auto;
   box-sizing: border-box;
-  padding-top: 48px;
+  padding-top: var(--bpe-header-height, 48px);
   color: #e8eef5;
   background:
     radial-gradient(circle at 16% 8%, rgba(35, 132, 84, 0.18), transparent 29rem),

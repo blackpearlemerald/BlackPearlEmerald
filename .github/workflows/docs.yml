@@ -2,41 +2,73 @@ name: BPE Documentation
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
-      - "BPEDocumentation/site/**"
-      - ".github/workflows/docs.yml"
+      - 'releases/packages/*.zip'
+      - 'releases/legacy/*.json'
+      - '.github/workflows/docs.yml'
   workflow_dispatch:
+    inputs:
+      correct_version:
+        description: 'Optional: game version whose documentation needs a correction'
+        required: false
+        type: string
+      docs_revision:
+        description: 'For corrections: next documentation revision (2, 3, ...). Existing revisions are immutable.'
+        required: false
+        default: '1'
+        type: string
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# Each run reconciles all packages on current main. A newer queued run therefore
+# includes packages from superseded pending runs; published history is retained.
 concurrency:
   group: github-pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  publish:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CORRECT_VERSION: ${{ inputs.correct_version }}
+      DOCS_REVISION: ${{ inputs.docs_revision || '1' }}
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v7
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v6
-
-      - name: Upload BPE documentation site
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install documentation dependencies
+        run: python -m pip install -r BPEDocumentation/requirements.txt
+      - name: Test release package integrity
+        run: python -m unittest discover -s BPETools/tests -v
+      - name: Assemble all published releases and new patch packages
+        shell: bash
+        run: |
+          args=(--github)
+          if [ -n "$CORRECT_VERSION" ]; then
+            args+=(--correct-version "$CORRECT_VERSION" --docs-revision "$DOCS_REVISION")
+          fi
+          python BPEDocumentation/scripts/releases.py "${args[@]}"
+      - uses: actions/configure-pages@v6
+      - name: Upload only the assembled website and patches
         uses: actions/upload-pages-artifact@v5
         with:
-          path: BPEDocumentation/site
-
-      - name: Deploy to GitHub Pages
+          path: .release-work/site
+      - name: Deploy versioned documentation
         id: deployment
         uses: actions/deploy-pages@v5

@@ -67,16 +67,16 @@ html, body {
    MAP PAGE — shift map and panel below navbar
    ============================================================ */
 body.page-map #map {
-  top: 48px;
+  top: var(--bpe-header-height, 48px);
 }
 body.page-map #panel {
-  top: 60px;   /* 48px nav + 12px margin */
+  top: calc(var(--bpe-header-height, 48px) + 12px);   /* 48px nav + 12px margin */
 }
 body.page-map #panel-toggle {
-  top: 60px;
+  top: calc(var(--bpe-header-height, 48px) + 12px);
 }
 body.page-map #loading {
-  top: 48px;
+  top: var(--bpe-header-height, 48px);
 }
 
 /* ============================================================
@@ -86,7 +86,7 @@ body.page-placeholder {
   background: #0d1b2a;
   color: #e8eef5;
   min-height: 100vh;
-  padding-top: 48px;
+  padding-top: var(--bpe-header-height, 48px);
   box-sizing: border-box;
 }
 
@@ -132,7 +132,7 @@ body.page-search {
   background: #0d1b2a;
   color: #e8eef5;
   min-height: 100vh;
-  padding-top: 48px;
+  padding-top: var(--bpe-header-height, 48px);
   box-sizing: border-box;
 }
 
@@ -909,7 +909,7 @@ body.page-search {
 
 .detail-card {
   position: absolute;
-  top: 60px;
+  top: calc(var(--bpe-header-height, 48px) + 12px);
   right: 12px;
   width: 384px;
   max-width: calc(100vw - 24px);
@@ -1260,7 +1260,7 @@ a.enc-mon { cursor: pointer; }
 /* ----- mobile ----- */
 @media (max-width: 640px) {
   #panel { display: none; min-width: 180px; }
-  #panel.open { display: block; top: 60px; }
+  #panel.open { display: block; top: calc(var(--bpe-header-height, 48px) + 12px); }
   #panel-toggle { display: block; }
   .leaflet-popup-content { max-width: 78vw; }
   /* map page: panel toggle already shifted to 60px; open panel follows */

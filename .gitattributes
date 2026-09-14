@@ -9,6 +9,7 @@ charmap.txt text eol=lf
 *.json text eol=lf
 *.sed text eol=lf
 *.cpp text eol=lf
+check_history.sh text eol=lf
 .gitattributes text eol=lf
 .gitignore text eol=lf
 *.hpp text eol=lf

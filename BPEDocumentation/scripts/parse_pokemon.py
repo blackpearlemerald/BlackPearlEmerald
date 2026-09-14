@@ -14,13 +14,14 @@ Usage:  py parse_pokemon.py
 
 import re, json, os, sys, glob, shutil
 from pathlib import Path
+import common as C
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 
 HERE = Path(__file__).resolve().parent
 DOC_ROOT = HERE.parent
-REPO = DOC_ROOT.parent
-SITE = DOC_ROOT / "site"
+REPO = Path(C.SRC_ROOT)
+SITE = Path(C.SITE)
 DATA_DIR = SITE / "data"
 SPECIES_DIR = DATA_DIR / "species"
 SPRITES_DIR = SITE / "sprites" / "pokemon"
@@ -80,7 +81,10 @@ def gen_config():
     """
     if _GEN_CONFIG_CACHE:
         return _GEN_CONFIG_CACHE
-    general = strip_c_comments(read_file(REPO / "include" / "config" / "general.h"))
+    config_path = REPO / "include/config/general.h"
+    if not config_path.exists():
+        config_path = REPO / "include/config.h"
+    general = strip_c_comments(read_file(config_path))
     for m in re.finditer(r"#define\s+(GEN_\w+)\s+(\d+)\s*$", general, re.M):
         _GEN_CONFIG_CACHE[m.group(1)] = int(m.group(2))
     # GEN_LATEST is defined in terms of another GEN_ constant.
@@ -127,7 +131,7 @@ def prettify_map(map_id):
 def parse_dex_numbers():
     path = REPO / "include" / "constants" / "pokedex.h"
     content = read_file(path)
-    m = re.search(r"enum NationalDexOrder\s*\{(.*?)\}", content, re.DOTALL)
+    m = re.search(r"enum(?:\s+NationalDexOrder)?\s*\{(.*?)\}", content, re.DOTALL)
     if not m:
         return {}
     dex_map = {}
@@ -159,7 +163,7 @@ def parse_moves():
     content = strip_c_comments(read_file(path))
     moves = {}
     for key, block in find_blocks(content, r"\[MOVE_(\w+)\]\s*="):
-        name_m = re.search(r'\.name\s*=\s*COMPOUND_STRING\("([^"]+)"\)', block)
+        name_m = re.search(r'\.name\s*=\s*(?:COMPOUND_STRING|HANDLE_EXPANDED_MOVE_NAME)\("([^"]+)"', block)
         if not name_m:
             continue
         # Type: may be a conditional; grab the first TYPE_X token after '.type ='
@@ -235,6 +239,9 @@ def parse_egg_moves():
 
 def parse_teachable_learnsets():
     path = REPO / "src" / "data" / "pokemon" / "teachable_learnsets.h"
+    if (REPO / "src/data/pokemon/all_learnables.json").exists():
+        from teachable_data import build
+        return build(REPO)
     content = read_file(path)
     teachable = {}
     pat = re.compile(r"static const u16 s(\w+)TeachableLearnset\[\]\s*=\s*\{(.*?)\};", re.DOTALL)

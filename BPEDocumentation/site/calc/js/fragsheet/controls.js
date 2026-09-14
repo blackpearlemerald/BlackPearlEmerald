@@ -19,7 +19,7 @@ function importSheet() {
                 try {
                     // Parse JSON content and set encounters variable
                     encounters = JSON.parse(e.target.result);
-                    localStorage.encounters = JSON.stringify(encounters);
+                    BPEStorage.encounters = JSON.stringify(encounters);
                     
                     // Clean up - remove from DOM
                     document.body.removeChild(fileInput);
@@ -78,7 +78,7 @@ function exportSheet(obj, filename = 'data.json') {
 
 function resetSheet() {
     if (confirm("Are you sure you want to wipe all encounter and frag data? Remember to download a backup of your fragsheet if you would like to save your data.")) {
-        localStorage.encounters = ""
+        BPEStorage.encounters = ""
         location.reload()
     }
 }

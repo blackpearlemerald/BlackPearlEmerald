@@ -11,14 +11,15 @@ Usage:  py parse_items.py
 
 import re, json, os
 from pathlib import Path
+import common as C
 from PIL import Image
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
 
 HERE     = Path(__file__).resolve().parent
 DOC_ROOT = HERE.parent
-REPO     = DOC_ROOT.parent
-SITE     = DOC_ROOT / "site"
+REPO     = Path(C.SRC_ROOT)
+SITE     = Path(C.SITE)
 DATA_DIR = SITE / "data"
 ITEMS_DIR = DATA_DIR / "items"
 ICONS_DST = SITE / "sprites" / "items"
@@ -89,15 +90,18 @@ def parse_gfx_symbols():
     icons, palettes = {}, {}
     # gItemIcon_X[] = INCGFX_U32("graphics/items/icons/x.png", ...)
     for m in re.finditer(r'(gItemIcon_\w+)\[\]\s*=\s*INC\w+\(\s*"([^"]+)"', text):
-        icons[m.group(1)] = m.group(2)
+        icons[m.group(1)] = re.sub(r"\.(?:4|8)bpp(?:\.lz)?$", ".png", m.group(2))
     # gItemIconPalette_Y[] = INCGFX_U16("graphics/items/icon_palettes/y.pal", ...)
     for m in re.finditer(r'(gItemIconPalette_\w+)\[\]\s*=\s*INC\w+\(\s*"([^"]+)"', text):
-        palettes[m.group(1)] = m.group(2)
+        palettes[m.group(1)] = re.sub(r"\.gbapal(?:\.lz)?$", ".pal", m.group(2))
     return icons, palettes
 
 
 def parse_type_tmhm_palettes():
     """Build {TYPE_NAME: palette symbol} from gTypesInfo[].paletteTMHM."""
+    if not TYPES_INFO_H.exists():
+        # Older releases specify their icon palette directly on the item.
+        return {}
     text = strip_c_comments(read_file(TYPES_INFO_H))
     out = {}
     for m in re.finditer(
@@ -142,10 +146,9 @@ def parse_items(shared_descs):
     content = strip_c_comments(raw)
 
     # Only look inside gItemsInfo[] (avoids matching enum declarations above)
-    array_m = re.search(r"const struct ItemInfo gItemsInfo\[\]\s*=\s*\{", content)
+    array_m = re.search(r"const struct Item(?:Info)? gItemsInfo\[\]\s*=\s*\{", content)
     if not array_m:
-        print("  ERROR: gItemsInfo[] not found in items.h")
-        return []
+        raise ValueError("gItemsInfo[] not found in items.h")
 
     body = content[array_m.end():]
     items = []
@@ -263,11 +266,17 @@ def render_icons(items):
         print("  ! moves.json not found — TM/HM icons will use a default color")
 
     rendered = missing = 0
+    legacy_icons = {}
+    legacy_table = REPO / "src/data/item_icon_table.h"
+    if legacy_table.exists():
+        legacy_icons = {key: (icon, palette) for key, icon, palette in re.findall(r"\[ITEM_(\w+)\]\s*=\s*\{(gItemIcon_\w+),\s*(gItemIconPalette_\w+)\}", read_file(legacy_table))}
     for item in items:
         key = item["id"]
         icon_sym = pal_sym = None
 
-        if item["pocket"] == "POCKET_TM_HM":
+        if key in legacy_icons:
+            icon_sym, pal_sym = legacy_icons[key]
+        elif item["pocket"] == "POCKET_TM_HM":
             # TM/HM: a TM/HM disc colored by the move's type. The item->move
             # link is ITEM_TM_<MOVE>/ITEM_HM_<MOVE> -> MOVE_<MOVE>, so the move
             # is the key minus its prefix (HMs have no .secondaryId field).
