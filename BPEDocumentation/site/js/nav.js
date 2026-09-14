@@ -10,7 +10,7 @@
     ['index.html', 'Interactive Map', 'index'], ['search.html', 'Global Search', 'search'],
     ['pokedex.html', 'Pokédex', 'pokedex'], ['trainers.html', 'Trainers', 'trainers'],
     ['items.html', 'Items', 'items'], [null, 'Damage Calculator', 'calc'],
-    ['patcher.html', 'The Patcher', 'patcher'], ['socials.html', 'Socials', 'socials']
+    ['patcher.html', 'Rom Patcher', 'patcher'], ['socials.html', 'Socials', 'socials']
   ];
   var header = document.createElement('header');
   header.id = 'site-header';

@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Patch a clean Pokémon Emerald ROM into Pokémon Black Pearl Emerald directly in your browser." />
-  <title>BPE Emerald — The Patcher</title>
+  <meta name="description" content="Patch your unmodified Pokémon Emerald ROM with your selected Black Pearl Emerald version." />
+  <title>BPE Emerald — Rom Patcher</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="rom-patcher-js/style.css" />
   <link rel="stylesheet" href="css/patcher.css" />
@@ -14,140 +14,34 @@
 </head>
 <body class="page-patcher">
   <script src="js/nav.js"></script>
-
   <main class="patcher-shell">
-    <header class="patcher-header">
-      <div>
-        <div class="patcher-kicker">Loading selected release…</div>
-        <h1>The Patcher</h1>
-        <p>Choose a clean Pokémon Emerald ROM. The BPE patch is already loaded and runs entirely on this device.</p>
-      </div>
-      <div class="release-chip" aria-label="Patch status: ready to install">
-        <span class="release-chip-dot" aria-hidden="true"></span>
-        Official release patch
-      </div>
-    </header>
-
-    <div class="patcher-layout">
-      <section class="patcher-card" aria-labelledby="patcher-card-title">
-        <div class="patcher-card-heading">
-          <span class="step-number" aria-hidden="true">1</span>
-          <div>
-            <h2 id="patcher-card-title">Choose your Emerald ROM</h2>
-            <p>Use an unmodified US copy of Pokémon Emerald in <code>.gba</code> or <code>.zip</code> format.</p>
-          </div>
+    <h1>Rom Patcher</h1>
+    <div id="rom-patcher-container">
+      <div class="patcher-flow">
+        <div class="patcher-input">
+          <label for="rom-patcher-input-file-rom">Pokémon Emerald <span>Unmodified ROM</span></label>
+          <input type="file" id="rom-patcher-input-file-rom" class="empty"
+            accept=".gba,.zip,application/octet-stream,application/zip" disabled />
         </div>
-
-        <div id="rom-patcher-container">
-          <div class="rom-patcher-row" id="rom-patcher-row-file-rom">
-            <div class="rom-file-label">
-              <label for="rom-patcher-input-file-rom">Pokémon Emerald ROM</label>
-              <span>Nothing is uploaded</span>
-            </div>
-            <div class="rom-patcher-container-input">
-              <input
-                type="file"
-                id="rom-patcher-input-file-rom"
-                class="empty"
-                accept=".gba,.zip,application/octet-stream,application/zip"
-                aria-describedby="patcher-base-note"
-                disabled
-              />
-            </div>
-          </div>
-
-          <div id="rom-patcher-row-file-patch" class="patcher-internal" aria-hidden="true">
-            <select id="rom-patcher-select-patch" tabindex="-1" aria-label="BPE release patch"></select>
-          </div>
-          <div id="rom-patcher-row-patch-description" class="patcher-internal">
-            <span id="rom-patcher-patch-description"></span>
-          </div>
-          <div id="rom-patcher-row-patch-requirements" class="patcher-internal">
-            <span id="rom-patcher-patch-requirements-type"></span>
-            <span id="rom-patcher-patch-requirements-value"></span>
-          </div>
-
-          <div id="patcher-status" class="patcher-status is-loading" role="status" aria-live="polite">
-            <span class="patcher-status-icon" aria-hidden="true"></span>
-            <div>
-              <strong id="patcher-status-title">Preparing the BPE patch…</strong>
-              <span id="patcher-status-copy">This may take a moment on a slower connection.</span>
-            </div>
-          </div>
-
-          <div id="rom-patcher-row-apply" class="text-center">
-            <div id="rom-patcher-row-error-message" class="margin-bottom">
-              <span id="rom-patcher-error-message"></span>
-            </div>
-            <button id="rom-patcher-button-apply" disabled>Patch &amp; download</button>
-          </div>
-
-          <details class="patcher-technical">
-            <summary>ROM details</summary>
-            <div id="rom-patcher-rom-info" class="text-selectable text-mono text-muted">
-              <div class="rom-patcher-row">
-                <div>CRC32</div>
-                <div class="text-truncate"><span id="rom-patcher-span-crc32">—</span></div>
-              </div>
-              <div class="rom-patcher-row">
-                <div>MD5</div>
-                <div class="text-truncate"><span id="rom-patcher-span-md5">—</span></div>
-              </div>
-              <div class="rom-patcher-row">
-                <div>SHA-1</div>
-                <div class="text-truncate"><span id="rom-patcher-span-sha1">—</span></div>
-              </div>
-              <div class="rom-patcher-row" id="rom-patcher-row-info-rom">
-                <div>ROM</div>
-                <div class="text-truncate"><span id="rom-patcher-span-rom-info"></span></div>
-              </div>
-            </div>
-          </details>
+        <span class="patcher-symbol" aria-hidden="true">+</span>
+        <div class="patcher-version">
+          <strong>Black Pearl Emerald</strong>
+          <span id="bpe-patch-label">Loading version…</span>
         </div>
-      </section>
-
-      <aside class="patcher-help" aria-label="Patching information">
-        <section class="help-card">
-          <h2>What happens next</h2>
-          <ol class="patcher-steps">
-            <li>
-              <span>1</span>
-              <div><strong>Your ROM is checked</strong><small>It must match the clean US release.</small></div>
-            </li>
-            <li>
-              <span>2</span>
-              <div><strong>BPE is applied automatically</strong><small>The work stays inside your browser.</small></div>
-            </li>
-            <li>
-              <span>3</span>
-              <div><strong>Your patched ROM downloads</strong><small>Open the new <code>.gba</code> file in your emulator.</small></div>
-            </li>
-          </ol>
-        </section>
-
-        <section class="help-card help-card-quiet" id="patcher-base-note">
-          <h2>Required base game</h2>
-          <dl class="base-details">
-            <div><dt>Game</dt><dd>Pokémon Emerald (USA)</dd></div>
-            <div><dt>CRC32</dt><dd><code>1F1C08FB</code></dd></div>
-            <div><dt>Patch</dt><dd id="bpe-patch-label">Loading selected release…</dd></div>
-          </dl>
-        </section>
-      </aside>
+        <span class="patcher-symbol patcher-arrow" aria-hidden="true">→</span>
+        <button id="rom-patcher-button-apply" disabled>Patch &amp; Download</button>
+      </div>
+      <p id="patcher-status" role="status" aria-live="polite">Loading patch…</p>
+      <!-- Required hooks for the bundled patching engine; no extra user controls. -->
+      <div hidden>
+        <div id="rom-patcher-row-file-patch">
+          <select id="rom-patcher-select-patch" aria-label="BPE release patch" tabindex="-1"></select>
+        </div>
+        <div id="rom-patcher-row-error-message"><span id="rom-patcher-error-message"></span></div>
+      </div>
     </div>
-
-    <section class="patcher-notes" aria-label="Privacy and credits">
-      <p><strong>Bring your own game.</strong> You must supply a legally obtained Pokémon Emerald ROM. The BPE website does not provide, store, or upload the original game.</p>
-      <p>
-        Patching technology by <a href="https://github.com/marcrobledo/RomPatcher.js/" target="_blank" rel="noopener noreferrer">Marc Robledo</a>,
-        self-hosted and customized for BPE Emerald under the <a href="rom-patcher-js/LICENSE">MIT License</a>.
-      </p>
-    </section>
+    <noscript>Enable JavaScript to use the Rom Patcher.</noscript>
   </main>
-
-  <noscript>
-    <div class="patcher-noscript">JavaScript is required to patch the ROM in your browser.</div>
-  </noscript>
   <script src="js/patcher.js"></script>
 </body>
 </html>
