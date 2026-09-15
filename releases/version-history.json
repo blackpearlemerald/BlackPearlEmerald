@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.0.4": {
+      "channel": "beta",
+      "changes": [
+        "Prevented rare black-screen crashes while running through grass in areas with many on-screen effects."
+      ]
+    },
     "2.0.3": {
       "channel": "beta",
       "changes": [
