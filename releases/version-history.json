@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.0.3": {
+      "channel": "beta",
+      "changes": [
+        "Awarded the National Pokédex alongside the regular Pokédex and upgraded existing saves automatically."
+      ]
+    },
     "2.0.2": {
       "channel": "beta",
       "changes": [
