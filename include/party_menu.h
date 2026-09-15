@@ -150,6 +150,7 @@ bool8 PlayerHasMove(u16 move); // BPE: used for modern HM field move checks
 
 #if TESTING
 s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 chooseHalf, u8 lastSelectedSlot);
+bool32 Test_ShouldConsumeLevelUpItem(enum Item item);
 #endif
 
 #endif // GUARD_PARTY_MENU_H

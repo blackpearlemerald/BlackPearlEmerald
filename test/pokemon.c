@@ -1,5 +1,6 @@
 #include "global.h"
 #include "battle.h"
+#include "caps.h"
 #include "egg_hatch.h"
 #include "event_data.h"
 #include "new_game.h"
@@ -9,6 +10,41 @@
 #include "constants/characters.h"
 #include "constants/daycare.h"
 #include "constants/move_relearner.h"
+
+TEST("Candy Jar raises a Pokemon to each badge-based level cap")
+{
+    static const u16 sProgressFlags[] = {
+        FLAG_BADGE01_GET,
+        FLAG_BADGE02_GET,
+        FLAG_BADGE03_GET,
+        FLAG_BADGE04_GET,
+        FLAG_BADGE05_GET,
+        FLAG_BADGE06_GET,
+        FLAG_BADGE07_GET,
+        FLAG_BADGE08_GET,
+        FLAG_IS_CHAMPION,
+    };
+    static const u8 sExpectedCaps[] = {15, 24, 33, 42, 51, 60, 69, 78, 90, 100};
+    struct Pokemon mon;
+
+    for (u32 i = 0; i < ARRAY_COUNT(sProgressFlags); i++)
+        FlagClear(sProgressFlags[i]);
+
+    CreateMon(&mon, SPECIES_WOBBUFFET, 5, 0, OTID_STRUCT_PRESET(0));
+
+    for (u32 i = 0; i < ARRAY_COUNT(sExpectedCaps); i++)
+    {
+        enum GrowthRate growthRate = gSpeciesInfo[SPECIES_WOBBUFFET].growthRate;
+
+        EXPECT_EQ(GetCurrentLevelCap(), sExpectedCaps[i]);
+        EXPECT(!PokemonUseItemEffects(&mon, ITEM_CANDY_JAR, 0, 0, FALSE));
+        EXPECT_EQ(GetMonData(&mon, MON_DATA_LEVEL), sExpectedCaps[i]);
+        EXPECT_EQ(GetMonData(&mon, MON_DATA_EXP), gExperienceTables[growthRate][sExpectedCaps[i]]);
+
+        if (i < ARRAY_COUNT(sProgressFlags))
+            FlagSet(sProgressFlags[i]);
+    }
+}
 
 TEST("Nature independent from Hidden Nature")
 {

@@ -3492,7 +3492,10 @@ const u32 sExpCandyExperienceTable[] = {
     [EXP_3000 - 1] = 3000,
     [EXP_10000 - 1] = 10000,
     [EXP_30000 - 1] = 30000,
+    [EXP_999999 - 1] = 999999, // BPE Candy Jar: clamped to the current level cap below.
 };
+
+STATIC_ASSERT(EXP_999999 <= ARRAY_COUNT(sExpCandyExperienceTable), CandyJarExpTierMissing)
 
 // Returns TRUE if the item has no effect on the Pokémon, FALSE otherwise
 bool8 PokemonUseItemEffects(struct Pokemon *mon, enum Item item, u8 partyIndex, u8 moveIndex, bool8 usedByAI)

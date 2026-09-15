@@ -48,6 +48,21 @@ static EWRAM_DATA u16 *sDynamicMenuEventScratchPad = NULL;
 
 static u8 sLilycoveSSTidalSelections[SSTIDAL_SELECTION_COUNT];
 
+struct EventTicketFlag
+{
+    enum Item item;
+    u16 destinationFlag;
+    u16 receivedFlag;
+};
+
+static const struct EventTicketFlag sEventTicketFlags[] =
+{
+    {ITEM_EON_TICKET,    FLAG_ENABLE_SHIP_SOUTHERN_ISLAND, 0},
+    {ITEM_MYSTIC_TICKET, FLAG_ENABLE_SHIP_NAVEL_ROCK,      FLAG_RECEIVED_MYSTIC_TICKET},
+    {ITEM_AURORA_TICKET, FLAG_ENABLE_SHIP_BIRTH_ISLAND,    FLAG_RECEIVED_AURORA_TICKET},
+    {ITEM_OLD_SEA_MAP,   FLAG_ENABLE_SHIP_FARAWAY_ISLAND,  FLAG_RECEIVED_OLD_SEA_MAP},
+};
+
 static void FreeListMenuItems(struct ListMenuItem *items, u32 count);
 static void Task_HandleScrollingMultichoiceInput(u8 taskId);
 static void Task_HandleMultichoiceInput(u8 taskId);
@@ -59,6 +74,8 @@ static void InitMultichoiceCheckWrap(bool8 ignoreBPress, u8 count, u8 windowId, 
 static void DrawLinkServicesMultichoiceMenu(u8 multichoiceId);
 static void CreatePCMultichoice(void);
 static void CreateLilycoveSSTidalMultichoice(void);
+static void BackfillEventTicketFlags(void);
+static bool32 IsEventTicketDestinationAvailable(enum Item item, u16 destinationFlag);
 static bool8 IsPicboxClosed(void);
 static void CreateStartMenuForPokenavTutorial(void);
 static void InitMultichoiceNoWrap(bool8 ignoreBPress, u8 unusedCount, u8 windowId, u8 multichoiceId);
@@ -799,6 +816,8 @@ static void CreateLilycoveSSTidalMultichoice(void)
     u8 i;
     u32 j;
 
+    BackfillEventTicketFlags();
+
     for (i = 0; i < SSTIDAL_SELECTION_COUNT; i++)
     {
         sLilycoveSSTidalSelections[i] = 0xFF;
@@ -818,7 +837,7 @@ static void CreateLilycoveSSTidalMultichoice(void)
         }
     }
 
-    if (CheckBagHasItem(ITEM_EON_TICKET, 1) == TRUE && FlagGet(FLAG_ENABLE_SHIP_SOUTHERN_ISLAND) == TRUE)
+    if (IsEventTicketDestinationAvailable(ITEM_EON_TICKET, FLAG_ENABLE_SHIP_SOUTHERN_ISLAND))
     {
         if (gSpecialVar_0x8004 == 0)
         {
@@ -834,7 +853,7 @@ static void CreateLilycoveSSTidalMultichoice(void)
         }
     }
 
-    if (CheckBagHasItem(ITEM_MYSTIC_TICKET, 1) == TRUE && FlagGet(FLAG_ENABLE_SHIP_NAVEL_ROCK) == TRUE)
+    if (IsEventTicketDestinationAvailable(ITEM_MYSTIC_TICKET, FLAG_ENABLE_SHIP_NAVEL_ROCK))
     {
         if (gSpecialVar_0x8004 == 0)
         {
@@ -850,7 +869,7 @@ static void CreateLilycoveSSTidalMultichoice(void)
         }
     }
 
-    if (CheckBagHasItem(ITEM_AURORA_TICKET, 1) == TRUE && FlagGet(FLAG_ENABLE_SHIP_BIRTH_ISLAND) == TRUE)
+    if (IsEventTicketDestinationAvailable(ITEM_AURORA_TICKET, FLAG_ENABLE_SHIP_BIRTH_ISLAND))
     {
         if (gSpecialVar_0x8004 == 0)
         {
@@ -866,7 +885,7 @@ static void CreateLilycoveSSTidalMultichoice(void)
         }
     }
 
-    if (CheckBagHasItem(ITEM_OLD_SEA_MAP, 1) == TRUE && FlagGet(FLAG_ENABLE_SHIP_FARAWAY_ISLAND) == TRUE)
+    if (IsEventTicketDestinationAvailable(ITEM_OLD_SEA_MAP, FLAG_ENABLE_SHIP_FARAWAY_ISLAND))
     {
         if (gSpecialVar_0x8004 == 0)
         {
@@ -928,6 +947,24 @@ static void CreateLilycoveSSTidalMultichoice(void)
     }
 }
 
+static void BackfillEventTicketFlags(void)
+{
+    for (u32 i = 0; i < ARRAY_COUNT(sEventTicketFlags); i++)
+    {
+        if (CheckBagHasItem(sEventTicketFlags[i].item, 1))
+        {
+            FlagSet(sEventTicketFlags[i].destinationFlag);
+            if (sEventTicketFlags[i].receivedFlag != 0)
+                FlagSet(sEventTicketFlags[i].receivedFlag);
+        }
+    }
+}
+
+static bool32 IsEventTicketDestinationAvailable(enum Item item, u16 destinationFlag)
+{
+    return CheckBagHasItem(item, 1) && FlagGet(destinationFlag);
+}
+
 void GetLilycoveSSTidalSelection(void)
 {
     if (gSpecialVar_Result != MULTI_B_PRESSED)
@@ -935,6 +972,25 @@ void GetLilycoveSSTidalSelection(void)
         gSpecialVar_Result = sLilycoveSSTidalSelections[gSpecialVar_Result];
     }
 }
+
+#if TESTING
+u32 Test_GetAvailableEventTicketDestinations(void)
+{
+    u32 destinations = 0;
+
+    BackfillEventTicketFlags();
+    if (IsEventTicketDestinationAvailable(ITEM_EON_TICKET, FLAG_ENABLE_SHIP_SOUTHERN_ISLAND))
+        destinations |= 1 << SSTIDAL_SELECTION_SOUTHERN_ISLAND;
+    if (IsEventTicketDestinationAvailable(ITEM_MYSTIC_TICKET, FLAG_ENABLE_SHIP_NAVEL_ROCK))
+        destinations |= 1 << SSTIDAL_SELECTION_NAVEL_ROCK;
+    if (IsEventTicketDestinationAvailable(ITEM_AURORA_TICKET, FLAG_ENABLE_SHIP_BIRTH_ISLAND))
+        destinations |= 1 << SSTIDAL_SELECTION_BIRTH_ISLAND;
+    if (IsEventTicketDestinationAvailable(ITEM_OLD_SEA_MAP, FLAG_ENABLE_SHIP_FARAWAY_ISLAND))
+        destinations |= 1 << SSTIDAL_SELECTION_FARAWAY_ISLAND;
+
+    return destinations;
+}
+#endif
 
 #define tState       data[0]
 #define tMonSpecies  data[1]

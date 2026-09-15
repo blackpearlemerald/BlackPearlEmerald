@@ -213,6 +213,66 @@ class ArchiveTests(unittest.TestCase):
             with mock_patch.object(parse_pokemon, "gen_config", return_value={"P_UPDATED_STATS":generation,"GEN_6":6,"GEN_2":2}):
                 self.assertEqual(parse_pokemon._collect_stat_macros(source)["ALAKAZAM_SP_DEF"], expected)
 
+    def test_type_macros_match_release_configuration(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import parse_pokemon
+        source = """\
+#define CONDITIONAL_TYPE (P_UPDATED_TYPES >= GEN_6 ? TYPE_FAIRY : TYPE_PSYCHIC)
+#if P_UPDATED_TYPES >= GEN_6
+#define BRACED_TYPES { TYPE_FAIRY, TYPE_FAIRY }
+#else
+#define BRACED_TYPES { TYPE_NORMAL, TYPE_NORMAL }
+#endif
+#define DUAL_TYPES { TYPE_ELECTRIC, TYPE_GHOST }
+"""
+        cases = (
+            (9, ["PSYCHIC", "FAIRY"], ["FAIRY"]),
+            (3, ["PSYCHIC"], ["NORMAL"]),
+        )
+        for generation, conditional, braced in cases:
+            config = {"P_UPDATED_TYPES": generation, "GEN_6": 6}
+            with mock_patch.object(parse_pokemon, "gen_config", return_value=config):
+                macros = parse_pokemon._collect_object_macros(source)
+                self.assertEqual(
+                    parse_pokemon._parse_species_types(
+                        ".types = MON_TYPES(TYPE_PSYCHIC, CONDITIONAL_TYPE),", macros
+                    ),
+                    conditional,
+                )
+                self.assertEqual(parse_pokemon._parse_species_types(".types = BRACED_TYPES,", macros), braced)
+                self.assertEqual(
+                    parse_pokemon._parse_species_types(".types = DUAL_TYPES,", macros),
+                    ["ELECTRIC", "GHOST"],
+                )
+                with self.assertRaises(ValueError):
+                    parse_pokemon._parse_species_types(".types = UNKNOWN_TYPE_MACRO,", macros)
+
+    def test_generated_updated_types_do_not_fall_back_to_normal(self):
+        species_dir = Path(__file__).resolve().parents[2] / "BPEDocumentation/site/data/species"
+        expected = {
+            "RALTS": ["PSYCHIC", "FAIRY"],
+            "KIRLIA": ["PSYCHIC", "FAIRY"],
+            "GARDEVOIR": ["PSYCHIC", "FAIRY"],
+            "CLEFFA": ["FAIRY"],
+            "CLEFAIRY": ["FAIRY"],
+            "CLEFABLE": ["FAIRY"],
+            "IGGLYBUFF": ["NORMAL", "FAIRY"],
+            "JIGGLYPUFF": ["NORMAL", "FAIRY"],
+            "WIGGLYTUFF": ["NORMAL", "FAIRY"],
+            "MAGNEMITE": ["ELECTRIC", "STEEL"],
+            "MAGNETON": ["ELECTRIC", "STEEL"],
+            "TOGEPI": ["FAIRY"],
+            "TOGETIC": ["FAIRY", "FLYING"],
+            "TOGEKISS": ["FAIRY", "FLYING"],
+            "ROTOM": ["ELECTRIC", "GHOST"],
+            "COTTONEE": ["GRASS", "FAIRY"],
+            "WHIMSICOTT": ["GRASS", "FAIRY"],
+        }
+        for species, types in expected.items():
+            with self.subTest(species=species):
+                data = json.loads((species_dir / f"{species}.json").read_text(encoding="utf-8"))
+                self.assertEqual(data["types"], types)
+
     def test_archive_checksums_inventory_and_traversal(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
         import releases

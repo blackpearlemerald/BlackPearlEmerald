@@ -409,6 +409,7 @@ static void Task_HandleStopLearningMoveYesNoInput(u8);
 static void Task_TryLearningNextMoveAfterText(u8);
 static void BufferMonStatsToTaskData(struct Pokemon *, s16 *);
 static void UpdateMonDisplayInfoAfterRareCandy(u8, struct Pokemon *);
+static bool32 ShouldConsumeLevelUpItem(enum Item item);
 static void Task_DisplayLevelUpStatsPg1(u8);
 static void DisplayLevelUpStatsPg1(u8);
 static void Task_DisplayLevelUpStatsPg2(u8);
@@ -5948,7 +5949,8 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
         sFinalLevel = GetMonData(mon, MON_DATA_LEVEL);
         gPartyMenuUseExitCallback = TRUE;
         UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
-        RemoveBagItem(gSpecialVar_ItemId, 1);
+        if (ShouldConsumeLevelUpItem(gSpecialVar_ItemId))
+            RemoveBagItem(gSpecialVar_ItemId, 1);
         GetMonNickname(mon, gStringVar1);
         if (sFinalLevel > sInitialLevel)
         {
@@ -5980,6 +5982,11 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
             gTasks[taskId].func = task;
         }
     }
+}
+
+static bool32 ShouldConsumeLevelUpItem(enum Item item)
+{
+    return item != ITEM_CANDY_JAR;
 }
 
 static void UpdateMonDisplayInfoAfterRareCandy(u8 slot, struct Pokemon *mon)
@@ -8691,5 +8698,10 @@ s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 choose
 
     sPartyMenuInternal = savedInternal;
     return slotId;
+}
+
+bool32 Test_ShouldConsumeLevelUpItem(enum Item item)
+{
+    return ShouldConsumeLevelUpItem(item);
 }
 #endif

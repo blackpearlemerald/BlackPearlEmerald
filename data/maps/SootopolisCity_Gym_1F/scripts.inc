@@ -130,7 +130,9 @@ SootopolisCity_Gym_1F_EventScript_JuanDefeated::
 
 SootopolisCity_Gym_1F_EventScript_GiveWaterPulse::
 	giveitem ITEM_OLD_SEA_MAP
+	call_if_eq VAR_RESULT, TRUE, SootopolisCity_Gym_1F_EventScript_EnableFarawayIsland
 	giveitem ITEM_EON_TICKET
+	call_if_eq VAR_RESULT, TRUE, SootopolisCity_Gym_1F_EventScript_EnableSouthernIsland
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_WATER_PULSE
@@ -138,12 +140,23 @@ SootopolisCity_Gym_1F_EventScript_GiveWaterPulse::
 
 SootopolisCity_Gym_1F_EventScript_GiveWaterPulse2::
 	giveitem ITEM_OLD_SEA_MAP
+	call_if_eq VAR_RESULT, TRUE, SootopolisCity_Gym_1F_EventScript_EnableFarawayIsland
 	giveitem ITEM_EON_TICKET
+	call_if_eq VAR_RESULT, TRUE, SootopolisCity_Gym_1F_EventScript_EnableSouthernIsland
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
 	setflag FLAG_RECEIVED_TM_WATER_PULSE
 	release
 	end
+
+SootopolisCity_Gym_1F_EventScript_EnableFarawayIsland::
+	setflag FLAG_ENABLE_SHIP_FARAWAY_ISLAND
+	setflag FLAG_RECEIVED_OLD_SEA_MAP
+	return
+
+SootopolisCity_Gym_1F_EventScript_EnableSouthernIsland::
+	setflag FLAG_ENABLE_SHIP_SOUTHERN_ISLAND
+	return
 
 SootopolisCity_Gym_1F_EventScript_GoGetFortreeBadge::
 	msgbox SootopolisCity_Gym_1F_Text_GoGetFortreeBadge, MSGBOX_DEFAULT
@@ -285,4 +298,3 @@ SootopolisCity_Gym_1F_Text_JuanPostRematch:
 SootopolisCity_Gym_1F_Text_JuanRematchNeedTwoMons:
 	.string "I wish that you would return with\n"
 	.string "two, perhaps more, POKéMON, please.$"
-

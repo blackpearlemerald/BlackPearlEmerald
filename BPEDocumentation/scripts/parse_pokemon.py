@@ -444,6 +444,135 @@ def _collect_stat_macros(content):
         macros.setdefault(m[1], int(m[2]))
     return macros
 
+def _eval_config_condition(expression):
+    """Evaluate a simple C config comparison, or return None if it is unknown."""
+    m = re.fullmatch(r"\s*\(?\s*(\w+)\s*(>=|>|<=|<|==|!=)\s*(\w+|\d+)\s*\)?\s*", expression)
+    if not m:
+        return None
+    config = gen_config()
+
+    def value(token):
+        return int(token) if token.isdigit() else config.get(token)
+
+    lhs, rhs = value(m.group(1)), value(m.group(3))
+    if lhs is None or rhs is None:
+        return None
+    return {
+        ">=": lhs >= rhs,
+        ">": lhs > rhs,
+        "<=": lhs <= rhs,
+        "<": lhs < rhs,
+        "==": lhs == rhs,
+        "!=": lhs != rhs,
+    }[m.group(2)]
+
+def _collect_object_macros(raw_content):
+    """Collect active object-like macros while honoring known config branches.
+
+    Unknown feature guards are intentionally treated as active so that this
+    source parser can still inspect family-local definitions. Known generation
+    comparisons, including P_UPDATED_TYPES, select the same branch as the game.
+    """
+    text = strip_c_comments(_join_line_continuations(raw_content))
+    macros = {}
+    frames = []
+    active = True
+
+    for line in text.splitlines():
+        directive = re.match(r"\s*#\s*(if|elif|else|endif)\b\s*(.*)", line)
+        if directive:
+            kind, expression = directive.groups()
+            if kind == "if":
+                result = _eval_config_condition(expression)
+                frames.append({
+                    "parent": active,
+                    "known": result is not None,
+                    "taken": bool(result),
+                })
+                active = active and (bool(result) if result is not None else True)
+            elif kind == "elif" and frames:
+                frame = frames[-1]
+                if frame["known"]:
+                    result = _eval_config_condition(expression)
+                    active = frame["parent"] and not frame["taken"] and bool(result)
+                    frame["taken"] = frame["taken"] or bool(result)
+                else:
+                    active = frame["parent"]
+            elif kind == "else" and frames:
+                frame = frames[-1]
+                active = frame["parent"] and (not frame["taken"] if frame["known"] else True)
+                frame["taken"] = True
+            elif kind == "endif" and frames:
+                active = frames.pop()["parent"]
+            continue
+
+        if not active:
+            continue
+        define = re.match(r"\s*#\s*define\s+(\w+)[ \t]+(.+?)\s*$", line)
+        if define:
+            macros[define.group(1)] = define.group(2)
+
+    return macros
+
+def _expand_object_macros(expression, macros):
+    """Recursively expand object-like macros in a field initializer."""
+    for _ in range(25):
+        expanded = re.sub(
+            r"\b[A-Za-z_]\w*\b",
+            lambda match: f"({macros[match.group(0)]})" if match.group(0) in macros else match.group(0),
+            expression,
+        )
+        if expanded == expression:
+            return expanded
+        expression = expanded
+    return expression
+
+def _resolve_type_conditionals(expression):
+    """Resolve generation-gated TYPE_X ternaries inside a type initializer."""
+    conditional = re.compile(
+        r"\(\s*(\w+)\s*(>=|>|<=|<|==|!=)\s*(\w+|\d+)\s*"
+        r"\?\s*(TYPE_\w+)\s*:\s*(TYPE_\w+)\s*\)"
+    )
+    for _ in range(25):
+        match = conditional.search(expression)
+        if not match:
+            break
+        result = _eval_config_condition(" ".join(match.group(i) for i in (1, 2, 3)))
+        if result is None:
+            break
+        expression = expression[:match.start()] + match.group(4 if result else 5) + expression[match.end():]
+    return expression
+
+def _read_field_initializer(block, field):
+    """Read a C field initializer through its top-level trailing comma."""
+    match = re.search(rf"\.{re.escape(field)}\s*=\s*", block)
+    if not match:
+        return None
+    start = match.end()
+    depth = 0
+    for i in range(start, len(block)):
+        if block[i] in "({[":
+            depth += 1
+        elif block[i] in ")}]":
+            depth -= 1
+        elif block[i] == "," and depth == 0:
+            return block[start:i].strip()
+    return block[start:].strip()
+
+def _parse_species_types(block, type_macros):
+    """Resolve literal or macro-defined species types for the active config."""
+    expression = _read_field_initializer(block, "types")
+    if expression is None:
+        return ["NORMAL"]
+    expression = _resolve_type_conditionals(_expand_object_macros(expression, type_macros))
+    resolved = []
+    for type_name in re.findall(r"\bTYPE_(\w+)\b", expression):
+        if type_name not in resolved:
+            resolved.append(type_name)
+    if not resolved:
+        raise ValueError(f"Unable to resolve species type initializer: {expression}")
+    return resolved
+
 # ── Macro-defined species expansion ─────────────────────────────────────────────
 #
 # Many cosmetic / regional forms (Vivillon, Alcremie, Mothim, Scatterbug, Unown …)
@@ -666,6 +795,7 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
     for gen_file in sorted(info_dir.glob("gen_*_families.h")):
         raw_content = read_file(gen_file)
         stat_macros = _collect_stat_macros(raw_content)
+        type_macros = _collect_object_macros(raw_content)
         macros = collect_macros(raw_content)
         content = strip_c_comments(raw_content)
         for species_key, block in iter_species_decls(content, macros):
@@ -716,8 +846,7 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
             entry["baseStats"] = stats
 
             # Types
-            m = re.search(r"\.types\s*=\s*MON_TYPES\(TYPE_(\w+)(?:,\s*TYPE_(\w+))?\)", block)
-            entry["types"] = [m.group(1)] + ([m.group(2)] if m and m.group(2) else []) if m else ["NORMAL"]
+            entry["types"] = _parse_species_types(block, type_macros)
 
             # Abilities
             m = re.search(

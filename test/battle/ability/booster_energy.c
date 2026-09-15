@@ -190,7 +190,7 @@ SINGLE_BATTLE_TEST("Booster Energy can't be flinged if a Paradox species is invo
 
 {
     GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadoxForm == TRUE);
+        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadox == TRUE);
         PLAYER(SPECIES_IRON_MOTH);
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_BOOSTER_ENERGY); }
     } WHEN {
@@ -204,7 +204,7 @@ SINGLE_BATTLE_TEST("Booster Energy can't be flinged if a Paradox species is invo
 SINGLE_BATTLE_TEST("Booster Energy can't be tricked if a Paradox species is involved")
 {
     GIVEN {
-        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadoxForm == TRUE);
+        ASSUME(gSpeciesInfo[SPECIES_IRON_MOTH].isParadox == TRUE);
         PLAYER(SPECIES_IRON_MOTH) { Item(ITEM_BERRY_JUICE); }
         OPPONENT(SPECIES_WOBBUFFET) { Item(ITEM_BOOSTER_ENERGY); }
     } WHEN {

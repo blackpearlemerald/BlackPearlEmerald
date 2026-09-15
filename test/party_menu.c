@@ -45,3 +45,10 @@ TEST("Full multi partner party menu wraps cancel up to partner party count")
 
     EXPECT_EQ(Test_UpdatePartySelectionSingleLayout(PARTY_SIZE + 1, TEST_MENU_DIR_UP, FALSE, 0), 1);
 }
+
+TEST("Candy Jar is reusable while other level-up items are consumed")
+{
+    EXPECT(!Test_ShouldConsumeLevelUpItem(ITEM_CANDY_JAR));
+    EXPECT(Test_ShouldConsumeLevelUpItem(ITEM_RARE_CANDY));
+    EXPECT(Test_ShouldConsumeLevelUpItem(ITEM_EXP_CANDY_XL));
+}

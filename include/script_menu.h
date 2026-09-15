@@ -47,4 +47,8 @@ int ScriptMenu_AdjustLeftCoordFromWidth(int left, int width);
 bool16 ScriptMenu_CreatePCMultichoice(void);
 void ScriptMenu_DisplayPCStartupPrompt(void);
 
+#if TESTING
+u32 Test_GetAvailableEventTicketDestinations(void);
+#endif
+
 #endif //GUARD_SCRIPT_MENU_H

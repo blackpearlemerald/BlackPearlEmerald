@@ -5,7 +5,7 @@
     "x": 13,
     "y": 15,
     "title": "Looking for Steven?",
-    "body": "In vanilla Emerald, Steven waits on this bridge and hands over the Devon Scope. BPE moved him to the summit of Mt. Pyre, so the Scope now comes later in the story â€” after the Team Aqua/Magma clash up there. The bridge itself is clear: the Kecleon that used to block it has been removed, and a traveller stands here to point you the right way.",
+    "body": "In vanilla Emerald, Steven waits on this bridge and hands over the Devon Scope. BPE moved him to the summit of Mt. Pyre, so the Scope now comes later in the story — after the Team Aqua/Magma clash up there. The bridge itself is clear: the Kecleon that used to block it has been removed, and a traveller stands here to point you the right way.",
     "goto": {
       "mapId": "MAP_MT_PYRE_SUMMIT",
       "guide": "mtpyre-steven",
@@ -19,8 +19,8 @@
     "y": 11,
     "gfx": "OBJ_EVENT_GFX_STEVEN",
     "dir": "down",
-    "title": "Steven â€” Devon Scope",
-    "body": "Steven stands here at the summit. Talk to him to receive the Devon Scope, which reveals the invisible Kecleon blocking the way into Fortree City's Gym â€” so this is a hard requirement for Badge 6.",
+    "title": "Steven — Devon Scope",
+    "body": "Steven stands here at the summit. Talk to him to receive the Devon Scope, which reveals the invisible Kecleon blocking the way into Fortree City's Gym — so this is a hard requirement for Badge 6.",
     "goto": {
       "mapId": "MAP_FORTREE_CITY",
       "label": "On to Fortree Gym"

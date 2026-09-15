@@ -1,6 +1,15 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.0.2": {
+      "channel": "beta",
+      "changes": [
+        "Restored the reusable Candy Jar so it instantly raises a Pokémon to the current badge-based level cap.",
+        "Restored the 1.0.1 level-cap rules for battle experience, Rare Candies, and daycare growth.",
+        "Fixed event tickets so all four special-island ferry destinations unlock for new and existing saves.",
+        "Corrected Pokémon types shown throughout the documentation."
+      ]
+    },
     "2.0.1": {
       "channel": "beta",
       "changes": [
