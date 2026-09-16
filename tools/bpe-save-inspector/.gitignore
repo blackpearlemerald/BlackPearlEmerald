@@ -1,0 +1,49 @@
+# v0 sandbox internal files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.snowflake/
+.v0-trash/
+.vercel/
+
+# Environment variables
+.env*.local
+
+# Common ignores
+node_modules
+next-env.d.ts
+.next/
+.tmp/
+.cache/
+.DS_Store
+tsconfig.tsbuildinfo
+*.log
+__pycache__/
+*.py[cod]
+.bpe_layout_probe.o
+.profile-source-*/
+.profile-source-*.zip
+.test-report.json
+
+# Codex app local state
+.codex/
+
+# pnpm local store/cache
+.pnpm-store/
+
+# Emulator/local game data
+*.sav
+*.srm
+*.sa1
+*.sa2
+*.sn1
+*.sn2
+*.rtc
+*.state
+*.ss0
+*.ss1
+*.ss2
+*.sav.bak
+
+# Live adapter debug dumps
+live-adapters/gen2-live-snapshot.json

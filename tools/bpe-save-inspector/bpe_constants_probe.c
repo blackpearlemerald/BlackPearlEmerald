@@ -1,0 +1,5 @@
+#include "global.h"
+#include "constants/flags.h"
+#include "constants/vars.h"
+#include "constants/game_stat.h"
+#include "constants/maps.h"
