@@ -1,6 +1,18 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.0.5-beta": {
+      "channel": "beta",
+      "changes": [
+        "Fixed remaining out-of-sprite crashes in grass, rain and other busy overworld scenes.",
+        "Restored modern HMs for Surf and Fly: having HM03 or HM02 in the bag is enough, as in 1.0.1.",
+        "Made Battle Style default to Set, locked to Set in Nuzlocke mode and switchable in Options in Standard mode.",
+        "Catching Mew now uses up the pre-Elite Four legendary pick, and legendaries no longer respawn after Champion rematches.",
+        "Zapdos now disappears immediately after its battle.",
+        "Gave each Granite Cave item ball its own pickup flag so Steelixite and Sablenite can no longer be missed.",
+        "Re-enabled the developer menu: hold Select and press Start in the overworld."
+      ]
+    },
     "2.0.4": {
       "channel": "beta",
       "changes": [

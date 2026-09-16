@@ -100,6 +100,8 @@ EverGrandeCity_ChampionsRoom_EventScript_BirchArrivesExitForHoF::
 	setflag FLAG_HIDE_LEGENDARY_GUARD_RAYQ
 	setflag FLAG_HIDE_LEGENDARY_GUARD
 	setflag FLAG_HIDE_SAFARI_BLOCK
+	@ BPE: legendaries unlock only on the first Champion win, so caught ones don't respawn on rematches
+	goto_if_set FLAG_SYS_GAME_CLEAR, EverGrandeCity_ChampionsRoom_EventScript_HOFWarp
 	clearflag FLAG_HIDE_OVERWORLD_ARTICUNO
 	clearflag FLAG_HIDE_OVERWORLD_MOLTRES
 	clearflag FLAG_HIDE_OVERWORLD_ENTEI

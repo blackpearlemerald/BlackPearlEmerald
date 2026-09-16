@@ -270,7 +270,7 @@ Legendary_EventScript_BattleZapdos::
     waitmoncry
     dowildbattle
     fadescreenswapbuffers FADE_TO_BLACK
-    removeobject(9)
+    removeobject LOCALID_NEW_MAUVILLE_ZAPDOS
 	setvar VAR_PREE4_LEGENDARY 5
 	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
     setflag FLAG_HIDE_OVERWORLD_ZAPDOS

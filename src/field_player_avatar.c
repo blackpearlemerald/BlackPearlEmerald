@@ -1630,6 +1630,9 @@ bool8 PartyHasMonWithSurf(void)
             if (MonKnowsMove(&gParties[B_TRAINER_PLAYER][i], MOVE_SURF))
                 return TRUE;
         }
+        // BPE: Modern HM system — HM03 in the bag is enough to surf
+        if (PlayerHasMove(MOVE_SURF))
+            return TRUE;
     }
     return FALSE;
 }

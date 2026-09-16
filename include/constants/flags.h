@@ -56,9 +56,9 @@
 #define FLAG_UNUSED_0x022    0x22 // Unused Flag
 #define FLAG_UNUSED_0x023    0x23 // Unused Flag
 #define FLAG_UNUSED_0x024    0x24 // Unused Flag
-#define FLAG_UNUSED_0x025    0x25 // Unused Flag
-#define FLAG_UNUSED_0x026    0x26 // Unused Flag
-#define FLAG_UNUSED_0x027    0x27 // Unused Flag
+#define FLAG_ITEM_GRANITE_CAVE_B1F_PROTECTIVE_PADS 0x25 // BPE: formerly unused
+#define FLAG_ITEM_GRANITE_CAVE_B1F_PUNCHING_GLOVE  0x26 // BPE: formerly unused
+#define FLAG_ITEM_GRANITE_CAVE_B2F_LOADED_DICE     0x27 // BPE: formerly unused
 #define FLAG_UNUSED_0x028    0x28 // Unused Flag
 #define FLAG_UNUSED_0x029    0x29 // Unused Flag
 #define FLAG_UNUSED_0x02A    0x2A // Unused Flag

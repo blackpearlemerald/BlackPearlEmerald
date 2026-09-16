@@ -26,7 +26,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_PROTECTIVE_PADS",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_GRANITE_CAVE_B1F_POKE_BALL"
+      "flag": "FLAG_ITEM_GRANITE_CAVE_B1F_PROTECTIVE_PADS"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
@@ -39,7 +39,7 @@
       "trainer_type": "TRAINER_TYPE_NONE",
       "trainer_sight_or_berry_tree_id": "ITEM_PUNCHING_GLOVE",
       "script": "Common_EventScript_FindItem",
-      "flag": "FLAG_ITEM_GRANITE_CAVE_B1F_POKE_BALL"
+      "flag": "FLAG_ITEM_GRANITE_CAVE_B1F_PUNCHING_GLOVE"
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",

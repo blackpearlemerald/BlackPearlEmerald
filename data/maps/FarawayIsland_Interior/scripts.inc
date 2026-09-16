@@ -40,6 +40,10 @@ FarawayIsland_Interior_OnTransition:
 
 FarawayIsland_Interior_EventScript_TryShowMew::
 	goto_if_set FLAG_DEFEATED_MEW, Common_EventScript_NopReturn
+	@ BPE: before becoming Champion, Mew stays hidden once another pre-Elite Four legendary was battled
+	goto_if_set FLAG_SYS_GAME_CLEAR, FarawayIsland_Interior_EventScript_ShowMew
+	goto_if_ne VAR_PREE4_LEGENDARY, 0, Common_EventScript_NopReturn
+FarawayIsland_Interior_EventScript_ShowMew::
 	clearflag FLAG_HIDE_MEW
 	setvar VAR_TEMP_1, 0
 	return
@@ -137,6 +141,13 @@ FarawayIsland_Interior_EventScript_Mew::
 	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, FarawayIsland_Interior_EventScript_PlayerOrMewRan
 	goto_if_eq VAR_RESULT, B_OUTCOME_MON_TELEPORTED, FarawayIsland_Interior_EventScript_PlayerOrMewRan
 	setflag FLAG_CAUGHT_MEW
+	@ BPE: catching Mew uses up the pre-Elite Four legendary pick
+	goto_if_set FLAG_SYS_GAME_CLEAR, FarawayIsland_Interior_EventScript_ReleaseAfterCatch
+	setvar VAR_PREE4_LEGENDARY 14
+	goto Global_EventScript_HideLegendariesPreE4
+	end
+
+FarawayIsland_Interior_EventScript_ReleaseAfterCatch::
 	release
 	end
 

@@ -2978,11 +2978,21 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         {
             if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == FieldMove_GetMoveId(j))
             {
-                AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
+                // BPE: FLY and FLASH are added below when their HM is in the bag, so don't list them twice
+                if (!(j == FIELD_MOVE_FLY && CheckBagHasItem(ITEM_HM_FLY, 1))
+                 && !(j == FIELD_MOVE_FLASH && CheckBagHasItem(ITEM_HM_FLASH, 1)))
+                    AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
                 break;
             }
         }
     }
+
+    // BPE: Modern HM system — FLY is available without knowing the move when HM02 is in the bag.
+    // Leave room for SWITCH, ITEM and CANCEL in the 8-entry action list.
+    if (sPartyMenuInternal->numActions <= ARRAY_COUNT(sPartyMenuInternal->actions) - 4
+     && IsFieldMoveUnlocked(FIELD_MOVE_FLY) && CheckBagHasItem(ITEM_HM_FLY, 1)
+     && Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) == TRUE)
+        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLY + MENU_FIELD_MOVES);
 
     if (!InBattlePike())
     {
@@ -5576,7 +5586,7 @@ bool8 PlayerHasMove(u16 move)
     switch (move)
     {
     case MOVE_SECRET_POWER:
-        item = ITEM_TM43;
+        item = ITEM_TM_SECRET_POWER;
         break;
     case MOVE_CUT:
         item = ITEM_HM01;
