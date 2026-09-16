@@ -1,14 +1,14 @@
 # BPE Emerald -- Suggestions
-_Condensed from Discord #suggestions (286 messages, exported 2026-06-10)_
-_Distinct suggestions after deduplication: **180**_
+_Condensed from Discord #suggestions (294 messages, exported 2026-09-16)_
+_Distinct suggestions after deduplication: **183**_
 
 ## Summary
 
 | Priority | Count |
 |----------|-------|
 | Popular | 2 |
-| Requested | 19 |
-| Noted | 159 |
+| Requested | 20 |
+| Noted | 161 |
 
 ---
 
@@ -18,7 +18,7 @@ _High community interest (many reactions / repeated requests)_
 ### Level cap removal / optional toggle
 - **Category:** QoL / Accessibility
 - **Support:** 7 similar requests, 3 reactions
-- **Suggested:** 2024-09-03 by Candy The Cat BR
+- **Suggested:** 2024-09-04 by Candy The Cat BR
 - **Details:** a button to turn on/off level cap. or like super dark workship, that the game asks first if you wanna turn it on
 
 ### DexNav feature
@@ -34,6 +34,12 @@ _Some community support_
 - **Support:** 6 reactions
 - **Suggested:** 2024-08-31 by furius2
 - **Details:** the harbor mail needed to get the coin case can be gotten on the abandoned ship so its sadly after gym5 but also it would be fun if you could buy a strong mon from the game corner but needed to go to the abandoned ship first, as at this moment its not doing much
+
+### Pokémon Randomizer
+- **Category:** Pokémon/Roster
+- **Support:** 2 similar requests, 3 reactions
+- **Suggested:** 2024-09-12 by IGaveUPolio
+- **Details:** I’m sure it’s been suggested before. Or asked about. But this game is really a great game! I think that adding a randomizer option for both pokemon and abilities would push it over the top, make the replayability grow exponentially
 
 ### Being able to take both Bikes at once
 - **Category:** General
@@ -66,7 +72,7 @@ _Some community support_
 ### Ik its stupid and time consuming, and even useless, but i want the ability of letting pokemons...
 - **Category:** Pokémon/Roster
 - **Support:** 4 reactions
-- **Suggested:** 2024-09-12 by THE Depth
+- **Suggested:** 2024-09-12 by คr¢hiงēr Dҽρƚԋ
 - **Details:** Ik its stupid and time consuming, and even useless, but i want the ability of letting pokemons out of thair poke ball, one pokemon at a time, and thay basicly follow you just like pikachu does in "pokemon special pikachu edition", i know how hard it would be, all pokemons having overworld sprite is a big and hard work but i really want to see mimikyu following me around, sqeezed in a tiny form
 
 ### Suggestion: Pat yourself on the back. This game is my favorite hack so far, massive props! It's...
@@ -75,11 +81,11 @@ _Some community support_
 - **Suggested:** 2024-09-23 by ZR0H.EXE
 - **Details:** Suggestion: Pat yourself on the back. This game is my favorite hack so far, massive props! It's fantastic and I love it. 🙂
 
-### Pokémon Randomizer
-- **Category:** Pokémon/Roster
-- **Support:** 3 reactions
-- **Suggested:** 2024-09-12 by IGaveUPolio
-- **Details:** I’m sure it’s been suggested before. Or asked about. But this game is really a great game! I think that adding a randomizer option for both pokemon and abilities would push it over the top, make the replayability grow exponentially
+### Im working on it guys first 6 gym party are done with updates trainer sorted by route or in...
+- **Category:** New Content/Areas
+- **Support:** 2 reactions, 1 follow-ups
+- **Suggested:** 2025-08-10 by MacKKYaveL (kevin)
+- **Details:** Im working on it guys first 6 gym party are done with updates trainer sorted by route or in right order i need to end game now to give you doc I run 4 time on 4 app ^^
 
 ### Move accuracy fixes (Zen Headbutt / Air Slash)
 - **Category:** Balance/Moves
@@ -177,7 +183,7 @@ _Single suggestions, no reactions_
 ### Hey people. I’m brand new to this server. I saw the trailer for this hack and I was honestly...
 - **Category:** General
 - **Support:** 1 follow-ups
-- **Suggested:** 2024-09-18 by shadowninja420
+- **Suggested:** 2024-09-18 by Deleted User
 - **Details:** Hey people. I’m brand new to this server. I saw the trailer for this hack and I was honestly really impressed with what I saw. I was just wondering what version of the source game do I need find and download in order for me to patch the hack correctly and properly
 
 ### Id be curious to see your encounters. And to know if you went deathless up thru trickhouse
@@ -216,14 +222,8 @@ _Single suggestions, no reactions_
 ### Some descriptions which trainers are which would be nice. Mostly you can figure it out, but...
 - **Category:** Story/Scripts
 - **Support:** 1 follow-ups
-- **Suggested:** 2025-05-19 by ZachDevelop
+- **Suggested:** 2025-05-20 by ZachDevelop
 - **Details:** Some descriptions which trainers are which would be nice. Mostly you can figure it out, but mostly in trick house the order wasn't intuitive.
-
-### Im working on it guys first 6 gym party are done with updates trainer sorted by route or in...
-- **Category:** New Content/Areas
-- **Support:** 2 reactions
-- **Suggested:** 2025-08-10 by MacKKYaveL (kevin)
-- **Details:** Im working on it guys first 6 gym party are done with updates trainer sorted by route or in right order i need to end game now to give you doc I run 4 time on 4 app ^^
 
 ### Hard mode / difficulty option
 - **Category:** Pokémon/Roster
@@ -240,7 +240,7 @@ _Single suggestions, no reactions_
 ### Maybe make a nuzlocke channel or something of that sorts or just a screenshot channel, may...
 - **Category:** QoL / Accessibility
 - **Support:** 1 reactions
-- **Suggested:** 2024-08-26 by six
+- **Suggested:** 2024-08-27 by ・◞ ◟ 𑁬　　𓈒　　paw
 - **Details:** Maybe make a nuzlocke channel or something of that sorts or just a screenshot channel, may differentiate general from actual gameplay screenshots, also nice for planning fights. 🦭
 
 ### Being able to see Pokemon's stats when you choose which capacity you delete
@@ -253,11 +253,11 @@ _Single suggestions, no reactions_
 - **Support:** 1 reactions
 - **Suggested:** 2024-09-09 by Reks117
 
-### @GuiFire 30 its not a bug from the game. Its an emulator issue. So try to use another emulator...
+### <@962356825863389215 its not a bug from the game. Its an emulator issue. So try to use another...
 - **Category:** General
 - **Support:** 1 reactions
-- **Suggested:** 2024-09-11 by _-Eth@n-_
-- **Details:** @GuiFire 30 its not a bug from the game. Its an emulator issue. So try to use another emulator like mGBA if its for PC. And Pizza boy for Android
+- **Suggested:** 2024-09-12 by _-Eth@n-_
+- **Details:** <@962356825863389215> its not a bug from the game. Its an emulator issue. So try to use another emulator like mGBA if its for PC. And Pizza boy for Android
 
 ### specifically the synthesis on the av mon
 - **Category:** General
@@ -267,7 +267,7 @@ _Single suggestions, no reactions_
 ### So we can have access to registeel temple
 - **Category:** General
 - **Support:** 1 reactions
-- **Suggested:** 2024-09-23 by THE Depth
+- **Suggested:** 2024-09-23 by คr¢hiงēr Dҽρƚԋ
 
 ### One thing I didn't understand is how you get Rotom. The docs say thst you can catch it in...
 - **Category:** Documentation
@@ -291,10 +291,16 @@ _Single suggestions, no reactions_
 - **Support:** 1 reactions
 - **Suggested:** 2024-12-06 by Kahan
 
+### Also an option for a larger catalogue of legendaries would be awesome especially for mono runs....
+- **Category:** New Content/Areas
+- **Support:** 1 reactions
+- **Suggested:** 2026-09-15 by krokodile14
+- **Details:** Also an option for a larger catalogue of legendaries would be awesome especially for mono runs. Currently I'm doing a dark run and no dark legendary or mythicals are available. Love this romhack its my favorite ever.
+
 ### Pokepastes / team docs for gym leaders
 - **Category:** Story/Scripts
 - **Support:** 1 request
-- **Suggested:** 2024-08-24 by rust
+- **Suggested:** 2024-08-25 by rust
 
 ### Nature Changer NPC / item
 - **Category:** Items/TMs
@@ -309,19 +315,19 @@ _Single suggestions, no reactions_
 ### Just a suggestion:
 - **Category:** QoL / Accessibility
 - **Support:** 1 request
-- **Suggested:** 2024-08-25 by Shokudaikiri Mitsutada「刀剣乱舞」
+- **Suggested:** 2024-08-26 by Shokudaikiri Mitsutada「刀剣乱舞」
 - **Details:** Just a suggestion: Allow the player to spam the button while fishing without activating ''Not even a nibble...'' This can be very helpful for those who use fast forward while fishing. lol
 
 ### Dang... Just now I realized that “Oh! A bite!” has infinite duration.  lol
 - **Category:** General
 - **Support:** 1 request
-- **Suggested:** 2024-08-25 by Shokudaikiri Mitsutada「刀剣乱舞」
+- **Suggested:** 2024-08-26 by Shokudaikiri Mitsutada「刀剣乱舞」
 - **Details:** Dang... Just now I realized that “Oh! A bite!” has infinite duration. lol
 
 ### Well, almost infinite. haha
 - **Category:** Audio
 - **Support:** 1 request
-- **Suggested:** 2024-08-25 by Shokudaikiri Mitsutada「刀剣乱舞」
+- **Suggested:** 2024-08-26 by Shokudaikiri Mitsutada「刀剣乱舞」
 - **Details:** Well, almost infinite. haha Ty man! I'll have to test and look for things more carefully before sending out suggestions. D:
 
 ### There should be a way to re-enter trickmaster's rooms to catch those pokemons. It'll be a huge...
@@ -340,6 +346,12 @@ _Single suggestions, no reactions_
 - **Category:** General
 - **Support:** 1 request
 - **Suggested:** 2024-08-26 by Kurowl
+
+### One message removed from a suspended account.
+- **Category:** Balance/Moves
+- **Support:** 1 request
+- **Suggested:** 2024-08-26 by Hiddenn
+- **Details:** One message removed from a suspended account.
 
 ### Guys i have an idea
 - **Category:** General
@@ -436,13 +448,13 @@ _Single suggestions, no reactions_
 ### Is the creator or creators of the Ron document where I have the Pokémon obtained in the...
 - **Category:** Pokémon/Roster
 - **Support:** 1 request
-- **Suggested:** 2024-09-07 by Arthur Martins Souza
+- **Suggested:** 2024-09-08 by Arthur Martins Souza
 - **Details:** Is the creator or creators of the Ron document where I have the Pokémon obtained in the locations, etc. from here on the server?
 
 ### My suggestion is regarding the document
 - **Category:** Documentation
 - **Support:** 1 request
-- **Suggested:** 2024-09-07 by Arthur Martins Souza
+- **Suggested:** 2024-09-08 by Arthur Martins Souza
 
 ### I might be the only one that thinks this so ignore it if I am but I feel like it would be better...
 - **Category:** Pokémon/Roster
@@ -566,10 +578,11 @@ _Single suggestions, no reactions_
 - **Support:** 1 request
 - **Suggested:** 2024-09-13 by duskhakaishin
 
-### :EeveeNamedKyle:
+### <:EeveeNamedKyle:1180196499989221498
 - **Category:** General
 - **Support:** 1 request
 - **Suggested:** 2024-09-18 by Danni
+- **Details:** <:EeveeNamedKyle:1180196499989221498>
 
 ### You'd have to ask CD. He makes the final choice.
 - **Category:** General
@@ -607,7 +620,7 @@ _Single suggestions, no reactions_
 ### Make flash hm manual instead of being automatic
 - **Category:** Items/TMs
 - **Support:** 1 request
-- **Suggested:** 2024-09-23 by THE Depth
+- **Suggested:** 2024-09-23 by คr¢hiงēr Dҽρƚԋ
 
 ### Please add golden bottlecaps and mints for purchase, at least in post game
 - **Category:** New Content/Areas
@@ -635,21 +648,21 @@ _Single suggestions, no reactions_
 - **Support:** 1 request
 - **Suggested:** 2024-09-30 by Noah
 
-### suggestions "a full dex and putting clear instructons in doc" i figured it out, others may not
+### <1276579601555918920 "a full dex and putting clear instructons in doc" i figured it out, others...
 - **Category:** Pokémon/Roster
 - **Support:** 1 request
 - **Suggested:** 2024-09-30 by Noah
-- **Details:** #suggestions "a full dex and putting clear instructons in doc" i figured it out, others may not
+- **Details:** <#1276579601555918920> "a full dex and putting clear instructons in doc" i figured it out, others may not
 
 ### Maybe make 'R' run and 'L' throw a poke ball?
 - **Category:** General
 - **Support:** 1 request
-- **Suggested:** 2024-10-01 by ZacF97
+- **Suggested:** 2024-10-02 by ZacF97
 
 ### A mint merchant, maybe places to buy held items / mega stones (bug proof them not appearing in...
 - **Category:** Items/TMs
 - **Support:** 1 request
-- **Suggested:** 2024-10-06 by Dvahkiin31
+- **Suggested:** 2024-10-07 by Dvahkiin31
 - **Details:** A mint merchant, maybe places to buy held items / mega stones (bug proof them not appearing in the world with this?)
 
 ### Impressive how in making a nuzlocke I made a mono type water at the same time
@@ -699,7 +712,7 @@ _Single suggestions, no reactions_
 ### That so CALLED "review" of someone like that person, who can't even make their own game. Yet...
 - **Category:** General
 - **Support:** 1 request
-- **Suggested:** 2024-10-07 by _-Eth@n-_
+- **Suggested:** 2024-10-08 by _-Eth@n-_
 - **Details:** That so CALLED "review" of someone like that person, who can't even make their own game. Yet thinking they are entitled to exaggerating their feedback and make it a dramatic experience.
 
 ### Calls the game "too easy" but dies 5 times? Afufufufu
@@ -936,17 +949,17 @@ _Single suggestions, no reactions_
 - **Support:** 1 request
 - **Suggested:** 2024-10-08 by TheAЯЯivalAlex
 
-### also at this point this could be taken to general
+### also at this point this could be taken to <1275912926884270182
 - **Category:** Pokémon/Roster
 - **Support:** 1 request
 - **Suggested:** 2024-10-08 by furius2
-- **Details:** also at this point this could be taken to #general now that is not a bad idea with how good the starter can be
+- **Details:** also at this point this could be taken to <#1275912926884270182> now that is not a bad idea with how good the starter can be
 
-### Anyways, I think I got every answer I was looking for, lemme be the first to say to @furius2,...
+### Anyways, I think I got every answer I was looking for, lemme be the first to say to...
 - **Category:** General
 - **Support:** 1 request
 - **Suggested:** 2024-10-08 by Rika
-- **Details:** Anyways, I think I got every answer I was looking for, lemme be the first to say to @furius2, sorry for clogging suggestions up with my suspicions and skepticism!
+- **Details:** Anyways, I think I got every answer I was looking for, lemme be the first to say to <@621379890356289546>, sorry for clogging suggestions up with my suspicions and skepticism!
 
 ### would be nice to have genders on trainers mons in the doc for things like rivalry
 - **Category:** Story/Scripts
@@ -1000,3 +1013,8 @@ _Single suggestions, no reactions_
 - **Category:** General
 - **Support:** 1 request
 - **Suggested:** 2025-05-19 by Bdaluga99
+
+### In the next update can you guys please add a way to switch a Pokémon's gender as well as modify IVs
+- **Category:** New Content/Areas
+- **Support:** 1 request
+- **Suggested:** 2026-06-11 by Jawsome

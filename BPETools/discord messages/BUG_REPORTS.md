@@ -1,56 +1,48 @@
 # BPE Emerald -- Bug Reports
-_Condensed from Discord #bug-reports (620 messages, exported 2026-06-10)_
-_Distinct issues after deduplication: **256**_
+_Condensed from Discord #bug-reports (661 messages, exported 2026-09-16)_
+_Distinct issues after deduplication: **283**_
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| Critical | 7 (1 resolved emulator issue, 1 code fix applied, 1 already fixed/stale) |
-| High | 28 |
-| Medium | 221 |
+| Critical | 8 |
+| High | 31 |
+| Medium | 244 |
 | Low | 0 |
 
 ---
 
 ## Critical
 
-### Starter battle (Zigzagoon) crash/freeze — ✅ RESOLVED (not a code bug)
+### Starter battle (Zigzagoon) crash/freeze
 - **Category:** Pokémon/Species
 - **Reports:** 12 similar reports, 3 reactions, 1 confirmations
 - **First reported:** 2024-08-31 by ItsJohn 😑
 - **Details:** May I asked? It's my first time playing Pokemon BlackPearl Emerald, it got me interested when I was reading the ROM, but when I played and picked my first pokemon the moment I'm going to battle the wild zigzagooon my game freezes I tried every starter
-- **Triage (2026-07-01):** Traced full code path (`Route101_EventScript_BirchsBag` → `ui_birch_case.c` → `StartFirstBattleOnly` → `SetUpBattleVarsAndBirchZigzagoon` → `CreateWildMon`) — matches upstream pokeemerald-expansion behavior, starter is correctly given to the party before the battle starts, Zigzagoon's species data is unremarkable (and wild Zigzagoon encounters work fine everywhere else in the game). Pulled the raw Discord export and found all 5 underlying threads: every reporter who disclosed their emulator was on **MyBoy** (or an unspecified "Game Boy emulator" a community member correctly guessed as MyBoy); switching to Pizza Boy or mGBA resolved it every time. Dev (Captain Cole) told reporters "MyBoy is not recommended for Romhacks" three separate times in these threads. No confirmed mGBA report of this freeze exists in the log. **Conclusion: MyBoy-specific emulator incompatibility (likely its imprecise HLE BIOS/DMA timing choking on the back-to-back custom-UI → battle-transition graphics teardown/reload unique to this scene), not a BPE code defect. Action: document as a known MyBoy incompatibility (README/pinned message: use mGBA or Pizza Boy) rather than a code fix.**
 
-### Bad Egg crash (electric arena) — 🔧 FIX APPLIED + superseded by official 1.16.2 upstream fix (2026-07-01, pending in-game playtest)
+### Bad Egg crash (electric arena)
 - **Category:** Battle
 - **Reports:** 6 similar reports
 - **First reported:** 2024-12-29 by ItsRegger
 - **Details:** my friend ran into it at the weather institute with the double battle of the aqua grunts. they both have 4 mons each, so when she went to the double battle, the 6th one got thrown out as a bad egg. i thought its some sort of overflow or underflow error
-- **Root cause (confirmed 2026-07-01):** `EFFECT_KNOCK_OFF` and `EFFECT_STEAL_ITEM` in `src/battle_move_resolution.c` gated their item-removal effect on `IsAnyTargetTurnDamaged(battlerAtk, ...)`, which loops over *every other battler on the field* and returns TRUE if *any* of them took damage this turn — not specifically whether the move's actual target did (`src/battle_util.c:10635`). In a double battle, if the target had already fainted earlier in the same turn from a different attacker, this guard still passed (because *someone* on the field was hurt that turn), so the move's item-removal effect fired against an already-vacated/about-to-be-replaced battler slot. The subsequent `BtlController_EmitSetMonData(..., REQUEST_HELDITEM_BATTLE, ...)` write is deferred and resolves the target party slot via `gBattlerPartyIndexes[battler]` read at processing time (`battle_controllers.c:2317`), so once the fainted mon's replacement was sent in, the held-item write landed on the new mon's encrypted party data instead — corrupting it into a checksum-invalid "Bad Egg." Only manifests in doubles (in singles there's only one "other battler," so the check is harmless there), matching every report (Weather Institute Aqua Grunts, a detailed Greninja/Basculegion report, Electric Arena).
-- **Verified against upstream:** BPE's `main` was 69 commits behind `RHH/master` (122 behind `upcoming`) at time of investigation. Upstream has already reworked this exact code as part of a large, unrelated 393-line MoveEnd/CalcValue refactor (commit `3e3b79d916`, "Fix Thousand Arrows not grounding both targets #10354") — too entangled to safely backport wholesale. But the corrected predicate upstream now uses (`IsBattlerTurnDamaged(battlerDef, ...)`) is a helper that already existed unchanged in BPE's current code (`include/battle.h:1102`), so the fix was portable as an isolated 2-line change.
-- **Fix applied:** swapped `IsAnyTargetTurnDamaged(cv->battlerAtk, EXCLUDING_SUBSTITUTES)` → `IsBattlerTurnDamaged(cv->battlerDef, EXCLUDING_SUBSTITUTES)` in both the `EFFECT_KNOCK_OFF` (line ~3459) and `EFFECT_STEAL_ITEM` (line ~3498) cases in `src/battle_move_resolution.c`. Confirmed clean incremental rebuild (32MB ROM, no new warnings/errors). **Not yet playtested in-game** — recommend a manual double-battle repro test (intentionally KO a Knock-Off/Thief target with one attacker while another attacker's Knock Off/Thief also targets it the same turn) before calling this fully verified.
 
-### Taxi Ticket softlock on Slateport Beach — ✅ ALREADY FIXED (stale report, resolved 2024-08-25)
+### Taxi Ticket softlock on Slateport Beach
 - **Category:** Overworld
 - **Reports:** 2 similar reports
-- **First reported:** 2024-08-23 by CD💿
+- **First reported:** 2024-08-24 by CD💿
 - **Details:** DO NOT USE TAXI TICKET ON SLATEPORT BEACH, PRIOR TO ENTERING SLATEPORT CITY. YOU WILL SOFTLOCK THE GAME, MR BRINEYS BOAT WILL BE ON SLATEPORT BEACH, AND YOU WILL HAVE NO WAY BACK THERE.
-- **Investigation (2026-07-01):** Root cause was that Route109 ("Slateport Beach," where Mr. Briney's boat lands you) has no fly spot of its own, and Slateport City itself wasn't yet marked "visited"/flyable until the player physically walked into its map — so using the Taxi Ticket immediately after landing at Route109 left no valid fly destination to reach that area again, stranding the boat. Confirmed via the raw Discord export that the dev (CD) diagnosed and fixed this personally: a teammate ("Danni") found the exploit, and CD's own follow-up two weeks later (2024-09-07) explains the fix as intentional ("before you could softlock if u took the boat to slateport beach, but then used the taxi ticket to fly back... The boat would be stuck at Slateport beach, and not reachable again"). `git blame` on `data/maps/DewfordTown/scripts.inc` confirms: line 33 (`setflag FLAG_VISITED_SLATEPORT_CITY`) was committed by CD on **2024-08-25**, two days after the original report — it fires the moment the player chooses to sail to Slateport, registering Slateport City as flyable before the boat animation even plays. Verified this line is still present and reachable from current `main` HEAD (last touched 2026-03-17, survived every subsequent version upgrade). **No further fix needed; this bug report is stale.**
-- **Unrelated bonus finding:** while tracing Mr. Briney's location-tracking (`VAR_BRINEY_LOCATION`), found that every boat-trip script (`DewfordTown_EventScript_SailToSlateport`, `Route109_EventScript_DoSailToDewford`, etc.) ends with `copyvar VAR_BRINEY_LOCATION, VAR_0x8008`, which restores the *pre-trip* location instead of the new destination (nothing ever writes the new value into `VAR_0x8008` first). This only affects `EventScript_ResetMrBriney`, which is exclusively called from the literal Teleport field effect (`fldeff_teleport.c`), not Fly/Taxi Ticket — so it's unrelated to this bug and not confirmed to cause any current player-facing issue (the `Common_EventScript_UpdateBrineyLocation` self-heal on Pokémon Center visits likely papers over it pre-Petalburg-Gym). Not actioned; flagging for awareness only.
 
-### Lycanroc / Rockruff evolution freeze — 🔧 "always Midday" FIXED (2026-07-01); freeze unconfirmed
+### Lycanroc / Rockruff evolution freeze
 - **Category:** Pokémon/Species
 - **Reports:** 2 similar reports
 - **First reported:** 2024-09-07 by jit
 - **Details:** no matter what time I evolve my rockruff it becomes midday lycanroc and when it evolves the game freezes
-- **Investigation (2026-07-01):** Pulled the full raw Discord thread — the reporter themselves said "freeze was a one time thing thankfully" and never reproduced it again; no other Lycanroc-freeze report exists anywhere else in the 620-message export. Treating the freeze as a non-issue (likely an unrelated one-off) unless it resurfaces. The "always evolves to Midday" part was real and root-caused: Rockruff's evolution is correctly time-gated (`IF_TIME`/`IF_NOT_TIME` against `TIME_NIGHT` in species data), and the underlying `GetTimeOfDay()`/`UpdateTimeOfDay()` machinery is correct — but the **Pocket Watch item** (BPE's intended workaround for unreliable GBA RTC emulation on most emulators) was a literal unfinished stub (`// CODE HERE FOR POCKET WATCH`) that just reopened the vanilla Wall Clock screen, which only offsets the *real hardware RTC* — ineffective on emulators without proper RTC support, which is most of this playerbase (matches the dev's own Discord comment: "Some emulators you can use the pocket watch key item for evolutions, some will reference real life time"). Also confirmed the project's `OW_USE_FAKE_RTC` config is `FALSE`, so even the debug menu's own time-changer (`FakeRtc_ForwardTimeTo`) is a no-op for actual gameplay time in this build.
-- **Fix applied:** reimplemented `ItemUseOutOfBattle_PocketWatch` (`src/item_use.c`) to show a Morning/Day/Evening/Night choice menu (new `EventScript_PocketWatch` in `data/event_scripts.s`, new `MULTI_POCKET_WATCH` multichoice list) that calls the pre-existing but previously-unused `SetTimeOfDay()` override (`src/overworld.c`), which `UpdateTimeOfDay()` already prefers unconditionally over the real RTC — making time-of-day fully emulator-independent. Clean build (32MB ROM, no new warnings), pushed to main. **Likely also fixes the broader reported cluster of "time-based evolution doesn't work" (Amaura→Aurorus, Linoone→Obstagoon, Greavard's line) since they share the same root mechanism** — not independently verified per-species, but worth re-testing if those resurface. Not yet playtested in-game.
 
 ### Togekiss Calm Mind freeze
 - **Category:** Pokémon/Species
 - **Reports:** 1 report
-- **First reported:** 2024-10-13 by SpookCrab
+- **First reported:** 2024-10-14 by SpookCrab
 
 ### This guys are crashing my game
 - **Category:** Misc
@@ -62,6 +54,11 @@ _Distinct issues after deduplication: **256**_
 - **Reports:** 1 report
 - **First reported:** 2024-10-18 by Vinny
 
+### The gba has run out of sprites so its crashing. Im guessing its the rain
+- **Category:** Graphics
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by Captain Cole
+
 ## High
 
 ### MyBoy emulator incompatibility
@@ -70,33 +67,33 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-09-04 by Gustav
 - **Details:** Wake me up when this game could run with MyBoy! pls im begging yall 🥺
 
+### Opposite to version 1.0.1, now Pokémon need to learn HMs to use them in game
+- **Category:** Battle
+- **Reports:** 4 reactions
+- **First reported:** 2026-09-15 by Tiranno920
+
 ### Wrong Pokemon in trainer teams
 - **Category:** Battle
 - **Reports:** 2 similar reports
 - **First reported:** 2024-12-06 by AlWar
 - **Details:** In Gym3 Split AmyAndLiv3 have wrong pokemon in the docs (I fought Jolteon and Lanturn) Joseph Pokemon are missing moves in the docs
 
-### EXP not gained after level 15 — ✅ NOT A BUG (intended level cap, 2026-07-02)
+### EXP not gained after level 15
 - **Category:** Battle
 - **Reports:** 3 reactions
 - **First reported:** 2025-03-16 by Dian-Keto
 - **Details:** Hello, my pokemon don’t reach exp. After level 15 every battle it takes 0 exp. Why????
-- **Triage (2026-07-02):** Working as intended. BPE uses a badge-gated **level cap** — Pokémon at or above the current cap gain 0 EXP until the next badge raises it. Confirmed by the tracker itself ("this rom uses lvl caps", furius2 2025-03-16, `#questions-or-help`); the level-15 reporters had simply hit the early-game cap. Same explanation covers the duplicate report "My pokemons are bugged at level 15, I can't lvl up them" (BRFernandes011, 2024-12-12). **No code change.**
 
 ### Got the wrong sprite
 - **Category:** Graphics
 - **Reports:** 2 similar reports
-- **First reported:** 2024-08-25 by Silvanor
+- **First reported:** 2024-08-26 by Silvanor
 
-### Nuzlocke per-route lock bypassed → infinite catches — 🔧 FIX APPLIED (2026-07-02, built clean, pending playtest)
-- **Category:** Overworld / Nuzlocke
-- **Reports:** multiple (nexo, AlphaBryce "fainted first slot" repro, + the broader "multi-catch" cluster)
+### I'm able to catch multiple pokemon on the one the same route all over sudden on nuzlock mode...
+- **Category:** Overworld
+- **Reports:** 1 confirmations
 - **First reported:** 2024-08-25 by nexo
 - **Details:** I'm able to catch multiple pokemon on the one the same route all over sudden on nuzlock mode (the notice "already catched your encounter on this route" or whatever doesnt appear anymore) tested multiple old routes. It worked properly and stopped working after beating the 5th /petalburg gym). The nuzlock mode in general seems to work fine still. I tested some dead mons from my PC and they are still dead and stay dead even after using the...
-- **Root cause (confirmed 2026-07-02):** the ball-throw gate `GetBallThrowableState()` (`src/item_use.c`) reads the wild mon's shiny status with `GetMonData(&gParties[B_TRAINER_OPPONENT_A][gBattlerPartyIndexes[gBattlerTarget]], MON_DATA_IS_SHINY)`. `gBattlerTarget` is only reliably the wild mon on the turn a move targeted it; after the player's lead **faints** (and the wild mon's last attack left `gBattlerTarget` pointing at a *player* battler), `gBattlerPartyIndexes[gBattlerTarget]` is a non-zero *player* party index used to index the **opponent** party — which in a single wild battle only has the wild mon at slot 0. That reads a garbage/empty slot whose `IS_SHINY` comes back truthy, so the shiny catch-clause (`isWildShiny == 1 → BALL_THROW_ABLE`) fires and bypasses the Nuzlocke per-route lock entirely → catch anything, anywhere. Exactly matches AlphaBryce's "fainted party member in the first slot → infinite catches" repro (2024-12-14).
-- **Fix applied:** read the actual catching target via `GetCatchingBattler()` (always the alive opponent) instead of `gBattlerTarget`: `gBattlerPartyIndexes[GetCatchingBattler()]`. Preserves the intended shiny clause while closing the bypass.
-- **Also fixed (per author decision, same session):** the **dupes clause** was accidentally disabled — the tracker returns `2` for "duplicate species, allow the catch" but the consumer blocked on both `1` and `2`. Changed to block only on `== 1` so already-owned species stay catchable and don't consume the route encounter. Route-lock timing kept **encounter-based** (locks the instant you engage the first new wild mon) per author's choice — classic strict Nuzlocke; the "already caught" wording is cosmetic.
-- **Not yet playtested.** Verify: (a) after your lead faints, you still CANNOT catch a new species on a route you've used; (b) shinies remain catchable; (c) a species you already own is still catchable (dupes clause); (d) first new species per route locks that route. Files: `src/item_use.c`.
 
 ### I Just remembered this but this bugged/glitched pokemon Sprite shows up in the credits after you...
 - **Category:** Graphics
@@ -110,10 +107,11 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-11-13 by AeternusMactus
 - **Details:** Obv you're correct, I was just trying to get ahold of someone to say something. I'm avoiding saying how it works in the group to make sure it doesn't turn into an exploit for people to beat the game
 
-### Tyrantiarite and Mawilite are missing. Need to add in next update. @Captain Cole
+### Tyrantiarite and Mawilite are missing. Need to add in next update. <@90575346809737216
 - **Category:** Misc
 - **Reports:** 1 confirmations
 - **First reported:** 2026-04-09 by CD💿
+- **Details:** Tyrantiarite and Mawilite are missing. Need to add in next update. <@90575346809737216>
 
 ### Hidden trainer visible in 4th gym
 - **Category:** Misc
@@ -121,17 +119,22 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-09-18 by sirchuggs0100
 - **Details:** Not game breaking but in the fourth gym I can see a little bit of a head where a hidden trainer is
 
-### Bulldoze "misses" a Dig user — ✅ NOT A BUG (working as intended, 2026-07-02)
+### Level cap / experience formula issues
+- **Category:** Overworld
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by Boulouakoulouzek
+- **Details:** Hello, I wanted to start a nuzlocke run on the beta but the level cap doesn't seem to work (thank you for the game it's incredible and the new interactive map is reallly impressive)
+
+### I don't know if others have mentioned it, but in the current version there's a bug in the first...
 - **Category:** Battle
 - **Reports:** 1 report
 - **First reported:** 2024-08-25 by Eric ǃ
 - **Details:** I don't know if others have mentioned it, but in the current version there's a bug in the first gym. Bulldoze is supposed to auto hit and deal double damage when the opponent is using Dig, but it still misses Onix when I try.
-- **Triage (2026-07-02):** Reporter's premise is a misconception — Bulldoze is being confused with Earthquake/Magnitude. Canonically, the ONLY moves that strike (and double against) a target during the semi-invulnerable turn of Dig are **Earthquake** and **Magnitude**; Bulldoze has never been able to hit an underground Pokémon. Verified the expansion models this correctly, three layers deep: (1) move data — `src/data/moves_info.h` `[MOVE_BULLDOZE]` has `target = TARGET_FOES_AND_ALLY` (so it does hit both foes in doubles) but has **no `.damagesUnderground` field** → defaults FALSE, vs. Earthquake (`.damagesUnderground = B_UPDATED_MOVE_FLAGS >= GEN_2`) and Magnitude (`.damagesUnderground = TRUE`); (2) hit check — `CanBreakThroughSemiInvulnerablityInternal` returns `MoveDamagesUnderground(move)` for `STATE_UNDERGROUND` (`src/battle_util.c:10480`), which is FALSE for Bulldoze, so it correctly misses the Dig user (the "misses Onix" the player saw); (3) damage — the ×2 underground bonus (`GetUndergroundModifier`, `src/battle_util.c:7329`) is gated on the same flag, so only EQ/Magnitude get it. Note Bulldoze uses `EFFECT_EARTHQUAKE`, but underground hitting/doubling is driven purely by the per-move `damagesUnderground` flag, not the effect, so sharing the effect doesn't leak the behavior. No expansion upgrade "fixed" this because there was never a code defect — the data has been canonical throughout. **Conclusion: working as intended, no code change. Bulldoze correctly hits multiple mons in doubles but cannot hit a Dig user.**
 
 ### Unless I’m missing something
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-25 by alvin9456
+- **First reported:** 2024-08-26 by alvin9456
 
 ### Only other thing I bought was an upgrade to evolve my Porygon
 - **Category:** Pokémon/Species
@@ -173,13 +176,13 @@ _Distinct issues after deduplication: **256**_
 ### Um, for some reason Synchronize doesn't work on wild battles as much as Vanilla Emerald's...
 - **Category:** Pokémon/Species
 - **Reports:** 1 report
-- **First reported:** 2024-09-03 by RealGpsboy97
+- **First reported:** 2024-09-04 by RealGpsboy97
 - **Details:** Um, for some reason Synchronize doesn't work on wild battles as much as Vanilla Emerald's mechanics were. When I used a Level 42 Synchronize Beheeyem raised from an egg, it still wouldn't let me find the nature I wanted even if it was like 10+ catches...
 
 ### I dont think this is a bug per say, but CD idk if you knew this when you included Tera Blast in...
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2024-09-07 by FDMajora
+- **First reported:** 2024-09-08 by FDMajora
 - **Details:** I dont think this is a bug per say, but CD idk if you knew this when you included Tera Blast in the gym 5 TM bundle?
 
 ### Pokemon Linoone can't evolve form 3 at night. Is it a bug? Now I have upgraded to level 42....
@@ -214,7 +217,7 @@ _Distinct issues after deduplication: **256**_
 ### Seems like a TM for Superpower is missing.  Its not in the bag and not in the doc.
 - **Category:** Items
 - **Reports:** 1 report
-- **First reported:** 2025-07-25 by ZachDevelop
+- **First reported:** 2025-07-26 by ZachDevelop
 - **Details:** Seems like a TM for Superpower is missing. Its not in the bag and not in the doc.
 
 ### also i want to comment about Petalburg City encounter. I found out that Snorlax Encounter before...
@@ -223,16 +226,24 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2026-04-09 by Kuro
 - **Details:** also i want to comment about Petalburg City encounter. I found out that Snorlax Encounter before going to the Petalburg City Gym and Petalburg City encounter are separated while Mirage Tower and Route 111 are not separated encounter
 
-### "Where is Steven?" on the Route 120 bridge — 🔧 FIX APPLIED (bridge hint NPC added, 2026-07-02, pending playtest)
-- **Category:** Overworld / Progression
+### Where is Steven ? He's supposed to be here and help me with the invisible pokemon that blocked...
+- **Category:** Battle
 - **Reports:** 1 report
 - **First reported:** 2026-04-11 by Kuro
 - **Details:** Where is Steven ? He's supposed to be here and help me with the invisible pokemon that blocked my way to gym 6
-- **Design context:** BPE intentionally relocated Steven (and the DEVON SCOPE hand-off) from the Route 120 bridge to the summit of Mt. Pyre, to force the player through the route/story before they can clear the invisible KECLEON blocking Fortree Gym (Gym 6). The Devon Scope is a hard gate for Gym 6 (`FortreeCity_EventScript_Kecleon` → `checkitem ITEM_DEVON_SCOPE`). Players accustomed to vanilla Emerald (Steven on the bridge) reported him "missing."
-- **Investigation (2026-07-02):** The Mt. Pyre questline is INTACT and was NOT lost in the 1.16.x upgrades — `MtPyre_Summit_EventScript_Steven` still gives `ITEM_DEVON_SCOPE`, sets `FLAG_RECEIVED_DEVON_SCOPE`, and self-removes via `setflag FLAG_HIDE_ROUTE_120_STEVEN`. However, the Route 120 map ALSO still carried the full vanilla Steven object (`LOCALID_ROUTE120_STEVEN`, gfx `OBJ_EVENT_GFX_STEVEN` at 13,15) + its complete bridge-Kecleon/Devon-Scope cutscene — and git history confirms this coexisted pre-merge too (both Stevens share `FLAG_HIDE_ROUTE_120_STEVEN`, which starts clear). Net effect: the vanilla Steven was still standing on the bridge handing out the scope early, undermining the "route/story-gated" design, while also being the source of the player's confusion. The Route 120 bridge itself is an OPTIONAL crossing (leads only to a small northern dead-end with a Revive; the Fortree↔Route 121 main path and the Ancient Tomb at y≈54 do not use it), so removing Steven's bridge cutscene cannot softlock progression.
-- **Fix applied:** repurposed the Route 120 Steven object into a bridge traveler NPC (`OBJ_EVENT_GFX_HIKER`, new `Route120_EventScript_MtPyreHintNPC` + `Route120_Text_MtPyreHint`) that redirects the player to Steven at Mt. Pyre's summit and ties the hint to the invisible-Pokémon problem. Kept `FLAG_HIDE_ROUTE_120_STEVEN` on it so the hint NPC disappears once the player has visited Mt. Pyre. Devon Scope is now obtainable ONLY at Mt. Pyre. Also upgraded `Route120_EventScript_BridgeKecleon` to a self-serve DEVON SCOPE reveal (mirrors `FortreeCity_EventScript_Kecleon`) so the optional northern item pocket stays reachable after the player returns with the scope. The legacy `Route120_EventScript_Steven` cutscene is retained but fully unreferenced/dead. Files: `data/maps/Route120/map.json`, `events.inc`, `scripts.inc`. map.json validated; symbols/labels resolve. **Not yet playtested in-game** — recommend verifying (a) hiker appears on the bridge and gives the Mt. Pyre hint, (b) Steven at Mt. Pyre summit still gives the scope, (c) Fortree Gym Kecleon clears with the scope, (d) optional: bridge Kecleon self-reveal works with the scope.
+
+### nope hes right, candy jar is broken in the beta
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2026-09-14 by Captain Cole
 
 ## Medium
+
+### Pokedex owned count wrong
+- **Category:** Pokémon/Species
+- **Reports:** 4 similar reports
+- **First reported:** 2025-07-26 by ZachDevelop
+- **Details:** Possibly its just earlier evolutions don't count. So, if I caught a Gyarados, Magikarp isn't in the pokedex as caught, and when I encounter it in a new route it does not count as a dupe.
 
 ### Wrong trainer sprite in Battle Tents
 - **Category:** Battle
@@ -245,12 +256,6 @@ _Distinct issues after deduplication: **256**_
 - **Reports:** 3 reactions, 1 confirmations
 - **First reported:** 2024-08-25 by A Start Gaming
 
-### Pokedex owned count wrong
-- **Category:** Pokémon/Species
-- **Reports:** 2 similar reports
-- **First reported:** 2025-07-26 by ZachDevelop
-- **Details:** Possibly its just earlier evolutions don't count. So, if I caught a Gyarados, Magikarp isn't in the pokedex as caught, and when I encounter it in a new route it does not count as a dupe.
-
 ### Magnitude move issues
 - **Category:** Misc
 - **Reports:** 2 similar reports
@@ -259,13 +264,24 @@ _Distinct issues after deduplication: **256**_
 ### Trick House quiz typos
 - **Category:** Scripts/Text
 - **Reports:** 2 similar reports
-- **First reported:** 2025-06-04 by Korremar
+- **First reported:** 2025-06-05 by Korremar
 - **Details:** found a typo in the Trick House quiz - when the question asker asks which mon didn't get a Paradox form, one of the answers is Jigglybuff
+
+### is the candy jar only suppose to be on nuzlock mode? cause I got it on standard mode
+- **Category:** Battle
+- **Reports:** 2 similar reports
+- **First reported:** 2024-08-25 by Boots
+
+### And  pizzaboy ,<:peepopog:1277413809518284872 retroarch
+- **Category:** Emulator Compat
+- **Reports:** 2 similar reports
+- **First reported:** 2024-09-04 by Kingslayer19
+- **Details:** And pizzaboy ,<:peepo_pog:1277413809518284872> retroarch
 
 ### (Fight wasMagma Hideout Grunt 1, idk if it's circumstantial)
 - **Category:** Battle
 - **Reports:** 2 similar reports
-- **First reported:** 2025-05-10 by Deleted User
+- **First reported:** 2025-05-11 by Deleted User
 - **Details:** (Fight wasMagma Hideout Grunt #1, idk if it's circumstantial)
 
 ### I've tried on my phone first then that didn't work
@@ -290,6 +306,12 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2026-04-09 by Kuro
 - **Details:** Gengarite, Tyranitarite, Garchompite, Audinite, Mawile, Choice Band, Choice Specs, Choice Scarf are TrickHouse's Rewards after finishing 8 Rooms
 
+### Why would it have it? <@333764131771383809  he is freaking grass type lol
+- **Category:** Misc
+- **Reports:** 1 reactions, 1 confirmations
+- **First reported:** 2026-09-15 by Pyrowulf
+- **Details:** Why would it have it? <@333764131771383809> he is freaking grass type lol
+
 ### Black Glasses NPC dialogue loop
 - **Category:** Overworld
 - **Reports:** 2 reactions
@@ -299,18 +321,18 @@ _Distinct issues after deduplication: **256**_
 ### After you beat the game, or lose the nuzlocke mode, it will heal everything and disable nuzlocke...
 - **Category:** Misc
 - **Reports:** 1 confirmations
-- **First reported:** 2024-08-25 by CD💿
+- **First reported:** 2024-08-26 by CD💿
 - **Details:** After you beat the game, or lose the nuzlocke mode, it will heal everything and disable nuzlocke mode
 
 ### Appreciate the bug dumping Gobou. There was only so much we could find with the 3 devs... lol
 - **Category:** Battle
 - **Reports:** 1 confirmations
-- **First reported:** 2024-08-28 by CD💿
+- **First reported:** 2024-08-29 by CD💿
 
 ### Stats menu shows the nature that the mon had before using a Mint on it (I used a Jolly Mint on...
 - **Category:** Misc
 - **Reports:** 1 confirmations
-- **First reported:** 2024-08-28 by GobouLePoissonBoue
+- **First reported:** 2024-08-29 by GobouLePoissonBoue
 - **Details:** Stats menu shows the nature that the mon had before using a Mint on it (I used a Jolly Mint on that one)
 
 ### I've seen a weird bug where the game has no text at all for me. is there a fix?
@@ -326,7 +348,7 @@ _Distinct issues after deduplication: **256**_
 ### I thought maybe it would be like just a special attack version of return, or it could be used...
 - **Category:** Battle
 - **Reports:** 2 reactions
-- **First reported:** 2024-09-07 by FDMajora
+- **First reported:** 2024-09-08 by FDMajora
 - **Details:** I thought maybe it would be like just a special attack version of return, or it could be used sort of like judgement, but looks like not
 
 ### cuz my game froze lol
@@ -343,18 +365,18 @@ _Distinct issues after deduplication: **256**_
 ### That electrode looking at the swampert/whiscash/quagsire you send out to fight it “I’m about to...
 - **Category:** Battle
 - **Reports:** 1 confirmations
-- **First reported:** 2024-09-13 by FDMajora
+- **First reported:** 2024-09-14 by FDMajora
 - **Details:** That electrode looking at the swampert/whiscash/quagsire you send out to fight it “I’m about to end this mon’s whole career”
 
 ### greavard is not evolving even when time is set to a night hour
 - **Category:** Misc
 - **Reports:** 1 confirmations
-- **First reported:** 2024-09-13 by duskhakaishin
+- **First reported:** 2024-09-14 by duskhakaishin
 
 ### actually i think its just this trainer
 - **Category:** Misc
 - **Reports:** 1 confirmations
-- **First reported:** 2024-10-13 by SpookCrab
+- **First reported:** 2024-10-14 by SpookCrab
 
 ### Hello, my nuzlocke mode broke, after completing this event and defeating my enemy in route 110,...
 - **Category:** Overworld
@@ -388,7 +410,7 @@ _Distinct issues after deduplication: **256**_
 ### I'm surfing on 134, I fished with a Super Rod, and for some reason it displays the "Oh! A bite!"...
 - **Category:** Overworld
 - **Reports:** 1 confirmations
-- **First reported:** 2025-06-08 by Korremar
+- **First reported:** 2025-06-09 by Korremar
 - **Details:** I'm surfing on 134, I fished with a Super Rod, and for some reason it displays the "Oh! A bite!" text multiple times before it actually sends me into a battle
 
 ### Portable PC is known to spawn random tiles in places (For example, using it on Mt. Chiminey...
@@ -410,7 +432,7 @@ _Distinct issues after deduplication: **256**_
 ### Any help with uploading the patch file to the rom?  Every time I upload the base emerald...
 - **Category:** Misc
 - **Reports:** 1 reactions
-- **First reported:** 2024-08-25 by TheTutmeister27
+- **First reported:** 2024-08-26 by TheTutmeister27
 - **Details:** Any help with uploading the patch file to the rom? Every time I upload the base emerald edition, the patch file is dithered when trying to select it.
 
 ### Note to self
@@ -448,6 +470,18 @@ _Distinct issues after deduplication: **256**_
 - **Category:** Misc
 - **Reports:** 1 reactions
 - **First reported:** 2026-04-14 by olive
+
+### New Beta Bug:
+- **Category:** Misc
+- **Reports:** 1 reactions
+- **First reported:** 2026-09-15 by CaptainVictory43
+- **Details:** New Beta Bug: I will just be running and get this black screen and message.
+
+### As long as I stay away from that top line of grass, I can go thru.
+- **Category:** Misc
+- **Reports:** 1 reactions
+- **First reported:** 2026-09-15 by CaptainVictory43
+- **Details:** As long as I stay away from that top line of grass, I can go thru.
 
 ### Freeze-Dry accuracy issue (Sand Veil?)
 - **Category:** Battle
@@ -534,10 +568,11 @@ _Distinct issues after deduplication: **256**_
 - **Reports:** 1 report
 - **First reported:** 2024-08-25 by Vale
 
-### is the candy jar only suppose to be on nuzlock mode? cause I got it on standard mode
-- **Category:** Battle
+### <a:DevaHoldingLaugh:932499109678551090
+- **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-25 by Boots
+- **First reported:** 2024-08-25 by Awakeon
+- **Details:** <a:Deva_HoldingLaugh:932499109678551090>
 
 ### It's supposed to be on both now
 - **Category:** Battle
@@ -584,27 +619,27 @@ _Distinct issues after deduplication: **256**_
 ### I played as a male character but it doesn't seem to match
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-25 by Silvanor
+- **First reported:** 2024-08-26 by Silvanor
 
 ### Found a bug in route 114
 - **Category:** Overworld
 - **Reports:** 1 report
-- **First reported:** 2024-08-25 by Silvanor
+- **First reported:** 2024-08-26 by Silvanor
 
 ### Able to jump on top of an item which makes the player overlaps with item on the ground
 - **Category:** Items
 - **Reports:** 1 report
-- **First reported:** 2024-08-25 by Silvanor
+- **First reported:** 2024-08-26 by Silvanor
 
 ### Near the house of the lady who created the PC system
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-25 by Silvanor
+- **First reported:** 2024-08-26 by Silvanor
 
 ### Idk if it’s a bug but nuzlocke mode is supposed to be inf money. I ran out after buying Vitamins.
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2024-08-25 by alvin9456
+- **First reported:** 2024-08-26 by alvin9456
 - **Details:** Idk if it’s a bug but nuzlocke mode is supposed to be inf money. I ran out after buying Vitamins.
 
 ### But I’m not sure if that’s when I didn’t have inf money
@@ -645,31 +680,37 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-08-26 by eunuc
 - **Details:** area catching considers that you've already caught a mon in an area when you use save states in emulator. (nuzlocke mode)
 
+### One message removed from a suspended account.
+- **Category:** Battle
+- **Reports:** 1 report
+- **First reported:** 2024-08-26 by Hiddenn
+- **Details:** One message removed from a suspended account.
+
 ### Suggestion, please put a "reset" on The editor option (select on battle scene)
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2024-08-26 by dog
+- **First reported:** 2024-08-27 by dog
 - **Details:** Suggestion, please put a "reset" on The editor option (select on battle scene) I Just reset my pokemon moveset and I cant remember The moveset
 
 ### Not sure if a bug or just regular emerald but I used max repel in mirage tower and it didn’t work
 - **Category:** Items
 - **Reports:** 1 report
-- **First reported:** 2024-08-26 by Gilly
+- **First reported:** 2024-08-27 by Gilly
 
 ### Yes definitely and it even says the effect of a repel lingers from earlier
 - **Category:** Scripts/Text
 - **Reports:** 1 report
-- **First reported:** 2024-08-26 by Gilly
+- **First reported:** 2024-08-27 by Gilly
 
 ### I’ll try leaving and reentering
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-26 by Gilly
+- **First reported:** 2024-08-27 by Gilly
 
 ### Ah maybe my mons are lower level than the towers average level
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-26 by Gilly
+- **First reported:** 2024-08-27 by Gilly
 
 ### i don't know how true this is but when i fought amy and liv they only had a jolteon and lantrun...
 - **Category:** Misc
@@ -677,16 +718,16 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-08-27 by Astrosoul
 - **Details:** i don't know how true this is but when i fought amy and liv they only had a jolteon and lantrun but on the docs it shows a completely different team.
 
-### @CD💿  so that’s why I couldn’t get the shiny honedge
+### <@347167152610082817  so that’s why I couldn’t get the shiny honedge
 - **Category:** Misc
 - **Reports:** 1 report
 - **First reported:** 2024-08-27 by Mini
-- **Details:** @CD💿 so that’s why I couldn’t get the shiny honedge
+- **Details:** <@347167152610082817> so that’s why I couldn’t get the shiny honedge
 
 ### ( i have no idea why it shows up, something to do with bringing up the menu on that tile)
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-27 by Read the FAQ and use google
+- **First reported:** 2024-08-28 by Read the FAQ and use google
 
 ### as its normal electrode it should not have chloroblast, unless that was a change made in this rom
 - **Category:** Misc
@@ -725,37 +766,55 @@ _Distinct issues after deduplication: **256**_
 ### Delta works great too
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-28 by Reks117
+- **First reported:** 2024-08-29 by Reks117
 
 ### Eh,who cares,im gonna go play superstar saga
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-28 by stevevets
+- **First reported:** 2024-08-29 by stevevets
 
 ### Pearl description is a bit too long aha
 - **Category:** Scripts/Text
 - **Reports:** 1 report
-- **First reported:** 2024-08-28 by GobouLePoissonBoue
+- **First reported:** 2024-08-29 by GobouLePoissonBoue
 
 ### (Notice how the "for" goes outside the box?)
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-28 by GobouLePoissonBoue
+- **First reported:** 2024-08-29 by GobouLePoissonBoue
+
+### <:Vappymr:1014380581469048873
+- **Category:** Battle
+- **Reports:** 1 report
+- **First reported:** 2024-08-29 by Awakeon
+- **Details:** <:Vappy_mr:1014380581469048873>
 
 ### (Its single eye didn't even notice I'm a girl 🥴)
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-28 by GobouLePoissonBoue
+- **First reported:** 2024-08-29 by GobouLePoissonBoue
 
 ### Dusclops does not cater to our concept of gender everyone is bröther to him
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-28 by Awakeon 2.0
+- **First reported:** 2024-08-29 by Awakeon
 
 ### Now do it with one dev
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-28 by Awakeon 2.0
+- **First reported:** 2024-08-29 by Awakeon
+
+### <:VaporeonGun:1204491851243986954
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2024-08-29 by Awakeon
+- **Details:** <:VaporeonGun:1204491851243986954>
+
+### <:Flareonsmug:990611979431460884
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2024-08-29 by GobouLePoissonBoue
+- **Details:** <:Flareon_smug:990611979431460884>
 
 ### ...is that NPC supposed to teleport here after I beat the Aqua Grunt in the cave?
 - **Category:** Overworld
@@ -795,6 +854,12 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-08-29 by Jae
 - **Details:** I tried to reinstall but it still occurs.
 
+### VBA <@131807730221449226
+- **Category:** Emulator Compat
+- **Reports:** 1 report
+- **First reported:** 2024-08-29 by Jae
+- **Details:** VBA <@131807730221449226>
+
 ### My gyarados getting hit with thunderpunch activated the dragonite's enigma berry
 - **Category:** Items
 - **Reports:** 1 report
@@ -823,10 +888,16 @@ _Distinct issues after deduplication: **256**_
 - **First reported:** 2024-08-30 by _-Eth@n-_
 - **Details:** You can always move to another route if you don't like the pokemon that you've enocuntered.
 
+### <:twitchemote7:1277413813871968347
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2024-08-30 by Awakeon
+- **Details:** <:twitch_emote7:1277413813871968347>
+
 ### THEY BUFFED CORVIKNIGHT
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-08-30 by Awakeon 2.0
+- **First reported:** 2024-08-30 by Awakeon
 
 ### i almost lost a mon to a fucking corv eq
 - **Category:** Misc
@@ -908,12 +979,12 @@ _Distinct issues after deduplication: **256**_
 ### I'm using Visual boy advance
 - **Category:** Graphics
 - **Reports:** 1 report
-- **First reported:** 2024-09-01 by AbsorbedFire#8970
+- **First reported:** 2024-09-02 by AbsorbedFire#8970
 
 ### Retro arch and pizza boy works maybe you can try it dunno about vba
 - **Category:** Emulator Compat
 - **Reports:** 1 report
-- **First reported:** 2024-09-01 by Mohit
+- **First reported:** 2024-09-02 by Mohit
 
 ### Why can't I use flash to open the cave to catch registeel
 - **Category:** Pokémon/Species
@@ -954,8 +1025,14 @@ _Distinct issues after deduplication: **256**_
 ### When I was younger I used JOHN GBA
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-04 by Awakeon 2.0
+- **First reported:** 2024-09-04 by Awakeon
 - **Details:** When I was younger I used **JOHN GBA**
+
+### <:PundySmug:873417802197893120
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2024-09-04 by Awakeon
+- **Details:** <:Pundy_Smug:873417802197893120>
 
 ### Android I dont know, because I dont have an Android device. But ig Pizzaboy or Retroarch?
 - **Category:** Emulator Compat
@@ -965,13 +1042,19 @@ _Distinct issues after deduplication: **256**_
 ### Best DS emu is GBArunner (it can’t run anything with 32 MB)
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-04 by Awakeon 2.0
+- **First reported:** 2024-09-04 by Awakeon
 
-### And  pizzaboy ,:peepopog: retroarch
-- **Category:** Emulator Compat
+### <a:LanneyEating:1174330561964277860
+- **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-04 by Kingslayer19
-- **Details:** And pizzaboy ,:peepo_pog: retroarch
+- **First reported:** 2024-09-04 by Awakeon
+- **Details:** <a:Lanney_Eating:1174330561964277860>
+
+### <:worry:790305555033882654
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2024-09-06 by Ash
+- **Details:** <:worry:790305555033882654>
 
 ### …What the hell did you do Ash
 - **Category:** Misc
@@ -1103,7 +1186,7 @@ _Distinct issues after deduplication: **256**_
 ### That is legit funny.
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-13 by Danni
+- **First reported:** 2024-09-14 by Danni
 - **Details:** That is legit funny.
 
 ### Dunno if this belongs here but docs says smoliv has harvest but on the calcs it Doesnt have it
@@ -1150,22 +1233,22 @@ _Distinct issues after deduplication: **256**_
 ### not a bug just like
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-19 by duskhakaishin
+- **First reported:** 2024-09-20 by duskhakaishin
 
 ### this pokemon is not weak to ice
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-19 by duskhakaishin
+- **First reported:** 2024-09-20 by duskhakaishin
 
 ### thus this berry does nothing
 - **Category:** Items
 - **Reports:** 1 report
-- **First reported:** 2024-09-19 by duskhakaishin
+- **First reported:** 2024-09-20 by duskhakaishin
 
 ### i didnt know where else to put this
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-19 by duskhakaishin
+- **First reported:** 2024-09-20 by duskhakaishin
 
 ### Infiniti respawn zapdos
 - **Category:** Misc
@@ -1175,29 +1258,29 @@ _Distinct issues after deduplication: **256**_
 ### First room of Trick House, I opened my pc, which led to one pc next to the trainer, I clicked on...
 - **Category:** Overworld
 - **Reports:** 1 report
-- **First reported:** 2024-09-23 by .bracemino
+- **First reported:** 2024-09-24 by .bracemino
 - **Details:** First room of Trick House, I opened my pc, which led to one pc next to the trainer, I clicked on it, another one appeared, then another and so on
 
 ### That’s freaking impressive.
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-23 by Danni
+- **First reported:** 2024-09-24 by Danni
 - **Details:** That’s freaking impressive.
 
 ### “So this is my gaming setup”
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-09-23 by .bracemino
+- **First reported:** 2024-09-24 by .bracemino
 
 ### It didn’t affect the game in any other way tho, just a visual bug
 - **Category:** Graphics
 - **Reports:** 1 report
-- **First reported:** 2024-09-23 by .bracemino
+- **First reported:** 2024-09-24 by .bracemino
 
 ### And I can access the pcs too, dunno how it happened
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2024-09-23 by .bracemino
+- **First reported:** 2024-09-24 by .bracemino
 
 ### i have the patched version but right at the beginning whichever starter i pick on standard mode...
 - **Category:** Battle
@@ -1210,11 +1293,11 @@ _Distinct issues after deduplication: **256**_
 - **Reports:** 1 report
 - **First reported:** 2024-09-29 by Shadow
 
-### frequently-asked-questions
+### <1277123914929143809
 - **Category:** Misc
 - **Reports:** 1 report
 - **First reported:** 2024-09-29 by Mohit
-- **Details:** #frequently-asked-questions
+- **Details:** <#1277123914929143809>
 
 ### yes, ok i have the pizzaboy on my phone so ill try it there, are there any emulators for android...
 - **Category:** Emulator Compat
@@ -1236,14 +1319,14 @@ _Distinct issues after deduplication: **256**_
 ### Not sure if it's a bug but have 'Flinched' a few Pokemon only for them to then attack straight...
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2024-10-01 by ZacF97
+- **First reported:** 2024-10-02 by ZacF97
 - **Details:** Not sure if it's a bug but have 'Flinched' a few Pokemon only for them to then attack straight away and not miss that next move, typically happens against Megas or after an area affect
 
-### Hey @CD💿 could you dm me. I think I found something that kinda breaks the nuzlock mode.
+### Hey <@347167152610082817 could you dm me. I think I found something that kinda breaks the...
 - **Category:** Misc
 - **Reports:** 1 report
 - **First reported:** 2024-10-05 by Suppmain
-- **Details:** Hey @CD💿 could you dm me. I think I found something that kinda breaks the nuzlock mode.
+- **Details:** Hey <@347167152610082817> could you dm me. I think I found something that kinda breaks the nuzlock mode.
 
 ### the black augurite doesnt have a location. If it does its not posted in the mega doc
 - **Category:** Battle
@@ -1253,22 +1336,23 @@ _Distinct issues after deduplication: **256**_
 ### kept getting the message from dad saying “u cant use that rn”
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-10-11 by CyanChip
+- **First reported:** 2024-10-12 by CyanChip
 
 ### and when his alakazam used calm mind 😭
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2024-10-13 by SpookCrab
+- **First reported:** 2024-10-14 by SpookCrab
 
 ### anyone know how to fix this? i want to continue my run but i cant get past this traienr
 - **Category:** Misc
 - **Reports:** 1 report
 - **First reported:** 2024-10-14 by SpookCrab
 
-### Ah es verdad aquí solo entienden ingles y tengo que traducirlo :Facepalm:
+### Ah es verdad aquí solo entienden ingles y tengo que traducirlo <:Facepalm:1288300222786572349
 - **Category:** Misc
 - **Reports:** 1 report
 - **First reported:** 2024-10-18 by Vinny
+- **Details:** Ah es verdad aquí solo entienden ingles y tengo que traducirlo <:Facepalm:1288300222786572349>
 
 ### my game just start and I choose the starter gets buggy, I dont know if there is any solution for...
 - **Category:** Graphics
@@ -1284,13 +1368,19 @@ _Distinct issues after deduplication: **256**_
 ### Hi, is galarian yamask evo bugged? I had it take 49 dmg in a single hit, got out of battle,...
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2024-11-05 by Ryan
+- **First reported:** 2024-11-06 by Ryan
 - **Details:** Hi, is galarian yamask evo bugged? I had it take 49 dmg in a single hit, got out of battle, didnt heal, then used a rare candy on it and no effect.
 
 ### I've found a backdoor. It makes battles dead simple, and ruins the gameplay :/
 - **Category:** Overworld
 - **Reports:** 1 report
 - **First reported:** 2024-11-12 by AeternusMactus
+
+### <:emoji10:1283494436226994328
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2024-11-13 by Awakeon
+- **Details:** <:emoji_10:1283494436226994328>
 
 ### When I beat leader Jordan, the guy from the winged house is supposed to give me surf and he...
 - **Category:** Overworld
@@ -1306,32 +1396,32 @@ _Distinct issues after deduplication: **256**_
 ### In the nuzlocke mode I found that when you have a fainted party member in the first slot you can...
 - **Category:** Overworld
 - **Reports:** 1 report
-- **First reported:** 2024-12-14 by AlphaBryce
+- **First reported:** 2024-12-15 by AlphaBryce
 - **Details:** In the nuzlocke mode I found that when you have a fainted party member in the first slot you can catch an infinite amount of pokemon anywhere no matter if you have caught one in that route
 
 ### Does anyone know if the day/night system for evolutions works, or has been fixed? I'm wanting to...
 - **Category:** Pokémon/Species
 - **Reports:** 1 report
-- **First reported:** 2025-01-24 by Keebleron
+- **First reported:** 2025-01-25 by Keebleron
 - **Details:** Does anyone know if the day/night system for evolutions works, or has been fixed? I'm wanting to get an Aurorus, and nothing I try has worked so far.
 
 ### Some emulators you can use the pocket watch key item for evoluions, some will reference real...
 - **Category:** Items
 - **Reports:** 1 report
-- **First reported:** 2025-01-24 by CD💿
+- **First reported:** 2025-01-25 by CD💿
 - **Details:** Some emulators you can use the pocket watch key item for evoluions, some will reference real life time
 
 ### My screen keeps inverting colours whenever I'm outside a building and it's only the colours of...
 - **Category:** Graphics
 - **Reports:** 1 report
-- **First reported:** 2025-03-01 by Lord_Zeref
+- **First reported:** 2025-03-02 by Cerephael
 - **Details:** My screen keeps inverting colours whenever I'm outside a building and it's only the colours of the outside ground that does this, might be a hardware issue idk
 
 ### Not really the place for asking questions but this rom uses lvl caps
 - **Category:** Scripts/Text
 - **Reports:** 1 report
 - **First reported:** 2025-03-16 by furius2
-- **Details:** Not really the place for asking questions but this rom uses lvl caps #questions-or-help
+- **Details:** Not really the place for asking questions but this rom uses lvl caps <#1277237738172579861>
 
 ### also this was in the weather inst
 - **Category:** Battle
@@ -1341,12 +1431,12 @@ _Distinct issues after deduplication: **256**_
 ### It's actually kinda funny how many people mention it here tbh
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2025-03-30 by 𝓡𝓲𝓵𝓮𝔂 𝓴𝓾𝓴𝓸
+- **First reported:** 2025-03-31 by 𝓡𝓲𝓵𝓮𝔂 𝓴𝓾𝓴𝓸
 
 ### Its whatever honestly. Not gonna punish ppl for talking about it. It was unintenional to leave...
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2025-03-30 by CD💿
+- **First reported:** 2025-03-31 by CD💿
 - **Details:** Its whatever honestly. Not gonna punish ppl for talking about it. It was unintenional to leave it in. Ppl can hold themselves accountable and not cheat stuff in.
 
 ### Fair but that's not why I say it's surprising lol
@@ -1357,7 +1447,7 @@ _Distinct issues after deduplication: **256**_
 ### Covert cloak is bugged (I think), salt cure still activated on my Orthworm while holding
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2025-05-10 by Deleted User
+- **First reported:** 2025-05-11 by Deleted User
 
 ### I caught latios, and was then able to catch mew
 - **Category:** Pokémon/Species
@@ -1367,7 +1457,7 @@ _Distinct issues after deduplication: **256**_
 ### Skarmory can't learn Roost from the egg move tutor
 - **Category:** Battle
 - **Reports:** 1 report
-- **First reported:** 2025-06-11 by Korremar
+- **First reported:** 2025-06-12 by Korremar
 
 ### Blaziken don’t get no fighting moves. Never gotten sky upper cut. Had to use brick break
 - **Category:** Battle
@@ -1388,12 +1478,12 @@ _Distinct issues after deduplication: **256**_
 ### was just coming here to comment this lol^
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2025-11-06 by James
+- **First reported:** 2025-11-07 by James
 
 ### they actually have a jolteon and a whiscash
 - **Category:** Misc
 - **Reports:** 1 report
-- **First reported:** 2025-11-06 by James
+- **First reported:** 2025-11-07 by James
 
 ### How can i interact with this one ? Or is it just a bug ? Spoiler Alert: || It's on route 105 ||
 - **Category:** Overworld
@@ -1416,3 +1506,50 @@ _Distinct issues after deduplication: **256**_
 - **Category:** Graphics
 - **Reports:** 1 report
 - **First reported:** 2026-05-10 by Kuro
+
+### Zapdos did not disappear from the overworld like other legendaries after being caught
+- **Category:** Overworld
+- **Reports:** 1 report
+- **First reported:** 2026-09-14 by Jester
+
+### The candy jar doesn't lv up any pokemon
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2026-09-14 by Kevin the Great1893
+
+### Oh, and I have had a few evolutions so far.
+- **Category:** Pokémon/Species
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by CaptainVictory43
+- **Details:** Oh, and I have had a few evolutions so far.
+
+### 3 times so far. I was using Fast Forward. Testing without it right now.
+- **Category:** Emulator Compat
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by CaptainVictory43
+- **Details:** 3 times so far. I was using Fast Forward. Testing without it right now.
+
+### Route 116, this particular patch of grass (specially the top row) is impassable. Haha
+- **Category:** Overworld
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by CaptainVictory43
+
+### Also, does Pumpkaboo have Flame Body in this ROM?
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by CaptainVictory43
+
+### Oh, and it was raining. Lol
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by CaptainVictory43
+
+### You ever just be fighting a rat and it burst into flames?
+- **Category:** Battle
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by CaptainVictory43
+
+### And he CAN learn Flame Charge for some reason?
+- **Category:** Misc
+- **Reports:** 1 report
+- **First reported:** 2026-09-15 by CaptainVictory43
