@@ -71,6 +71,7 @@ __pycache__
 include/generated/bpe_release.h
 /.release-work/
 /BPETools/release.local.json
+/BPETools/discord.local.json
 /.release-build.log
 src/data/pokemon/teachable_learnsets.h
 .map_version
