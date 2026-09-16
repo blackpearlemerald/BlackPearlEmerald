@@ -147,13 +147,43 @@ function guidePopup(g) {
   return html;
 }
 
+// Older exports only contain multi-item care packages; newer ones also carry
+// single-item NPC gifts (HMs, TMs, key items).
+function giftKind(gift) {
+  return gift.carePackage === false ? "Gift" : "Care Package";
+}
+
 function giftPopup(gift) {
-  let html = `<div class="gift-head">🎁 ${prettify(gift.mapId)} Care Package</div>`;
+  let html = `<div class="gift-head">🎁 ${prettify(gift.mapId)} ${giftKind(gift)}</div>`;
   html += `<div class="gift-items">`;
   for (const gi of gift.items) {
     html += itemRow(gi.item, gi.qty);
   }
   html += `</div>`;
+  return html;
+}
+
+// Scripted one-off encounters (legendaries, Snorlax, Kecleon...). The
+// pre-Elite Four group size comes from this release's export.
+function staticKind(st) {
+  if (st.preE4) return "Pre-Elite Four Legendary";
+  return st.legendary ? "Legendary Pokémon" : "Static Pokémon";
+}
+
+function staticPopup(st, preE4Count) {
+  const id = monPageId(st);
+  const name = prettify(st.species);
+  const nameHtml = id
+    ? `<a class="mon-name-link" href="pokemon.html?id=${encodeURIComponent(id)}">${name}</a>`
+    : name;
+  let html = `<div class="tcard-head">${encSprite(st)}<div class="tcard-id">` +
+    `<div class="tcard-name">${nameHtml}</div>` +
+    `<div class="tcard-class">Lv ${st.level} · ${st.place || prettify(st.mapId)}</div></div></div>`;
+  if (st.preE4) {
+    html += `<div class="enc-note static-rule"><b>Pre-Elite Four pick:</b> you can battle ` +
+      `only one of these ${preE4Count} Pokémon before becoming Champion.` +
+      ` <a href="features.html#legendaries">Legendary rules →</a></div>`;
+  }
   return html;
 }
 
@@ -440,6 +470,23 @@ async function main() {
     return best;
   }
 
+  function staticAt(latlng) {
+    if (!map.hasLayer(staticLayer)) return null;
+    const p = map.latLngToContainerPoint(latlng);
+    let best = null, bestD = 18;
+    for (const h of staticHits) {
+      const d = p.distanceTo(map.latLngToContainerPoint(h.ll));
+      if (d < bestD) { bestD = d; best = h.st; }
+    }
+    return best;
+  }
+
+  function openStatic(st) {
+    const bounds = spriteBoundsAt(st.gx, st.gy, STATIC_ICON);
+    openDetail(staticKind(st), staticPopup(st, preE4Count),
+      L.latLngBounds(bounds).getCenter(), bounds);
+  }
+
   function guideAt(latlng) {
     if (!map.hasLayer(guideLayer)) return null;
     const p = map.latLngToContainerPoint(latlng);
@@ -476,7 +523,7 @@ async function main() {
       : "";
     const html = nav + trainerPopup(world.trainerData[t.trainerId], sp.file)
       + (gift ? giftPopup(gift) : "");
-    const title = gift ? "Trainer & Care Package" : "Trainer";
+    const title = gift ? "Trainer & " + giftKind(gift) : "Trainer";
     if (firstOpen) {
       const bounds = sp.bounds;
       openDetail(title, html, L.latLngBounds(bounds).getCenter(), bounds);
@@ -518,6 +565,11 @@ async function main() {
       openGuide(gd);
       return;
     }
+    const sw = staticAt(e.latlng);
+    if (sw) {
+      openStatic(sw);
+      return;
+    }
     const it = itemAt(e.latlng);
     if (it) {
       const bounds = spriteBoundsAt(it.gx, it.gy, it.hidden ? null : ballSprite);
@@ -527,7 +579,7 @@ async function main() {
     if (gf) {
       const sp = world.sprites && world.sprites[gf.gfx];
       const bounds = spriteBoundsAt(gf.gx, gf.gy, sp);
-      openDetail("Care Package", giftPopup(gf), L.latLngBounds(bounds).getCenter(), bounds);
+      openDetail(giftKind(gf), giftPopup(gf), L.latLngBounds(bounds).getCenter(), bounds);
       return;
     }
     const m = mapAt(x, y);
@@ -742,6 +794,36 @@ async function main() {
     giftHits.push({ ll, gift });
   }
 
+  // ---- static encounters (legendaries etc.) ----
+  // Menu icons share the bounded sprite renderer with the overworld sprites.
+  const staticLayer = L.layerGroup();
+  const staticHits = [];  // {ll, st}
+  const STATIC_ICON = { w: 32, h: 32 };
+  const statics = world.statics || [];
+  const preE4Count = statics.filter(st => st.preE4).length;
+  for (const st of statics) {
+    const ll = W2LL(st.gx, st.gy);
+    const bounds = spriteBoundsAt(st.gx, st.gy, STATIC_ICON);
+    if (st.sprite) {
+      BPEWorldImages.image("img/pokemon/" + st.sprite, bounds, spriteImages,
+        { className: "sprite", interactive: false }).addTo(staticLayer);
+      addSpriteHover(staticLayer, bounds, bounds, null, 1);
+    } else {
+      L.circleMarker(ll, {
+        radius: 6, color: "#3b1d00", weight: 1.5,
+        fillColor: "#f5b82e", fillOpacity: 0.95,
+        interactive: false, renderer: canvas,
+      }).addTo(staticLayer);
+    }
+    if (st.preE4 || st.legendary) {
+      L.marker(ll, {
+        interactive: false,
+        icon: L.divIcon({ className: "static-badge", html: '<span class="static-star">★</span>', iconSize: [0, 0] }),
+      }).addTo(staticLayer);
+    }
+    staticHits.push({ ll, st });
+  }
+
   // ---- guide notes ----
   const guideLayer = L.layerGroup();
   const guideHits = [];  // {ll, guide}
@@ -786,6 +868,7 @@ async function main() {
   trainerLayer.addTo(map);
   itemLayer.addTo(map);
   giftLayer.addTo(map);
+  staticLayer.addTo(map);
   guideLayer.addTo(map);
 
   // Hover feedback uses world-space sprite rectangles and is throttled to one
@@ -881,6 +964,7 @@ async function main() {
   bind("t-labels", labelLayer);
   bind("t-gifts", giftLayer);
   bind("t-guides", guideLayer);
+  bind("t-statics", staticLayer);
 
   const giftCount = (world.gifts || []).length;
   const martCount = Object.keys(world.marts || {}).length;
@@ -888,7 +972,8 @@ async function main() {
   document.getElementById("counts").innerHTML =
     `${world.maps.length} maps · ${world.trainers.length} trainers<br>` +
     `${world.items.length} items (${world.items.filter(i => i.hidden).length} hidden)<br>` +
-    `${martCount} shops · ${giftCount} care packages · ${guideCount} guides`;
+    `${martCount} shops · ${giftCount} gifts · ${guideCount} guides` +
+    (statics.length ? `<br>${statics.length} static Pokémon` : "");
 
   document.getElementById("panel-toggle").addEventListener("click", () => {
     document.getElementById("panel").classList.toggle("open");
@@ -932,6 +1017,19 @@ async function main() {
       }
     }
 
+    // Snap to a static encounter (?static=SPECIES_ID or the bare id).
+    if (opts.static) {
+      const want = String(opts.static).replace(/^SPECIES_/, "");
+      const hit = statics.find((st) => st.mapId === id
+        && st.species.replace(/^SPECIES_/, "") === want);
+      if (hit) {
+        ensureLayer(staticLayer, "t-statics");
+        map.setView(W2LL(hit.gx, hit.gy), 2, { animate: false });
+        openStatic(hit);
+        return true;
+      }
+    }
+
     // Snap to a specific item ball / hidden item on this map.
     if (opts.item) {
       const want = "ITEM_" + opts.item;
@@ -961,7 +1059,7 @@ async function main() {
         map.setView(ll, 2, { animate: true });
         const sp = world.sprites && world.sprites[g.gfx];
         const bounds = spriteBoundsAt(g.gx, g.gy, sp);
-        openDetail("Care Package", giftPopup(g), L.latLngBounds(bounds).getCenter(), bounds);
+        openDetail(giftKind(g), giftPopup(g), L.latLngBounds(bounds).getCenter(), bounds);
         return true;
       }
     }
@@ -996,6 +1094,7 @@ async function main() {
       gift: params.get("gift"),
       mart: params.get("mart"),
       guide: params.get("guide"),
+      static: params.get("static"),
     }), 0);
   }
 }

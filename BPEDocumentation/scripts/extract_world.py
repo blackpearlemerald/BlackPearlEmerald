@@ -28,6 +28,7 @@ TILE = 16  # px per metatile block
 PAD = 24   # px gap between islands when packing
 
 TRAINER_TOK_RE = re.compile(r"\bTRAINER_[A-Z0-9_]+\b")
+PURCHASE_RE    = re.compile(r"\b(?:removecoins|removemoney)\b")
 GIVEITEM_RE    = re.compile(r"\bgiveitem\s+(ITEM_\w+)(?:\s*,\s*(\d+))?")
 ADDITEM_RE     = re.compile(r"\badditem\s+(ITEM_\w+)(?:\s*,\s*(\d+))?")
 
@@ -625,12 +626,14 @@ def script_refs(body, scripts):
 
 
 def collect_gift_packages(script_label, scripts, _seen=None, _depth=0):
-    """Return multi-item reward groups reachable from an object's script.
+    """Return item reward groups reachable from an object's script.
 
-    A script that can award several mutually exclusive items (bike/fossil
-    choices, prize counters, etc.) is not a care package. Only a single script
-    block that actually grants at least two distinct items qualifies; callers
-    are followed so story-event and Gym reward helper scripts are still found.
+    Each group is one script block and the items it grants directly. A block
+    that grants at least two distinct items is a care package. A block that
+    grants one item is an ordinary gift (HMs, TMs, key items); several such
+    blocks behind one NPC can be mutually exclusive choices (bikes, fossils),
+    so they are never merged into a care package. Callers are followed so
+    story-event and Gym reward helper scripts are still found.
     """
     if not script_label:
         return []
@@ -647,12 +650,118 @@ def collect_gift_packages(script_label, scripts, _seen=None, _depth=0):
         direct.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
     for m in ADDITEM_RE.finditer(body):
         direct.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
-    packages = ([(script_label, direct)]
-                if len({item for item, _ in direct}) >= 2 else [])
+    if len({item for item, _ in direct}) == 1 and PURCHASE_RE.search(body):
+        direct = []  # a coin/money purchase (Game Corner prizes), not a gift
+    packages = [(script_label, direct)] if direct else []
     for target in script_refs(body, scripts):
         packages.extend(collect_gift_packages(
             target, scripts, _seen, _depth + 1))
     return packages
+
+
+def merge_gift_packages(packages):
+    """Merge reward groups for one NPC into (items, isCarePackage).
+
+    Care-package items (from blocks granting 2+ distinct items) keep their
+    previous merged quantities. Single-item gifts are added afterwards as
+    ordinary gifts. Each item records whether it came from a care package.
+    """
+    care, single = {}, {}
+    for _, package in packages:
+        group = {}
+        for item_id, qty in package:
+            group[item_id] = group.get(item_id, 0) + qty
+        target = care if len(group) >= 2 else single
+        for item_id, qty in group.items():
+            # Retry/alternate paths can reach the same reward; do not count
+            # those as extra physical copies.
+            target[item_id] = max(target.get(item_id, 0), qty)
+    items = [{"item": it, "qty": qty, "carePackage": True}
+             for it, qty in care.items()]
+    items += [{"item": it, "qty": qty, "carePackage": False}
+              for it, qty in single.items() if it not in care]
+    return items, bool(care)
+
+
+# --------------------------------------------------------------------------- #
+# Static (scripted) wild encounters: legendaries, Snorlax, Kecleon, ...
+# --------------------------------------------------------------------------- #
+WILD_BATTLE_RE = re.compile(
+    r"\b(?:setwildbattle|seteventmon)\s+(SPECIES_[A-Z0-9_]+)\s*,\s*(\w+)")
+# BPE's "pre-Elite Four legendary" rule records the one legendary the player
+# chose in this variable; every encounter that sets it belongs to that group.
+PREE4_RE = re.compile(r"\bsetvar\s+VAR_PREE4_LEGENDARY\b")
+LEGENDARY_FLAG_RE = re.compile(
+    r"\.is(?:Legendary|SubLegendary|RestrictedLegendary|Mythical)\s*=\s*TRUE"
+    r"|SPECIES_FLAG_(?:LEGENDARY|MYTHICAL)")
+
+
+def collect_static_encounters(script_label, scripts, _seen=None, _depth=0):
+    """Return ({(species, level)}, sets_pre_e4, [visited labels]) reachable
+    from a script through goto/call/case branches."""
+    if _seen is None:
+        _seen = []
+    if not script_label or script_label in _seen or _depth > 24:
+        return set(), False, _seen
+    body = scripts.get(script_label)
+    if body is None:
+        return set(), False, _seen
+    _seen.append(script_label)
+    found = {(m.group(1), m.group(2)) for m in WILD_BATTLE_RE.finditer(body)}
+    pre_e4 = bool(PREE4_RE.search(body))
+    for target in script_refs(body, scripts):
+        sub, sub_pre, _ = collect_static_encounters(
+            target, scripts, _seen, _depth + 1)
+        found |= sub
+        pre_e4 = pre_e4 or sub_pre
+    return found, pre_e4, _seen
+
+
+def static_encounter(script, scripts, objects_by_local_id=None):
+    """Describe the single static encounter an event starts, or None.
+
+    Scripts that can start encounters with different species (for example
+    the vanilla Southern Island sign, which picks Latios or Latias from a
+    variable) are ambiguous and skipped rather than guessed.
+    """
+    found, pre_e4, visited = collect_static_encounters(script, scripts)
+    if len(found) != 1:
+        return None
+    species, level = next(iter(found))
+    entry = {"species": species,
+             "level": int(level) if level.isdigit() else level,
+             "preE4": pre_e4}
+    # A trigger tile often starts the battle with a separate Pokemon object
+    # (Groudon, Kyogre, Ho-Oh); anchor the marker on that object.
+    token = species[len("SPECIES_"):].split("_")[0]
+    for label in visited:
+        for local_id in LOCALID_RE.findall(scripts.get(label, "")):
+            ev = (objects_by_local_id or {}).get(local_id)
+            if ev and token in local_id:
+                entry["anchor"] = (int(ev.get("x", 0)), int(ev.get("y", 0)))
+                return entry
+    return entry
+
+
+def load_legendary_species():
+    """SPECIES_* flagged legendary/mythical in the species info headers."""
+    root = C.src("src", "data", "pokemon", "species_info")
+    out = set()
+    if not os.path.isdir(root):
+        return out
+    for name in sorted(os.listdir(root)):
+        if not name.endswith(".h"):
+            continue
+        with open(os.path.join(root, name), encoding="utf-8",
+                  errors="replace") as f:
+            text = f.read()
+        starts = list(re.finditer(r"^\s*\[(SPECIES_[A-Z0-9_]+)\]\s*=", text,
+                                  re.MULTILINE))
+        for i, m in enumerate(starts):
+            end = starts[i + 1].start() if i + 1 < len(starts) else len(text)
+            if LEGENDARY_FLAG_RE.search(text, m.end(), end):
+                out.add(m.group(1))
+    return out
 
 
 def find_script_path(start, target, scripts, _seen=None, _depth=0):
@@ -691,7 +800,7 @@ def load_maps(dims):
         gift_scripts = dict(shared_scripts)
         gift_scripts.update(local_scripts)
 
-        trainers, items, gifts = [], [], []
+        trainers, items, gifts, statics = [], [], [], []
         claimed_package_scripts = set()
         objects_by_local_id = {
             ev.get("local_id"): ev for ev in mj.get("object_events", [])
@@ -702,24 +811,22 @@ def load_maps(dims):
             packages = collect_gift_packages(script, gift_scripts)
             packages = [(source, items) for source, items in packages
                         if source not in claimed_package_scripts]
+            # A single item granted by a globally shared script is usually
+            # an event distribution (the Mystery Gift man offers the Eon
+            # Ticket in every Pokemon Center), not this map's own gift.
+            packages = [(source, items) for source, items in packages
+                        if len({item for item, _ in items}) >= 2
+                        or source in local_scripts]
             if not packages:
                 return
-            merged = {}
-            for source, package in packages:
+            for source, _ in packages:
                 claimed_package_scripts.add(source)
-                group = {}
-                for item_id, qty in package:
-                    group[item_id] = group.get(item_id, 0) + qty
-                for item_id, qty in group.items():
-                    # Retry/alternate paths can reach the same package; do not
-                    # count those as extra physical copies.
-                    merged[item_id] = max(merged.get(item_id, 0), qty)
-            if len(merged) >= 2:
+            items, care_package = merge_gift_packages(packages)
+            if items:
                 gifts.append({"x": x, "y": y, "gfx": gfx,
                               "dir": direction, "script": script,
-                              "carePackage": True,
-                              "items": [{"item": it, "qty": qty}
-                                        for it, qty in merged.items()]})
+                              "carePackage": care_package,
+                              "items": items})
 
         for ev in mj.get("object_events", []):
             x, y = int(ev.get("x", 0)), int(ev.get("y", 0))
@@ -731,9 +838,10 @@ def load_maps(dims):
                     trainers.append({"x": x, "y": y, "trainerId": tid,
                                      "gfx": ev.get("graphics_id"),
                                      "dir": facing_dir(ev.get("movement_type"))})
-                # Care package: an NPC/event script that recursively gives 2+
-                # items. Trainer objects can also award packages (notably Gym
-                # Leaders), so this must be independent of trainer detection.
+                # Gifts: an NPC/event script that recursively gives items (2+
+                # in one block is a care package). Trainer objects can also
+                # award them (notably Gym Leaders), so this must be
+                # independent of trainer detection.
                 if ev.get("graphics_id") != "OBJ_EVENT_GFX_ITEM_BALL":
                     add_care_package(
                         ev.get("script"), x, y, ev.get("graphics_id"),
@@ -793,6 +901,26 @@ def load_maps(dims):
                 anchor.get("graphics_id") if anchor else None,
                 facing_dir(anchor.get("movement_type")) if anchor else "down")
 
+        # Static encounters. Objects come first so a Pokemon's own object
+        # wins over a trigger tile that starts the same battle.
+        seen_species = set()
+        # Several objects may share a species (Kecleon on one route); a
+        # trigger tile for an already-placed species is the same battle.
+        events = ([(ev, True) for ev in mj.get("object_events", [])]
+                  + [(ev, False) for ev in mj.get("bg_events", [])
+                     + mj.get("coord_events", [])])
+        for ev, is_object in events:
+            if not ev.get("script") or ev.get("script") == "0x0":
+                continue
+            enc = static_encounter(ev["script"], gift_scripts,
+                                   objects_by_local_id)
+            if not enc or (not is_object and enc["species"] in seen_species):
+                continue
+            seen_species.add(enc["species"])
+            x, y = enc.pop("anchor", (int(ev.get("x", 0)), int(ev.get("y", 0))))
+            enc.update(x=x, y=y, place=_spaced(dirname))
+            statics.append(enc)
+
         warps = [{"x": int(w0.get("x", 0)), "y": int(w0.get("y", 0)),
                   "dest": w0.get("dest_map")}
                  for w0 in mj.get("warp_events", [])]
@@ -803,7 +931,7 @@ def load_maps(dims):
             "type": mj.get("map_type"),
             "connections": mj.get("connections") or [],
             "warps": warps, "trainers": trainers, "items": items,
-            "gifts": gifts,
+            "gifts": gifts, "statics": statics,
         }
     return maps
 
@@ -1102,6 +1230,8 @@ def build():
     encounters = build_encounters()
 
     out_maps, out_trainers, out_items, out_gifts = [], [], [], []
+    out_statics = []
+    legendary_species = load_legendary_species()
     used_trainers = set()
     unresolved = 0
     enc_count = 0
@@ -1137,6 +1267,17 @@ def build():
                               "carePackage": g.get("carePackage", False),
                               "items": g["items"]})
 
+        for st in m.get("statics", []):
+            entry = {"mapId": mid, "place": st["place"],
+                     "gx": ox + st["x"] * TILE + TILE // 2,
+                     "gy": oy + st["y"] * TILE + TILE // 2,
+                     "species": st["species"], "level": st["level"]}
+            if st["preE4"]:
+                entry["preE4"] = True
+            if st["species"] in legendary_species:
+                entry["legendary"] = True
+            out_statics.append(entry)
+
     # only ship trainer data actually referenced on the map
     trainers_ship = {tid: trainers_db[tid]
                      for tid in used_trainers if tid in trainers_db}
@@ -1160,6 +1301,10 @@ def build():
     # annotate each wild-encounter mon with its menu-icon filename
     enc_new, enc_missing = pokemon_sprites.annotate_encounters(out_maps)
 
+    # Static encounter markers reuse the wild-encounter menu icons.
+    pokemon_sprites.annotate_encounters(
+        [{"enc": {"land": {"mons": out_statics}}}])
+
     guides = build_guides(placed)
 
     # render overworld sprites for trainers + gift NPCs + guides + item ball
@@ -1178,6 +1323,7 @@ def build():
         "trainers": out_trainers,
         "items": out_items,
         "gifts": out_gifts,
+        "statics": out_statics,
         "marts": marts,
         "guides": guides,
         "warpLinks": warp_links,
@@ -1193,7 +1339,10 @@ def build():
           f"({len(trainers_ship)} unique teams, {unresolved} unresolved)")
     print(f"Items shown:    {len(out_items)} "
           f"({sum(1 for i in out_items if i['hidden'])} hidden)")
-    print(f"Care packages:  {len(out_gifts)}")
+    print(f"Gifts:          {len(out_gifts)} "
+          f"({sum(1 for g in out_gifts if g['carePackage'])} care packages)")
+    print(f"Static Pokemon: {len(out_statics)} "
+          f"({sum(1 for s in out_statics if s.get('preE4'))} pre-Elite Four)")
     print(f"Marts parsed:   {len(marts)}")
     print(f"Guide notes:    {len(guides)}")
     print(f"Warp links:     {len(warp_links)}")

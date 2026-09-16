@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "intro": "Black Pearl Emerald is a Pokémon Emerald ROM hack built on pokeemerald-expansion. These are the main features of this version.",
+  "sections": [
+    {
+      "id": "adventure",
+      "title": "Your adventure",
+      "items": [
+        {
+          "title": "Standard or Nuzlocke mode",
+          "body": "Professor Birch asks which mode you want right after you choose your character. Nuzlocke mode enforces the rules for you: only the first Pokémon you meet in each area can be caught (species you already own and shinies don't use up the area), Poké Balls always catch, fainted Pokémon can't be healed or used, and losing a battle ends the challenge."
+        },
+        {
+          "title": "Badge level caps",
+          "body": "Levels are capped by progress: 15 before the first badge, rising by 9 with each badge to 78 before the eighth, 90 until you become Champion, then 100. Pokémon at the cap gain no EXP, and Rare Candies and the Day Care respect it."
+        },
+        {
+          "title": "Starter kit and Candy Jar",
+          "body": "Mom gives you the Running Shoes, Candy Jar, Taxi Ticket, Pokévial, Pokémon Box Link, Exp. Share, Old Rod, Escape Rope and Pocket Watch. The Candy Jar never runs out and raises a Pokémon straight to the current level cap."
+        },
+        {
+          "title": "Taxi Ticket",
+          "body": "Opens the Fly map wherever flying is allowed, without a badge or a Pokémon that knows Fly."
+        },
+        {
+          "title": "HMs work from the Bag",
+          "body": "Cut, Rock Smash, Strength, Surf, Waterfall and Dive can be used while their HM is in your Bag, even if no Pokémon knows the move. With HM02 in your Bag, Fly appears in the party menu. Badge requirements still apply. With HM05 in your Bag, dark caves are lit automatically."
+        },
+        {
+          "title": "Follower Pokémon and day/night",
+          "body": "Your lead Pokémon follows you in the overworld, and the overworld is tinted by the time of day."
+        },
+        {
+          "title": "Battle Style",
+          "body": "New games use the Set battle style. In Standard mode you can switch it in Options; Nuzlocke mode keeps it on Set."
+        },
+        {
+          "title": "Developer menu",
+          "body": "Hold SELECT and press START in the overworld to open the developer menu. Press SELECT in battle for the battle menu."
+        }
+      ]
+    },
+    {
+      "id": "pokemon",
+      "title": "Pokémon",
+      "items": [
+        {
+          "title": "Catch them all",
+          "body": "Every regular Pokémon and regional form is obtainable. Remaining special cases are sold in Verdanturf's Bean Shop."
+        },
+        {
+          "title": "Bean Shop",
+          "body": "Verdanturf's Poké Mart sells Rare Candies, every evolution stone and many evolution items. Its stock grows after the third and fourth badges, adding trade-evolution items and type-resist Berries."
+        },
+        {
+          "title": "Shiny odds of 1 in 512",
+          "body": "Shiny Pokémon appear at 1 in 512 instead of 1 in 8,192."
+        },
+        {
+          "title": "Event islands",
+          "body": "Juan gives you the Eon Ticket (Southern Island) and the Old Sea Map (Faraway Island). After the Hall of Fame, Dad gives you the Mystic Ticket (Navel Rock) and the Aurora Ticket (Birth Island). The Lilycove ferry sails there once you have eight badges."
+        },
+        {
+          "title": "Legendary Lottery Island",
+          "body": "After you become Champion, Mirage Island off Route 130 hosts one random legendary you haven't caught yet, at level 70. Catch it and it leaves the pool."
+        }
+      ]
+    },
+    {
+      "id": "battles",
+      "title": "Battles",
+      "items": [
+        {
+          "title": "Modern mechanics",
+          "body": "Battles use Generation 9 rules, including the physical/special split and updated moves, type matchups and EXP."
+        },
+        {
+          "title": "Mega Evolution",
+          "body": "Flannery gives you the Mega Ring at the Lavaridge Gym. Over 90 Mega Stones, including Legends: Z-A stones, are placed around Hoenn. Z-Moves, Dynamax and Terastallization are not available."
+        },
+        {
+          "title": "Reworked Trick House",
+          "body": "The Trick House's eight puzzles hold 32 cameo battles themed on other regions, from Kanto to Paldea, with Mega Stones and held items as rewards."
+        },
+        {
+          "title": "Postgame challengers",
+          "body": "Two optional trainers wait in Ever Grande City after you become Champion. Beating them unlocks unlimited Ability Capsule and Ability Patch shops."
+        }
+      ]
+    }
+  ],
+  "legendaries": {
+    "intro": "Levels and locations are read from this version's game data.",
+    "rules": [
+      "Before you become Champion you can battle only one of the pre-Elite Four legendaries. Catching it or knocking it out uses up your pick. Running away does too, except from Mew.",
+      "Once your pick is used, the other pre-Elite Four legendaries disappear.",
+      "After your first Champion win, the others return. Champion rematches don't bring them back again."
+    ],
+    "preE4": {
+      "SPECIES_ARTICUNO": null,
+      "SPECIES_MOLTRES": null,
+      "SPECIES_ENTEI": null,
+      "SPECIES_CELEBI": null,
+      "SPECIES_ZAPDOS": null,
+      "SPECIES_RAIKOU": null,
+      "SPECIES_SUICUNE": null,
+      "SPECIES_JIRACHI": null,
+      "SPECIES_SPIRITOMB": null,
+      "SPECIES_LATIOS": "Southern Island, reached with Juan's Eon Ticket. Battling Latios or Latias removes both.",
+      "SPECIES_LATIAS": "Southern Island, reached with Juan's Eon Ticket. Battling Latios or Latias removes both.",
+      "SPECIES_ROTOM": null,
+      "SPECIES_TYPE_NULL": null,
+      "SPECIES_MEW": "Faraway Island, reached with Juan's Old Sea Map."
+    },
+    "others": {
+      "SPECIES_REGIROCK": null,
+      "SPECIES_REGICE": null,
+      "SPECIES_REGISTEEL": null,
+      "SPECIES_GROUDON": "Terra Cave is guarded until you become Champion.",
+      "SPECIES_KYOGRE": "Marine Cave is guarded until you become Champion.",
+      "SPECIES_RAYQUAZA": "Sky Pillar is guarded until you become Champion.",
+      "SPECIES_LUGIA": "Navel Rock, reached with the Mystic Ticket.",
+      "SPECIES_HO_OH": "Navel Rock, reached with the Mystic Ticket.",
+      "SPECIES_DEOXYS_NORMAL": "Birth Island, reached with the Aurora Ticket.",
+      "SPECIES_SNORLAX": "You need the Poké Flute to wake it."
+    }
+  }
+}

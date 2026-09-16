@@ -35,6 +35,15 @@
         target.searchParams.set('missing', entity);
       } else if (!response.ok) throw new Error('Could not check this page in the selected release. Please retry.');
     }
+    // Pages added in later releases are absent from older snapshots.
+    var laterPages = { 'features.html': 'Features' };
+    if (laterPages[relative]) {
+      var page = await fetch(new URL(relative, targetRoot), { method: 'HEAD', cache: 'no-cache' });
+      if (page.status === 404) {
+        target = new URL('index.html', targetRoot);
+        target.searchParams.set('missing-page', laterPages[relative]);
+      } else if (!page.ok) throw new Error('Could not check this page in the selected release. Please retry.');
+    }
     var mapId = target.searchParams.get('map');
     if ((relative === 'index.html' || relative === '') && mapId) {
       var world = await getJson(new URL('js/data/world.json', targetRoot));

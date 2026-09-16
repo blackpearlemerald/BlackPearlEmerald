@@ -16,6 +16,10 @@
 #site-header .nav-link.active { color: #65d596; background: #4db87a21; }
 .bpe-release-notice { margin: 0; padding: 8px 20px; color: #fff2c0; background: #45370c; font-size: 13px; }
 .bpe-release-notice[hidden] { display: none; }
+.bpe-release-notice-switch { margin: 2px 0 2px 4px; padding: 3px 10px; border: 1px solid #ffd76a; border-radius: 6px; background: #6b5412; color: #fff6d6; font: inherit; font-weight: 700; cursor: pointer; }
+.bpe-release-notice-switch:hover { background: #7d6318; }
+.bpe-release-notice-switch:focus-visible { outline: 2px solid white; outline-offset: 2px; }
+.bpe-release-notice-switch:disabled { opacity: .7; cursor: wait; }
 body.page-calc { padding-top: var(--bpe-header-height); }
 @media (max-width: 640px) {
   :root { --bpe-header-height: 96px; }
@@ -26,6 +30,10 @@ body.page-calc { padding-top: var(--bpe-header-height); }
   .bpe-version-control { flex: 1 1 160px; min-width: 0; }
   .bpe-version-control label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   #bpe-version-select { min-width: 0; min-height: 38px; flex: 1; padding: 6px 30px 6px 10px; font-size: 14px; }
-  #site-header #site-nav { padding: 0 8px; }
+  #site-header #site-nav { padding: 3px 6px; }
   #site-header .nav-brand { display: none; }
+  /* Wrap instead of scrolling so every page link is visible on phones. */
+  #site-header .nav-links { flex-wrap: wrap; justify-content: center; gap: 1px 0; overflow: visible; width: 100%; }
+  #site-header .nav-link { padding: 5px 7px; font-size: 13px; line-height: 1.25; }
+  .bpe-release-notice { padding: 6px 10px; font-size: 12.5px; }
 }

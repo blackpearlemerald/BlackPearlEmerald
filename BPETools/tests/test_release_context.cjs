@@ -31,6 +31,12 @@ function page(id, relative, responses={}, blocked=false) {
   const failed=page('2.0.0-beta','item.html?id=POTION',{'/BlackPearlEmerald/versions/1.0.1/data/items/POTION.json':{ok:false,status:503}});
   await assert.rejects(failed.context.switchTo(to));
   assert.equal(failed.scope.destination,undefined);
+  const features=page('2.0.0-beta','features.html#legendaries');
+  await features.context.switchTo(to);
+  assert.equal(features.scope.destination,'https://example.test/BlackPearlEmerald/versions/1.0.1/features.html#legendaries');
+  const olderFeatures=page('2.0.0-beta','features.html#legendaries',{'/BlackPearlEmerald/versions/1.0.1/features.html':{ok:false,status:404}});
+  await olderFeatures.context.switchTo(to);
+  assert.equal(olderFeatures.scope.destination,'https://example.test/BlackPearlEmerald/versions/1.0.1/index.html?missing-page=Features');
   const map=page('2.0.0-beta','index.html?map=MAP_NEW&item=ITEM_POTION');
   await map.context.switchTo(to);
   assert.ok(map.scope.destination.endsWith('/index.html?missing=MAP_NEW'));

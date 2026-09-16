@@ -389,7 +389,7 @@ def build_locations(items_dict):
                      "hidden": it.get("hidden", False)}
             locs[key]["overworld"].append(entry)
 
-    # Gift NPC bundles
+    # NPC gifts and care packages
     for gift in world.get("gifts", []):
         map_name = map_names.get(gift["mapId"], _prettify_map(gift["mapId"]))
         for gi in gift.get("items", []):
@@ -399,7 +399,10 @@ def build_locations(items_dict):
                 qty = gi.get("qty", 1)
                 entry = {"mapId": gift["mapId"], "mapName": map_name,
                          "qty": qty,
-                         "carePackage": gift.get("carePackage", False)}
+                         # Gifts list each item's own kind; older exports
+                         # only marked the whole gift.
+                         "carePackage": gi.get("carePackage",
+                                               gift.get("carePackage", False))}
                 locs[key]["gifts"].append(entry)
 
     return locs

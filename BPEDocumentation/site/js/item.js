@@ -65,9 +65,13 @@
     }
 
     if (gifts.length) {
-      html += '<div class="where-section"><div class="where-section-label">🎁 Care Package</div>';
+      var anyPackage = gifts.some(function(g) { return g.carePackage; });
+      var anyGift = gifts.some(function(g) { return !g.carePackage; });
+      var giftLabel = anyPackage && anyGift ? 'Gift / Care Package' : anyPackage ? 'Care Package' : 'Gift';
+      html += '<div class="where-section"><div class="where-section-label">🎁 ' + giftLabel + '</div>';
       gifts.forEach(function(g) {
         var qtyLabel = g.qty > 1 ? ' <span class="where-qty">×' + g.qty + '</span>' : '';
+        if (anyPackage && anyGift) qtyLabel += '<span class="where-cond">' + (g.carePackage ? 'Care package' : 'Gift') + '</span>';
         html += link(g.mapId, '&gift=' + encodeURIComponent(itemId), g.mapName, qtyLabel);
       });
       html += '</div>';

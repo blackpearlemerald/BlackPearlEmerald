@@ -23,6 +23,7 @@ SITE = ROOT / "BPEDocumentation/site"
 VERSION_HISTORY = ROOT / "releases/version-history.json"
 REPOSITORY = "blackpearlemerald/BlackPearlEmerald"
 PAGES_LIMIT = 1_000_000_000
+LATER_PAGES = {"features.html": "Features"}
 
 
 def gh(*args):
@@ -140,7 +141,23 @@ def validate_map_overview(path, world, shared=False):
         raise ValueError("Map overview image dimensions disagree with its metadata.")
 
 
-def validate_snapshot(path, shared=False, require_encounters=False, require_history=False):
+def validate_features(path):
+    """Check the Features page export built by build_features.py."""
+    data = read_json(Path(path) / "data/features.json")
+    groups = data.get("legendaries") if isinstance(data, dict) else None
+    if groups is None or data.get("schemaVersion") != 1 or not isinstance(data.get("curated"), bool) or not isinstance(groups, dict):
+        raise ValueError("Invalid Features page data.")
+    for key in ("preE4", "others"):
+        entries = groups.get(key)
+        if not isinstance(entries, list) or any(
+                not isinstance(e, dict) or not str(e.get("species", "")).startswith("SPECIES_")
+                or not isinstance(e.get("mapId"), str) or not isinstance(e.get("name"), str) for e in entries):
+            raise ValueError("Invalid legendary encounters in Features page data.")
+    if data["curated"] and (not isinstance(data.get("sections"), list) or not data["sections"]):
+        raise ValueError("Curated Features page data has no sections.")
+
+
+def validate_snapshot(path, shared=False, require_encounters=False, require_history=False, require_features=False):
     path = Path(path)
     required = ["index.html", "pokedex.html", "items.html", "trainers.html", "patcher.html", "search.html",
                 "calc/index.html", "js/nav.js", "js/release-context.js", "css/header.css",
@@ -148,6 +165,8 @@ def validate_snapshot(path, shared=False, require_encounters=False, require_hist
                 "js/data/world.json", "js/data/trainers.json", "calc/data/bpe_calc_data.json"]
     if require_history:
         required += ["version-history.html", "js/version-history.js", "css/version-history.css"]
+    if require_features:
+        required += ["features.html", "js/features.js", "css/features.css", "data/features.json"]
     for name in required:
         if not (path / name).is_file():
             raise ValueError(f"Incomplete documentation: {name}")
@@ -159,6 +178,8 @@ def validate_snapshot(path, shared=False, require_encounters=False, require_hist
     items = read_json(path / "data/items_index.json")
     world = read_json(path / "js/data/world.json")
     validate_map_overview(path, world, shared)
+    if (path / "data/features.json").is_file():
+        validate_features(path)
     if len(pokedex) < 300 or len(items) < 100 or len(world.get("maps", [])) < 100:
         raise ValueError("Documentation export is unexpectedly incomplete.")
     species_with_encounters = 0
@@ -236,7 +257,7 @@ def build_snapshot(metadata, patch, destination, work, revision, exporter):
     release["patch"].update(url=patch_url, archiveSha256=sha256((destination / patch_url).read_bytes()))
     write_json(destination / "release.json", release)
     write_json(destination / "package.json", metadata)
-    validate_snapshot(destination, require_encounters=True, require_history=True)
+    validate_snapshot(destination, require_encounters=True, require_history=True, require_features=True)
     return release
 
 
@@ -289,11 +310,16 @@ def write_entry_pages(output, catalog):
         target = output / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         prefix = "../" if relative.startswith("calc/") else ""
+        # Releases published before a page existed fall back to their map.
+        go = "location.replace(u.href)"
+        if relative in LATER_PAGES:
+            go = ('fetch(u,{method:"HEAD",cache:"no-cache"}).then(function(p){if(p.status===404){u=new URL(r.path+"index.html",base);'
+                  'u.searchParams.set("missing-page",' + json.dumps(LATER_PAGES[relative]) + ');u.hash=""}location.replace(u.href)})')
         links = ''.join(f'<li><a href="{prefix}{html.escape(r["path"])}{relative}">{html.escape(website_label(r))}</a></li>'
                         for r in catalog["releases"])
         body = '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BPE Emerald releases</title>'
         body += '<body style="background:#101c27;color:#eaf8f0;font:18px system-ui;padding:32px"><h1>Choose your game version</h1><ul>' + links + '</ul>'
-        body += '<script>fetch(' + json.dumps(prefix + 'versions.json') + ',{cache:"no-cache"}).then(function(r){if(!r.ok)throw Error();return r.json()}).then(function(c){var base=new URL(' + json.dumps(prefix or './') + ',location.href),saved;try{saved=localStorage.getItem("bpe:"+base.pathname+":selected-release")}catch(e){}var r=c.releases.find(function(x){return x.version===saved})||c.releases.find(function(x){return x.version===c.latest});if(r){var u=new URL(r.path+' + json.dumps(relative) + ',base);u.search=location.search;u.hash=location.hash;location.replace(u.href)}}).catch(function(){});</script></body></html>'
+        body += '<script>fetch(' + json.dumps(prefix + 'versions.json') + ',{cache:"no-cache"}).then(function(r){if(!r.ok)throw Error();return r.json()}).then(function(c){var base=new URL(' + json.dumps(prefix or './') + ',location.href),saved;try{saved=localStorage.getItem("bpe:"+base.pathname+":selected-release")}catch(e){}var r=c.releases.find(function(x){return x.version===saved})||c.releases.find(function(x){return x.version===c.latest});if(r){var u=new URL(r.path+' + json.dumps(relative) + ',base);u.search=location.search;u.hash=location.hash;' + go + '}}).catch(function(){});</script></body></html>'
         target.write_text(body, encoding="utf-8")
     (output / ".nojekyll").touch()
     (output / "404.html").write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>Release not found</title><h1>This release or page is unavailable</h1><p>Check the version in your link. No other game version has been substituted.</p></html>', encoding="utf-8")

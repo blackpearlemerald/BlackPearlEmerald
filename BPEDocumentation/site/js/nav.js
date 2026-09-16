@@ -7,7 +7,7 @@
   if (current === 'pokemon') current = 'pokedex';
   if (current === 'item') current = 'items';
   var items = [
-    ['index.html', 'Interactive Map', 'index'], ['search.html', 'Global Search', 'search'],
+    ['index.html', 'Interactive Map', 'index'], ['features.html', 'Features', 'features'], ['search.html', 'Global Search', 'search'],
     ['pokedex.html', 'Pokédex', 'pokedex'], ['trainers.html', 'Trainers', 'trainers'],
     ['items.html', 'Items', 'items'], [null, 'Damage Calculator', 'calc'],
     ['patcher.html', 'Rom Patcher', 'patcher'], ['version-history.html', 'Version History', 'version-history'],
@@ -31,6 +31,21 @@
     return release.label + (release.channel === 'beta' && !/\bbeta$/i.test(release.label) ? ' Beta' : '');
   }
   function showNotice(text) { notice.textContent = text; notice.hidden = false; }
+  function switchRelease(release) {
+    select.disabled = true;
+    return context.switchTo(release).catch(function (error) { select.disabled = false; select.value = context.id; showNotice(error.message); });
+  }
+  // Older-release banner: name the newest release and offer a one-click switch.
+  function showOlderNotice(latest) {
+    notice.replaceChildren(document.createTextNode('You are viewing an older release. Match this version to the version shown in your game. The newest release is ' + displayLabel(latest) + '. '));
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'bpe-release-notice-switch';
+    button.textContent = 'Switch to ' + displayLabel(latest);
+    button.addEventListener('click', function () { button.disabled = true; switchRelease(latest).then(function () { button.disabled = false; }); });
+    notice.appendChild(button);
+    notice.hidden = false;
+  }
   function resize() { document.documentElement.style.setProperty('--bpe-header-height', header.offsetHeight + 'px'); window.dispatchEvent(new Event('bpe:headerresize')); }
   if (window.ResizeObserver) new ResizeObserver(resize).observe(header);
   window.addEventListener('resize', resize);
@@ -59,12 +74,15 @@
     select.addEventListener('change', function () {
       var release = catalog.releases.find(function (item) { return item.version === select.value; });
       if (!release || release.version === context.id) return;
-      select.disabled = true;
-      context.switchTo(release).catch(function (error) { select.disabled = false; select.value = context.id; showNotice(error.message); });
+      switchRelease(release);
     });
-    if (context.id !== catalog.latest) showNotice('You are viewing an older release. Match this version to the version shown in your game.');
-    var missing = new URLSearchParams(location.search).get('missing');
+    var latest = catalog.releases.find(function (release) { return release.version === catalog.latest; });
+    if (context.id !== catalog.latest && latest) showOlderNotice(latest);
+    var params = new URLSearchParams(location.search);
+    var missing = params.get('missing');
     if (missing) showNotice(missing.replace(/_/g, ' ') + ' is not available in this release. Showing its listing instead.');
+    var missingPage = params.get('missing-page');
+    if (missingPage) showNotice('The ' + missingPage + ' page is not available in this release.');
   }).catch(function (error) {
     if (context.id === 'development') title.textContent = 'Development preview';
     else if (title.textContent === 'Loading version…') title.textContent = context.id;

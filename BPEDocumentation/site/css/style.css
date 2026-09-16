@@ -768,6 +768,25 @@ body.page-search {
   filter: drop-shadow(0 1px 1px rgba(0,0,0,0.6));
 }
 
+/* ----- static encounter popup ----- */
+.static-rule a { color: #6d3fb8; font-weight: 600; }
+.detail-body .static-rule a { color: #7fe0a6; }
+
+/* ----- static encounter (legendary) star on map ----- */
+/* Leaflet positions the outer div with an inline transform, so the inner
+   glyph is centred on the encounter tile; a fixed pixel offset would drift
+   away from the zoom-scaled icon. */
+.static-badge { pointer-events: none; }
+.static-star {
+  position: absolute;
+  left: -7px;
+  top: -7px;
+  color: #ffd84d;
+  font-size: 14px;
+  line-height: 1;
+  text-shadow: 0 0 2px #000, 0 1px 2px #000;
+}
+
 /* ----- guide notes ("this moved in BPE" signposts) ----- */
 /* Leaflet drives this element's `transform` inline to position the marker, and
    a CSS animation on transform outranks an inline style — so never set or
@@ -1263,8 +1282,8 @@ a.enc-mon { cursor: pointer; }
   #panel.open { display: block; top: calc(var(--bpe-header-height, 48px) + 12px); }
   #panel-toggle { display: block; }
   .leaflet-popup-content { max-width: 78vw; }
-  /* map page: panel toggle already shifted to 60px; open panel follows */
-  body.page-map #panel.open { top: 108px; }
+  /* map page: the open panel sits below the toggle, which follows the header */
+  body.page-map #panel.open { top: calc(var(--bpe-header-height, 96px) + 60px); }
   .nav-brand { font-size: 13px; margin-right: 10px; }
   .nav-link { padding: 6px 10px; font-size: 13px; }
 

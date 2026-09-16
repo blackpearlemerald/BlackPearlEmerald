@@ -113,7 +113,13 @@ python -m http.server 8000 --directory .release-work/preview
 Use fresh output and work directories on subsequent runs. `--archive-dir`
 selects persistent local snapshots; omit `--github` for a local-only build.
 Guide notes live in `BPEDocumentation/content/guides.json` at each game's pinned
-source commit. Existing calculator mechanics remain those of the bundled engine;
+source commit. The Features page's handwritten overview and legendary notes
+live in `BPEDocumentation/content/features.json` the same way; update it in the
+release's source commit when player-facing features change. Legendary levels,
+locations and the pre-Elite Four group are extracted from that source's map
+scripts. A release whose source has no `features.json` shows only those
+extracted legendaries, and snapshots published before the page existed have no
+Features tab until a documentation correction rebuilds them. Existing calculator mechanics remain those of the bundled engine;
 versioning preserves its code and inputs, not a promise of perfect game parity.
 
 For map rendering corrections, check pinch zoom on iPhone Safari as well as
