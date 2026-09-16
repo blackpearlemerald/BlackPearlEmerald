@@ -222,6 +222,18 @@
     return '<table class="learnset-table">' + header + '<tbody>' + rows + '</tbody></table>';
   }
 
+  function renderSpecialLearnsetTable(moves, moveData) {
+    if (!moves || moves.length === 0) return '<div class="dex-empty" style="padding:16px">None</div>';
+    var header = '<thead><tr><th>#</th><th>Move</th><th>Type</th><th>Cat</th><th>Pwr</th><th>Acc</th><th>PP</th><th>How obtained</th></tr></thead>';
+    var rows = moves.map(function (entry, i) {
+      return '<tr><td class="col-level">' + (i + 1) + '</td>'
+        + renderMoveRow(entry.move, moveData)
+        + '<td class="col-method">' + esc(entry.method) + '</td></tr>';
+    }).join('');
+    return '<div class="learnset-scroll"><table class="learnset-table special-learnset-table">'
+      + header + '<tbody>' + rows + '</tbody></table></div>';
+  }
+
   // ── Encounters ────────────────────────────────────────────────
   var ENC_TYPE_LABELS = {
     'land_mons': 'Grass', 'water_mons': 'Surf',
@@ -289,6 +301,13 @@
     var hmMoves = renderLearnsetTable(pkmn.hmMoves, moves, false);
     var eggMoves = renderLearnsetTable(pkmn.eggMoves, moves, false);
     var tutorMoves = renderLearnsetTable(pkmn.tutorMoves, moves, false);
+    var specialMoves = renderSpecialLearnsetTable(pkmn.specialMoves, moves);
+    var specialTab = (pkmn.specialMoves || []).length
+      ? '<button class="tab-btn" data-tab="special">Special (' + pkmn.specialMoves.length + ')</button>'
+      : '';
+    var specialPanel = (pkmn.specialMoves || []).length
+      ? '<div id="tab-special" class="tab-panel">' + specialMoves + '</div>'
+      : '';
     var encHtml = renderEncounters(pkmn.encounters);
 
     var descHtml = pkmn.description
@@ -322,12 +341,14 @@
       +     '<button class="tab-btn" data-tab="hm">HM (' + (pkmn.hmMoves || []).length + ')</button>'
       +     '<button class="tab-btn" data-tab="egg">Egg (' + (pkmn.eggMoves || []).length + ')</button>'
       +     '<button class="tab-btn" data-tab="tutor">Tutor (' + (pkmn.tutorMoves || []).length + ')</button>'
+      +     specialTab
       +   '</div>'
       +   '<div id="tab-lv" class="tab-panel active">' + lvlMoves + '</div>'
       +   '<div id="tab-tm" class="tab-panel">' + tmMoves + '</div>'
       +   '<div id="tab-hm" class="tab-panel">' + hmMoves + '</div>'
       +   '<div id="tab-egg" class="tab-panel">' + eggMoves + '</div>'
       +   '<div id="tab-tutor" class="tab-panel">' + tutorMoves + '</div>'
+      +   specialPanel
       + '</div>'
       + '<div class="dex-section"><h2>Wild Encounters</h2>' + encHtml + '</div>';
 

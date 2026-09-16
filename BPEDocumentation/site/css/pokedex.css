@@ -485,6 +485,7 @@
 /* Tabs */
 .tab-bar {
   display: flex;
+  flex-wrap: wrap;
   gap: 2px;
   margin-bottom: 14px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -539,6 +540,13 @@
 .learnset-table .col-acc,
 .learnset-table .col-pp { text-align: right; font-variant-numeric: tabular-nums; color: #9fb3c8; }
 .learnset-table .dash { color: #3a4a58; }
+.learnset-scroll { overflow-x: auto; }
+.special-learnset-table { min-width: 720px; }
+.special-learnset-table .col-method {
+  min-width: 260px;
+  color: #9fb3c8;
+  line-height: 1.45;
+}
 
 /* Move category icon */
 .cat-badge {

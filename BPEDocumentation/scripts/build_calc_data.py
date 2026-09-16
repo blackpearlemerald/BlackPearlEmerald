@@ -155,8 +155,9 @@ def main():
                     abilities[slot_keys[i] if i < 3 else str(i)] = an
 
         tms = []
+        special_moves = [entry.get("move") for entry in d.get("specialMoves", [])]
         for mid in (d.get("tmMoves", []) + d.get("tutorMoves", [])
-                    + d.get("hmMoves", [])):
+                    + d.get("hmMoves", []) + special_moves):
             mn = move_name.get(mid)
             if mn and mn not in tms:
                 tms.append(mn)

@@ -273,6 +273,95 @@ class ArchiveTests(unittest.TestCase):
                 data = json.loads((species_dir / f"{species}.json").read_text(encoding="utf-8"))
                 self.assertEqual(data["types"], types)
 
+    def test_special_moves_are_parsed_and_standard_moves_are_not_duplicated(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import parse_pokemon
+
+        def species(**overrides):
+            data = {
+                "levelUpMoves": [],
+                "eggMoves": [],
+                "tmMoves": [],
+                "hmMoves": [],
+                "tutorMoves": [],
+            }
+            data.update(overrides)
+            return data
+
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "src/data/pokemon/species_info").mkdir(parents=True)
+            (root / "src/daycare.c").write_text("""
+static const struct BreedingSpecialMove sBreedingSpecialMoveItemTable[] =
+{
+    { SPECIES_PICHU, ITEM_LIGHT_BALL, MOVE_VOLT_TACKLE },
+};
+""", encoding="utf-8")
+            (root / "src/tv.c").write_text("""
+} sPokeOutbreakSpeciesList[] = {
+    {
+        .species = SPECIES_SEEDOT,
+        .moves = {MOVE_BIDE, MOVE_LEECH_SEED, MOVE_NATURE_POWER},
+        .level = 3,
+        .location = MAP_NUM(MAP_ROUTE102)
+    },
+};
+""", encoding="utf-8")
+            (root / "src/data/pokemon/form_change_tables.h").write_text("""
+static const struct Fusion sNecrozmaFusionTable[] = {
+    {1, ITEM_N_SOLARIZER, SPECIES_NECROZMA, SPECIES_SOLGALEO, SPECIES_NECROZMA_DUSK_MANE, MOVE_SUNSTEEL_STRIKE, FORGET_EXTRA_MOVES},
+};
+static const struct Fusion sCalyrexFusionTable[] = {
+    {3, ITEM_REINS_OF_UNITY, SPECIES_CALYREX, SPECIES_GLASTRIER, SPECIES_CALYREX_ICE, MOVE_GLACIAL_LANCE, FORGET_EXTRA_MOVES},
+};
+static const struct FormChange sNecrozmaDuskManeFormChangeTable[] = {
+    {FORM_CHANGE_BATTLE_ULTRA_BURST, SPECIES_NECROZMA_ULTRA, ITEM_ULTRANECROZIUM_Z},
+};
+static const struct FormChange sZacianFormChangeTable[] = {
+    {FORM_CHANGE_BEGIN_BATTLE, SPECIES_ZACIAN_CROWNED, ITEM_RUSTED_SWORD, MOVE_IRON_HEAD, MOVE_BEHEMOTH_BLADE},
+};
+""", encoding="utf-8")
+            (root / "src/data/pokemon/species_info/gen_7_families.h").write_text("""
+[SPECIES_NECROZMA_DUSK_MANE] = {
+    .formChangeTable = sNecrozmaDuskManeFormChangeTable,
+},
+""", encoding="utf-8")
+
+            all_species = {
+                "PICHU": species(),
+                "SEEDOT": species(eggMoves=["LEECH_SEED"]),
+                "NECROZMA_DUSK_MANE": species(),
+                "NECROZMA_ULTRA": species(),
+                "CALYREX_ICE": species(levelUpMoves=[{"level": 1, "move": "GLACIAL_LANCE"}]),
+                "ZACIAN_CROWNED": species(),
+            }
+            with mock_patch.object(parse_pokemon, "REPO", root):
+                count = parse_pokemon.apply_special_moves(all_species)
+
+            self.assertEqual(count, 6)
+            self.assertEqual(
+                [move["move"] for move in all_species["PICHU"]["specialMoves"]],
+                ["VOLT_TACKLE"],
+            )
+            self.assertEqual(
+                [move["move"] for move in all_species["SEEDOT"]["specialMoves"]],
+                ["BIDE", "NATURE_POWER"],
+            )
+            self.assertIn("Route 102", all_species["SEEDOT"]["specialMoves"][0]["method"])
+            self.assertEqual(
+                [move["move"] for move in all_species["NECROZMA_DUSK_MANE"]["specialMoves"]],
+                ["SUNSTEEL_STRIKE"],
+            )
+            self.assertEqual(
+                [move["move"] for move in all_species["NECROZMA_ULTRA"]["specialMoves"]],
+                ["SUNSTEEL_STRIKE"],
+            )
+            self.assertEqual(
+                [move["move"] for move in all_species["ZACIAN_CROWNED"]["specialMoves"]],
+                ["BEHEMOTH_BLADE"],
+            )
+            self.assertNotIn("specialMoves", all_species["CALYREX_ICE"])
+
     def test_archive_checksums_inventory_and_traversal(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
         import releases

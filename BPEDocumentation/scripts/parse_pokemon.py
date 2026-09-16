@@ -1025,7 +1025,179 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
 
     return all_species
 
-# ── 10. Sprites ────────────────────────────────────────────────────────────────
+# ── 10. Special move sources ──────────────────────────────────────────────────
+
+_SPECIAL_DISPLAY_NAMES = {
+    "N_SOLARIZER": "N-Solarizer",
+    "N_LUNARIZER": "N-Lunarizer",
+}
+
+
+def _special_display_name(name):
+    return _SPECIAL_DISPLAY_NAMES.get(name, C.prettify_constant(name))
+
+
+def _append_special_move(special, species, move, method):
+    if move == "NONE":
+        return
+    entry = {"move": move, "method": method}
+    entries = special.setdefault(species, [])
+    if entry not in entries:
+        entries.append(entry)
+
+
+def _form_change_sources():
+    """Map each form-change table name to the species that references it."""
+    sources = {}
+    info_dir = REPO / "src" / "data" / "pokemon" / "species_info"
+    for gen_file in sorted(info_dir.glob("gen_*_families.h")):
+        raw_content = read_file(gen_file)
+        macros = collect_macros(raw_content)
+        content = strip_c_comments(raw_content)
+        for species, block in iter_species_decls(content, macros):
+            match = re.search(r"\.formChangeTable\s*=\s*s(\w+FormChangeTable)", block)
+            if match:
+                sources.setdefault(match.group(1), []).append(species)
+    return sources
+
+
+def apply_special_moves(all_species):
+    """Add obtainable moves that live outside normal learnset arrays.
+
+    Rules come from the selected game source so documentation corrections stay
+    pinned to the release being rebuilt. Moves already shown under Level Up,
+    Egg, TM, HM, or Tutor are not duplicated in Special.
+    """
+    special = {}
+
+    # Light Ball Volt Tackle and any future item-dependent breeding moves.
+    daycare_path = REPO / "src" / "daycare.c"
+    if daycare_path.exists():
+        daycare = strip_c_comments(read_file(daycare_path))
+        table = re.search(
+            r"sBreedingSpecialMoveItemTable\[\]\s*=\s*\{(.*?)\n\};",
+            daycare,
+            re.DOTALL,
+        )
+        if table:
+            for species, item, move in re.findall(
+                r"\{\s*SPECIES_(\w+)\s*,\s*ITEM_(\w+)\s*,\s*MOVE_(\w+)\s*\}",
+                table.group(1),
+            ):
+                _append_special_move(
+                    special,
+                    species,
+                    move,
+                    f"Hatch {_special_display_name(species)} from an Egg while either parent holds "
+                    f"a {_special_display_name(item)}.",
+                )
+
+    # Catchable TV mass outbreaks can override a wild Pokémon's normal moveset.
+    tv_path = REPO / "src" / "tv.c"
+    if tv_path.exists():
+        tv = strip_c_comments(read_file(tv_path))
+        table = re.search(r"sPokeOutbreakSpeciesList\[\]\s*=\s*\{(.*?)\n\};", tv, re.DOTALL)
+        if table:
+            entries = re.finditer(
+                r"\{\s*\.species\s*=\s*SPECIES_(\w+)\s*,(.*?)\n\s*\}",
+                table.group(1),
+                re.DOTALL,
+            )
+            for match in entries:
+                species, body = match.group(1), match.group(2)
+                level_match = re.search(r"\.level\s*=\s*(\d+)", body)
+                map_match = re.search(r"\.location\s*=\s*MAP_NUM\(MAP_(\w+)\)", body)
+                if not level_match or not map_match:
+                    continue
+                map_name = prettify_map("MAP_" + map_match.group(1))
+                map_name = re.sub(r"^(Route)(\d+)$", r"\1 \2", map_name)
+                method = (
+                    f"Catch a Lv. {level_match.group(1)} {_special_display_name(species)} during "
+                    f"the {map_name} mass outbreak."
+                )
+                for move in re.findall(r"MOVE_(\w+)", body):
+                    _append_special_move(special, species, move, method)
+
+    form_path = REPO / "src" / "data" / "pokemon" / "form_change_tables.h"
+    if form_path.exists():
+        forms = strip_c_comments(read_file(form_path))
+
+        # Fusion moves are actively offered to the resulting Pokémon.
+        for _, body in re.findall(
+            r"static const struct Fusion s(\w+FusionTable)\[\]\s*=\s*\{(.*?)\n\};",
+            forms,
+            re.DOTALL,
+        ):
+            rows = re.finditer(
+                r"\{\s*[^,{}]+\s*,\s*ITEM_(\w+)\s*,\s*SPECIES_(\w+)\s*,\s*"
+                r"SPECIES_(\w+)\s*,\s*SPECIES_(\w+)\s*,\s*MOVE_(\w+)\s*,",
+                body,
+            )
+            for row in rows:
+                item, first, second, target, move = row.groups()
+                _append_special_move(
+                    special,
+                    target,
+                    move,
+                    f"Fuse {_special_display_name(first)} with {_special_display_name(second)} "
+                    f"using the {_special_display_name(item)}.",
+                )
+
+        form_tables = dict(re.findall(
+            r"static const struct FormChange s(\w+FormChangeTable)\[\]\s*=\s*\{(.*?)\n\};",
+            forms,
+            re.DOTALL,
+        ))
+
+        # Zacian and Zamazenta replace Iron Head only while in battle.
+        for body in form_tables.values():
+            for target, item, original, move in re.findall(
+                r"\{\s*FORM_CHANGE_BEGIN_BATTLE\s*,\s*SPECIES_(\w+)\s*,\s*ITEM_(\w+)\s*,\s*"
+                r"MOVE_(\w+)\s*,\s*MOVE_(\w+)\s*\}",
+                body,
+            ):
+                _append_special_move(
+                    special,
+                    target,
+                    move,
+                    f"{_special_display_name(original)} changes into this on entering battle while "
+                    f"holding the {_special_display_name(item)}.",
+                )
+
+        # Ultra Necrozma retains the fusion move of the form that Ultra Bursts.
+        sources = _form_change_sources()
+        for table_name, body in form_tables.items():
+            targets = re.findall(
+                r"\{\s*FORM_CHANGE_BATTLE_ULTRA_BURST\s*,\s*SPECIES_(\w+)", body
+            )
+            for target in targets:
+                for source in sources.get(table_name, []):
+                    for inherited in special.get(source, []):
+                        _append_special_move(
+                            special,
+                            target,
+                            inherited["move"],
+                            f"Retained when {_special_display_name(source)} Ultra Bursts.",
+                        )
+
+    added = 0
+    for species, moves in special.items():
+        entry = all_species.get(species)
+        if not entry:
+            continue
+        standard = set(entry.get("eggMoves", []))
+        standard.update(entry.get("tmMoves", []))
+        standard.update(entry.get("hmMoves", []))
+        standard.update(entry.get("tutorMoves", []))
+        standard.update(move["move"] for move in entry.get("levelUpMoves", []))
+        filtered = [move for move in moves if move["move"] not in standard]
+        if filtered:
+            entry["specialMoves"] = filtered
+            added += len(filtered)
+    return added
+
+
+# ── 11. Sprites ────────────────────────────────────────────────────────────────
 
 FORM_SUFFIXES = [
     ("_MEGA_X", "mega_x"), ("_MEGA_Y", "mega_y"), ("_MEGA_Z", "mega_z"),
@@ -1206,10 +1378,14 @@ def main():
     all_species = parse_species_info(dex, learnsets, egg_moves, teachable, encounters, tms, hms)
     print(f"       -> {len(all_species)} species")
 
-    print("  [10] Copying sprites ...")
+    print("  [10] Special move sources ...")
+    special_count = apply_special_moves(all_species)
+    print(f"       -> {special_count} undocumented species/move methods")
+
+    print("  [11] Copying sprites ...")
     copy_sprites(all_species)
 
-    print("  [11] Writing JSON ...")
+    print("  [12] Writing JSON ...")
 
     write_json(DATA_DIR / "moves.json", moves)
     write_json(DATA_DIR / "abilities.json", abilities)
