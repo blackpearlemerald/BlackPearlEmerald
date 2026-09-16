@@ -45,4 +45,8 @@ void CutMoveOpenDottedHoleDoor(void);
 // popup while the player stands on Mirage Island, a sub-area of Route 130.
 void UpdateMirageIslandNamePopup(void);
 
+// BPE: sets the pre-Elite Four legendaries' hide flags from their catch state.
+// Runs on every map load, before the map's ON_TRANSITION script.
+void UpdatePreE4Legendaries(void);
+
 #endif // GUARD_FIELD_SPECIALS_H

@@ -86,6 +86,7 @@ class StaticEncounterTests(unittest.TestCase):
         "Global_Hide": "\tsetflag FLAG_HIDE_OVERWORLD_ARTICUNO\n",
         "Mew": "\tseteventmon SPECIES_MEW, 30\n\tspecial BattleSetup_StartLegendaryBattle\n\tgoto_if_eq VAR_RESULT, B_OUTCOME_WON, Mew_Defeated\n",
         "Mew_Defeated": "\tsetvar VAR_PREE4_LEGENDARY 14\n",
+        "Regirock": "\tsetwildbattle SPECIES_REGIROCK, 40\n\tspecial StartRegiBattle\n\tsetvar VAR_0x8004, SPECIES_REGIROCK\n\tspecial TryRecordPreE4LegendaryCatch\n",
         "Sign": "\tcall_if_eq VAR_ROAMER_POKEMON, 0, Sign_Latios\n\tcall_if_ne VAR_ROAMER_POKEMON, 0, Sign_Latias\n",
         "Sign_Latios": "\tseteventmon SPECIES_LATIOS, 50, ITEM_SOUL_DEW\n",
         "Sign_Latias": "\tseteventmon SPECIES_LATIAS, 50, ITEM_SOUL_DEW\n",
@@ -98,6 +99,9 @@ class StaticEncounterTests(unittest.TestCase):
         # The pick can be set in a branch reached only after the battle.
         self.assertEqual(extract_world.static_encounter("Mew", self.SCRIPTS),
                          {"species": "SPECIES_MEW", "level": 30, "preE4": True})
+        # Current releases report the battle to the catch special instead.
+        self.assertEqual(extract_world.static_encounter("Regirock", self.SCRIPTS),
+                         {"species": "SPECIES_REGIROCK", "level": 40, "preE4": True})
 
     def test_ambiguous_scripts_are_skipped_and_triggers_anchor_to_the_pokemon(self):
         self.assertIsNone(extract_world.static_encounter("Sign", self.SCRIPTS))

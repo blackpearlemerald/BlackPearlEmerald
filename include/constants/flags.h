@@ -67,23 +67,24 @@
 #define FLAG_UNUSED_0x02D    0x2D // Unused Flag
 #define FLAG_UNUSED_0x02E    0x2E // Unused Flag
 #define FLAG_UNUSED_0x02F    0x2F // Unused Flag
-#define FLAG_UNUSED_0x030    0x30 // Unused Flag
-#define FLAG_UNUSED_0x031    0x31 // Unused Flag
-#define FLAG_UNUSED_0x032    0x32 // Unused Flag
-#define FLAG_UNUSED_0x033    0x33 // Unused Flag
-#define FLAG_UNUSED_0x034    0x34 // Unused Flag
-#define FLAG_UNUSED_0x035    0x35 // Unused Flag
-#define FLAG_UNUSED_0x036    0x36 // Unused Flag
-#define FLAG_UNUSED_0x037    0x37 // Unused Flag
-#define FLAG_UNUSED_0x038    0x38 // Unused Flag
-#define FLAG_UNUSED_0x039    0x39 // Unused Flag
-#define FLAG_UNUSED_0x03A    0x3A // Unused Flag
-#define FLAG_UNUSED_0x03B    0x3B // Unused Flag
-#define FLAG_UNUSED_0x03C    0x3C // Unused Flag
-#define FLAG_UNUSED_0x03D    0x3D // Unused Flag
-#define FLAG_UNUSED_0x03E    0x3E // Unused Flag
-#define FLAG_UNUSED_0x03F    0x3F // Unused Flag
-#define FLAG_UNUSED_0x040    0x40 // Unused Flag
+// BPE: set when the matching pre-Elite Four legendary is caught (Mew uses FLAG_CAUGHT_MEW)
+#define FLAG_CAUGHT_PREE4_ARTICUNO   0x30
+#define FLAG_CAUGHT_PREE4_MOLTRES    0x31
+#define FLAG_CAUGHT_PREE4_ENTEI      0x32
+#define FLAG_CAUGHT_PREE4_CELEBI     0x33
+#define FLAG_CAUGHT_PREE4_ZAPDOS     0x34
+#define FLAG_CAUGHT_PREE4_RAIKOU     0x35
+#define FLAG_CAUGHT_PREE4_SUICUNE    0x36
+#define FLAG_CAUGHT_PREE4_JIRACHI    0x37
+#define FLAG_CAUGHT_PREE4_SPIRITOMB  0x38
+#define FLAG_CAUGHT_PREE4_LATIOS     0x39
+#define FLAG_CAUGHT_PREE4_LATIAS     0x3A
+#define FLAG_CAUGHT_PREE4_ROTOM      0x3B
+#define FLAG_CAUGHT_PREE4_TYPE_NULL  0x3C
+#define FLAG_CAUGHT_PREE4_REGIROCK   0x3D
+#define FLAG_CAUGHT_PREE4_REGICE     0x3E
+#define FLAG_CAUGHT_PREE4_REGISTEEL  0x3F
+#define FLAG_PREE4_LEGENDARY_CATCHES_MIGRATED 0x40 // BPE: older saves were checked once for earlier catches
 #define FLAG_UNUSED_0x041    0x41 // Unused Flag
 #define FLAG_UNUSED_0x042    0x42 // Unused Flag
 #define FLAG_UNUSED_0x043    0x43 // Unused Flag

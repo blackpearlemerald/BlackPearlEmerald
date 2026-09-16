@@ -24,17 +24,16 @@ SootopolisCity_House7_Text_CaveMadeToKeepSomething:
 	.string "It's always been referred to as, NULL.$"
 
 Legendary_EventScript_BattleNull::
-    setwildbattle SPECIES_TYPE_NULL, 30
-    waitse
-    playmoncry SPECIES_TYPE_NULL, CRY_MODE_ENCOUNTER
-    delay 40
-    waitmoncry
-    dowildbattle
-    fadescreenswapbuffers FADE_TO_BLACK
-    removeobject(3)
-	setvar VAR_PREE4_LEGENDARY 13
-	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
-    setflag FLAG_HIDE_OVERWORLD_NULL
-    fadescreenswapbuffers FADE_FROM_BLACK
-    release
-    end
+	setwildbattle SPECIES_TYPE_NULL, 30
+	waitse
+	playmoncry SPECIES_TYPE_NULL, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	dowildbattle
+	setvar VAR_0x8004, SPECIES_TYPE_NULL
+	special TryRecordPreE4LegendaryCatch
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject(3)
+	fadescreenswapbuffers FADE_FROM_BLACK
+	release
+	end

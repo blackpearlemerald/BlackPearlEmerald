@@ -29,12 +29,7 @@ DesertRuins_EventScript_HideRegiEntrance::
 
 DesertRuins_OnTransition:
 	setflag FLAG_LANDMARK_DESERT_RUINS
-	call_if_unset FLAG_DEFEATED_REGIROCK, DesertRuins_EventScript_ShowRegirock
 	end
-
-DesertRuins_EventScript_ShowRegirock::
-	clearflag FLAG_HIDE_REGIROCK
-	return
 
 DesertRuins_EventScript_CaveEntranceMiddle::
 	lockall
@@ -66,6 +61,8 @@ DesertRuins_EventScript_Regirock::
 	special StartRegiBattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
+	setvar VAR_0x8004, SPECIES_REGIROCK
+	special TryRecordPreE4LegendaryCatch
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, DesertRuins_EventScript_DefeatedRegirock
 	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, DesertRuins_EventScript_RanFromRegirock
 	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, DesertRuins_EventScript_RanFromRegirock

@@ -853,18 +853,17 @@ MtChimney_Text_SawyerPostRematch:
 	.string "I'm overdressed for these parts.$"
 
 Legendary_EventScript_BattleMoltres::
-    setwildbattle SPECIES_MOLTRES, 75
-    waitse
-    playmoncry SPECIES_MOLTRES, CRY_MODE_ENCOUNTER
-    delay 40
-    waitmoncry
-    dowildbattle
-    fadescreenswapbuffers FADE_TO_BLACK
-    removeobject(32)
-	setvar VAR_PREE4_LEGENDARY 2
-	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
-    setflag FLAG_HIDE_OVERWORLD_MOLTRES
-    fadescreenswapbuffers FADE_FROM_BLACK
-    release
-    end
+	setwildbattle SPECIES_MOLTRES, 75
+	waitse
+	playmoncry SPECIES_MOLTRES, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	dowildbattle
+	setvar VAR_0x8004, SPECIES_MOLTRES
+	special TryRecordPreE4LegendaryCatch
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject(32)
+	fadescreenswapbuffers FADE_FROM_BLACK
+	release
+	end
 

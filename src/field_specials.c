@@ -6029,3 +6029,117 @@ void UpdateMirageIslandNamePopup(void)
     // OBJ_EVENT_GFX_VAR_0 from the VAR_OBJ_GFX_ID_0 just written.
     FlagClear(FLAG_TEMP_12);
 }
+
+// Pre-Elite Four legendaries.
+//
+// Before becoming Champion the player may catch only one of these: once any is
+// caught, the rest hide until FLAG_SYS_GAME_CLEAR is set. Only a catch counts.
+// A legendary that is knocked out or fled from is removed with removeobject,
+// which sets its hide flag for the rest of the visit; UpdatePreE4Legendaries
+// runs on every map load and clears it again, so none of them can be missed.
+struct PreE4Legendary
+{
+    u16 species;
+    u16 hideFlag;
+    u16 caughtFlag;
+    bool8 needsRainBadge; // the overworld ones appear once Juan is beaten
+};
+
+static const struct PreE4Legendary sPreE4Legendaries[] =
+{
+    { SPECIES_ARTICUNO,   FLAG_HIDE_OVERWORLD_ARTICUNO,  FLAG_CAUGHT_PREE4_ARTICUNO,   TRUE },
+    { SPECIES_MOLTRES,    FLAG_HIDE_OVERWORLD_MOLTRES,   FLAG_CAUGHT_PREE4_MOLTRES,    TRUE },
+    { SPECIES_ENTEI,      FLAG_HIDE_OVERWORLD_ENTEI,     FLAG_CAUGHT_PREE4_ENTEI,      TRUE },
+    { SPECIES_CELEBI,     FLAG_HIDE_OVERWORLD_CELEBI,    FLAG_CAUGHT_PREE4_CELEBI,     TRUE },
+    { SPECIES_ZAPDOS,     FLAG_HIDE_OVERWORLD_ZAPDOS,    FLAG_CAUGHT_PREE4_ZAPDOS,     TRUE },
+    { SPECIES_RAIKOU,     FLAG_HIDE_OVERWORLD_RAIKOU,    FLAG_CAUGHT_PREE4_RAIKOU,     TRUE },
+    { SPECIES_SUICUNE,    FLAG_HIDE_OVERWORLD_SUICUNE,   FLAG_CAUGHT_PREE4_SUICUNE,    TRUE },
+    { SPECIES_JIRACHI,    FLAG_HIDE_OVERWORLD_JIRACHI,   FLAG_CAUGHT_PREE4_JIRACHI,    TRUE },
+    { SPECIES_SPIRITOMB,  FLAG_HIDE_OVERWORLD_SPIRITOMB, FLAG_CAUGHT_PREE4_SPIRITOMB,  TRUE },
+    { SPECIES_LATIOS,     FLAG_HIDE_OVERWORLD_LATIOS,    FLAG_CAUGHT_PREE4_LATIOS,     TRUE },
+    { SPECIES_LATIAS,     FLAG_HIDE_OVERWORLD_LATIAS,    FLAG_CAUGHT_PREE4_LATIAS,     TRUE },
+    { SPECIES_ROTOM,      FLAG_HIDE_OVERWORLD_ROTOM,     FLAG_CAUGHT_PREE4_ROTOM,      TRUE },
+    { SPECIES_TYPE_NULL,  FLAG_HIDE_OVERWORLD_NULL,      FLAG_CAUGHT_PREE4_TYPE_NULL,  TRUE },
+    { SPECIES_REGIROCK,   FLAG_HIDE_REGIROCK,            FLAG_CAUGHT_PREE4_REGIROCK,   FALSE },
+    { SPECIES_REGICE,     FLAG_HIDE_REGICE,              FLAG_CAUGHT_PREE4_REGICE,     FALSE },
+    { SPECIES_REGISTEEL,  FLAG_HIDE_REGISTEEL,           FLAG_CAUGHT_PREE4_REGISTEEL,  FALSE },
+    { SPECIES_MEW,        FLAG_HIDE_MEW,                 FLAG_CAUGHT_MEW,              FALSE },
+};
+
+static bool32 IsAnyPreE4LegendaryCaught(void)
+{
+    u32 i;
+
+    for (i = 0; i < ARRAY_COUNT(sPreE4Legendaries); i++)
+    {
+        if (FlagGet(sPreE4Legendaries[i].caughtFlag))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// Saves from before the catch flags existed recorded a battle, not a catch: a
+// caught or knocked-out legendary only had its hide flag set. Treat a hidden,
+// available legendary whose species is registered as caught as a catch.
+static void MigratePreE4LegendaryCatches(void)
+{
+    u32 i;
+
+    if (FlagGet(FLAG_PREE4_LEGENDARY_CATCHES_MIGRATED))
+        return;
+    FlagSet(FLAG_PREE4_LEGENDARY_CATCHES_MIGRATED);
+
+    for (i = 0; i < ARRAY_COUNT(sPreE4Legendaries); i++)
+    {
+        const struct PreE4Legendary *legendary = &sPreE4Legendaries[i];
+
+        if (legendary->needsRainBadge && !FlagGet(FLAG_BADGE08_GET))
+            continue;
+        if (FlagGet(legendary->hideFlag)
+         && GetSetPokedexFlag(SpeciesToNationalPokedexNum(legendary->species), FLAG_GET_CAUGHT))
+            FlagSet(legendary->caughtFlag);
+    }
+}
+
+void UpdatePreE4Legendaries(void)
+{
+    u32 i;
+    bool32 pickUsed;
+
+    MigratePreE4LegendaryCatches();
+    pickUsed = !FlagGet(FLAG_SYS_GAME_CLEAR) && IsAnyPreE4LegendaryCaught();
+
+    for (i = 0; i < ARRAY_COUNT(sPreE4Legendaries); i++)
+    {
+        const struct PreE4Legendary *legendary = &sPreE4Legendaries[i];
+
+        if (pickUsed
+         || FlagGet(legendary->caughtFlag)
+         || (legendary->needsRainBadge && !FlagGet(FLAG_BADGE08_GET)))
+            FlagSet(legendary->hideFlag);
+        else
+            FlagClear(legendary->hideFlag);
+    }
+}
+
+// Called after every pre-Elite Four legendary battle with VAR_0x8004 = species.
+// Only sets flags: legendaries already on screen stay until the script removes
+// them, and nothing hidden this visit is brought back mid-visit.
+void TryRecordPreE4LegendaryCatch(void)
+{
+    u32 i;
+
+    if (gBattleOutcome != B_OUTCOME_CAUGHT)
+        return;
+
+    for (i = 0; i < ARRAY_COUNT(sPreE4Legendaries); i++)
+    {
+        if (sPreE4Legendaries[i].species == gSpecialVar_0x8004)
+            FlagSet(sPreE4Legendaries[i].caughtFlag);
+    }
+
+    if (FlagGet(FLAG_SYS_GAME_CLEAR))
+        return;
+    for (i = 0; i < ARRAY_COUNT(sPreE4Legendaries); i++)
+        FlagSet(sPreE4Legendaries[i].hideFlag);
+}

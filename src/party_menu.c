@@ -2954,6 +2954,57 @@ static void SetPartyMonSelectionActions(struct Pokemon *mons, u8 slotId, u8 acti
     }
 }
 
+// BPE: HMs that work from the bag, in party menu order.
+static const struct
+{
+    u16 item;
+    u8 fieldMove;
+} sBagHmFieldMoves[] =
+{
+    { ITEM_HM_FLY,        FIELD_MOVE_FLY },
+    { ITEM_HM_SURF,       FIELD_MOVE_SURF },
+    { ITEM_HM_DIVE,       FIELD_MOVE_DIVE },
+    { ITEM_HM_WATERFALL,  FIELD_MOVE_WATERFALL },
+    { ITEM_HM_CUT,        FIELD_MOVE_CUT },
+    { ITEM_HM_ROCK_SMASH, FIELD_MOVE_ROCK_SMASH },
+    { ITEM_HM_STRENGTH,   FIELD_MOVE_STRENGTH },
+    { ITEM_HM_FLASH,      FIELD_MOVE_FLASH },
+};
+
+static u16 GetFieldMoveHm(u32 fieldMove)
+{
+    u32 i;
+
+    for (i = 0; i < ARRAY_COUNT(sBagHmFieldMoves); i++)
+    {
+        if (sBagHmFieldMoves[i].fieldMove == fieldMove)
+            return sBagHmFieldMoves[i].item;
+    }
+    return ITEM_NONE;
+}
+
+// Runs a field move's setup to see whether it would do anything where the player
+// stands, then undoes what the setup stores for the move. Choosing the move from
+// the menu runs the setup again, so nothing is lost.
+static bool32 CanUseFieldMoveHere(u32 fieldMove)
+{
+    bool8 (*fieldCallback)(void) = gFieldCallback2;
+    MainCallback postMenuFieldCallback = gPostMenuFieldCallback;
+    u16 specialVarResult = gSpecialVar_Result;
+    s32 fieldEffectArgument = gFieldEffectArguments[1];
+    bool32 usable;
+
+    if (!IsFieldMoveUnlocked(fieldMove))
+        return FALSE;
+
+    usable = SetUpFieldMove(fieldMove);
+    gFieldCallback2 = fieldCallback;
+    gPostMenuFieldCallback = postMenuFieldCallback;
+    gSpecialVar_Result = specialVarResult;
+    gFieldEffectArguments[1] = fieldEffectArgument;
+    return usable;
+}
+
 static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
 {
     u8 i, j;
@@ -2978,21 +3029,23 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         {
             if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == FieldMove_GetMoveId(j))
             {
-                // BPE: FLY and FLASH are added below when their HM is in the bag, so don't list them twice
-                if (!(j == FIELD_MOVE_FLY && CheckBagHasItem(ITEM_HM_FLY, 1))
-                 && !(j == FIELD_MOVE_FLASH && CheckBagHasItem(ITEM_HM_FLASH, 1)))
+                // BPE: HMs in the bag are added below instead
+                if (GetFieldMoveHm(j) == ITEM_NONE || !CheckBagHasItem(GetFieldMoveHm(j), 1))
                     AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
                 break;
             }
         }
     }
 
-    // BPE: Modern HM system — FLY is available without knowing the move when HM02 is in the bag.
-    // Leave room for SWITCH, ITEM and CANCEL in the 8-entry action list.
-    if (sPartyMenuInternal->numActions <= ARRAY_COUNT(sPartyMenuInternal->actions) - 4
-     && IsFieldMoveUnlocked(FIELD_MOVE_FLY) && CheckBagHasItem(ITEM_HM_FLY, 1)
-     && Overworld_MapTypeAllowsTeleportAndFly(gMapHeader.mapType) == TRUE)
-        AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, FIELD_MOVE_FLY + MENU_FIELD_MOVES);
+    // BPE: Modern HM system — any Pokémon can use an HM in the bag, but only where it
+    // does something, so the 8-entry list keeps room for SWITCH, ITEM and CANCEL.
+    for (j = 0; j < ARRAY_COUNT(sBagHmFieldMoves); j++)
+    {
+        if (sPartyMenuInternal->numActions <= ARRAY_COUNT(sPartyMenuInternal->actions) - 4
+         && CheckBagHasItem(sBagHmFieldMoves[j].item, 1)
+         && CanUseFieldMoveHere(sBagHmFieldMoves[j].fieldMove))
+            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, sBagHmFieldMoves[j].fieldMove + MENU_FIELD_MOVES);
+    }
 
     if (!InBattlePike())
     {

@@ -335,6 +335,7 @@ gSpecials::
 	def_special BattleSetup_StartLegendaryBattle, waitstate=1
 	def_special ChooseIslandLegendary
 	def_special SetupIslandLegendaryBattle
+	def_special TryRecordPreE4LegendaryCatch
 	def_special StartRegiBattle, waitstate=1
 	def_special SetTrainerFacingDirection
 	def_special DoSealedChamberShakingEffect_Short, waitstate=1

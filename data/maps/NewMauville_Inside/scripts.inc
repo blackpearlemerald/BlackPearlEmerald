@@ -263,17 +263,16 @@ NewMauville_Inside_Text_SteppedOnSwitchGeneratorStopped:
 	.string "stopped…$"
 
 Legendary_EventScript_BattleZapdos::
-    setwildbattle SPECIES_ZAPDOS, 75
-    waitse
-    playmoncry SPECIES_ZAPDOS, CRY_MODE_ENCOUNTER
-    delay 40
-    waitmoncry
-    dowildbattle
-    fadescreenswapbuffers FADE_TO_BLACK
-    removeobject LOCALID_NEW_MAUVILLE_ZAPDOS
-	setvar VAR_PREE4_LEGENDARY 5
-	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
-    setflag FLAG_HIDE_OVERWORLD_ZAPDOS
-    fadescreenswapbuffers FADE_FROM_BLACK
-    release
-    end
+	setwildbattle SPECIES_ZAPDOS, 75
+	waitse
+	playmoncry SPECIES_ZAPDOS, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	dowildbattle
+	setvar VAR_0x8004, SPECIES_ZAPDOS
+	special TryRecordPreE4LegendaryCatch
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject LOCALID_NEW_MAUVILLE_ZAPDOS
+	fadescreenswapbuffers FADE_FROM_BLACK
+	release
+	end

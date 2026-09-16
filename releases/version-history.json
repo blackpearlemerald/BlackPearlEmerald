@@ -1,6 +1,16 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.0.6-beta": {
+      "channel": "beta",
+      "changes": [
+        "Only catching a pre-Elite Four legendary uses up your pick; knocked-out or fled legendaries return when you re-enter the area.",
+        "After becoming Champion, every uncaught pre-Elite Four legendary returns and stays until caught.",
+        "Added Regirock, Regice and Registeel to the pre-Elite Four legendaries.",
+        "Removed the extra level 50 Latios/Latias encounter from the Southern Island sign.",
+        "Every HM in the bag now appears in the party menu wherever it can be used, which fixes the Registeel door."
+      ]
+    },
     "2.0.5-beta": {
       "channel": "beta",
       "changes": [

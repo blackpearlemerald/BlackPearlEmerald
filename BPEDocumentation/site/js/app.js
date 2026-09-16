@@ -180,8 +180,8 @@ function staticPopup(st, preE4Count) {
     `<div class="tcard-name">${nameHtml}</div>` +
     `<div class="tcard-class">Lv ${st.level} · ${st.place || prettify(st.mapId)}</div></div></div>`;
   if (st.preE4) {
-    html += `<div class="enc-note static-rule"><b>Pre-Elite Four pick:</b> you can battle ` +
-      `only one of these ${preE4Count} Pokémon before becoming Champion.` +
+    html += `<div class="enc-note static-rule"><b>Pre-Elite Four pick:</b> one of ${preE4Count} ` +
+      `legendaries that are limited before you become Champion.` +
       ` <a href="features.html#legendaries">Legendary rules →</a></div>`;
   }
   return html;

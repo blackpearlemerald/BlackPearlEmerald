@@ -35,16 +35,11 @@ FarawayIsland_Interior_EventScript_TryRemoveMew::
 FarawayIsland_Interior_OnTransition:
 	setvar VAR_FARAWAY_ISLAND_STEP_COUNTER, 0
 	setvar VAR_TEMP_1, 1
-	call_if_unset FLAG_CAUGHT_MEW, FarawayIsland_Interior_EventScript_TryShowMew
+	@ BPE: UpdatePreE4Legendaries has already set FLAG_HIDE_MEW for this visit
+	call_if_unset FLAG_HIDE_MEW, FarawayIsland_Interior_EventScript_ShowMew
 	end
 
-FarawayIsland_Interior_EventScript_TryShowMew::
-	goto_if_set FLAG_DEFEATED_MEW, Common_EventScript_NopReturn
-	@ BPE: before becoming Champion, Mew stays hidden once another pre-Elite Four legendary was battled
-	goto_if_set FLAG_SYS_GAME_CLEAR, FarawayIsland_Interior_EventScript_ShowMew
-	goto_if_ne VAR_PREE4_LEGENDARY, 0, Common_EventScript_NopReturn
 FarawayIsland_Interior_EventScript_ShowMew::
-	clearflag FLAG_HIDE_MEW
 	setvar VAR_TEMP_1, 0
 	return
 
@@ -136,25 +131,18 @@ FarawayIsland_Interior_EventScript_Mew::
 	special BattleSetup_StartLegendaryBattle
 	clearflag FLAG_SYS_CTRL_OBJ_DELETE
 	specialvar VAR_RESULT, GetBattleOutcome
+	setvar VAR_0x8004, SPECIES_MEW
+	special TryRecordPreE4LegendaryCatch
 	goto_if_eq VAR_RESULT, B_OUTCOME_WON, FarawayIsland_Interior_EventScript_MewDefeated
 	goto_if_eq VAR_RESULT, B_OUTCOME_RAN, FarawayIsland_Interior_EventScript_PlayerOrMewRan
 	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, FarawayIsland_Interior_EventScript_PlayerOrMewRan
 	goto_if_eq VAR_RESULT, B_OUTCOME_MON_TELEPORTED, FarawayIsland_Interior_EventScript_PlayerOrMewRan
 	setflag FLAG_CAUGHT_MEW
-	@ BPE: catching Mew uses up the pre-Elite Four legendary pick
-	goto_if_set FLAG_SYS_GAME_CLEAR, FarawayIsland_Interior_EventScript_ReleaseAfterCatch
-	setvar VAR_PREE4_LEGENDARY 14
-	goto Global_EventScript_HideLegendariesPreE4
-	end
-
-FarawayIsland_Interior_EventScript_ReleaseAfterCatch::
 	release
 	end
 
 FarawayIsland_Interior_EventScript_MewDefeated::
 	setflag FLAG_DEFEATED_MEW
-	setvar VAR_PREE4_LEGENDARY 14
-	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
 	setvar VAR_0x8004, SPECIES_MEW
 	goto Common_EventScript_LegendaryFlewAway
 	end

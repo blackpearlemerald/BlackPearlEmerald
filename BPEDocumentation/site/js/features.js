@@ -60,9 +60,8 @@
     return row;
   }
 
-  function legendaryGroup(title, entries, description) {
+  function legendaryGroup(entries, description) {
     var group = element('section', 'legendary-group');
-    group.appendChild(element('h3', '', title));
     if (description) group.appendChild(element('p', 'legendary-group-text', description));
     var list = element('ul', 'legendary-list');
     entries.forEach(function (entry) { list.appendChild(legendaryRow(entry)); });
@@ -70,10 +69,11 @@
     return group;
   }
 
+  // Only the pre-Elite Four group is shown: the other legendaries can't be
+  // caught before becoming Champion.
   function renderLegendaries(data) {
-    var groups = data.legendaries || { preE4: [], others: [] };
-    var pre = groups.preE4 || [], others = groups.others || [];
-    if (!pre.length && !others.length) return;
+    var pre = (data.legendaries || {}).preE4 || [];
+    if (!pre.length) return;
     var fragment = document.createDocumentFragment();
     if (data.legendaryIntro) fragment.appendChild(element('p', 'legendary-intro', data.legendaryIntro));
     if (data.rules && data.rules.length) {
@@ -81,15 +81,9 @@
       data.rules.forEach(function (rule) { rules.appendChild(element('li', '', rule)); });
       fragment.appendChild(rules);
     }
-    if (pre.length) {
-      fragment.appendChild(legendaryGroup('Pre-Elite Four legendaries (' + pre.length + ')', pre,
-        'You can battle only one of these before becoming Champion.'));
-    }
-    if (others.length) {
-      fragment.appendChild(legendaryGroup(data.curated ? 'Other legendaries and special encounters' : 'Other legendaries', others));
-    }
+    fragment.appendChild(legendaryGroup(pre, 'You can catch only one of these before becoming Champion.'));
     legendariesBody.replaceChildren(fragment);
-    legendariesHint.textContent = pre.length + others.length + ' encounters';
+    legendariesHint.textContent = pre.length + ' encounters';
     legendaries.hidden = false;
     if (location.hash === '#legendaries') {
       legendaries.open = true;

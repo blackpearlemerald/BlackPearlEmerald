@@ -24,7 +24,7 @@
         },
         {
           "title": "HMs work from the Bag",
-          "body": "Cut, Rock Smash, Strength, Surf, Waterfall and Dive can be used while their HM is in your Bag, even if no Pokémon knows the move. With HM02 in your Bag, Fly appears in the party menu. Badge requirements still apply. With HM05 in your Bag, dark caves are lit automatically."
+          "body": "Every HM works while it is in your Bag, even if no Pokémon knows the move. The party menu lists an HM for any Pokémon wherever it can be used there, such as Cut in front of a tree or Surf facing water. Badge requirements still apply. With HM05 in your Bag, dark caves are lit automatically."
         },
         {
           "title": "Follower Pokémon and day/night",
@@ -33,10 +33,6 @@
         {
           "title": "Battle Style",
           "body": "New games use the Set battle style. In Standard mode you can switch it in Options; Nuzlocke mode keeps it on Set."
-        },
-        {
-          "title": "Developer menu",
-          "body": "Hold SELECT and press START in the overworld to open the developer menu. Press SELECT in battle for the battle menu."
         }
       ]
     },
@@ -92,9 +88,9 @@
   "legendaries": {
     "intro": "Levels and locations are read from this version's game data.",
     "rules": [
-      "Before you become Champion you can battle only one of the pre-Elite Four legendaries. Catching it or knocking it out uses up your pick. Running away does too, except from Mew.",
-      "Once your pick is used, the other pre-Elite Four legendaries disappear.",
-      "After your first Champion win, the others return. Champion rematches don't bring them back again."
+      "Before you become Champion you can catch only one of the pre-Elite Four legendaries. Once you catch one, the others disappear until you become Champion.",
+      "Knocking out a legendary or running away doesn't use up your pick. It disappears until you leave the area and returns when you come back.",
+      "After you become Champion, every legendary you haven't caught returns and stays until you catch it."
     ],
     "preE4": {
       "SPECIES_ARTICUNO": null,
@@ -110,19 +106,10 @@
       "SPECIES_LATIAS": "Southern Island, reached with Juan's Eon Ticket. Battling Latios or Latias removes both.",
       "SPECIES_ROTOM": null,
       "SPECIES_TYPE_NULL": null,
-      "SPECIES_MEW": "Faraway Island, reached with Juan's Old Sea Map."
-    },
-    "others": {
-      "SPECIES_REGIROCK": null,
-      "SPECIES_REGICE": null,
-      "SPECIES_REGISTEEL": null,
-      "SPECIES_GROUDON": "Terra Cave is guarded until you become Champion.",
-      "SPECIES_KYOGRE": "Marine Cave is guarded until you become Champion.",
-      "SPECIES_RAYQUAZA": "Sky Pillar is guarded until you become Champion.",
-      "SPECIES_LUGIA": "Navel Rock, reached with the Mystic Ticket.",
-      "SPECIES_HO_OH": "Navel Rock, reached with the Mystic Ticket.",
-      "SPECIES_DEOXYS_NORMAL": "Birth Island, reached with the Aurora Ticket.",
-      "SPECIES_SNORLAX": "You need the Poké Flute to wake it."
+      "SPECIES_MEW": "Faraway Island, reached with Juan's Old Sea Map.",
+      "SPECIES_REGIROCK": "Opens after the Sealed Chamber puzzle on Route 134 and the Braille puzzle inside.",
+      "SPECIES_REGICE": "Opens after the Sealed Chamber puzzle on Route 134 and the Braille puzzle inside.",
+      "SPECIES_REGISTEEL": "Opens after the Sealed Chamber puzzle on Route 134 and the Braille puzzle inside."
     }
   }
 }

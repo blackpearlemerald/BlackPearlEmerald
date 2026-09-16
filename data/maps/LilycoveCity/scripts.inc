@@ -755,17 +755,16 @@ LilycoveCity_Text_HoneymoonVowToSeeRarePokemon:
 	.string "I mean, we are totally happy!$"
 
 Legendary_EventScript_BattleRaikou::
-    setwildbattle SPECIES_RAIKOU, 75
-    waitse
-    playmoncry SPECIES_RAIKOU, CRY_MODE_ENCOUNTER
-    delay 40
-    waitmoncry
-    dowildbattle
-    fadescreenswapbuffers FADE_TO_BLACK
-    removeobject(23)
-	setvar VAR_PREE4_LEGENDARY 6
-	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
-    setflag FLAG_HIDE_OVERWORLD_RAIKOU
-    fadescreenswapbuffers FADE_FROM_BLACK
-    release
-    end
+	setwildbattle SPECIES_RAIKOU, 75
+	waitse
+	playmoncry SPECIES_RAIKOU, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	dowildbattle
+	setvar VAR_0x8004, SPECIES_RAIKOU
+	special TryRecordPreE4LegendaryCatch
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject(23)
+	fadescreenswapbuffers FADE_FROM_BLACK
+	release
+	end

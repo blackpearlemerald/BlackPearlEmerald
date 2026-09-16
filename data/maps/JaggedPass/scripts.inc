@@ -265,17 +265,16 @@ JaggedPass_Text_AutumnPostBattle:
 	.string "a little up the hill from here?$"
 
 Legendary_EventScript_BattleEntei::
-    setwildbattle SPECIES_ENTEI, 75
-    waitse
-    playmoncry SPECIES_ENTEI, CRY_MODE_ENCOUNTER
-    delay 40
-    waitmoncry
-    dowildbattle
-    fadescreenswapbuffers FADE_TO_BLACK
-    removeobject(8)
-	setvar VAR_PREE4_LEGENDARY 3
-	goto_if_unset FLAG_SYS_GAME_CLEAR, Global_EventScript_HideLegendariesPreE4
-    setflag FLAG_HIDE_OVERWORLD_ENTEI
-    fadescreenswapbuffers FADE_FROM_BLACK
-    release
-    end
+	setwildbattle SPECIES_ENTEI, 75
+	waitse
+	playmoncry SPECIES_ENTEI, CRY_MODE_ENCOUNTER
+	delay 40
+	waitmoncry
+	dowildbattle
+	setvar VAR_0x8004, SPECIES_ENTEI
+	special TryRecordPreE4LegendaryCatch
+	fadescreenswapbuffers FADE_TO_BLACK
+	removeobject(8)
+	fadescreenswapbuffers FADE_FROM_BLACK
+	release
+	end

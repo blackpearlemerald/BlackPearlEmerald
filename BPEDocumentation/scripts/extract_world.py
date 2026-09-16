@@ -688,9 +688,10 @@ def merge_gift_packages(packages):
 # --------------------------------------------------------------------------- #
 WILD_BATTLE_RE = re.compile(
     r"\b(?:setwildbattle|seteventmon)\s+(SPECIES_[A-Z0-9_]+)\s*,\s*(\w+)")
-# BPE's "pre-Elite Four legendary" rule records the one legendary the player
-# chose in this variable; every encounter that sets it belongs to that group.
-PREE4_RE = re.compile(r"\bsetvar\s+VAR_PREE4_LEGENDARY\b")
+# Every encounter under BPE's "pre-Elite Four legendary" rule reports its
+# battle to TryRecordPreE4LegendaryCatch. Older releases set this variable
+# instead, so both mark the group.
+PREE4_RE = re.compile(r"\bsetvar\s+VAR_PREE4_LEGENDARY\b|\bspecial\s+TryRecordPreE4LegendaryCatch\b")
 LEGENDARY_FLAG_RE = re.compile(
     r"\.is(?:Legendary|SubLegendary|RestrictedLegendary|Mythical)\s*=\s*TRUE"
     r"|SPECIES_FLAG_(?:LEGENDARY|MYTHICAL)")
