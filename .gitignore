@@ -28,6 +28,9 @@ tools/compresSmol/
 *.bat
 *.dump
 *.sa*
+# Emulator save files: player saves must never be committed
+*.sav
+*.srm
 Thumbs.db
 build/
 .DS_Store
