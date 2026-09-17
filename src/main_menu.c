@@ -188,6 +188,9 @@ static u32 InitMainMenu(bool8);
 static void Task_MainMenuCheckSaveFile(u8);
 static void Task_MainMenuCheckBattery(u8);
 static void Task_WaitForSaveFileErrorWindow(u8);
+static void Task_WaitForOutdatedSaveWindow(u8);
+static void Task_ProcessOutdatedSaveYesNo(u8);
+static void CreateOutdatedSaveWindow(void);
 static void CreateMainMenuErrorWindow(const u8 *);
 static void ClearMainMenuWindowTilemap(const struct WindowTemplate *);
 static void Task_DisplayMainMenu(u8);
@@ -270,7 +273,9 @@ static const u16 sBirchSpeechBgGradientPal[] = INCGFX_U16("graphics/birch_speech
 
 static const u8 gText_SaveFileCorrupted[] = _("The save file is corrupted. The\nprevious save file will be loaded.");
 static const u8 gText_SaveFileErased[] = _("The save file has been erased\ndue to corruption or damage.");
-static const u8 gText_SaveFileOutdated[] = _("This save is from an older BPE.\nUse the Save Converter website.");
+// Kept within the window width; test/save.c checks that each line fits.
+static const u8 gText_SaveFileOutdated[] = _("This save is from an older\nversion of BPE. To prevent save\ncorruption, the game will not\nallow you to save. Please use the\nSave Converter on the BPE website\nto continue your journey.");
+static const u8 gText_SaveFileOutdatedContinue[] = _("Continue anyway?");
 static const u8 gJPText_No1MSubCircuit[] = _("1Mサブきばんが ささっていません！");
 static const u8 gText_BatteryRunDry[] = _("The internal battery has run dry.\nThe game can be played.\pHowever, clock-based events will\nno longer occur.");
 
@@ -691,10 +696,11 @@ static void Task_MainMenuCheckSaveFile(u8 taskId)
             break;
         case SAVE_STATUS_OUTDATED:
             // BPE 2.1: the save must be converted before it can be played.
-            // A new game can be started, but it cannot be saved.
-            CreateMainMenuErrorWindow(gText_SaveFileOutdated);
+            // A new game can be started, but it cannot be saved, so the
+            // player has to confirm that before reaching the menu.
+            CreateOutdatedSaveWindow();
             tMenuType = HAS_NO_SAVED_GAME;
-            gTasks[taskId].func = Task_WaitForSaveFileErrorWindow;
+            gTasks[taskId].func = Task_WaitForOutdatedSaveWindow;
             break;
         case SAVE_STATUS_ERROR:
             CreateMainMenuErrorWindow(gText_SaveFileCorrupted);
@@ -744,6 +750,108 @@ static void Task_WaitForSaveFileErrorWindow(u8 taskId)
         ClearWindowTilemap(7);
         ClearMainMenuWindowTilemap(&sWindowTemplates_MainMenu[7]);
         gTasks[taskId].func = Task_MainMenuCheckBattery;
+    }
+}
+
+#define OUTDATED_WINDOW_MESSAGE  0
+#define OUTDATED_WINDOW_QUESTION  1
+
+static const struct WindowTemplate sOutdatedSaveWindows[] =
+{
+    [OUTDATED_WINDOW_MESSAGE] =
+    {
+        .bg = 0,
+        .tilemapLeft = 2,
+        .tilemapTop = 1,
+        .width = 26,
+        .height = 12,
+        .paletteNum = 15,
+        .baseBlock = 0x1DE
+    },
+    [OUTDATED_WINDOW_QUESTION] =
+    {
+        .bg = 0,
+        .tilemapLeft = 2,
+        .tilemapTop = 15,
+        .width = 19,
+        .height = 4,
+        .paletteNum = 15,
+        .baseBlock = 0x316
+    },
+};
+
+static const struct WindowTemplate sOutdatedSaveYesNoWindow =
+{
+    .bg = 0,
+    .tilemapLeft = 23,
+    .tilemapTop = 15,
+    .width = 6,
+    .height = 4,
+    .paletteNum = 15,
+    .baseBlock = 0x366
+};
+
+static EWRAM_DATA u8 sOutdatedSaveWindowIds[ARRAY_COUNT(sOutdatedSaveWindows)] = {0};
+
+static void PrintInOutdatedSaveWindow(u32 window, const u8 *text)
+{
+    sOutdatedSaveWindowIds[window] = AddWindow(&sOutdatedSaveWindows[window]);
+    FillWindowPixelBuffer(sOutdatedSaveWindowIds[window], PIXEL_FILL(1));
+    AddTextPrinterParameterized(sOutdatedSaveWindowIds[window], FONT_NORMAL, text, 0, 1, 2, 0);
+    PutWindowTilemap(sOutdatedSaveWindowIds[window]);
+    CopyWindowToVram(sOutdatedSaveWindowIds[window], COPYWIN_GFX);
+    DrawMainMenuWindowBorder(&sOutdatedSaveWindows[window], MAIN_MENU_BORDER_TILE);
+}
+
+static void CreateOutdatedSaveWindow(void)
+{
+    PrintInOutdatedSaveWindow(OUTDATED_WINDOW_MESSAGE, gText_SaveFileOutdated);
+    SetGpuReg(REG_OFFSET_WIN0H, WIN_RANGE(0, DISPLAY_WIDTH));
+    SetGpuReg(REG_OFFSET_WIN0V, WIN_RANGE(0, DISPLAY_HEIGHT));
+}
+
+static void CloseOutdatedSaveWindow(u32 window)
+{
+    ClearWindowTilemap(sOutdatedSaveWindowIds[window]);
+    ClearMainMenuWindowTilemap(&sOutdatedSaveWindows[window]);
+    RemoveWindow(sOutdatedSaveWindowIds[window]);
+}
+
+static void Task_WaitForOutdatedSaveWindow(u8 taskId)
+{
+    RunTextPrinters();
+    if (!IsTextPrinterActiveOnWindow(sOutdatedSaveWindowIds[OUTDATED_WINDOW_MESSAGE]) && JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        PrintInOutdatedSaveWindow(OUTDATED_WINDOW_QUESTION, gText_SaveFileOutdatedContinue);
+        // Starts on NO, so continuing without saving takes a deliberate choice
+        CreateYesNoMenu(&sOutdatedSaveYesNoWindow, MAIN_MENU_BORDER_TILE, 2, 1);
+        gTasks[taskId].func = Task_ProcessOutdatedSaveYesNo;
+    }
+}
+
+static void Task_ProcessOutdatedSaveYesNo(u8 taskId)
+{
+    RunTextPrinters();
+    if (IsTextPrinterActiveOnWindow(sOutdatedSaveWindowIds[OUTDATED_WINDOW_QUESTION]))
+        return;
+
+    switch (Menu_ProcessInputNoWrapClearOnChoose())
+    {
+    case 0: // Continue to the menu, where a new game can be started but not saved
+        PlaySE(SE_SELECT);
+        CloseOutdatedSaveWindow(OUTDATED_WINDOW_QUESTION);
+        CloseOutdatedSaveWindow(OUTDATED_WINDOW_MESSAGE);
+        gTasks[taskId].func = Task_MainMenuCheckBattery;
+        break;
+    case MENU_B_PRESSED:
+    case 1: // Back to the title screen; the old save is left alone
+        PlaySE(SE_SELECT);
+        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 0x10, RGB_WHITEALPHA);
+        SetGpuReg(REG_OFFSET_WIN0H, WIN_RANGE(0, DISPLAY_WIDTH));
+        SetGpuReg(REG_OFFSET_WIN0V, WIN_RANGE(0, DISPLAY_HEIGHT));
+        gTasks[taskId].func = Task_HandleMainMenuBPressed;
+        break;
     }
 }
 

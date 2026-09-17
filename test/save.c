@@ -11,6 +11,7 @@
 #include "save.h"
 #include "save_engine.h"
 #include "string_util.h"
+#include "text.h"
 #include "test/test.h"
 #include "constants/characters.h"
 #include "constants/items.h"
@@ -1099,6 +1100,31 @@ TEST("A damaged progress copy falls back to the previous save")
     EXPECT_EQ(Reboot(), SAVE_STATUS_ERROR);
     TakeDigest(&loaded);
     EXPECT_EQ(loaded.progress, first.progress);
+}
+
+TEST("The outdated save message fits its window")
+{
+    // src/main_menu.c prints this in a 26-tile-wide window with a 1-pixel
+    // left inset, so every line must be narrower than that.
+    static const u8 sMessage[] = _("This save is from an older\nversion of BPE. To prevent save\ncorruption, the game will not\nallow you to save. Please use the\nSave Converter on the BPE website\nto continue your journey.");
+    u8 line[64];
+    u32 start = 0, i, lines = 0;
+
+    for (i = 0; i <= sizeof(sMessage) - 1; i++)
+    {
+        if (sMessage[i] != CHAR_NEWLINE && sMessage[i] != EOS)
+            continue;
+        EXPECT_LT(i - start, sizeof(line));
+        memcpy(line, &sMessage[start], i - start);
+        line[i - start] = EOS;
+        EXPECT_LE(GetStringWidth(FONT_NORMAL, line, 0), 26 * 8 - 2);
+        lines++;
+        start = i + 1;
+        if (sMessage[i] == EOS)
+            break;
+    }
+    // Six lines of 16 pixels fit the 12-tile-tall window exactly
+    EXPECT_EQ(lines, 6);
 }
 
 TEST("Saves from before the 2.1 format are recognized")
