@@ -20,6 +20,27 @@ body.page-save-converter {
   background: #12202e;
   line-height: 1.5;
 }
+.converter-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  border: 1px solid #2f4a63;
+  border-radius: 10px;
+  background-color: #0e2233;
+}
+.converter-confirm input[type="checkbox"] {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 1px 0 0;
+  accent-color: #2fb474;
+  cursor: pointer;
+}
+.converter-confirm label { font-size: 1rem; font-weight: 700; cursor: pointer; }
+.converter-confirm input[type="checkbox"]:focus-visible { outline: 2px solid #61d391; outline-offset: 3px; }
+
 .converter-flow {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;

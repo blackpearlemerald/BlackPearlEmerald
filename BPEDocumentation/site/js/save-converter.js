@@ -579,8 +579,26 @@
   var input = document.getElementById('save-converter-file');
   var button = document.getElementById('save-converter-button');
   var status = document.getElementById('save-converter-status');
+  var backedUp = document.getElementById('save-converter-backed-up');
   if (!input || !button || !status) return;
   var chosen = null;
+
+  // Converting never touches the file the player chose, but someone who
+  // discards the original cannot go back to an earlier version of the game,
+  // so the button waits for the promise as well as the file.
+  function canConvert() {
+    return Boolean(chosen) && (!backedUp || backedUp.checked);
+  }
+
+  function refreshButton() {
+    button.disabled = !canConvert();
+  }
+
+  function promptForBackup() {
+    setStatus('ready', chosen && !canConvert()
+      ? 'Back up your save file, then tick the box above.'
+      : '');
+  }
 
   function setStatus(state, message) {
     status.className = 'is-' + state;
@@ -590,12 +608,19 @@
 
   input.addEventListener('change', function () {
     chosen = input.files && input.files[0];
-    button.disabled = !chosen;
-    setStatus('ready', '');
+    refreshButton();
+    promptForBackup();
   });
 
+  if (backedUp) {
+    backedUp.addEventListener('change', function () {
+      refreshButton();
+      promptForBackup();
+    });
+  }
+
   button.addEventListener('click', async function () {
-    if (!chosen) return;
+    if (!canConvert()) return;
     button.disabled = true;
     setStatus('working', 'Converting…');
     try {
@@ -616,7 +641,7 @@
     } catch (error) {
       setStatus('error', error.message || 'This save could not be converted.');
     } finally {
-      button.disabled = !chosen;
+      refreshButton();
     }
   });
 }(typeof window !== 'undefined' ? window : globalThis));
