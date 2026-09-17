@@ -36,6 +36,7 @@
 #include "pokedex.h"
 #include "pokeblock.h"
 #include "pokemon.h"
+#include "packed_box_mon.h"
 #include "pokemon_animation.h"
 #include "pokemon_icon.h"
 #include "pokemon_summary_screen.h"
@@ -2071,6 +2072,378 @@ static bool32 IsBadEgg(struct BoxPokemon *boxMon)
 static ALWAYS_INLINE bool32 IsEggOrBadEgg(struct BoxPokemon *boxMon)
 {
     return GetSubstruct3(boxMon)->isEgg || IsBadEgg(boxMon);
+}
+
+// BPE: PC storage records. See include/packed_box_mon.h for the layout.
+u32 GetPackedBits(const u8 *data, u32 offset, u32 width)
+{
+    u32 value = 0, got = 0;
+    u32 byte = offset >> 3;
+    u32 shift = offset & 7;
+
+    while (got < width)
+    {
+        u32 take = 8 - shift;
+        if (take > width - got)
+            take = width - got;
+        value |= ((data[byte] >> shift) & ((1u << take) - 1)) << got;
+        got += take;
+        byte++;
+        shift = 0;
+    }
+    return value;
+}
+
+void SetPackedBits(u8 *data, u32 offset, u32 width, u32 value)
+{
+    u32 put = 0;
+    u32 byte = offset >> 3;
+    u32 shift = offset & 7;
+
+    while (put < width)
+    {
+        u32 take = 8 - shift;
+        u32 mask;
+        if (take > width - put)
+            take = width - put;
+        mask = ((1u << take) - 1) << shift;
+        data[byte] = (data[byte] & ~mask) | (((value >> put) << shift) & mask);
+        put += take;
+        byte++;
+        shift = 0;
+    }
+}
+
+bool32 IsPackedBoxMonEmpty(const struct PackedBoxMon *mon)
+{
+    u32 i;
+    for (i = 0; i < PACKED_BOX_MON_SIZE; i++)
+    {
+        if (mon->data[i] != 0)
+            return FALSE;
+    }
+    return TRUE;
+}
+
+void PackBoxMon(struct PackedBoxMon *dst, const struct BoxPokemon *src)
+{
+    struct BoxPokemon mon = *src;
+    struct PokemonSubstruct0 *s0;
+    struct PokemonSubstruct1 *s1;
+    struct PokemonSubstruct2 *s2;
+    struct PokemonSubstruct3 *s3;
+    u8 *d = dst->data;
+    u16 checksum;
+    bool32 badEgg;
+    u32 i;
+
+    memset(d, 0, PACKED_BOX_MON_SIZE);
+
+    checksum = CalculateBoxMonChecksumDecrypt(&mon);
+    badEgg = mon.isBadEgg || checksum != mon.checksum;
+    s0 = GetSubstruct0(&mon);
+    s1 = GetSubstruct1(&mon);
+    s2 = GetSubstruct2(&mon);
+    s3 = GetSubstruct3(&mon);
+
+    if (!badEgg && s0->species == SPECIES_NONE)
+        return; // Empty slot
+
+    SetPackedBits(d, PB_PERSONALITY, mon.personality);
+    SetPackedBits(d, PB_OT_ID, mon.otId);
+    for (i = 0; i < ARRAY_COUNT(mon.nickname); i++)
+        SetPackedBits(d, PB_NICKNAME_CHAR(i), mon.nickname[i]);
+    SetPackedBits(d, PB_NICKNAME_CHAR(10), s0->nickname11);
+    SetPackedBits(d, PB_NICKNAME_CHAR(11), s0->nickname12);
+    for (i = 0; i < PLAYER_NAME_LENGTH; i++)
+        SetPackedBits(d, PB_OT_NAME_CHAR(i), mon.otName[i]);
+    SetPackedBits(d, PB_LANGUAGE, mon.language);
+    SetPackedBits(d, PB_HIDDEN_NATURE_MODIFIER, mon.hiddenNatureModifier);
+    SetPackedBits(d, PB_IS_BAD_EGG, badEgg);
+    SetPackedBits(d, PB_IS_EGG, mon.isEgg || s3->isEgg || badEgg);
+    SetPackedBits(d, PB_DEAD, mon.dead);
+    SetPackedBits(d, PB_DAYS_SINCE_FORM_CHANGE, mon.daysSinceFormChange);
+    SetPackedBits(d, PB_MARKINGS, mon.markings);
+    SetPackedBits(d, PB_SHINY_MODIFIER, mon.shinyModifier);
+
+    SetPackedBits(d, PB_SPECIES, s0->species);
+    SetPackedBits(d, PB_TERA_TYPE, s0->teraType);
+    SetPackedBits(d, PB_HELD_ITEM, s0->heldItem);
+    SetPackedBits(d, PB_EXPERIENCE, s0->experience);
+    SetPackedBits(d, PB_PP_BONUSES, s0->ppBonuses);
+    SetPackedBits(d, PB_FRIENDSHIP, s0->friendship);
+    SetPackedBits(d, PB_POKEBALL, s0->pokeball);
+
+    SetPackedBits(d, PB_MOVE(0), s1->move1);
+    SetPackedBits(d, PB_MOVE(1), s1->move2);
+    SetPackedBits(d, PB_MOVE(2), s1->move3);
+    SetPackedBits(d, PB_MOVE(3), s1->move4);
+    SetPackedBits(d, PB_EVOLUTION_TRACKER_1, s1->evolutionTracker1);
+    SetPackedBits(d, PB_EVOLUTION_TRACKER_2, s1->evolutionTracker2);
+    SetPackedBits(d, PB_HYPER_TRAINED(0), s1->hyperTrainedHP);
+    SetPackedBits(d, PB_HYPER_TRAINED(1), s1->hyperTrainedAttack);
+    SetPackedBits(d, PB_HYPER_TRAINED(2), s1->hyperTrainedDefense);
+    SetPackedBits(d, PB_HYPER_TRAINED(3), s1->hyperTrainedSpeed);
+    SetPackedBits(d, PB_HYPER_TRAINED(4), s1->hyperTrainedSpAttack);
+    SetPackedBits(d, PB_HYPER_TRAINED(5), s1->hyperTrainedSpDefense);
+
+    SetPackedBits(d, PB_EV(0), s2->hpEV);
+    SetPackedBits(d, PB_EV(1), s2->attackEV);
+    SetPackedBits(d, PB_EV(2), s2->defenseEV);
+    SetPackedBits(d, PB_EV(3), s2->speedEV);
+    SetPackedBits(d, PB_EV(4), s2->spAttackEV);
+    SetPackedBits(d, PB_EV(5), s2->spDefenseEV);
+
+    SetPackedBits(d, PB_POKERUS, s3->pokerus);
+    SetPackedBits(d, PB_MET_LOCATION, s3->metLocation);
+    SetPackedBits(d, PB_MET_LEVEL, s3->metLevel);
+    SetPackedBits(d, PB_MET_GAME, s3->metGame);
+    SetPackedBits(d, PB_DYNAMAX_LEVEL, s3->dynamaxLevel);
+    SetPackedBits(d, PB_OT_GENDER, s3->otGender);
+    SetPackedBits(d, PB_IV(0), s3->hpIV);
+    SetPackedBits(d, PB_IV(1), s3->attackIV);
+    SetPackedBits(d, PB_IV(2), s3->defenseIV);
+    SetPackedBits(d, PB_IV(3), s3->speedIV);
+    SetPackedBits(d, PB_IV(4), s3->spAttackIV);
+    SetPackedBits(d, PB_IV(5), s3->spDefenseIV);
+    SetPackedBits(d, PB_GIGANTAMAX_FACTOR, s3->gigantamaxFactor);
+    SetPackedBits(d, PB_CHAMPION_RIBBON, s3->championRibbon);
+    SetPackedBits(d, PB_IS_SHADOW, s3->isShadow);
+    SetPackedBits(d, PB_ABILITY_NUM, s3->abilityNum);
+    SetPackedBits(d, PB_MODERN_FATEFUL_ENCOUNTER, s3->modernFatefulEncounter);
+}
+
+u32 UnpackBoxMon(struct BoxPokemon *dst, const struct PackedBoxMon *src)
+{
+    const u8 *d = src->data;
+    struct PokemonSubstruct0 *s0;
+    struct PokemonSubstruct1 *s1;
+    struct PokemonSubstruct2 *s2;
+    struct PokemonSubstruct3 *s3;
+    u32 result = UNPACK_OK;
+    u32 i, value;
+    bool32 badEgg;
+    enum Species species;
+
+    ZeroBoxMonData(dst);
+    if (IsPackedBoxMonEmpty(src))
+        return UNPACK_EMPTY;
+
+    badEgg = GetPackedBits(d, PB_IS_BAD_EGG);
+    species = GetPackedBits(d, PB_SPECIES);
+    if (!badEgg && (species == SPECIES_NONE || species > SPECIES_EGG))
+        return UNPACK_INVALID;
+
+    dst->personality = GetPackedBits(d, PB_PERSONALITY);
+    dst->otId = GetPackedBits(d, PB_OT_ID);
+    for (i = 0; i < ARRAY_COUNT(dst->nickname); i++)
+        dst->nickname[i] = GetPackedBits(d, PB_NICKNAME_CHAR(i));
+    for (i = 0; i < PLAYER_NAME_LENGTH; i++)
+        dst->otName[i] = GetPackedBits(d, PB_OT_NAME_CHAR(i));
+    dst->language = GetPackedBits(d, PB_LANGUAGE);
+    dst->hiddenNatureModifier = GetPackedBits(d, PB_HIDDEN_NATURE_MODIFIER);
+    dst->isBadEgg = badEgg;
+    dst->hasSpecies = (species != SPECIES_NONE) || badEgg;
+    dst->isEgg = GetPackedBits(d, PB_IS_EGG);
+    dst->dead = GetPackedBits(d, PB_DEAD);
+    dst->daysSinceFormChange = GetPackedBits(d, PB_DAYS_SINCE_FORM_CHANGE);
+    dst->markings = GetPackedBits(d, PB_MARKINGS);
+    dst->shinyModifier = GetPackedBits(d, PB_SHINY_MODIFIER);
+
+    s0 = GetSubstruct0(dst);
+    s1 = GetSubstruct1(dst);
+    s2 = GetSubstruct2(dst);
+    s3 = GetSubstruct3(dst);
+
+    s0->species = species;
+    s0->nickname11 = GetPackedBits(d, PB_NICKNAME_CHAR(10));
+    s0->nickname12 = GetPackedBits(d, PB_NICKNAME_CHAR(11));
+    value = GetPackedBits(d, PB_TERA_TYPE);
+    if (value >= NUMBER_OF_MON_TYPES && !badEgg)
+    {
+        value = TYPE_NONE;
+        result = UNPACK_REPAIRED;
+    }
+    s0->teraType = value;
+    value = GetPackedBits(d, PB_HELD_ITEM);
+    if (value >= ITEMS_COUNT && !badEgg)
+    {
+        value = ITEM_NONE;
+        result = UNPACK_REPAIRED;
+    }
+    s0->heldItem = value;
+    s0->experience = GetPackedBits(d, PB_EXPERIENCE);
+    s0->ppBonuses = GetPackedBits(d, PB_PP_BONUSES);
+    s0->friendship = GetPackedBits(d, PB_FRIENDSHIP);
+    value = GetPackedBits(d, PB_POKEBALL);
+    if (value >= POKEBALL_COUNT && !badEgg)
+    {
+        value = BALL_POKE;
+        result = UNPACK_REPAIRED;
+    }
+    s0->pokeball = value;
+
+    for (i = 0; i < MAX_MON_MOVES; i++)
+    {
+        enum Move move = GetPackedBits(d, PB_MOVE(i));
+        u8 pp;
+        if (move >= MOVES_COUNT && !badEgg)
+        {
+            move = MOVE_NONE;
+            result = UNPACK_REPAIRED;
+        }
+        pp = (move != MOVE_NONE && move < MOVES_COUNT) ? CalculatePPWithBonus(move, s0->ppBonuses, i) : 0;
+        switch (i)
+        {
+        case 0: s1->move1 = move; s1->pp1 = pp; break;
+        case 1: s1->move2 = move; s1->pp2 = pp; break;
+        case 2: s1->move3 = move; s1->pp3 = pp; break;
+        case 3: s1->move4 = move; s1->pp4 = pp; break;
+        }
+    }
+    s1->evolutionTracker1 = GetPackedBits(d, PB_EVOLUTION_TRACKER_1);
+    s1->evolutionTracker2 = GetPackedBits(d, PB_EVOLUTION_TRACKER_2);
+    s1->hyperTrainedHP = GetPackedBits(d, PB_HYPER_TRAINED(0));
+    s1->hyperTrainedAttack = GetPackedBits(d, PB_HYPER_TRAINED(1));
+    s1->hyperTrainedDefense = GetPackedBits(d, PB_HYPER_TRAINED(2));
+    s1->hyperTrainedSpeed = GetPackedBits(d, PB_HYPER_TRAINED(3));
+    s1->hyperTrainedSpAttack = GetPackedBits(d, PB_HYPER_TRAINED(4));
+    s1->hyperTrainedSpDefense = GetPackedBits(d, PB_HYPER_TRAINED(5));
+
+    s2->hpEV = GetPackedBits(d, PB_EV(0));
+    s2->attackEV = GetPackedBits(d, PB_EV(1));
+    s2->defenseEV = GetPackedBits(d, PB_EV(2));
+    s2->speedEV = GetPackedBits(d, PB_EV(3));
+    s2->spAttackEV = GetPackedBits(d, PB_EV(4));
+    s2->spDefenseEV = GetPackedBits(d, PB_EV(5));
+
+    s3->pokerus = GetPackedBits(d, PB_POKERUS);
+    s3->metLocation = GetPackedBits(d, PB_MET_LOCATION);
+    s3->metLevel = GetPackedBits(d, PB_MET_LEVEL);
+    s3->metGame = GetPackedBits(d, PB_MET_GAME);
+    s3->dynamaxLevel = GetPackedBits(d, PB_DYNAMAX_LEVEL);
+    s3->otGender = GetPackedBits(d, PB_OT_GENDER);
+    s3->hpIV = GetPackedBits(d, PB_IV(0));
+    s3->attackIV = GetPackedBits(d, PB_IV(1));
+    s3->defenseIV = GetPackedBits(d, PB_IV(2));
+    s3->speedIV = GetPackedBits(d, PB_IV(3));
+    s3->spAttackIV = GetPackedBits(d, PB_IV(4));
+    s3->spDefenseIV = GetPackedBits(d, PB_IV(5));
+    s3->isEgg = dst->isEgg;
+    s3->gigantamaxFactor = GetPackedBits(d, PB_GIGANTAMAX_FACTOR);
+    s3->championRibbon = GetPackedBits(d, PB_CHAMPION_RIBBON);
+    s3->isShadow = GetPackedBits(d, PB_IS_SHADOW);
+    value = GetPackedBits(d, PB_ABILITY_NUM);
+    if (value > 2 && !badEgg)
+    {
+        value = 0;
+        result = UNPACK_REPAIRED;
+    }
+    s3->abilityNum = value;
+    s3->modernFatefulEncounter = GetPackedBits(d, PB_MODERN_FATEFUL_ENCOUNTER);
+
+    dst->checksum = CalculateBoxMonChecksum(dst);
+    EncryptBoxMon(dst);
+    return result;
+}
+
+bool32 TryGetPackedBoxMonData(const struct PackedBoxMon *mon, s32 field, u8 *data, u32 *value)
+{
+    const u8 *d = mon->data;
+    bool32 empty, badEgg, isEgg;
+    u32 species;
+
+    empty = IsPackedBoxMonEmpty(mon);
+    badEgg = !empty && GetPackedBits(d, PB_IS_BAD_EGG);
+    isEgg = !empty && GetPackedBits(d, PB_IS_EGG);
+    species = empty ? SPECIES_NONE : GetPackedBits(d, PB_SPECIES);
+
+    switch (field)
+    {
+    case MON_DATA_PERSONALITY:
+        *value = empty ? 0 : GetPackedBits(d, PB_PERSONALITY);
+        return TRUE;
+    case MON_DATA_OT_ID:
+        *value = empty ? 0 : GetPackedBits(d, PB_OT_ID);
+        return TRUE;
+    case MON_DATA_LANGUAGE:
+        *value = empty ? 0 : GetPackedBits(d, PB_LANGUAGE);
+        return TRUE;
+    case MON_DATA_SANITY_IS_BAD_EGG:
+        *value = badEgg;
+        return TRUE;
+    case MON_DATA_SANITY_HAS_SPECIES:
+        *value = !empty && (species != SPECIES_NONE || badEgg);
+        return TRUE;
+    case MON_DATA_SANITY_IS_EGG:
+        *value = isEgg;
+        return TRUE;
+    case MON_DATA_MARKINGS:
+        *value = empty ? 0 : GetPackedBits(d, PB_MARKINGS);
+        return TRUE;
+    case MON_DATA_DEAD:
+        *value = empty ? 0 : GetPackedBits(d, PB_DEAD);
+        return TRUE;
+    }
+
+    // Encrypted fields of a bad egg go through the normal path.
+    if (badEgg)
+        return FALSE;
+
+    switch (field)
+    {
+    case MON_DATA_SPECIES:
+        *value = species;
+        return TRUE;
+    case MON_DATA_SPECIES_OR_EGG:
+        *value = (species != SPECIES_NONE && isEgg) ? SPECIES_EGG : species;
+        return TRUE;
+    case MON_DATA_IS_EGG:
+        *value = isEgg;
+        return TRUE;
+    case MON_DATA_HELD_ITEM:
+        *value = empty ? ITEM_NONE : GetPackedBits(d, PB_HELD_ITEM);
+        if (*value >= ITEMS_COUNT)
+            return FALSE;
+        return TRUE;
+    case MON_DATA_EXP:
+        *value = empty ? 0 : GetPackedBits(d, PB_EXPERIENCE);
+        return TRUE;
+    case MON_DATA_MOVE1:
+    case MON_DATA_MOVE2:
+    case MON_DATA_MOVE3:
+    case MON_DATA_MOVE4:
+        *value = empty ? MOVE_NONE : GetPackedBits(d, PB_MOVE(field - MON_DATA_MOVE1));
+        if (*value >= MOVES_COUNT)
+            return FALSE;
+        return TRUE;
+    case MON_DATA_KNOWN_MOVES:
+    {
+        u16 *moves = (u16 *)data;
+        u32 i, j;
+        *value = 0;
+        if (empty || species == SPECIES_NONE || isEgg)
+            return TRUE;
+        for (j = 0; j < MAX_MON_MOVES; j++)
+        {
+            if (GetPackedBits(d, PB_MOVE(j)) >= MOVES_COUNT)
+                return FALSE;
+        }
+        for (i = 0; moves[i] != MOVES_COUNT; i++)
+        {
+            for (j = 0; j < MAX_MON_MOVES; j++)
+            {
+                if (GetPackedBits(d, PB_MOVE(j)) == moves[i])
+                {
+                    *value |= (1u << i);
+                    break;
+                }
+            }
+        }
+        return TRUE;
+    }
+    }
+    return FALSE;
 }
 
 /* GameFreak called GetBoxMonData with either 2 or 3 arguments, for type

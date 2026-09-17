@@ -72,7 +72,7 @@ static void HealPlayerBoxes(void)
     {
         for (boxPosition = 0; boxPosition < IN_BOX_COUNT; boxPosition++)
         {
-            boxMon = &gPokemonStoragePtr->boxes[boxId][boxPosition];
+            boxMon = GetBoxedMonPtr(boxId, boxPosition);
             if (GetBoxMonData(boxMon, MON_DATA_SANITY_HAS_SPECIES))
                 HealBoxPokemon(boxMon);
         }

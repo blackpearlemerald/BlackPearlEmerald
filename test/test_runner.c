@@ -717,8 +717,18 @@ void ReinitCallbacks(void)
     gMain.hblankCallback = NULL;
 }
 
+void FlashTimerIntr(void);
+
 static void Intr_Timer2(void)
 {
+    // BPE: the flash driver also uses timer 2, with a 256-tick prescaler. Its
+    // ticks must reach the driver and must not count toward the test timeout.
+    if ((REG_TM2CNT_H & 3) != TIMER_1024CLK)
+    {
+        FlashTimerIntr();
+        return;
+    }
+
     if (--gTestRunnerState.timeoutSeconds == 0)
     {
         if (gTestRunnerState.test->runner->checkProgress

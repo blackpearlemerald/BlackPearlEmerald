@@ -171,6 +171,7 @@ void NewGameInitData(void)
     StringCopy(rivalName, gSaveBlock1Ptr->rivalName);
 #endif
     gDifferentSaveFile = TRUE;
+    Save_StartNewGameIdentity();
     gSaveBlock2Ptr->encryptionKey = 0;
     ZeroPlayerPartyMons();
     ZeroEnemyPartyMons();

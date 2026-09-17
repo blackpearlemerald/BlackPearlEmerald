@@ -106,6 +106,9 @@ void MoveSaveBlocks_ResetHeap(void)
     gMain.hblankCallback = NULL;
     gTrainerHillVBlankCounter = NULL;
 
+    // The PC box cache is copied through gPokemonStoragePtr->boxes
+    FlushBoxCache();
+
     saveBlock2Copy = (struct SaveBlock2 *)(gHeap);
     saveBlock1Copy = (struct SaveBlock1 *)(gHeap + sizeof(struct SaveBlock2));
     pokemonStorageCopy = (struct PokemonStorage *)(gHeap + sizeof(struct SaveBlock2) + sizeof(struct SaveBlock1));

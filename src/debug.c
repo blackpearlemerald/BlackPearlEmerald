@@ -1569,20 +1569,24 @@ static void DebugAction_Util_Warp_SelectWarp(u8 taskId)
 #undef tMapNum
 #undef tWarp
 
+// BPE 2.1 save format: see include/save_engine.h
+#define PROGRESS_PART0_SPACE (SAVE_SECTOR_PAYLOAD_SIZE - SAVE_META_SIZE)
+
 void CheckSaveBlock1Size(struct ScriptContext *ctx)
 {
     u32 currSb1Size = sizeof(struct SaveBlock1);
-    u32 maxSb1Size = SECTOR_DATA_SIZE * (SECTOR_ID_SAVEBLOCK1_END - SECTOR_ID_SAVEBLOCK1_START + 1);
+    u32 maxSb1Size = SAVE_SECTOR_PAYLOAD_SIZE * (SAVE_PROGRESS_PARTS - 1);
     ConvertIntToDecimalStringN(gStringVar1, currSb1Size, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar2, maxSb1Size, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar3, maxSb1Size - currSb1Size, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar4, 1, STR_CONV_MODE_LEFT_ALIGN, 6);
 }
 
+// SaveBlock2, the PC box header and SaveBlock3 share one sector.
 void CheckSaveBlock2Size(struct ScriptContext *ctx)
 {
     u32 currSb2Size = (sizeof(struct SaveBlock2));
-    u32 maxSb2Size = SECTOR_DATA_SIZE;
+    u32 maxSb2Size = PROGRESS_PART0_SPACE - POKEMON_STORAGE_HEADER_SIZE - sizeof(struct SaveBlock3);
     ConvertIntToDecimalStringN(gStringVar1, currSb2Size, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar2, maxSb2Size, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar3, maxSb2Size - currSb2Size, STR_CONV_MODE_LEFT_ALIGN, 6);
@@ -1591,7 +1595,7 @@ void CheckSaveBlock2Size(struct ScriptContext *ctx)
 void CheckSaveBlock3Size(struct ScriptContext *ctx)
 {
     u32 currSb3Size = (sizeof(struct SaveBlock3));
-    u32 maxSb3Size = SAVE_BLOCK_3_CHUNK_SIZE * NUM_SECTORS_PER_SLOT;
+    u32 maxSb3Size = PROGRESS_PART0_SPACE - POKEMON_STORAGE_HEADER_SIZE - sizeof(struct SaveBlock2);
     ConvertIntToDecimalStringN(gStringVar1, currSb3Size, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar2, maxSb3Size, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar3, maxSb3Size - currSb3Size, STR_CONV_MODE_LEFT_ALIGN, 6);
@@ -1599,8 +1603,8 @@ void CheckSaveBlock3Size(struct ScriptContext *ctx)
 
 void CheckPokemonStorageSize(struct ScriptContext *ctx)
 {
-    u32 currPkmnStorageSize = sizeof(struct PokemonStorage);
-    u32 maxPkmnStorageSize = SECTOR_DATA_SIZE * (SECTOR_ID_PKMN_STORAGE_END - SECTOR_ID_PKMN_STORAGE_START + 1);
+    u32 currPkmnStorageSize = TOTAL_BOXES_COUNT * IN_BOX_COUNT * sizeof(struct PackedBoxMon);
+    u32 maxPkmnStorageSize = SAVE_BOX_MAX_MONS * SAVE_BOX_MON_SIZE;
     ConvertIntToDecimalStringN(gStringVar1, currPkmnStorageSize, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar2, maxPkmnStorageSize, STR_CONV_MODE_LEFT_ALIGN, 6);
     ConvertIntToDecimalStringN(gStringVar3, maxPkmnStorageSize - currPkmnStorageSize, STR_CONV_MODE_LEFT_ALIGN, 6);
@@ -2426,9 +2430,9 @@ static void DebugAction_FlagsVars_PokedexFlags_Reset(u8 taskId)
     {
         for (boxPosition = 0; boxPosition < IN_BOX_COUNT; boxPosition++)
         {
-            if (GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], MON_DATA_SANITY_HAS_SPECIES))
+            if (GetBoxMonDataAt(boxId, boxPosition, MON_DATA_SANITY_HAS_SPECIES))
             {
-                species = GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], MON_DATA_SPECIES);
+                species = GetBoxMonDataAt(boxId, boxPosition, MON_DATA_SPECIES);
                 GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_CAUGHT);
                 GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_SEEN);
             }
@@ -3747,13 +3751,13 @@ static void DebugAction_PCBag_Fill_PCBoxes_Fast(u8 taskId) //Credit: Sierraffini
     {
         for (boxPosition = 0; boxPosition < IN_BOX_COUNT; boxPosition++)
         {
-            if (!GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], MON_DATA_SANITY_HAS_SPECIES))
+            if (!GetBoxMonDataAt(boxId, boxPosition, MON_DATA_SANITY_HAS_SPECIES))
             {
                 StringCopy(speciesName, GetSpeciesName(species));
                 SetBoxMonData(&boxMon, MON_DATA_NICKNAME, &speciesName);
                 SetBoxMonData(&boxMon, MON_DATA_SPECIES, &species);
                 GiveBoxMonInitialMoveset(&boxMon);
-                gPokemonStoragePtr->boxes[boxId][boxPosition] = boxMon;
+                SetBoxMonAt(boxId, boxPosition, &boxMon);
                 species = GetNextSpecies(species);
             }
         }
@@ -3776,14 +3780,14 @@ static void DebugAction_PCBag_Fill_PCBoxes_Slow(u8 taskId)
     {
         for (boxPosition = 0; boxPosition < IN_BOX_COUNT; boxPosition++)
         {
-            if (!GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], MON_DATA_SANITY_HAS_SPECIES))
+            if (!GetBoxMonDataAt(boxId, boxPosition, MON_DATA_SANITY_HAS_SPECIES))
             {
                 if (!spaceAvailable)
                     PlayBGM(MUS_RG_MYSTERY_GIFT);
                 CreateBoxMon(&boxMon, species, 100, Random32(), OTID_STRUCT_PLAYER_ID);
                 SetBoxMonIVs(&boxMon, USE_RANDOM_IVS);
                 GiveBoxMonInitialMoveset(&boxMon);
-                gPokemonStoragePtr->boxes[boxId][boxPosition] = boxMon;
+                SetBoxMonAt(boxId, boxPosition, &boxMon);
                 species = GetNextSpecies(species);
                 spaceAvailable = TRUE;
             }

@@ -15,8 +15,6 @@
 #include "constants/items.h"
 #include "constants/trainer_hill.h"
 
-// Save data using TryWriteSpecialSaveSector is allowed to exceed SECTOR_DATA_SIZE (up to the counter field)
-STATIC_ASSERT(sizeof(struct TrainerHillChallenge) <= SECTOR_COUNTER_OFFSET, TrainerHillChallengeFreeSpace);
 
 struct SendRecvMgr
 {
@@ -416,20 +414,6 @@ bool8 ValidateTrainerHillData(struct EReaderTrainerHillSet *hillSet)
     return TRUE;
 }
 
-static bool32 ValidateTrainerHillChecksum(struct EReaderTrainerHillSet *hillSet)
-{
-    u32 checksum;
-    int numTrainers = hillSet->numTrainers;
-    if (numTrainers < 1 || numTrainers > NUM_TRAINER_HILL_TRAINERS)
-        return FALSE;
-
-    checksum = CalcByteArraySum((u8 *)hillSet->trainers, sizeof(struct EReaderTrainerHillSet) - offsetof(struct EReaderTrainerHillSet, trainers));
-    if (checksum != hillSet->checksum)
-        return FALSE;
-
-    return TRUE;
-}
-
 static bool32 TryWriteTrainerHill_Internal(struct EReaderTrainerHillSet *hillSet, struct TrainerHillChallenge *challenge)
 {
     int i;
@@ -463,10 +447,8 @@ static bool32 TryWriteTrainerHill_Internal(struct EReaderTrainerHillSet *hillSet
     }
 
     challenge->checksum = CalcByteArraySum((u8 *)challenge->floors, NUM_TRAINER_HILL_FLOORS * sizeof(struct TrainerHillFloor));
-    if (TryWriteSpecialSaveSector(SECTOR_ID_TRAINER_HILL, (u8 *)challenge) != SAVE_STATUS_OK)
-        return FALSE;
-
-    return TRUE;
+    // BPE 2.1: e-Reader Trainer Hill data is not saved.
+    return FALSE;
 }
 
 bool32 TryWriteTrainerHill(struct EReaderTrainerHillSet *hillSet)
@@ -479,14 +461,8 @@ bool32 TryWriteTrainerHill(struct EReaderTrainerHillSet *hillSet)
 
 static bool32 TryReadTrainerHill_Internal(struct EReaderTrainerHillSet *dest, u8 *buffer)
 {
-    if (TryReadSpecialSaveSector(SECTOR_ID_TRAINER_HILL, buffer) != SAVE_STATUS_OK)
-        return FALSE;
-
-    memcpy(dest, buffer, sizeof(struct EReaderTrainerHillSet));
-    if (!ValidateTrainerHillChecksum(dest))
-        return FALSE;
-
-    return TRUE;
+    // BPE 2.1: e-Reader Trainer Hill data is not saved.
+    return FALSE;
 }
 
 static bool32 TryReadTrainerHill(struct EReaderTrainerHillSet *hillSet)

@@ -1702,6 +1702,7 @@ void ResetPokemonStorageSystem(void)
 {
     u16 boxId, boxPosition;
 
+    InvalidateBoxCache();
     SetCurrentBox(0);
     for (boxId = 0; boxId < TOTAL_BOXES_COUNT; boxId++)
     {
@@ -3806,7 +3807,7 @@ static void GiveChosenBagItem(void)
         else
         {
             SetCurrentBoxMonData(pos, MON_DATA_HELD_ITEM, &itemId);
-            SetMonFormPSS_ItemHold(&gPokemonStoragePtr->boxes[StorageGetCurrentBox()][pos]);
+            SetMonFormPSS_ItemHold(GetBoxedMonPtr(StorageGetCurrentBox(), pos));
         }
 
         RemoveBagItem(itemId, 1);
@@ -6415,7 +6416,7 @@ static void PlaceMon(void)
         boxId = StorageGetCurrentBox();
         SetPlacedMonData(boxId, sCursorPosition);
         SetPlacedMonSprite(boxId, sCursorPosition);
-        UpdateSpeciesSpritePSS(&gPokemonStoragePtr->boxes[boxId][sCursorPosition]);
+        UpdateSpeciesSpritePSS(GetBoxedMonPtr(boxId, sCursorPosition));
         break;
     default:
         return;
@@ -6462,7 +6463,7 @@ static void SetPlacedMonData(u8 boxId, u8 position)
     else
     {
         SetBoxMonAt(boxId, position, &sStorage->movingMon.box);
-        SetMonFormPSS(&gPokemonStoragePtr->boxes[boxId][position], FORM_CHANGE_DEPOSIT);
+        SetMonFormPSS(GetBoxedMonPtr(boxId, position), FORM_CHANGE_DEPOSIT);
     }
 }
 
@@ -8962,7 +8963,7 @@ static void TakeItemFromMon(u8 cursorArea, u8 cursorPos)
     {
         SetCurrentBoxMonData(cursorPos, MON_DATA_HELD_ITEM, &itemId);
         SetBoxMonIconObjMode(cursorPos, ST_OAM_OBJ_BLEND);
-        SetMonFormPSS_ItemHold(&gPokemonStoragePtr->boxes[StorageGetCurrentBox()][cursorPos]);
+        SetMonFormPSS_ItemHold(GetBoxedMonPtr(StorageGetCurrentBox(), cursorPos));
     }
     else
     {
@@ -9004,7 +9005,7 @@ static void SwapItemsWithMon(u8 cursorArea, u8 cursorPos)
         itemId = GetCurrentBoxMonData(cursorPos, MON_DATA_HELD_ITEM);
         SetCurrentBoxMonData(cursorPos, MON_DATA_HELD_ITEM, &sStorage->movingItemId);
         sStorage->movingItemId = itemId;
-        SetMonFormPSS_ItemHold(&gPokemonStoragePtr->boxes[StorageGetCurrentBox()][cursorPos]);
+        SetMonFormPSS_ItemHold(GetBoxedMonPtr(StorageGetCurrentBox(), cursorPos));
     }
     else
     {
@@ -9034,7 +9035,7 @@ static void GiveItemToMon(u8 cursorArea, u8 cursorPos)
     {
         SetCurrentBoxMonData(cursorPos, MON_DATA_HELD_ITEM, &sStorage->movingItemId);
         SetBoxMonIconObjMode(cursorPos, ST_OAM_OBJ_NORMAL);
-        SetMonFormPSS_ItemHold(&gPokemonStoragePtr->boxes[StorageGetCurrentBox()][cursorPos]);
+        SetMonFormPSS_ItemHold(GetBoxedMonPtr(StorageGetCurrentBox(), cursorPos));
     }
     else
     {
@@ -9061,7 +9062,7 @@ static void MoveItemFromMonToBag(u8 cursorArea, u8 cursorPos)
     {
         SetCurrentBoxMonData(cursorPos, MON_DATA_HELD_ITEM, &itemId);
         SetBoxMonIconObjMode(cursorPos, ST_OAM_OBJ_BLEND);
-        SetMonFormPSS_ItemHold(&gPokemonStoragePtr->boxes[StorageGetCurrentBox()][cursorPos]);
+        SetMonFormPSS_ItemHold(GetBoxedMonPtr(StorageGetCurrentBox(), cursorPos));
     }
     else
     {
@@ -9562,18 +9563,73 @@ static struct BoxPokemon *GetCursorBoxMon(void)
     return boxmon;
 }
 
+// BPE 2.1: gPokemonStoragePtr->boxes holds packed records. The box that was
+// accessed through GetBoxedMonPtr most recently is also kept unpacked in
+// sBoxCache, which is then the authoritative copy of that box until it is
+// flushed back.
+static EWRAM_DATA struct BoxPokemon sBoxCache[IN_BOX_COUNT] = {0};
+static EWRAM_DATA bool8 sBoxCacheValid = FALSE;
+static EWRAM_DATA u8 sBoxCacheId = 0;
+
+void FlushBoxCache(void)
+{
+    u32 i;
+
+    if (!sBoxCacheValid)
+        return;
+    for (i = 0; i < IN_BOX_COUNT; i++)
+        PackBoxMon(&gPokemonStoragePtr->boxes[sBoxCacheId][i], &sBoxCache[i]);
+}
+
+void InvalidateBoxCache(void)
+{
+    sBoxCacheValid = FALSE;
+}
+
+bool32 IsBoxCachePointer(const struct BoxPokemon *boxMon)
+{
+    return boxMon >= &sBoxCache[0] && boxMon < &sBoxCache[IN_BOX_COUNT];
+}
+
+static void LoadBoxCache(u8 boxId)
+{
+    u32 i;
+
+    if (sBoxCacheValid && sBoxCacheId == boxId)
+        return;
+    FlushBoxCache();
+    for (i = 0; i < IN_BOX_COUNT; i++)
+        UnpackBoxMon(&sBoxCache[i], &gPokemonStoragePtr->boxes[boxId][i]);
+    sBoxCacheId = boxId;
+    sBoxCacheValid = TRUE;
+}
+
+static inline bool32 IsBoxCached(u8 boxId)
+{
+    return sBoxCacheValid && sBoxCacheId == boxId;
+}
+
 u32 GetBoxMonDataAt(u8 boxId, u8 boxPosition, s32 request)
 {
-    if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        return GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], request);
-    else
-        return 0;
+    return GetAndCopyBoxMonDataAt(boxId, boxPosition, request, NULL);
 }
 
 void SetBoxMonDataAt(u8 boxId, u8 boxPosition, s32 request, const void *value)
 {
     if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        SetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], request, value);
+    {
+        if (IsBoxCached(boxId))
+        {
+            SetBoxMonData(&sBoxCache[boxPosition], request, value);
+        }
+        else
+        {
+            struct BoxPokemon boxMon;
+            UnpackBoxMon(&boxMon, &gPokemonStoragePtr->boxes[boxId][boxPosition]);
+            SetBoxMonData(&boxMon, request, value);
+            PackBoxMon(&gPokemonStoragePtr->boxes[boxId][boxPosition], &boxMon);
+        }
+    }
 }
 
 u32 GetCurrentBoxMonData(u8 boxPosition, s32 request)
@@ -9588,42 +9644,73 @@ void SetCurrentBoxMonData(u8 boxPosition, s32 request, const void *value)
 
 u32 GetAndCopyBoxMonDataAt(u8 boxId, u8 boxPosition, s32 request, void *dst)
 {
-    if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        return GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], request, dst);
-    else
+    struct BoxPokemon boxMon;
+    u32 value;
+
+    if (boxId >= TOTAL_BOXES_COUNT || boxPosition >= IN_BOX_COUNT)
         return 0;
+    if (IsBoxCached(boxId))
+        return GetBoxMonData(&sBoxCache[boxPosition], request, dst);
+    if (TryGetPackedBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], request, dst, &value))
+        return value;
+    UnpackBoxMon(&boxMon, &gPokemonStoragePtr->boxes[boxId][boxPosition]);
+    return GetBoxMonData(&boxMon, request, dst);
 }
 
 void SetBoxMonAt(u8 boxId, u8 boxPosition, struct BoxPokemon *src)
 {
     if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        gPokemonStoragePtr->boxes[boxId][boxPosition] = *src;
+    {
+        if (IsBoxCached(boxId))
+            sBoxCache[boxPosition] = *src;
+        else
+            PackBoxMon(&gPokemonStoragePtr->boxes[boxId][boxPosition], src);
+    }
 }
 
 void CopyBoxMonAt(u8 boxId, u8 boxPosition, struct BoxPokemon *dst)
 {
     if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        *dst = gPokemonStoragePtr->boxes[boxId][boxPosition];
+    {
+        if (IsBoxCached(boxId))
+            *dst = sBoxCache[boxPosition];
+        else
+            UnpackBoxMon(dst, &gPokemonStoragePtr->boxes[boxId][boxPosition]);
+    }
 }
 
 void ZeroBoxMonAt(u8 boxId, u8 boxPosition)
 {
     if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        ZeroBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition]);
+    {
+        if (IsBoxCached(boxId))
+            ZeroBoxMonData(&sBoxCache[boxPosition]);
+        else
+            memset(&gPokemonStoragePtr->boxes[boxId][boxPosition], 0, sizeof(struct PackedBoxMon));
+    }
 }
 
 void BoxMonAtToMon(u8 boxId, u8 boxPosition, struct Pokemon *dst)
 {
     if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        BoxMonToMon(&gPokemonStoragePtr->boxes[boxId][boxPosition], dst);
+    {
+        struct BoxPokemon boxMon;
+        CopyBoxMonAt(boxId, boxPosition, &boxMon);
+        BoxMonToMon(&boxMon, dst);
+    }
 }
 
 struct BoxPokemon *GetBoxedMonPtr(u8 boxId, u8 boxPosition)
 {
     if (boxId < TOTAL_BOXES_COUNT && boxPosition < IN_BOX_COUNT)
-        return &gPokemonStoragePtr->boxes[boxId][boxPosition];
+    {
+        LoadBoxCache(boxId);
+        return &sBoxCache[boxPosition];
+    }
     else
+    {
         return NULL;
+    }
 }
 
 u8 *GetBoxNamePtr(u8 boxId)
@@ -9686,7 +9773,7 @@ bool8 CheckFreePokemonStorageSpace(void)
     {
         for (j = 0; j < IN_BOX_COUNT; j++)
         {
-            if (!GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_SANITY_HAS_SPECIES))
+            if (!GetBoxMonDataAt(i, j, MON_DATA_SANITY_HAS_SPECIES))
                 return TRUE;
         }
     }
@@ -9698,9 +9785,9 @@ bool32 CheckBoxMonSanityAt(u32 boxId, u32 boxPosition)
 {
     if (boxId < TOTAL_BOXES_COUNT
         && boxPosition < IN_BOX_COUNT
-        && GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], MON_DATA_SANITY_HAS_SPECIES)
-        && !GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], MON_DATA_SANITY_IS_EGG)
-        && !GetBoxMonData(&gPokemonStoragePtr->boxes[boxId][boxPosition], MON_DATA_SANITY_IS_BAD_EGG))
+        && GetBoxMonDataAt(boxId, boxPosition, MON_DATA_SANITY_HAS_SPECIES)
+        && !GetBoxMonDataAt(boxId, boxPosition, MON_DATA_SANITY_IS_EGG)
+        && !GetBoxMonDataAt(boxId, boxPosition, MON_DATA_SANITY_IS_BAD_EGG))
         return TRUE;
     else
         return FALSE;
@@ -9715,8 +9802,8 @@ u32 CountStorageNonEggMons(void)
     {
         for (j = 0; j < IN_BOX_COUNT; j++)
         {
-            if (GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_SANITY_HAS_SPECIES)
-                && !GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_SANITY_IS_EGG))
+            if (GetBoxMonDataAt(i, j, MON_DATA_SANITY_HAS_SPECIES)
+                && !GetBoxMonDataAt(i, j, MON_DATA_SANITY_IS_EGG))
                 count++;
         }
     }
@@ -9733,8 +9820,8 @@ u32 CountAllStorageMons(void)
     {
         for (j = 0; j < IN_BOX_COUNT; j++)
         {
-            if (GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_SANITY_HAS_SPECIES)
-                || GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_SANITY_IS_EGG))
+            if (GetBoxMonDataAt(i, j, MON_DATA_SANITY_HAS_SPECIES)
+                || GetBoxMonDataAt(i, j, MON_DATA_SANITY_IS_EGG))
                 count++;
         }
     }
@@ -9751,9 +9838,9 @@ bool32 AnyStorageMonWithMove(enum Move move)
     {
         for (j = 0; j < IN_BOX_COUNT; j++)
         {
-            if (GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_SANITY_HAS_SPECIES)
-                && !GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_SANITY_IS_EGG)
-                && GetBoxMonData(&gPokemonStoragePtr->boxes[i][j], MON_DATA_KNOWN_MOVES, (u8 *)moves))
+            if (GetBoxMonDataAt(i, j, MON_DATA_SANITY_HAS_SPECIES)
+                && !GetBoxMonDataAt(i, j, MON_DATA_SANITY_IS_EGG)
+                && GetAndCopyBoxMonDataAt(i, j, MON_DATA_KNOWN_MOVES, (u8 *)moves))
                 return TRUE;
         }
     }
