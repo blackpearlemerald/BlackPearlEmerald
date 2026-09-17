@@ -36,7 +36,7 @@
       } else if (!response.ok) throw new Error('Could not check this page in the selected release. Please retry.');
     }
     // Pages added in later releases are absent from older snapshots.
-    var laterPages = { 'features.html': 'Features' };
+    var laterPages = { 'features.html': 'Features', 'save-converter.html': 'Save Converter' };
     if (laterPages[relative]) {
       var page = await fetch(new URL(relative, targetRoot), { method: 'HEAD', cache: 'no-cache' });
       if (page.status === 404) {

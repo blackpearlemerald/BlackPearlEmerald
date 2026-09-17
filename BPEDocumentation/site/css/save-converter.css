@@ -1,0 +1,72 @@
+html { min-height: 100%; background: #09131e; }
+body.page-save-converter {
+  min-height: 100%;
+  height: auto;
+  box-sizing: border-box;
+  padding-top: var(--bpe-header-height, 48px);
+  color: #e8eef5;
+  background: #09131e;
+}
+.converter-shell {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 56px 0;
+}
+.converter-shell h1 { margin: 0 0 28px; font-size: 2rem; }
+.converter-panel {
+  padding: 28px;
+  border: 1px solid #293d4e;
+  border-radius: 14px;
+  background: #12202e;
+  line-height: 1.5;
+}
+.converter-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 24px;
+}
+.converter-input label { display: block; font-size: 1rem; font-weight: 700; }
+.converter-input input[type="file"] {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 14px;
+  padding: 12px 16px;
+  border: 1px dashed #587388;
+  border-radius: 8px;
+  background-color: #0a1723;
+  color: #e8eef5;
+  font-size: .9rem;
+  cursor: pointer;
+}
+.converter-input input[type="file"]:hover { border-color: #61d391; background-color: #102538; }
+.converter-input input[type="file"]:focus-visible { outline: 2px solid #61d391; outline-offset: 3px; }
+.converter-symbol { color: #87a2b8; font-size: 1.7rem; }
+#save-converter-button {
+  min-height: 50px;
+  margin: 0;
+  padding: 12px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #238454;
+  color: #fff;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+#save-converter-button:not(:disabled):hover { background: #2a9a63; }
+#save-converter-button:focus-visible { outline: 2px solid #a1f4c4; outline-offset: 3px; }
+#save-converter-button:disabled { background: #34485a; color: #a4b9cb; cursor: default; }
+#save-converter-status { margin: 18px 0 0; color: #a4b9cb; font-size: .9rem; }
+#save-converter-status.is-success { color: #61d391; }
+#save-converter-status.is-error { color: #ff9393; }
+.page-save-converter [hidden] { display: none !important; }
+@media (max-width: 800px) {
+  .converter-shell { width: min(460px, calc(100% - 32px)); padding: 30px 0; }
+  .converter-panel { padding: 24px; }
+  .converter-flow { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .converter-symbol { text-align: center; line-height: 1; transform: rotate(90deg); }
+}

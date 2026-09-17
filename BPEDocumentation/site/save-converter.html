@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Convert a Black Pearl Emerald 2.0 save file for version 2.1 and later. Your save never leaves your computer." />
+  <title>BPE Emerald — Save Converter</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/save-converter.css" />
+  <script src="js/release-context.js"></script>
+  <link rel="stylesheet" href="css/header.css" />
+</head>
+<body class="page-save-converter">
+  <script src="js/nav.js"></script>
+  <main class="converter-shell">
+    <h1>Save Converter</h1>
+    <div class="converter-panel">
+      <div class="converter-flow">
+        <div class="converter-input">
+          <label for="save-converter-file">Upload your Black Pearl Emerald 2.0 save (.sav or .srm)</label>
+          <input type="file" id="save-converter-file" accept=".sav,.srm,application/octet-stream" />
+        </div>
+        <span class="converter-symbol" aria-hidden="true">→</span>
+        <button id="save-converter-button" disabled>Convert &amp; Download</button>
+      </div>
+      <p id="save-converter-status" role="status" aria-live="polite" hidden></p>
+    </div>
+    <noscript>Enable JavaScript to use the Save Converter.</noscript>
+  </main>
+  <script src="js/save-converter.js"></script>
+</body>
+</html>

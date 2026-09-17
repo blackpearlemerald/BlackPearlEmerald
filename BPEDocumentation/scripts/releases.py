@@ -23,7 +23,7 @@ SITE = ROOT / "BPEDocumentation/site"
 VERSION_HISTORY = ROOT / "releases/version-history.json"
 REPOSITORY = "blackpearlemerald/BlackPearlEmerald"
 PAGES_LIMIT = 1_000_000_000
-LATER_PAGES = {"features.html": "Features"}
+LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Converter"}
 
 
 def gh(*args):
