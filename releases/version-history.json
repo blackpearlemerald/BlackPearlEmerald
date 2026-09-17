@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.0.7-beta": {
+      "channel": "beta",
+      "changes": [
+        "Fixed the Egg Move Tutor in Verdanturf: it now lists your Pokémon's Egg Moves and takes a Pearl only after a move is learned."
+      ]
+    },
     "2.0.6-beta": {
       "channel": "beta",
       "changes": [

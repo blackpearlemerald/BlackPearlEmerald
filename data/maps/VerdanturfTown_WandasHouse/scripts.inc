@@ -183,12 +183,10 @@ VerdanturfTown_WandasHouse_Text_WallyWasInEverGrande:
 
 General_EggTutor_EventScript::
 	lockall
-	setflag FLAG_EGG_MOVE_TUTOR
 	applymovement LOCALID_MOVE_RELEARNER, Common_Movement_FacePlayer
 	waitmovement 0
 	msgbox General_EggTutor_Text_ImTheEggTutor, MSGBOX_DEFAULT
 	goto General_EggTutor_EventScript_AskTeachMove
-	clearflag FLAG_EGG_MOVE_TUTOR
 	end
 
 
@@ -199,23 +197,25 @@ General_EggTutor_EventScript_AskTeachMove::
 	checkitem ITEM_PEARL
 	goto_if_eq VAR_RESULT, FALSE, General_EggTutor_EventScript_ComeBackWithHeartScale
 	goto General_EggTutor_EventScript_ChooseMon
-	clearflag FLAG_EGG_MOVE_TUTOR
 	end
 
 General_EggTutor_EventScript_ChooseMon::
 	msgbox General_EggTutor_Text_TutorWhichMon, MSGBOX_DEFAULT
-	special ChooseMonForMoveRelearner
+	setmoverelearnerstate MOVE_RELEARNER_EGG_MOVES
+	chooseboxmon SELECT_PC_MON_MOVE_RELEARNER
+	waitstate
 	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, General_EggTutor_EventScript_ComeBackWithHeartScale
 	special IsSelectedMonEgg
 	goto_if_eq VAR_RESULT, TRUE, General_EggTutor_EventScript_CantTeachEgg
-	goto_if_eq VAR_0x8005, 0, General_EggTutor_EventScript_NoMoveToTeachMon
+	special Special_HasMoveToRelearn
+	goto_if_eq VAR_RESULT, FALSE, General_EggTutor_EventScript_NoMoveToTeachMon
 	goto General_EggTutor_EventScript_ChooseMove
 	end
 
 General_EggTutor_EventScript_ChooseMove::
 	msgbox General_EggTutor_Text_TeachWhichMove, MSGBOX_DEFAULT
 	special TeachMoveRelearnerMove
-	goto_if_eq VAR_0x8004, 0, General_EggTutor_EventScript_ChooseMon
+	goto_if_eq VAR_RESULT, FALSE, General_EggTutor_EventScript_ChooseMon
 	removeitem ITEM_PEARL
 	msgbox General_EggTutor_Text_ThereYouGo, MSGBOX_DEFAULT
 	goto General_EggTutor_EventScript_ComeBackWithHeartScale
@@ -233,7 +233,7 @@ General_EggTutor_EventScript_CantTeachEgg::
 
 General_EggTutor_EventScript_ComeBackWithHeartScale::
 	msgbox General_EggTutor_Text_ComeBack, MSGBOX_DEFAULT
-	clearflag FLAG_EGG_MOVE_TUTOR
+	setmoverelearnerstate MOVE_RELEARNER_LEVEL_UP_MOVES
 	releaseall
 	end
 
