@@ -1,6 +1,16 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.0-beta": {
+      "channel": "beta",
+      "changes": [
+        "Expanded the PC from 14 to 41 boxes — 1,230 places to keep Pokémon, enough for the entire Pokédex.",
+        "Changed the save format to fit those boxes. Convert your existing save with the Save Converter on this website before you play; the game will not save over an unconverted save.",
+        "Made room for the bigger PC by no longer storing ribbons on Pokémon kept in a box. A stored Pokémon keeps its Champion Ribbon, and loses any contest ribbons it had won.",
+        "Pokémon also come out of the PC fully healed and without contest condition. Contests themselves are unchanged, and your contest wins are still recorded.",
+        "Recorded battles are no longer saved."
+      ]
+    },
     "2.0.7-beta": {
       "channel": "beta",
       "changes": [

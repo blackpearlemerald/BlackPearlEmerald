@@ -35,6 +35,7 @@
 #include "text.h"
 #include "text_window.h"
 #include "trig.h"
+#include "tv.h"
 #include "walda_phrase.h"
 #include "window.h"
 #include "constants/form_change_types.h"
@@ -87,6 +88,7 @@ enum {
     MSG_DEPOSIT_IN_WHICH_BOX,
     MSG_WAS_DEPOSITED,
     MSG_BOX_IS_FULL,
+    MSG_STORED_MON_LOSES_DATA,
     MSG_RELEASE_POKE,
     MSG_WAS_RELEASED,
     MSG_BYE_BYE,
@@ -501,6 +503,7 @@ struct PokemonStorageSystemData
     struct MonMarkingsMenu markMenu;
     struct ChooseBoxMenu chooseBoxMenu;
     struct Pokemon movingMon;
+    void (*afterDataLossConfirm)(u8);
     struct Pokemon tempMon;
     s8 canReleaseMon;
     bool8 releaseStatusResolved;
@@ -569,6 +572,8 @@ static void Task_OnSelectedMon(u8);
 static void Task_OnCloseBoxPressed(u8);
 static void Task_HidePartyPokemon(u8);
 static void Task_DepositMenu(u8);
+static void Task_ConfirmStoredMonDataLoss(u8);
+static bool32 StoringMonWouldLoseData(struct Pokemon *);
 static void Task_MoveMon(u8);
 static void Task_GiveMovingItemToMon(u8);
 static void Task_SwitchSelectedItem(u8);
@@ -1057,6 +1062,8 @@ static const struct StorageMessage sMessages[] =
     [MSG_DEPOSIT_IN_WHICH_BOX] = {COMPOUND_STRING("Deposit in which BOX?"),      MSG_VAR_NONE},
     [MSG_WAS_DEPOSITED]        = {COMPOUND_STRING("{DYNAMIC 0} was deposited."), MSG_VAR_MON_NAME_1},
     [MSG_BOX_IS_FULL]          = {COMPOUND_STRING("The BOX is full."),           MSG_VAR_NONE},
+    // BPE 2.1: test/save.c checks that both lines fit WIN_MESSAGE.
+    [MSG_STORED_MON_LOSES_DATA] = {COMPOUND_STRING("Ribbons and Condition\nwill be lost. Continue?"), MSG_VAR_NONE},
     [MSG_RELEASE_POKE]         = {COMPOUND_STRING("Release this POKéMON?"),      MSG_VAR_NONE},
     [MSG_WAS_RELEASED]         = {COMPOUND_STRING("{DYNAMIC 0} was released."),  MSG_VAR_RELEASE_MON_1},
     [MSG_BYE_BYE]              = {COMPOUND_STRING("Bye-bye, {DYNAMIC 0}!"),      MSG_VAR_RELEASE_MON_3},
@@ -2335,7 +2342,15 @@ static void Task_PokeStorageMain(u8 taskId)
                 else
                 {
                     PlaySE(SE_SELECT);
-                    SetPokeStorageTask(Task_DepositMenu);
+                    if (StoringMonWouldLoseData(&gParties[B_TRAINER_PLAYER][sCursorPosition]))
+                    {
+                        sStorage->afterDataLossConfirm = Task_DepositMenu;
+                        SetPokeStorageTask(Task_ConfirmStoredMonDataLoss);
+                    }
+                    else
+                    {
+                        SetPokeStorageTask(Task_DepositMenu);
+                    }
                 }
             }
             else
@@ -2371,7 +2386,16 @@ static void Task_PokeStorageMain(u8 taskId)
             break;
         case INPUT_PLACE_MON:
             PlaySE(SE_SELECT);
-            SetPokeStorageTask(Task_PlaceMon);
+            if (sCursorArea == CURSOR_AREA_IN_BOX
+             && StoringMonWouldLoseData(&sStorage->movingMon))
+            {
+                sStorage->afterDataLossConfirm = Task_PlaceMon;
+                SetPokeStorageTask(Task_ConfirmStoredMonDataLoss);
+            }
+            else
+            {
+                SetPokeStorageTask(Task_PlaceMon);
+            }
             break;
         case INPUT_TAKE_ITEM:
             PlaySE(SE_SELECT);
@@ -2901,6 +2925,49 @@ static void Task_DepositMenu(u8 taskId)
         {
             PrintMessage(MSG_DEPOSIT_IN_WHICH_BOX);
             sStorage->state = 1;
+        }
+        break;
+    }
+}
+
+// BPE 2.1: a Pokémon in a BOX is stored as a packed 60-byte record, which
+// keeps only its Champion Ribbon and no Condition, so storing one throws
+// those away. See include/packed_box_mon.h. Warn where the loss happens
+// instead of at the contest, which still works and still saves its results.
+static bool32 StoringMonWouldLoseData(struct Pokemon *mon)
+{
+    u32 ribbons = GetRibbonCount(mon) - GetMonData(mon, MON_DATA_CHAMPION_RIBBON);
+
+    return ribbons != 0
+        || GetMonData(mon, MON_DATA_COOL) != 0
+        || GetMonData(mon, MON_DATA_BEAUTY) != 0
+        || GetMonData(mon, MON_DATA_CUTE) != 0
+        || GetMonData(mon, MON_DATA_SMART) != 0
+        || GetMonData(mon, MON_DATA_TOUGH) != 0
+        || GetMonData(mon, MON_DATA_SHEEN) != 0;
+}
+
+static void Task_ConfirmStoredMonDataLoss(u8 taskId)
+{
+    switch (sStorage->state)
+    {
+    case 0:
+        PrintMessage(MSG_STORED_MON_LOSES_DATA);
+        ShowYesNoWindow(1);
+        sStorage->state++;
+        // fallthrough
+    case 1:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+        case MENU_B_PRESSED:
+        case  1: // No, keep the Pokémon out of the BOX
+            ClearBottomWindow();
+            SetPokeStorageTask(Task_PokeStorageMain);
+            break;
+        case  0: // Yes
+            ClearBottomWindow();
+            SetPokeStorageTask(sStorage->afterDataLossConfirm);
+            break;
         }
         break;
     }

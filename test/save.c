@@ -1102,6 +1102,30 @@ TEST("A damaged progress copy falls back to the previous save")
     EXPECT_EQ(loaded.progress, first.progress);
 }
 
+TEST("The stored-Pokemon warning fits the PC message window")
+{
+    // src/pokemon_storage_system.c prints this in WIN_MESSAGE, which is
+    // 18 tiles wide and 2 tiles tall, so it gets two lines and no more.
+    static const u8 sMessage[] = _("Ribbons and Condition\nwill be lost. Continue?");
+    u8 line[64];
+    u32 start = 0, i, lines = 0;
+
+    for (i = 0; i <= sizeof(sMessage) - 1; i++)
+    {
+        if (sMessage[i] != CHAR_NEWLINE && sMessage[i] != EOS)
+            continue;
+        EXPECT_LT(i - start, sizeof(line));
+        memcpy(line, &sMessage[start], i - start);
+        line[i - start] = EOS;
+        EXPECT_LE(GetStringWidth(FONT_NORMAL, line, 0), 18 * 8);
+        lines++;
+        start = i + 1;
+        if (sMessage[i] == EOS)
+            break;
+    }
+    EXPECT_EQ(lines, 2);
+}
+
 TEST("The outdated save message fits its window")
 {
     // src/main_menu.c prints this in a 26-tile-wide window with a 1-pixel
