@@ -238,12 +238,12 @@
   var ENC_TYPE_LABELS = {
     'land_mons': 'Grass', 'water_mons': 'Surf',
     'rock_smash_mons': 'Rock Smash', 'fishing_mons': 'Fishing',
-    'mirage': 'Mirage'
+    'static': 'Static', 'mirage': 'Mirage'
   };
   var ENC_TYPE_CSS = {
     'land_mons': 'land', 'water_mons': 'water_mons',
     'rock_smash_mons': 'rock_smash_mons', 'fishing_mons': 'fishing',
-    'mirage': 'mirage'
+    'static': 'static', 'mirage': 'mirage'
   };
 
   function renderEncounters(encounters) {

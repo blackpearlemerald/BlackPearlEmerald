@@ -273,6 +273,8 @@
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 480px) {
+  .trainers-controls { flex-direction: column; align-items: stretch; }
+  .dex-search { max-width: 100%; }
   .trainer-grid {
     grid-template-columns: 1fr;
   }

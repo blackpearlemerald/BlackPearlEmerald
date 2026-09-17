@@ -282,7 +282,17 @@ def read_island_legendary_pool():
     return level, species
 
 
-def parse_encounters():
+def load_static_encounters():
+    """Scripted overworld encounters (legendaries, Snorlax, Kecleon...) that
+    extract_world.py already wrote to world.json for this release."""
+    path = Path(C.SITE_DATA) / "world.json"
+    if not path.is_file():
+        return []
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f).get("statics") or []
+
+
+def parse_encounters(statics=()):
     path = REPO / "src" / "data" / "wild_encounters.json"
     with open(path, "r", encoding="utf-8") as f:
         raw = json.load(f)
@@ -321,6 +331,20 @@ def parse_encounters():
                             "maxLevel": mon["max_level"],
                             "type": enc_type,
                         })
+
+    # Static encounters: one row per species and map, linked to that map.
+    for st in statics:
+        sp = st["species"].replace("SPECIES_", "")
+        rows = species_enc.setdefault(sp, [])
+        if any(e["map"] == st["mapId"] and e["type"] == "static" for e in rows):
+            continue
+        rows.append({
+            "map": st["mapId"],
+            "mapName": st.get("place") or prettify_map(st["mapId"]),
+            "minLevel": st["level"],
+            "maxLevel": st["level"],
+            "type": "static",
+        })
 
     # Legendary Lottery Island: every pool legendary gets a "Mirage Island"
     # location (Route 130) whose link snaps to the island on the map.
@@ -1371,7 +1395,7 @@ def main():
     print(f"       -> {len(teachable)} lists")
 
     print("  [8] Wild encounters ...")
-    encounters = parse_encounters()
+    encounters = parse_encounters(load_static_encounters())
     print(f"       -> {len(encounters)} species have encounters")
 
     print("  [9] Species info ...")

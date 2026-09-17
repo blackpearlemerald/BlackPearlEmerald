@@ -205,6 +205,28 @@ class ArchiveTests(unittest.TestCase):
                 result = parse_pokemon.parse_encounters()
             self.assertEqual({entry["map"] for entry in result["POOCHYENA"]}, {"MAP_ROUTE101", "MAP_ROUTE102"})
 
+    def test_static_encounters_are_listed_once_per_map(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import parse_pokemon
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "data/maps").mkdir(parents=True)
+            (root / "src/data").mkdir(parents=True)
+            (root / "src/field_specials.c").write_text("")
+            (root / "src/data/wild_encounters.json").write_text(json.dumps({"wild_encounter_groups": []}))
+            statics = [
+                {"mapId": "MAP_FALLARBOR_TOWN_MOVE_RELEARNERS_HOUSE", "place": "Fallarbor Town Move Relearners House",
+                 "species": "SPECIES_ROTOM", "level": 30, "preE4": True},
+                {"mapId": "MAP_ROUTE120", "place": "Route 120", "species": "SPECIES_KECLEON", "level": 30},
+                {"mapId": "MAP_ROUTE120", "place": "Route 120", "species": "SPECIES_KECLEON", "level": 30},
+            ]
+            with mock_patch.object(parse_pokemon, "REPO", root):
+                result = parse_pokemon.parse_encounters(statics)
+            self.assertEqual(result["ROTOM"], [{"map": "MAP_FALLARBOR_TOWN_MOVE_RELEARNERS_HOUSE",
+                                                "mapName": "Fallarbor Town Move Relearners House",
+                                                "minLevel": 30, "maxLevel": 30, "type": "static"}])
+            self.assertEqual(len(result["KECLEON"]), 1)
+
     def test_conditional_stat_macros_match_release_configuration(self):
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
         import parse_pokemon

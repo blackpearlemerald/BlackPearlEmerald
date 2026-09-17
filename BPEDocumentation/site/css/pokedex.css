@@ -64,21 +64,6 @@
   margin-bottom: 18px;
 }
 
-.dex-search {
-  flex: 1 1 220px;
-  max-width: 320px;
-  background: rgba(255,255,255,0.07);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 8px;
-  color: #e8eef5;
-  font-size: 14px;
-  padding: 7px 12px;
-  outline: none;
-  transition: border-color 0.15s;
-}
-.dex-search:focus { border-color: #4db87a; }
-.dex-search::placeholder { color: #5a7080; }
-
 .dex-type-filters {
   display: flex;
   flex-wrap: wrap;
@@ -605,6 +590,7 @@
 .enc-type-badge.water_mons { background: rgba(58,104,200,0.2); color: #6890F0; }
 .enc-type-badge.rock_smash_mons { background: rgba(184,160,56,0.2); color: #c8a820; }
 .enc-type-badge.fishing    { background: rgba(120,88,248,0.2); color: #9870f8; }
+.enc-type-badge.static     { background: rgba(224,176,64,0.2); color: #e0b040; }
 .enc-type-badge.mirage     { background: rgba(169,130,224,0.22); color: #b98fe6; }
 
 /* Loading / Error states */
