@@ -11,3 +11,6 @@ struct PokemonStorage bpe_layout_pokemon_storage;
 struct SaveSector bpe_layout_save_sector;
 struct Pokemon bpe_layout_pokemon;
 struct BoxPokemon bpe_layout_box_pokemon;
+#ifdef PACKED_BOX_MON_SIZE // 2.1 and later
+struct PackedBoxMon bpe_layout_packed_box_mon;
+#endif

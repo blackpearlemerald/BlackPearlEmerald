@@ -34,6 +34,10 @@ ROOT_VARIABLES = {
     "bpe_layout_pokemon": "Pokemon",
     "bpe_layout_box_pokemon": "BoxPokemon",
 }
+# Roots that only exist in some source versions (2.1 added PackedBoxMon).
+OPTIONAL_ROOT_VARIABLES = {
+    "bpe_layout_packed_box_mon": "PackedBoxMon",
+}
 
 
 def _decode(value: Any) -> Any:
@@ -127,7 +131,7 @@ def extract_schema(object_path: Path) -> dict[str, Any]:
             for die in cu.iter_DIEs():
                 if die.tag == "DW_TAG_variable":
                     name = _attr(die, "DW_AT_name")
-                    if name in ROOT_VARIABLES:
+                    if name in ROOT_VARIABLES or name in OPTIONAL_ROOT_VARIABLES:
                         variables[name] = die
 
         missing = sorted(set(ROOT_VARIABLES) - set(variables))
@@ -135,8 +139,9 @@ def extract_schema(object_path: Path) -> dict[str, Any]:
             raise RuntimeError(f"Layout probe variables missing from DWARF: {', '.join(missing)}")
 
         schema = DwarfSchema()
+        root_names = ROOT_VARIABLES | OPTIONAL_ROOT_VARIABLES
         roots = {
-            ROOT_VARIABLES[name]: schema.add_type(die.get_DIE_from_attribute("DW_AT_type"))
+            root_names[name]: schema.add_type(die.get_DIE_from_attribute("DW_AT_type"))
             for name, die in variables.items()
         }
         return {"format": 1, "roots": roots, "types": schema.types}

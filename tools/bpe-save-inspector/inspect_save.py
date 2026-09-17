@@ -19,6 +19,10 @@ from typing import Any, Iterable
 
 TOOL_DIR = Path(__file__).resolve().parent
 DEFAULT_REPO_ROOT = TOOL_DIR.parents[1]
+sys.path.insert(0, str(DEFAULT_REPO_ROOT / "BPETools"))
+
+import bpe_save_format as save_format  # noqa: E402  (BPETools/bpe_save_format.py)
+
 SECTOR_SIZE = 0x1000
 SECTOR_DATA_SIZE = 3968
 SAVEBLOCK3_CHUNK_SIZE = 116
@@ -83,6 +87,7 @@ def decode_game_text(data: bytes) -> str:
 
 class Schema:
     def __init__(self, path: Path) -> None:
+        self.path = path
         self.document = json.loads(path.read_text(encoding="utf-8"))
         self.types: dict[str, dict[str, Any]] = self.document["types"]
         self.roots: dict[str, str] = self.document["roots"]
@@ -201,15 +206,17 @@ class Symbols:
 def locate_save_payload(file_data: bytes) -> tuple[int, bytes, int]:
     if len(file_data) < SAVE_SIZE:
         raise ValueError(f"File is {len(file_data)} bytes; a GBA flash save needs at least {SAVE_SIZE} bytes")
-    signature = struct.pack("<I", SECTOR_SIGNATURE)
     candidates: Counter[int] = Counter()
-    position = file_data.find(signature)
-    while position >= 0:
-        for physical_sector in range(SECTORS_COUNT):
-            start = position - SIGNATURE_OFFSET - physical_sector * SECTOR_SIZE
-            if 0 <= start <= len(file_data) - SAVE_SIZE:
-                candidates[start] += 1
-        position = file_data.find(signature, position + 1)
+    # Legacy (2.0.x) and 2.1 sectors keep their signature at the same offset.
+    for signature_value in (SECTOR_SIGNATURE, save_format.SIGNATURE_V2):
+        signature = struct.pack("<I", signature_value)
+        position = file_data.find(signature)
+        while position >= 0:
+            for physical_sector in range(SECTORS_COUNT):
+                start = position - SIGNATURE_OFFSET - physical_sector * SECTOR_SIZE
+                if 0 <= start <= len(file_data) - SAVE_SIZE:
+                    candidates[start] += 1
+            position = file_data.find(signature, position + 1)
     if not candidates:
         raise ValueError("No Pokémon Emerald sector signatures found; this may be an emulator save state, not SRAM")
     offset, score = max(candidates.items(), key=lambda item: (item[1], -item[0]))
@@ -430,6 +437,296 @@ def parse_pokemon(record: bytes, is_party: bool, schema: Schema, enum_maps: dict
     return result
 
 
+PACKED_NOT_STORED = [
+    "move_pp", "contest", "ribbons_except_champion", "checksum", "party_data",
+]
+
+
+def parse_packed_pokemon(record: bytes, enum_maps: dict[str, dict[int, list[str]]]) -> dict[str, Any]:
+    """Decodes a 60-byte 2.1 PC record (include/packed_box_mon.h) into the same
+    keys as parse_pokemon. Field positions come from bpe_save_format.PACKED_FIELDS."""
+
+    value = int.from_bytes(record[:save_format.BOX_MON_SIZE], "little")
+    field = {name: (value >> start) & ((1 << width) - 1) for name, start, width in save_format.PACKED_FIELDS}
+    personality, ot_id = field["personality"], field["otId"]
+    species = field["species"]
+    return {
+        "present": not save_format.is_packed_empty(record),
+        "packed": True,
+        "checksum_valid": None,
+        "integrity": "Packed PC records have no checksum of their own; the save sector CRC-32 protects them.",
+        "not_stored": PACKED_NOT_STORED,
+        "personality": personality,
+        "original_trainer_id": ot_id & 0xFFFF,
+        "original_trainer_secret_id": ot_id >> 16,
+        "nickname": decode_game_text(bytes(field[f"nickname{i}"] for i in range(12))),
+        "original_trainer_name": decode_game_text(bytes(field[f"otName{i}"] for i in range(7))),
+        "original_trainer_gender": field["otGender"],
+        "language": field["language"],
+        "has_species_flag": species != 0,
+        "is_egg": bool(field["isEgg"]),
+        "is_bad_egg": bool(field["isBadEgg"]),
+        "is_dead": bool(field["dead"]),
+        "days_since_form_change": field["daysSinceFormChange"],
+        "species": enum_label(enum_maps["Species"], species),
+        "held_item": enum_label(enum_maps["Item"], field["heldItem"]),
+        "experience": field["experience"],
+        "friendship": field["friendship"],
+        "pokeball": field["pokeball"],
+        "moves": [enum_label(enum_maps["Move"], field[f"move{i}"]) for i in range(1, 5)],
+        "pp_bonuses": field["ppBonuses"],
+        "evs": {
+            "hp": field["hpEV"], "attack": field["attackEV"], "defense": field["defenseEV"],
+            "speed": field["speedEV"], "special_attack": field["spAttackEV"], "special_defense": field["spDefenseEV"],
+        },
+        "ivs": {
+            "hp": field["hpIV"], "attack": field["attackIV"], "defense": field["defenseIV"],
+            "speed": field["speedIV"], "special_attack": field["spAttackIV"], "special_defense": field["spDefenseIV"],
+        },
+        "hyper_trained": {
+            "hp": bool(field["hyperTrainedHP"]), "attack": bool(field["hyperTrainedAttack"]),
+            "defense": bool(field["hyperTrainedDefense"]), "speed": bool(field["hyperTrainedSpeed"]),
+            "special_attack": bool(field["hyperTrainedSpAttack"]), "special_defense": bool(field["hyperTrainedSpDefense"]),
+        },
+        "ability_slot": field["abilityNum"],
+        "met_location": field["metLocation"],
+        "met_level": field["metLevel"],
+        "met_game": field["metGame"],
+        "dynamax_level": field["dynamaxLevel"],
+        "gigantamax_factor": bool(field["gigantamaxFactor"]),
+        "tera_type": field["teraType"],
+        "pokerus": field["pokerus"],
+        "markings": field["markings"],
+        "hidden_nature_modifier": field["hiddenNatureModifier"],
+        "evolution_trackers": [field["evolutionTracker1"], field["evolutionTracker2"]],
+        "champion_ribbon": bool(field["championRibbon"]),
+        "is_shadow": bool(field["isShadow"]),
+        "modern_fateful_encounter": bool(field["modernFatefulEncounter"]),
+        "shiny_modifier": bool(field["shinyModifier"]),
+        "shiny": ((ot_id & 0xFFFF) ^ (ot_id >> 16) ^ (personality & 0xFFFF) ^ (personality >> 16)) < 8,
+    }
+
+
+def schema_save_format(schema: Schema) -> str | None:
+    """The save format a layout belongs to, from its PC record size."""
+
+    box_type, _ = schema.array(schema.member("PokemonStorage", "boxes"))
+    return {80: "2.0", save_format.BOX_MON_SIZE: "2.1"}.get(schema.size(box_type))
+
+
+def available_profiles() -> list[str]:
+    directory = TOOL_DIR / "profiles"
+    return sorted(path.name for path in directory.iterdir() if (path / "bpe_layout.json").is_file()) if directory.is_dir() else []
+
+
+def require_matching_layout(schema: Schema, detected: str) -> None:
+    layout_format = schema_save_format(schema)
+    if layout_format == detected:
+        return
+    commit = schema.document.get("source", {}).get("git_commit", "unknown commit")
+    label = f"{schema.path} from source {commit}"
+    profiles = ", ".join(available_profiles()) or "none"
+    if detected == "2.1":
+        raise ValueError(
+            f"This is a BPE 2.1 save (60-byte packed PC records), but the selected layout ({label}) is for "
+            f"{layout_format or 'an unknown'} saves. Use a 2.1 layout: drop --profile/--layout to use the current-source "
+            f"layout, or pass the 2.1 ROM or profile the player used. Bundled profiles: {profiles}."
+        )
+    raise ValueError(
+        f"This is a pre-2.1 (2.0.x) BPE save (80-byte PC records), but the selected layout ({label}) is for "
+        f"{layout_format or 'an unknown'} saves. Use the release profile the player used, for example --profile 2.0.1, "
+        f"or pass that release's ROM with --rom. Bundled profiles: {profiles}."
+    )
+
+
+def v21_total_boxes(schema: Schema) -> int:
+    """Checks that a 2.1 layout matches the format bpe_save_format implements
+    and returns the number of PC boxes."""
+
+    boxes_member = schema.member("PokemonStorage", "boxes")
+    _, dimensions = schema.array(boxes_member)
+    total_boxes = dimensions[0]
+    expected = {
+        "SaveBlock1 size": (int(schema.root("SaveBlock1")["size"]), save_format.SAVEBLOCK1_SIZE),
+        "SaveBlock2 size": (int(schema.root("SaveBlock2")["size"]), save_format.SAVEBLOCK2_SIZE),
+        "SaveBlock3 size": (int(schema.root("SaveBlock3")["size"]), save_format.SAVEBLOCK3_SIZE),
+        "Pokémon per box": (dimensions[1], save_format.IN_BOX_COUNT),
+        "PC box header size": (int(boxes_member["offset"]), save_format.storage_header_size(total_boxes)),
+    }
+    mismatches = [f"{name} {actual} != {wanted}" for name, (actual, wanted) in expected.items() if actual != wanted]
+    if mismatches:
+        raise ValueError(
+            "The layout does not match the 2.1 save format implemented by BPETools/bpe_save_format.py: "
+            + "; ".join(mismatches)
+        )
+    return total_boxes
+
+
+V21_COPY_NAMES = ("A", "B")
+
+
+def v21_sector_role(physical: int) -> dict[str, Any]:
+    if physical < save_format.SECTOR_PROGRESS_B:
+        return {"role": "progress_copy_a", "expected_kind": save_format.KIND_PROGRESS, "expected_id": physical, "part": physical}
+    if physical < save_format.SECTOR_BOX_FIRST:
+        part = physical - save_format.SECTOR_PROGRESS_B
+        return {"role": "progress_copy_b", "expected_kind": save_format.KIND_PROGRESS, "expected_id": part, "part": part}
+    if physical < save_format.SECTOR_BOX_BACKUP:
+        index = physical - save_format.SECTOR_BOX_FIRST
+        return {"role": "box", "expected_kind": save_format.KIND_BOX, "expected_id": index, "box_sector": index}
+    if physical == save_format.SECTOR_BOX_BACKUP:
+        return {"role": "box_backup", "expected_kind": save_format.KIND_BOX, "expected_id": None}
+    return {"role": "hall_of_fame", "expected_kind": None, "expected_id": None}
+
+
+def v21_physical_sectors(payload: bytes) -> list[dict[str, Any]]:
+    sectors: list[dict[str, Any]] = []
+    for physical in range(SECTORS_COUNT):
+        raw = payload[physical * SECTOR_SIZE:(physical + 1) * SECTOR_SIZE]
+        role = v21_sector_role(physical)
+        signature = read_u32(raw, save_format.SIGNATURE_OFFSET)
+        entry: dict[str, Any] = {"physical_sector": physical, "role": role["role"]}
+        entry.update({key: role[key] for key in ("part", "box_sector") if key in role})
+        entry["erased"] = raw == b"\xFF" * SECTOR_SIZE
+        if role["role"] == "hall_of_fame":
+            entry["note"] = "Hall of Fame sectors keep the legacy format and are not decoded."
+            sectors.append(entry)
+            continue
+        kind, sector_id = raw[save_format.KIND_OFFSET], raw[save_format.ID_OFFSET]
+        stored_crc = read_u32(raw, save_format.CRC_OFFSET)
+        computed_crc = save_format.sector_crc(raw)
+        expected_id = role["expected_id"] if role["expected_id"] is not None else sector_id
+        valid = (role["role"] != "box_backup" or sector_id < save_format.BOX_SECTOR_COUNT) and save_format.is_sector_valid(
+            raw, role["expected_kind"], expected_id)
+        entry.update({
+            "signature": f"0x{signature:08X}",
+            "signature_valid": signature == save_format.SIGNATURE_V2,
+            "legacy_signature": signature == save_format.SIGNATURE_LEGACY,
+            "kind": kind, "id": sector_id,
+            "format_version": read_u16(raw, save_format.VERSION_OFFSET),
+            "counter": read_u32(raw, save_format.COUNTER_OFFSET),
+            "stored_crc": f"0x{stored_crc:08X}", "computed_crc": f"0x{computed_crc:08X}",
+            "crc_valid": stored_crc == computed_crc,
+            "valid": valid,
+            "raw": raw,
+        })
+        if role["role"] in ("box", "box_backup"):
+            entry["game_id"] = f"0x{read_u32(raw, save_format.BOX_GAME_ID_OFFSET):08X}"
+        sectors.append(entry)
+    return sectors
+
+
+def v21_progress_copies(sectors: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Mirrors CheckProgressCopy in src/save_engine.c."""
+
+    copies: list[dict[str, Any]] = []
+    for copy, first in enumerate((save_format.SECTOR_PROGRESS_A, save_format.SECTOR_PROGRESS_B)):
+        parts = sectors[first:first + save_format.PROGRESS_PARTS]
+        valid_parts = [part["part"] for part in parts if part["valid"]]
+        counter = parts[0]["counter"] if parts[0]["valid"] else None
+        complete = len(valid_parts) == save_format.PROGRESS_PARTS and all(
+            part["counter"] == counter for part in parts)
+        copies.append({
+            "slot": copy, "copy": V21_COPY_NAMES[copy], "first_sector": first,
+            "counter": counter, "complete": complete, "valid_parts": valid_parts,
+            "any_signature": any(part["signature_valid"] for part in parts),
+        })
+    return copies
+
+
+def load_v21_blocks(payload: bytes, schema: Schema, forced_slot: int | None) -> dict[str, Any]:
+    total_boxes = v21_total_boxes(schema)
+    sectors = v21_physical_sectors(payload)
+    copies = v21_progress_copies(sectors)
+    valid = [copy for copy in copies if copy["complete"]]
+    if not valid:
+        raise ValueError("This 2.1 save has no complete progress copy (sectors 0-4 or 5-9); the game treats it as corrupt.")
+    if len(valid) == 2:
+        # FindNewestCopy: copy B only wins with a strictly greater counter.
+        best = 1 if valid[1]["counter"] > valid[0]["counter"] else 0
+    else:
+        best = valid[0]["slot"]
+    game_choice = best
+    warnings: list[str] = []
+    other = copies[1 - best]
+    if not other["complete"] and other["any_signature"]:
+        warnings.append(
+            f"Progress copy {other['copy']} is damaged or incomplete, so copy {copies[best]['copy']} "
+            f"(counter {copies[best]['counter']}) is loaded, as the game does (backup load)."
+        )
+    if forced_slot is not None and forced_slot != best:
+        if not copies[forced_slot]["complete"]:
+            raise ValueError(f"Progress copy {V21_COPY_NAMES[forced_slot]} is not complete and cannot be loaded.")
+        warnings.append(
+            f"Copy {V21_COPY_NAMES[forced_slot]} was forced; the game would load copy {V21_COPY_NAMES[game_choice]}."
+        )
+        best = forced_slot
+
+    # Erase the copy that was not chosen so bpe_save_format loads exactly this one.
+    image = bytearray(payload)
+    other_first = (save_format.SECTOR_PROGRESS_A, save_format.SECTOR_PROGRESS_B)[1 - best]
+    image[other_first * SECTOR_SIZE:(other_first + save_format.PROGRESS_PARTS) * SECTOR_SIZE] = (
+        b"\xFF" * (save_format.PROGRESS_PARTS * SECTOR_SIZE))
+    loaded = save_format.load_v21_image(bytes(image), total_boxes)
+
+    selected_part0 = sectors[copies[best]["first_sector"]]["raw"]
+    committed = [read_u32(selected_part0, 4 + 4 * index) for index in range(save_format.BOX_SECTOR_COUNT)]
+    game_id = f"0x{loaded.game_id:08X}"
+    mons_per_sector = save_format.BOX_MONS_PER_SECTOR
+    box_problems: list[dict[str, Any]] = []
+    for sector in sectors:
+        if sector["role"] == "box":
+            index = sector["box_sector"]
+            sector["same_game"] = sector["game_id"] == game_id
+            sector["committed"] = sector["valid"] and sector["same_game"] and int(sector["stored_crc"], 16) == committed[index]
+            if not sector["committed"]:
+                status = "invalid" if not sector["valid"] else "other_game" if not sector["same_game"] else "uncommitted"
+                first_mon = index * mons_per_sector
+                last_mon = min(first_mon + mons_per_sector, total_boxes * save_format.IN_BOX_COUNT) - 1
+                box_problems.append({
+                    "box_sector": index, "physical_sector": sector["physical_sector"], "status": status,
+                    "pc_range": {
+                        "first": {"box": first_mon // save_format.IN_BOX_COUNT, "slot": first_mon % save_format.IN_BOX_COUNT},
+                        "last": {"box": last_mon // save_format.IN_BOX_COUNT, "slot": last_mon % save_format.IN_BOX_COUNT},
+                    },
+                })
+        elif sector["role"] == "box_backup":
+            sector["same_game"] = sector["game_id"] == game_id
+            sector["matches_commit"] = (
+                sector["valid"] and sector["same_game"] and int(sector["stored_crc"], 16) == committed[sector["id"]])
+
+    flag_messages = {
+        "box_restored": "A PC box sector did not match the committed save or was damaged, and was restored from the box backup sector (as the game does).",
+        "box_uncommitted": "A PC box sector newer than the committed progress copy was kept (an interrupted save); those PC slots may be newer than the rest of the save.",
+        "box_lost": "A PC box sector was unreadable and had no usable backup; its Pokémon are shown as empty slots.",
+    }
+    for flag in sorted(loaded.load_flags):
+        warnings.append(flag_messages[flag])
+
+    blocks = {
+        "save_block_1": loaded.save_block_1,
+        "save_block_2": loaded.save_block_2,
+        "save_block_3": loaded.save_block_3,
+        "pokemon_storage": loaded.storage_header + loaded.boxes,
+    }
+    engine = {
+        "format_version": save_format.FORMAT_VERSION,
+        "game_id": game_id,
+        "total_boxes": total_boxes,
+        "selected_copy": V21_COPY_NAMES[best],
+        "game_would_load_copy": V21_COPY_NAMES[game_choice],
+        "load_result": "ok_backup" if not other["complete"] and other["any_signature"] else "ok",
+        "load_flags": sorted(loaded.load_flags),
+        "progress_copies": copies,
+        "committed_box_crcs": [f"0x{value:08X}" for value in committed],
+        "box_sectors_not_committed": box_problems,
+    }
+    return {
+        "blocks": blocks, "sectors": sectors, "copies": copies, "warnings": warnings, "engine": engine,
+        "selected_slot": {"slot": best, "copy": V21_COPY_NAMES[best], "counter": copies[best]["counter"], "complete": True},
+    }
+
+
 def parse_items(block: bytes, base_offset: int, count: int, encrypted: bool, key: int, item_names: dict[int, list[str]]) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     for slot in range(count):
@@ -503,11 +800,34 @@ def inspect_save(path: Path, schema: Schema, symbols: Symbols, rom: Path | None 
                  forced_slot: int | None = None, include_raw: bool = False) -> tuple[dict[str, Any], dict[str, bytes]]:
     file_data = path.read_bytes()
     payload_offset, payload, signature_score = locate_save_payload(file_data)
-    sizes = section_sizes(schema)
-    physical = parse_physical_sectors(payload, sizes)
-    candidates = slot_candidates(physical, 0) + slot_candidates(physical, 1)
-    selected = choose_candidate(candidates, forced_slot)
-    blocks = reconstruct(selected, schema)
+    detected_format = save_format.detect_format(payload)
+    if detected_format == "empty":
+        raise ValueError("No save sectors were found in the progress or PC sectors; the save is empty")
+    require_matching_layout(schema, detected_format)
+    warnings: list[str] = []
+    v21: dict[str, Any] | None = None
+    if detected_format == "2.0":
+        sizes = section_sizes(schema)
+        physical = parse_physical_sectors(payload, sizes)
+        candidates = slot_candidates(physical, 0) + slot_candidates(physical, 1)
+        selected = choose_candidate(candidates, forced_slot)
+        blocks = reconstruct(selected, schema)
+        if not selected["complete"]:
+            warnings.append("Selected save slot is incomplete; missing sections were filled with zeroes in reconstructed blocks.")
+        slots_summary = []
+        for slot in (0, 1):
+            slot_values = [candidate for candidate in candidates if candidate["slot"] == slot]
+            best_for_slot = max(slot_values, key=lambda value: len(value["valid_section_ids"]), default=None)
+            slots_summary.append(None if best_for_slot is None else {
+                "slot": slot, "counter": best_for_slot["counter"], "complete": best_for_slot["complete"],
+                "valid_section_ids": best_for_slot["valid_section_ids"],
+            })
+        selected_slot = {"slot": selected["slot"], "counter": selected["counter"], "complete": selected["complete"]}
+    else:
+        v21 = load_v21_blocks(payload, schema, forced_slot)
+        blocks, physical, warnings = v21["blocks"], v21["sectors"], v21["warnings"]
+        slots_summary = v21["copies"]
+        selected_slot = v21["selected_slot"]
     sb1, sb2, sb3, storage = (
         blocks["save_block_1"], blocks["save_block_2"], blocks["save_block_3"], blocks["pokemon_storage"]
     )
@@ -580,7 +900,10 @@ def inspect_save(path: Path, schema: Schema, symbols: Symbols, rom: Path | None 
         mons: list[dict[str, Any]] = []
         for slot in range(box_dimensions[1]):
             offset = boxes_base + (box_index * box_dimensions[1] + slot) * box_size
-            mon = parse_pokemon(storage[offset:offset + box_size], False, schema, enum_maps)
+            if detected_format == "2.1":
+                mon = parse_packed_pokemon(storage[offset:offset + box_size], enum_maps)
+            else:
+                mon = parse_pokemon(storage[offset:offset + box_size], False, schema, enum_maps)
             if mon["present"]:
                 mons.append(mon | {"slot": slot})
         name_offset = int(names_member["offset"]) + box_index * box_name_length
@@ -614,9 +937,6 @@ def inspect_save(path: Path, schema: Schema, symbols: Symbols, rom: Path | None 
         caught = bool(sb1[int(dex_caught_member["offset"]) + bit // 8] & (1 << (bit & 7)))
         pokedex.append({"number": number, "species_names": enum_maps["Species"].get(number, []), "seen": seen, "caught": caught})
 
-    warnings: list[str] = []
-    if not selected["complete"]:
-        warnings.append("Selected save slot is incomplete; missing sections were filled with zeroes in reconstructed blocks.")
     rom_header = None
     if rom is not None:
         rom_header = parse_rom_header(rom)
@@ -645,24 +965,16 @@ def inspect_save(path: Path, schema: Schema, symbols: Symbols, rom: Path | None 
     else:
         warnings.append("No ROM was supplied, so the generated source layout could not be cross-checked against the player's build.")
 
-    slots_summary = []
-    for slot in (0, 1):
-        slot_values = [candidate for candidate in candidates if candidate["slot"] == slot]
-        best_for_slot = max(slot_values, key=lambda value: len(value["valid_section_ids"]), default=None)
-        slots_summary.append(None if best_for_slot is None else {
-            "slot": slot, "counter": best_for_slot["counter"], "complete": best_for_slot["complete"],
-            "valid_section_ids": best_for_slot["valid_section_ids"],
-        })
-
     report: dict[str, Any] = {
         "format": "bpe-save-inspector-v1",
+        "save_format": detected_format,
         "input": {"path": str(path.resolve()), "extension": path.suffix.lower(), "file_size": len(file_data), "sha256": sha256(file_data)},
         "payload": {"offset": payload_offset, "size": len(payload), "aligned_sector_signatures": signature_score},
         "layout": schema.document.get("source", {}),
         "rom": rom_header,
         "warnings": warnings,
         "slots": slots_summary,
-        "selected_slot": {"slot": selected["slot"], "counter": selected["counter"], "complete": selected["complete"]},
+        "selected_slot": selected_slot,
         "sector_health": [
             {key: value for key, value in sector.items() if key != "raw"} for sector in physical
         ],
@@ -691,6 +1003,8 @@ def inspect_save(path: Path, schema: Schema, symbols: Symbols, rom: Path | None 
         "save_block_3": schema.decode(sb3, schema.roots["SaveBlock3"]),
         "block_hashes": {name: {"size": len(data), "sha256": sha256(data)} for name, data in blocks.items()},
     }
+    if v21 is not None:
+        report["save_engine"] = v21["engine"]
     if include_raw:
         report["raw_blocks_base64"] = {name: base64.b64encode(data).decode("ascii") for name, data in blocks.items()}
     return report, blocks
@@ -833,7 +1147,7 @@ def write_json(document: Any, output: Path | None) -> None:
 def add_common_save_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("save", type=Path, help="Pokémon Emerald .sav or .srm file")
     parser.add_argument("--rom", type=Path, help="Matching BPE .gba used to validate compiled offsets")
-    parser.add_argument("--slot", type=int, choices=(0, 1), help="Force physical save slot instead of selecting newest valid slot")
+    parser.add_argument("--slot", type=int, choices=(0, 1), help="Force physical save slot (2.1: progress copy 0=A, 1=B) instead of selecting the one the game loads")
 
 
 def main() -> int:

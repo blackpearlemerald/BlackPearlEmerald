@@ -4,10 +4,11 @@
     "SaveBlock1": "0x18463",
     "SaveBlock2": "0xdb54",
     "SaveBlock3": "0xcc37",
-    "PokemonStorage": "0x18ac8",
-    "SaveSector": "0x18e10",
+    "PokemonStorage": "0x18b1a",
+    "SaveSector": "0x18f30",
     "Pokemon": "0x158a4",
-    "BoxPokemon": "0x15764"
+    "BoxPokemon": "0x15764",
+    "PackedBoxMon": "0x18ac8"
   },
   "types": {
     "0xd3": {
@@ -11678,33 +11679,59 @@
         }
       ]
     },
-    "0x18b1b": {
-      "kind": "array_type",
-      "target": "0x15764",
-      "dimensions": [
-        14,
-        30
-      ]
-    },
-    "0x18b31": {
+    "0x18b6f": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
-        14,
+        41,
         9
       ]
     },
-    "0x18b47": {
+    "0x18b85": {
+      "kind": "array_type",
+      "target": "0xcb6",
+      "dimensions": [
+        41
+      ]
+    },
+    "0x18b95": {
       "kind": "array_type",
       "target": "0x158a4",
       "dimensions": [
         4
       ]
     },
+    "0x18ae3": {
+      "kind": "array_type",
+      "target": "0xcb6",
+      "dimensions": [
+        60
+      ]
+    },
     "0x18ac8": {
       "kind": "structure_type",
+      "name": "PackedBoxMon",
+      "size": 60,
+      "members": [
+        {
+          "name": "data",
+          "type": "0x18ae3",
+          "offset": 0
+        }
+      ]
+    },
+    "0x18ba5": {
+      "kind": "array_type",
+      "target": "0x18ac8",
+      "dimensions": [
+        41,
+        30
+      ]
+    },
+    "0x18b1a": {
+      "kind": "structure_type",
       "name": "PokemonStorage",
-      "size": 34144,
+      "size": 74612,
       "members": [
         {
           "name": "currentBox",
@@ -11712,54 +11739,54 @@
           "offset": 0
         },
         {
-          "name": "boxes",
-          "type": "0x18b1b",
-          "offset": 4
-        },
-        {
           "name": "boxNames",
-          "type": "0x18b31",
-          "offset": 33604
+          "type": "0x18b6f",
+          "offset": 1
         },
         {
           "name": "boxWallpapers",
-          "type": "0x10587",
-          "offset": 33730
+          "type": "0x18b85",
+          "offset": 370
         },
         {
           "name": "fusions",
-          "type": "0x18b47",
-          "offset": 33744
+          "type": "0x18b95",
+          "offset": 412
+        },
+        {
+          "name": "boxes",
+          "type": "0x18ba5",
+          "offset": 812
         }
       ]
     },
-    "0x18e71": {
+    "0x18f91": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         3968
       ]
     },
-    "0x18e82": {
+    "0x18fa2": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         116
       ]
     },
-    "0x18e10": {
+    "0x18f30": {
       "kind": "structure_type",
       "name": "SaveSector",
       "size": 4096,
       "members": [
         {
           "name": "data",
-          "type": "0x18e71",
+          "type": "0x18f91",
           "offset": 0
         },
         {
           "name": "saveBlock3Chunk",
-          "type": "0x18e82",
+          "type": "0x18fa2",
           "offset": 3968
         },
         {
@@ -11786,8 +11813,7 @@
     }
   },
   "source": {
-    "repo_root": "E:\\Projects\\OfficialBPEemerald",
-    "git_commit": "42441517b020eb105ebccd3c6f0f1cfe9b73bc52",
+    "git_commit": "c14f3d377abf42403c517f7efb315af9758593bd",
     "game_version": "EMERALD",
     "release_build": true
   }

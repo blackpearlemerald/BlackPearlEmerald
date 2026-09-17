@@ -49,9 +49,20 @@ Bundled profiles:
 - `2.0.0-beta` — source commit `4f39a49bd4e8cb1adead8b8f2e7999d957c6bcb1`
 - `2.0.1` — source commit `6c25a87610754b62145b83095b4290d00c27831e`
 
-The unversioned `bpe_layout.json` and `bpe_symbols.json` describe the current working source. A save does not contain a reliable BPE release identifier, so supply a matching ROM or explicit profile. Structural ROM checks catch offset changes, but only a pinned release profile guarantees the correct flag names and source logic.
+Both bundled profiles read 2.0.x saves only. No 2.1 release profile exists yet; the unversioned `bpe_layout.json` and `bpe_symbols.json` describe the current working source, which uses the 2.1 format, and are used for 2.1 saves. A save does not contain a reliable BPE release identifier, so supply a matching ROM or explicit profile. Structural ROM checks catch offset changes, but only a pinned release profile guarantees the correct flag names and source logic.
 
 An `.srm` is supported when it contains raw GBA flash SRAM—the normal format used by mGBA, RetroArch, and many other emulators. Emulator save states such as `.state` are not SRAM and are rejected. Common files with a small wrapper around the 128 KiB SRAM payload are detected by their aligned sector signatures.
+
+## 2.1 saves
+
+The inspector detects the save format from the sector signatures and reports it as `save_format` (`"2.0"` or `"2.1"`). 2.1 saves (signature `0x32455042`, see `include/save_engine.h`) are loaded with the same rules as the game, using `BPETools/bpe_save_format.py`:
+
+- `sector_health` lists every physical sector with its role (progress copy A/B, box sector, box backup, Hall of Fame), kind, id, counter, signature and CRC-32 validity. Box sectors also show whether they match the loaded commit.
+- `save_engine` reports the game id, both progress copies, the copy the game loads, whether that was a backup load, and the load flags `box_restored`, `box_uncommitted` and `box_lost`, which also appear in `warnings`. `--slot 0`/`--slot 1` forces copy A/B.
+- `pokemon_storage` is rebuilt as the RAM `struct PokemonStorage` (box header followed by packed boxes), so `extract` and `dump` match the current layout.
+- PC Pokémon are 60-byte packed records and are marked `packed: true`. They have no checksum of their own (`checksum_valid` is `null`; the sector CRC protects them). Current HP, status, move PP, contest stats, and ribbons other than the Champion Ribbon are not stored. Party Pokémon keep the full 100-byte format.
+
+A save is never decoded with a layout of the other format. A 2.1 save with a 2.0.x profile, or a 2.0.x save with the current 2.1 layout, stops with a message naming the layout to use.
 
 ## Verification and layout refresh
 
