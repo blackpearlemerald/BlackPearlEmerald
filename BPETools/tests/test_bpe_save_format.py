@@ -1,4 +1,4 @@
-"""Tests for BPETools/bpe_save_format.py (2.0.x reader, 2.1 writer and converter).
+"""Tests for BPETools/bpe_save_format.py (pre-2.1 reader, 2.1 writer and converter).
 
 Byte vectors come from the game's C code (BPETools/save_format_vectors.py).
 Saves written here are also loaded by the game's own save engine, compiled for
@@ -26,9 +26,13 @@ sys.path.insert(0, str(REPO / "BPETools"))
 import bpe_save_format as fmt  # noqa: E402
 
 VECTORS = REPO / "BPETools" / "tests" / "fixtures" / "packed_box_mon_vectors.json"
-REAL_20X_SAVES = [
+# Local player saves, never committed. Every release before 2.1 shares one
+# layout, so 1.0.1 saves convert through the same path as 2.0.x saves.
+REAL_PRE21_SAVES = [
     REPO / "BlackPearlEmerald_v2.0.0-beta.sav",
     REPO / "BPETools" / "Pokemon Black Pearl Emerald v2.0.1(captainvictory).sav",
+    REPO / "BPETools" / "Black Pearl Emerald (v1.0.1)(Jester).srm",
+    REPO / "BPETools" / "Black Pearl Emerald (v1.0.1)(Jester)(Boats Fixed).srm",
 ]
 
 
@@ -318,10 +322,11 @@ class LegacyTests(unittest.TestCase):
         self.assertEqual(report.pc_pokemon, 14 * 30 - 1)
         self.assertEqual(save.boxes[7 * 60:8 * 60], bytes(60))
 
-    def test_real_20x_saves_convert(self):
-        found = [path for path in REAL_20X_SAVES if path.exists()]
+    def test_real_pre21_saves_convert(self):
+        found = [path for path in REAL_PRE21_SAVES if path.exists()]
         if not found:
-            self.skipTest("no local 2.0.x saves")
+            self.skipTest("no local pre-2.1 saves")
+        converted_any = False
         for path in found:
             with self.subTest(save=path.name):
                 offset, image = fmt.find_flash_image(path.read_bytes())
@@ -336,6 +341,7 @@ class LegacyTests(unittest.TestCase):
                 self.assertEqual(loaded.save_block_2, legacy.save_block_2)
                 self.assertEqual(loaded.save_block_3, legacy.save_block_3)
                 self.assertEqual(loaded.hall_of_fame, legacy.hall_of_fame)
+                converted_any = True
                 # Every PC Pokémon keeps its identity and species
                 for index in range(14 * 30):
                     record = legacy.storage[4 + index * 80:4 + (index + 1) * 80]
@@ -351,6 +357,7 @@ class LegacyTests(unittest.TestCase):
                     self.assertEqual(result["status"], 1)
                     self.assertEqual(result["boxes"], loaded.boxes)
                     self.assertEqual(result["sb1"], legacy.save_block_1)
+        self.assertTrue(converted_any, "no local save could be converted")
 
 
 if __name__ == "__main__":
@@ -423,10 +430,10 @@ class WebsiteConverterTests(unittest.TestCase):
         report, _ = run_js_converter(b"\x00" * 1000, 1)
         self.assertIn("too small", report["error"])
 
-    def test_real_20x_saves_match_python(self):
-        found = [path for path in REAL_20X_SAVES if path.exists()]
+    def test_real_pre21_saves_match_python(self):
+        found = [path for path in REAL_PRE21_SAVES if path.exists()]
         if not found:
-            self.skipTest("no local 2.0.x saves")
+            self.skipTest("no local pre-2.1 saves")
         for path in found:
             file_bytes = path.read_bytes()
             if fmt.detect_format(fmt.find_flash_image(file_bytes)[1]) != "2.0":

@@ -1,7 +1,9 @@
 """Black Pearl Emerald save formats.
 
-Reads the pre-2.1 flash layout used by 2.0.0-beta through 2.0.7-beta, and reads
-and writes the 2.1 layout described in include/save_engine.h and
+Reads the flash layout used by every release before 2.1 (1.0.1 through
+2.0.7-beta: their save blocks, PC storage and Pokémon records are byte
+identical, and species, item, move, flag and variable numbering agrees), and
+reads and writes the 2.1 layout described in include/save_engine.h and
 include/packed_box_mon.h. The website Save Converter
 (BPEDocumentation/site/js/save-converter.js) implements the same rules, and
 BPETools/tests/test_bpe_save_format.py checks both against byte vectors
@@ -479,7 +481,7 @@ def is_packed_empty(record: bytes) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Pre-2.1 layout (2.0.0-beta to 2.0.7-beta)
+# Pre-2.1 layout (1.0.1 through 2.0.7-beta)
 
 LEGACY_SECTORS_PER_SLOT = 14
 LEGACY_DATA_SIZE = 3968

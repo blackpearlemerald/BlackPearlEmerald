@@ -27,6 +27,13 @@ body.page-save-converter {
   gap: 24px;
 }
 .converter-input label { display: block; font-size: 1rem; font-weight: 700; }
+.converter-input label span {
+  display: block;
+  margin-top: 4px;
+  color: #a4b9cb;
+  font-size: .9rem;
+  font-weight: 400;
+}
 .converter-input input[type="file"] {
   box-sizing: border-box;
   width: 100%;

@@ -1,6 +1,6 @@
-// Black Pearl Emerald Save Converter: 2.0.0-beta – 2.0.7-beta saves to the
-// 2.1 save format. Everything runs in the browser; the file never leaves the
-// player's computer.
+// Black Pearl Emerald Save Converter: saves from any release before 2.1
+// (1.0.1 through 2.0.7-beta) to the 2.1 save format. Everything runs in the
+// browser; the file never leaves the player's computer.
 //
 // This is a port of BPETools/bpe_save_format.py, which is checked against the
 // game's own C code. BPETools/tests/test_bpe_save_format.py runs this file in
@@ -44,7 +44,7 @@
   var SAVEBLOCK2_SIZE = 2852;
   var SAVEBLOCK3_SIZE = 4;
 
-  // Pre-2.1 format
+  // Pre-2.1 format (1.0.1 through 2.0.7-beta share it)
   var LEGACY_SECTORS_PER_SLOT = 14;
   var LEGACY_DATA_SIZE = 3968;
   var LEGACY_FOOTER = 4084;
