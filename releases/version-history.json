@@ -4,7 +4,8 @@
     "2.1.0-beta": {
       "channel": "beta",
       "changes": [
-        "Expanded the PC from 14 to 41 boxes — 1,230 places to keep Pokémon, enough for the entire Pokédex."
+        "Expanded the PC from 14 to 41 boxes — 1,230 places to keep Pokémon, enough for the entire Pokédex.",
+        "Changed the save format to fit those boxes. Convert your existing save with the Save Converter on this website before you play; the game will not save over an unconverted save."
       ]
     },
     "2.0.7-beta": {
