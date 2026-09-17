@@ -509,6 +509,7 @@ struct SaveDigest
 {
     u32 progress;
     u32 sectors[SAVE_BOX_SECTOR_COUNT];
+    u32 parts[4]; // SaveBlock1, SaveBlock2, SaveBlock3, box header (diagnostics)
 };
 
 static void TakeDigest(struct SaveDigest *digest)
@@ -522,6 +523,10 @@ static void TakeDigest(struct SaveDigest *digest)
     digest->progress = SaveEngine_Crc32((u8 *)gSaveBlock2Ptr, sizeof(struct SaveBlock2), digest->progress);
     digest->progress = SaveEngine_Crc32((u8 *)gSaveBlock3Ptr, sizeof(struct SaveBlock3), digest->progress);
     digest->progress = SaveEngine_Crc32((u8 *)gPokemonStoragePtr, POKEMON_STORAGE_HEADER_SIZE, digest->progress);
+    digest->parts[0] = SaveEngine_Crc32((u8 *)gSaveBlock1Ptr, sizeof(struct SaveBlock1), 0xFFFFFFFF);
+    digest->parts[1] = SaveEngine_Crc32((u8 *)gSaveBlock2Ptr, sizeof(struct SaveBlock2), 0xFFFFFFFF);
+    digest->parts[2] = SaveEngine_Crc32((u8 *)gSaveBlock3Ptr, sizeof(struct SaveBlock3), 0xFFFFFFFF);
+    digest->parts[3] = SaveEngine_Crc32((u8 *)gPokemonStoragePtr, POKEMON_STORAGE_HEADER_SIZE, 0xFFFFFFFF);
     for (i = 0; i < SAVE_BOX_SECTOR_COUNT; i++)
     {
         u32 first = i * SAVE_BOX_MONS_PER_SECTOR;
@@ -557,7 +562,11 @@ static void StartTestGame(void)
     ClearSav2();
     ClearSav3();
     ResetPokemonStorageSystem();
-    ZeroPlayerPartyMons();
+    // ZeroMonData keeps an HP-lost value from the slot's previous Pokémon,
+    // which LoadPlayerParty then resets; start from truly empty slots so a
+    // save/load round trip is byte-identical.
+    memset(gParties[B_TRAINER_PLAYER], 0, sizeof(gParties[B_TRAINER_PLAYER]));
+    gPartiesCount[B_TRAINER_PLAYER] = 0;
     Save_StartNewGameIdentity();
 }
 
@@ -765,7 +774,7 @@ static bool32 ContainsValue(const u32 *list, u32 count, u32 value)
 static void DepositPartyMon(u8 partySlot, u8 box, u8 boxSlot)
 {
     SetBoxMonAt(box, boxSlot, &gParties[B_TRAINER_PLAYER][partySlot].box);
-    ZeroMonData(&gParties[B_TRAINER_PLAYER][partySlot]);
+    memset(&gParties[B_TRAINER_PLAYER][partySlot], 0, sizeof(struct Pokemon));
     CompactPartySlots();
     gPartiesCount[B_TRAINER_PLAYER]--;
 }
@@ -878,7 +887,7 @@ static void Change_NewGame(void)
     ClearSav2();
     ClearSav3();
     ResetPokemonStorageSystem();
-    ZeroPlayerPartyMons();
+    memset(gParties[B_TRAINER_PLAYER], 0, sizeof(gParties[B_TRAINER_PLAYER]));
     gPartiesCount[B_TRAINER_PLAYER] = 0;
     Save_StartNewGameIdentity();
     GiveRandomPartyMon();
@@ -896,6 +905,7 @@ static void PowerCutTrial(u32 cut, void (*change)(void), u32 kind)
     u32 oldCount, newCount, loadedCount, i;
     u8 beforeCommit, afterCommit, status;
     bool32 progressOld, progressNew;
+    u8 *loadedSb1;
 
     BuildOldGame();
     EXPECT_EQ(TrySavingData(SAVE_NORMAL), SAVE_STATUS_OK);
@@ -932,6 +942,8 @@ static void PowerCutTrial(u32 cut, void (*change)(void), u32 kind)
     status = Reboot();
     EXPECT(status == SAVE_STATUS_OK || status == SAVE_STATUS_ERROR);
     TakeDigest(&loaded);
+    loadedSb1 = Alloc(sizeof(struct SaveBlock1));
+    memcpy(loadedSb1, gSaveBlock1Ptr, sizeof(struct SaveBlock1));
     loadedCount = CollectPersonalities(loadedMons);
 
     progressOld = loaded.progress == old.progress;
@@ -991,8 +1003,32 @@ static void PowerCutTrial(u32 cut, void (*change)(void), u32 kind)
     EXPECT_EQ(TrySavingData(SAVE_NORMAL), SAVE_STATUS_OK);
     EXPECT_EQ(Reboot(), SAVE_STATUS_OK);
     TakeDigest(&reloaded);
+    if (!DigestEqual(&loaded, &reloaded))
+    {
+        Test_MgbaPrintf("cut %d: progressOld=%d progressNew=%d before=%d after=%d status=%d flags=%d",
+                        cut, progressOld, progressNew, beforeCommit, afterCommit, status, SaveEngine_GetLoadFlags());
+        for (i = 0; i < 4; i++)
+        {
+            if (loaded.parts[i] != reloaded.parts[i])
+                Test_MgbaPrintf("block %d differs", i);
+        }
+        for (i = 0; i < SAVE_BOX_SECTOR_COUNT; i++)
+        {
+            if (loaded.sectors[i] != reloaded.sectors[i])
+                Test_MgbaPrintf("box sector %d differs", i);
+        }
+        for (i = 0, oldCount = 0; i < sizeof(struct SaveBlock1) && oldCount < 24; i++)
+        {
+            if (loadedSb1[i] != ((u8 *)gSaveBlock1Ptr)[i])
+            {
+                Test_MgbaPrintf("SaveBlock1[%d] %d -> %d", i, loadedSb1[i], ((u8 *)gSaveBlock1Ptr)[i]);
+                oldCount++;
+            }
+        }
+    }
     EXPECT(DigestEqual(&loaded, &reloaded));
 
+    Free(loadedSb1);
     Free(oldMons);
     Free(newMons);
     Free(loadedMons);
@@ -1080,6 +1116,74 @@ TEST("Saves from before the 2.1 format are recognized")
         EXPECT_EQ(ProgramFlashSectorAndVerify(i, (u8 *)sector), 0);
     }
     EXPECT_EQ(Reboot(), SAVE_STATUS_OUTDATED);
+
+    // Nothing may be written over the old save
+    GiveRandomPartyMon();
+    EXPECT(Save_IsBlockedByOutdatedSave());
+    EXPECT_EQ(TrySavingData(SAVE_NORMAL), SAVE_STATUS_ERROR);
+    EXPECT_EQ(TrySavingData(SAVE_OVERWRITE_DIFFERENT_FILE), SAVE_STATUS_ERROR);
+    EXPECT_EQ(TrySavingData(SAVE_HALL_OF_FAME), SAVE_STATUS_ERROR);
+    EXPECT_EQ(gDamagedSaveSectors, 0);
+    EXPECT_EQ(LinkFullSave_Init(), TRUE);
+    EXPECT_EQ(WriteSaveBlock2(), TRUE);
+    for (i = 0; i < SECTORS_COUNT; i++)
+    {
+        ReadFlash(i, 0, gSaveEngineBuffer, SAVE_SECTOR_SIZE);
+        sector = (struct SaveSector *)gSaveEngineBuffer;
+        if (i < 14)
+            EXPECT_EQ(sector->signature, SAVE_SIGNATURE_LEGACY);
+        else
+            EXPECT_NE(sector->signature, SAVE_SIGNATURE_V2);
+    }
+    EXPECT_EQ(Reboot(), SAVE_STATUS_OUTDATED);
+
+    // Clearing the save data unlocks saving
     ClearSaveData();
+    EXPECT(!Save_IsBlockedByOutdatedSave());
     EXPECT_EQ(Reboot(), SAVE_STATUS_EMPTY);
+    EXPECT_EQ(TrySavingData(SAVE_NORMAL), SAVE_STATUS_OK);
+    EXPECT_EQ(Reboot(), SAVE_STATUS_OK);
+}
+
+// Prints byte vectors for BPETools/tests/test_bpe_save_format.py and the
+// website Save Converter tests. Refresh them with
+// python BPETools/save_format_vectors.py after changing the packed format.
+TEST("Packed format vectors")
+{
+    struct BoxPokemon boxMon;
+    struct PackedBoxMon packed;
+    u8 bytes[sizeof(boxMon) + sizeof(packed)];
+    char line[2 * 20 + 1];
+    u32 n, i, j;
+
+    for (n = 0; n < 48; n++)
+    {
+        if (n == 0)
+        {
+            ZeroBoxMonData(&boxMon);
+        }
+        else
+        {
+            CreateRandomBoxMon(&boxMon);
+            if (n % 12 == 0)
+            {
+                u32 value = GetBoxMonData(&boxMon, MON_DATA_CHECKSUM) ^ 0x5A5A;
+                SetBoxMonData(&boxMon, MON_DATA_CHECKSUM, &value); // Bad Egg
+            }
+        }
+        PackBoxMon(&packed, &boxMon);
+        memcpy(bytes, &boxMon, sizeof(boxMon));
+        memcpy(bytes + sizeof(boxMon), &packed, sizeof(packed));
+        // The emulator log wraps long lines, so print 20 bytes at a time.
+        for (i = 0; i < sizeof(bytes); i += 20)
+        {
+            for (j = 0; j < 20; j++)
+            {
+                line[2 * j] = "0123456789ABCDEF"[bytes[i + j] >> 4];
+                line[2 * j + 1] = "0123456789ABCDEF"[bytes[i + j] & 15];
+            }
+            line[40] = '\0';
+            Test_MgbaPrintf("VECTOR %d %d %s", n, i / 20, line);
+        }
+    }
 }

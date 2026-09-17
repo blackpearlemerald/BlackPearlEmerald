@@ -64,6 +64,7 @@ u32 Save_TestCountSectorWrites(void);
 void ClearSaveData(void);
 void Save_ResetSaveCounters(void);
 void Save_StartNewGameIdentity(void);
+bool8 Save_IsBlockedByOutdatedSave(void);
 u8 HandleSavingData(u8 saveType);
 u8 TrySavingData(u8 saveType);
 bool8 LinkFullSave_Init(void);

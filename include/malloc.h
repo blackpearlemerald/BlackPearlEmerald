@@ -41,8 +41,15 @@ struct MemBlock
     u8 data[0];
 };
 
-#define HEAP_SIZE 0x1C500
+// BPE 2.1: lowered by 0x1C00 bytes for the 41-box PC. The heaviest battle
+// animation tests peak at about 99.4 KiB; debug builds report the peak in
+// Debug menu > Utilities > Check save block.
+#define HEAP_SIZE 0x1A900
 extern u8 gHeap[HEAP_SIZE];
+
+#ifndef RELEASE
+extern u32 gHeapHighWater;
+#endif
 
 #if TESTING || !defined(NDEBUG)
 

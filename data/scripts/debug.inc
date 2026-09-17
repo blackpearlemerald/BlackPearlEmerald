@@ -241,6 +241,8 @@ Debug_CheckSaveBlock::
 	msgbox Debug_SaveBlock3Size, MSGBOX_DEFAULT
 	callnative CheckPokemonStorageSize
 	msgbox Debug_PokemonStorageSize, MSGBOX_DEFAULT
+	callnative CheckHeapPeak
+	msgbox Debug_HeapPeak, MSGBOX_DEFAULT
 	release
 	end
 
@@ -259,6 +261,10 @@ Debug_SaveBlock3Size::
 Debug_PokemonStorageSize::
 	.string "{PKMN}Storage size: {STR_VAR_1}b/{STR_VAR_2}b.\n"
 	.string "Free space: {STR_VAR_3}b.$"
+
+Debug_HeapPeak::
+	.string "Heap peak since power on: {STR_VAR_1}b/{STR_VAR_2}b.\n"
+	.string "Never used: {STR_VAR_3}b.$"
 
 Debug_CheckROMSpace::
 	callnative CheckROMSize

@@ -1601,6 +1601,18 @@ void CheckSaveBlock3Size(struct ScriptContext *ctx)
     ConvertIntToDecimalStringN(gStringVar3, maxSb3Size - currSb3Size, STR_CONV_MODE_LEFT_ALIGN, 6);
 }
 
+void CheckHeapPeak(struct ScriptContext *ctx)
+{
+#ifndef RELEASE
+    u32 peak = gHeapHighWater;
+#else
+    u32 peak = 0;
+#endif
+    ConvertIntToDecimalStringN(gStringVar1, peak, STR_CONV_MODE_LEFT_ALIGN, 6);
+    ConvertIntToDecimalStringN(gStringVar2, HEAP_SIZE, STR_CONV_MODE_LEFT_ALIGN, 6);
+    ConvertIntToDecimalStringN(gStringVar3, HEAP_SIZE - peak, STR_CONV_MODE_LEFT_ALIGN, 6);
+}
+
 void CheckPokemonStorageSize(struct ScriptContext *ctx)
 {
     u32 currPkmnStorageSize = TOTAL_BOXES_COUNT * IN_BOX_COUNT * sizeof(struct PackedBoxMon);

@@ -21,15 +21,11 @@ struct SaveBlock1ASLR {
     u8 aslr[SAVEBLOCK_MOVE_RANGE];
 };
 
-struct PokemonStorageASLR {
-    struct PokemonStorage block;
-    u8 aslr[SAVEBLOCK_MOVE_RANGE];
-};
-
 extern struct SaveBlock1ASLR gSaveblock1;
 extern struct SaveBlock2ASLR gSaveblock2;
 extern struct SaveBlock3 gSaveblock3;
-extern struct PokemonStorageASLR gPokemonStorage;
+// BPE 2.1: the PC storage is not moved around in RAM like the save blocks.
+extern struct PokemonStorage gPokemonStorage;
 
 extern bool32 gFlashMemoryPresent;
 extern struct SaveBlock1 *gSaveBlock1Ptr;

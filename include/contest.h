@@ -320,10 +320,12 @@ extern const struct ContestCategory gContestCategoryInfo[CONTEST_CATEGORIES_COUN
 #define eContestAI (*gContestResources->aiData)
 #define eContestExcitement (*gContestResources->excitement)
 #define eContestGfxState (gContestResources->gfxState)
-#define eUnzippedContestAudience_Gfx (gHeap + 0x18000)
-#define eContestAudienceFrame2_Gfx (gHeap + 0x19000)
-#define eContestDebugMode (gHeap[0x1a000])
-#define eContestTempSave (*(struct ContestTempSave *)(gHeap + 0x1a004))
+// Contests use the top of the heap directly. BPE 2.1 moved this area down by
+// 0x1000 bytes when the heap shrank (see HEAP_SIZE in include/malloc.h).
+#define eUnzippedContestAudience_Gfx (gHeap + 0x17000)
+#define eContestAudienceFrame2_Gfx (gHeap + 0x18000)
+#define eContestDebugMode (gHeap[0x19000])
+#define eContestTempSave (*(struct ContestTempSave *)(gHeap + 0x19004))
 
 extern struct ContestPokemon gContestMons[CONTESTANT_COUNT];
 extern s16 gContestMonRound1Points[CONTESTANT_COUNT];

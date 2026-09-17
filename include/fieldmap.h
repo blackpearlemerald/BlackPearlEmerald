@@ -12,7 +12,10 @@
 #define NUM_METATILES_TOTAL 1024
 #define NUM_TILES_TOTAL 1024
 #define NUM_PALS_TOTAL 13
-#define MAX_MAP_DATA_SIZE 10240
+// BPE 2.1: lowered from 10240 to make room for the 41-box PC. The largest map
+// needs (80 + 15) * (80 + 14) = 8930; BPETools/tests/test_ram_budget.py checks
+// every layout against this limit.
+#define MAX_MAP_DATA_SIZE 9216
 
 #define NUM_TILES_PER_METATILE 8
 

@@ -177,6 +177,9 @@ void ClearSaveData(void)
 {
     u16 i;
 
+    if (gSaveFileStatus == SAVE_STATUS_OUTDATED)
+        gSaveFileStatus = SAVE_STATUS_EMPTY;
+
     // Clear the full save two sectors at a time
     for (i = 0; i < SECTORS_COUNT / 2; i++)
     {
@@ -193,6 +196,14 @@ void Save_ResetSaveCounters(void)
 }
 
 // Saving ---------------------------------------------------------------------
+
+// A save from before the 2.1 format is on the flash chip. Nothing may be
+// written over it; the player converts it on the website or clears it with
+// the clear save data screen.
+bool8 Save_IsBlockedByOutdatedSave(void)
+{
+    return gSaveFileStatus == SAVE_STATUS_OUTDATED;
+}
 
 static void PrepareSave(void)
 {
@@ -266,6 +277,11 @@ u8 HandleSavingData(u8 saveType)
 
     gTrainerHillVBlankCounter = NULL;
     gDamagedSaveSectors = 0;
+    if (Save_IsBlockedByOutdatedSave())
+    {
+        gTrainerHillVBlankCounter = backupVar;
+        return 0;
+    }
     switch (saveType)
     {
     case SAVE_HALL_OF_FAME_ERASE_BEFORE:
@@ -306,7 +322,7 @@ u8 HandleSavingData(u8 saveType)
 
 u8 TrySavingData(u8 saveType)
 {
-    if (gFlashMemoryPresent != TRUE)
+    if (gFlashMemoryPresent != TRUE || Save_IsBlockedByOutdatedSave())
         return SAVE_STATUS_ERROR;
 
     HandleSavingData(saveType);
@@ -333,7 +349,7 @@ static bool8 StepIncrementalSave(void)
 
 bool8 LinkFullSave_Init(void)
 {
-    if (gFlashMemoryPresent != TRUE)
+    if (gFlashMemoryPresent != TRUE || Save_IsBlockedByOutdatedSave())
         return TRUE;
     gDamagedSaveSectors = 0;
     PrepareSave();
@@ -371,7 +387,7 @@ bool8 LinkFullSave_SetLastSectorSignature(void)
 
 bool8 WriteSaveBlock2(void)
 {
-    if (gFlashMemoryPresent != TRUE)
+    if (gFlashMemoryPresent != TRUE || Save_IsBlockedByOutdatedSave())
         return TRUE;
     gDamagedSaveSectors = 0;
     PrepareSave();

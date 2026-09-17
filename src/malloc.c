@@ -9,6 +9,11 @@ static u32 sHeapSize;
 
 ALIGNED(4) EWRAM_DATA u8 gHeap[HEAP_SIZE] = {0};
 
+#ifndef RELEASE
+// Highest end of any allocation since power on, in bytes from the heap start.
+EWRAM_DATA u32 gHeapHighWater = 0;
+#endif
+
 void PutMemBlockHeader(void *block, struct MemBlock *prev, struct MemBlock *next, u32 size)
 {
     struct MemBlock *header = (struct MemBlock *)block;
@@ -74,6 +79,10 @@ static void *AllocInternal(void *heapStart, u32 size, const char *location)
                         splitBlock->next->prev = splitBlock;
                 }
 
+#ifndef RELEASE
+                if ((u32)(pos->data + size - (u8 *)heapStart) > gHeapHighWater)
+                    gHeapHighWater = pos->data + size - (u8 *)heapStart;
+#endif
                 pos->locationHi = ((uintptr_t)location) >> 14;
                 pos->locationLo = (uintptr_t)location;
 

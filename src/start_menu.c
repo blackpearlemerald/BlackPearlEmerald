@@ -1276,6 +1276,8 @@ static u8 SaveDoSaveCallback(void)
 
     if (saveStatus == SAVE_STATUS_OK)
         ShowSaveMessage(gText_PlayerSavedGame, SaveSuccessCallback);
+    else if (Save_IsBlockedByOutdatedSave())
+        ShowSaveMessage(COMPOUND_STRING("An older save is on this game.\nConvert or clear it before saving."), SaveErrorCallback);
     else
         ShowSaveMessage(gText_SaveError, SaveErrorCallback);
 

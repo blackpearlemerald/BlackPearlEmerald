@@ -192,6 +192,15 @@ Upstream samples are `.wav` (since expansion 1.14). BPE's 507 BW/DP expansion sa
 ### Battle script macros
 `attackstring` → `printattackstring` (and related renames) in `asm/macros/battle_script.inc`.
 
+### Save format (2.1)
+Starting with 2.1.0 the PC has 41 boxes and the save uses a new flash layout. The header comments in `include/save_engine.h` and `include/packed_box_mon.h` are the specification.
+- `src/save_engine.c` owns the layout and the crash-safety rules and has no game dependencies; `src/save.c` connects it to the save blocks and the flash chip. Two progress copies (SaveBlock2, the PC box header, SaveBlock3, SaveBlock1) alternate; the 19 box sectors are stored once, with a backup sector; the Hall of Fame is in sectors 30–31. Recorded battles and e-Reader Trainer Hill data are no longer saved.
+- PC Pokémon are 60-byte records in `gPokemonStoragePtr->boxes`. Read and write them only through the accessors in `src/pokemon_storage_system.c` (`GetBoxMonDataAt`, `SetBoxMonAt`, `GetBoxedMonPtr`, …). `GetBoxedMonPtr` returns a pointer into an unpacked cache of one box, which stays valid only until another box is accessed. Packing drops HP, status, PP, contest stats and every ribbon except the Champion Ribbon, so deposited Pokémon are healed (`OW_PC_HEAL` is `GEN_7`).
+- Saving is refused while only a pre-2.1 save exists (`SAVE_STATUS_OUTDATED`); players convert it on the website Save Converter (`BPEDocumentation/site/save-converter.html`) or clear it.
+- RAM is nearly full: 41 boxes needed a smaller `HEAP_SIZE` and `MAX_MAP_DATA_SIZE`, and contest data at the top of the heap was moved down. `BPETools/tests/test_ram_budget.py` checks the map and heap limits. Debug builds show the heap peak under Debug menu > Utilities > Check save block.
+- If a save block, the box header, `struct BoxPokemon` or the packed layout changes, update together: the sizes in `test/save.c`, `BPETools/bpe_save_format.py`, `BPEDocumentation/site/js/save-converter.js`, the save inspector, and (for the packed layout) the vectors with `python BPETools/save_format_vectors.py`. A changed layout also needs a new `SAVE_FORMAT_VERSION` and a converter path for existing 2.1 saves.
+- Tests: `make check TESTS=test/save.c` (packing, the box cache, save/load and power cuts in the real game), `python BPETools/save_sim/run_save_sim.py --seeds 96 --sessions 150` (host power-cut simulator for the engine, with AddressSanitizer), and `python -m unittest BPETools/tests/test_bpe_save_format.py` (Python and website converter against the game's C code and local player saves, which are never committed).
+
 ### Cumulative API changes by expansion version
 
 | Version | Change |
