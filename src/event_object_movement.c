@@ -2057,7 +2057,7 @@ u8 CreateObjectGraphicsSpriteWithTag(u16 graphicsId, void (*callback)(struct Spr
         LoadObjectEventPalette(spriteTemplate->paletteTag);
     }
 
-    spriteId = CreateSprite(spriteTemplate, x, y, subpriority);
+    spriteId = CreateSpriteUnchecked(spriteTemplate, x, y, subpriority);
 
     Free(spriteTemplate);
 
@@ -2842,7 +2842,13 @@ static void SpawnLightSprite(s16 x, s16 y, s16 camX, s16 camY, u32 lightType)
     lightType = min(lightType, ARRAY_COUNT(gFieldEffectLightTemplates) - 1); // bounds checking
     template = gFieldEffectLightTemplates[lightType];
     LoadSpriteSheetByTemplate(template, 0, 0);
-    sprite = &gSprites[CreateSprite(template, 0, 0, 0)];
+    // BPE: a lamp glow is cosmetic. With the sprite table full (rain, grass and
+    // shadows on a busy map) skip it instead of crashing; it is retried the next
+    // time this light is found in view without a sprite.
+    i = CreateSpriteUnchecked(template, 0, 0, 0);
+    if (i == MAX_SPRITES)
+        return;
+    sprite = &gSprites[i];
     if (lightType == 0 && (i = IndexOfSpritePaletteTag(template->paletteTag + 1)) < 16)
         sprite->oam.paletteNum = i;
     else

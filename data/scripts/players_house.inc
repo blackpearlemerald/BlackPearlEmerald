@@ -304,6 +304,7 @@ PlayersHouse_1F_EventScript_Mom::
 	lock
 	faceplayer
 	goto_if_unset FLAG_V1PATCH, PlayersHouse_1F_EventScript_V1PATCH
+	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveLevelLimiter
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_MAY, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_set FLAG_HAS_MATCH_CALL, PlayersHouse_1F_EventScript_TryRegisterMom
@@ -313,6 +314,21 @@ PlayersHouse_1F_EventScript_Mom::
 	msgbox PlayersHouse_1F_Text_IsntItNiceInHere, MSGBOX_DEFAULT
 	release
 	end
+
+@ BPE: Standard saves made before the Level Limiter existed get it from Mom.
+PlayersHouse_1F_EventScript_TryGiveLevelLimiter::
+	goto_if_set FLAG_RECEIVED_LEVEL_LIMITER, PlayersHouse_1F_EventScript_TryGiveLevelLimiterDone
+	msgbox PlayersHouse_1F_Text_HereIsLevelLimiter, MSGBOX_DEFAULT
+	giveitem ITEM_LEVEL_LIMITER
+	setflag FLAG_RECEIVED_LEVEL_LIMITER
+PlayersHouse_1F_EventScript_TryGiveLevelLimiterDone::
+	return
+
+PlayersHouse_1F_Text_HereIsLevelLimiter:
+	.string "MOM: Oh, honey, before I forget!\p"
+	.string "This LEVEL LIMITER turns the badge\n"
+	.string "level caps on or off, whenever you\l"
+	.string "like. Take it with you!$"
 
 PlayersHouse_1F_EventScript_V1PATCH::
 	giveitem ITEM_CANDY_JAR

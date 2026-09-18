@@ -925,6 +925,44 @@ void ItemUseOutOfBattle_PPUp(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
+static const u8 sText_LevelCapsOn[] = _("Level caps are now ON.\nYour Pokémon stop at the level\pyour badges allow.{PAUSE_UNTIL_PRESS}");
+static const u8 sText_LevelCapsOff[] = _("Level caps are now OFF.{PAUSE_UNTIL_PRESS}");
+static const u8 sText_LevelCapsNuzlocke[] = _("Level caps can't be turned off\nduring a Nuzlocke challenge.{PAUSE_UNTIL_PRESS}");
+
+// BPE: switches Standard mode's badge level caps on or off. Nuzlocke mode always
+// has them, so the switch does nothing there.
+void ItemUseOutOfBattle_LevelLimiter(u8 taskId)
+{
+    const u8 *text;
+
+    if (FlagGet(FLAG_NUZLOCKE))
+    {
+        text = sText_LevelCapsNuzlocke;
+    }
+    else if (FlagGet(FLAG_STANDARD_LEVEL_CAPS))
+    {
+        FlagClear(FLAG_STANDARD_LEVEL_CAPS);
+        text = sText_LevelCapsOff;
+    }
+    else
+    {
+        FlagSet(FLAG_STANDARD_LEVEL_CAPS);
+        text = sText_LevelCapsOn;
+    }
+
+    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+        DisplayItemMessage(taskId, FONT_NORMAL, text, CloseItemMessage);
+    else
+        DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
+}
+
+// BPE: using a Ball on a party Pokemon moves it into that Ball.
+void ItemUseOutOfBattle_Ball(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_Ball;
+    SetUpItemUseCallback(taskId);
+}
+
 void ItemUseOutOfBattle_RareCandy(u8 taskId)
 {
     gItemUseCB = ItemUseCB_RareCandy;

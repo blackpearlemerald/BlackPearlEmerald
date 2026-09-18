@@ -33,5 +33,6 @@ void DoHitAnimHealthboxEffect(enum BattlerId battler);
 void LoadBallGfx(enum PokeBall ballId);
 void FreeBallGfx(enum PokeBall ballId);
 enum PokeBall ItemIdToBallId(u32 ballItem);
+enum Item BallIdToItemId(enum PokeBall ballId); // BPE
 
 #endif // GUARD_POKEBALL_H

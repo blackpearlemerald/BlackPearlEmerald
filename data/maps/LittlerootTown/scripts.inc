@@ -895,6 +895,15 @@ LittlerootTown_EventScript_SetReceivedRunningShoes::
 	release
 	end
 
+@ BPE: Standard mode's switch for the badge level caps. Guarded so a save that
+@ already got it from Mom is not given a second one.
+LittlerootTown_EventScript_GiveLevelLimiter::
+	goto_if_set FLAG_RECEIVED_LEVEL_LIMITER, LittlerootTown_EventScript_GiveLevelLimiterDone
+	giveitem ITEM_LEVEL_LIMITER
+	setflag FLAG_RECEIVED_LEVEL_LIMITER
+LittlerootTown_EventScript_GiveLevelLimiterDone::
+	return
+
 LittlerootTown_EventScript_GiveRunningShoes::
 	msgbox LittlerootTown_Text_WearTheseRunningShoes, MSGBOX_DEFAULT
 	playfanfare MUS_OBTAIN_ITEM
@@ -912,6 +921,7 @@ LittlerootTown_EventScript_GiveRunningShoes::
 	giveitem ITEM_OLD_ROD
 	giveitem ITEM_ESCAPE_ROPE
 	giveitem ITEM_POCKET_WATCH
+	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveLevelLimiter
 	setflag FLAG_RECEIVED_OLD_ROD
 	setflag FLAG_V1PATCH
 	msgbox LittlerootTown_Text_ComeHomeIfAnythingHappens, MSGBOX_DEFAULT

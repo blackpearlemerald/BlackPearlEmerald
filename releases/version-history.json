@@ -1,6 +1,23 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.1-beta": {
+      "channel": "beta",
+      "changes": [
+        "Turned EVs off entirely in Nuzlocke mode: your Pokémon gain none and ignore any they already have, and enemy trainers have none. Standard mode keeps EVs.",
+        "Removed level caps from Standard mode. Standard players get a new Level Limiter key item from Mom to switch the caps back on at any time. The Candy Jar still stops at your badge level in both modes.",
+        "Smoothed Standard mode trainer levels: trainers now rise gradually from the previous level cap up to each gym leader, who sits exactly on the cap. Nuzlocke levels are unchanged.",
+        "Rebuilt every rematch as the trainer's original team, 5 levels higher each time.",
+        "Strengthened the teams of Sawyer, Shelby and Lung to match nearby trainers.",
+        "Use a Poké Ball on a party Pokémon to change the ball it's in. The old ball goes back into your Bag.",
+        "Using an HM from the Bag now needs a Pokémon in your party that can learn it. It still doesn't have to know the move, so a Charizard can Fly but not Surf.",
+        "Added a Mode row to the trainer card showing Nuzlocke or Standard, and tidied the card's rows.",
+        "Fixed a crash when running through Route 120 in the rain.",
+        "Fixed the move category icon staying on screen during Wally's catching tutorial.",
+        "Fixed black pixels on the Trainer School windows after viewing a Pokémon's summary.",
+        "The Trainers page on this website now shows both Nuzlocke and Standard levels."
+      ]
+    },
     "2.1.0-beta": {
       "channel": "beta",
       "changes": [

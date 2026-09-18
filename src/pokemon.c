@@ -1386,11 +1386,12 @@ void CalculateMonStats(struct Pokemon *mon)
     bool32 hyperTrained[NUM_STATS]; //In a battle test, hyper training flag indicates a fixed stat
     s32 iv[NUM_STATS];
     s32 ev[NUM_STATS];
+    bool32 evsDisabled = FlagGet(FLAG_NUZLOCKE); // BPE Nuzlocke: EVs never contribute to stats, on either side
     for (u32 i = 0; i < NUM_STATS; i++)
     {
         hyperTrained[i] = GetMonData(mon, MON_DATA_HYPER_TRAINED_HP + i);
         iv[i] = GetMonData(mon, MON_DATA_HP_IV + i);
-        ev[i] = GetMonData(mon, MON_DATA_HP_EV + i);
+        ev[i] = evsDisabled ? 0 : GetMonData(mon, MON_DATA_HP_EV + i);
 
         if (hyperTrained[i])
         {
@@ -3955,7 +3956,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, enum Item item, u8 partyIndex, 
 
                     if (B_RARE_CANDY_CAP && B_EXP_CAP_TYPE == EXP_CAP_HARD)
                     {
-                        u32 currentLevelCap = GetCurrentLevelCap();
+                        u32 currentLevelCap = GetLevelCapForItem(item);
                         if (dataUnsigned > gExperienceTables[gSpeciesInfo[species].growthRate][currentLevelCap])
                             dataUnsigned = gExperienceTables[gSpeciesInfo[species].growthRate][currentLevelCap];
                     }

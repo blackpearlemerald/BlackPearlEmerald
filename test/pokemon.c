@@ -1,9 +1,12 @@
 #include "global.h"
 #include "battle.h"
 #include "caps.h"
+#include "data.h"
 #include "egg_hatch.h"
 #include "event_data.h"
 #include "new_game.h"
+#include "item.h"
+#include "party_menu.h"
 #include "pokemon.h"
 #include "test/overworld_script.h"
 #include "test/test.h"
@@ -36,7 +39,7 @@ TEST("Candy Jar raises a Pokemon to each badge-based level cap")
     {
         enum GrowthRate growthRate = gSpeciesInfo[SPECIES_WOBBUFFET].growthRate;
 
-        EXPECT_EQ(GetCurrentLevelCap(), sExpectedCaps[i]);
+        EXPECT_EQ(GetProgressLevelCap(), sExpectedCaps[i]);
         EXPECT(!PokemonUseItemEffects(&mon, ITEM_CANDY_JAR, 0, 0, FALSE));
         EXPECT_EQ(GetMonData(&mon, MON_DATA_LEVEL), sExpectedCaps[i]);
         EXPECT_EQ(GetMonData(&mon, MON_DATA_EXP), gExperienceTables[growthRate][sExpectedCaps[i]]);
@@ -44,6 +47,119 @@ TEST("Candy Jar raises a Pokemon to each badge-based level cap")
         if (i < ARRAY_COUNT(sProgressFlags))
             FlagSet(sProgressFlags[i]);
     }
+}
+
+// BPE: level caps are enforced in Nuzlocke mode only; Standard mode plays uncapped.
+TEST("Level caps apply only in Nuzlocke mode")
+{
+    static const u16 sProgressFlags[] = {
+        FLAG_BADGE01_GET,
+        FLAG_BADGE02_GET,
+        FLAG_BADGE03_GET,
+        FLAG_BADGE04_GET,
+        FLAG_BADGE05_GET,
+        FLAG_BADGE06_GET,
+        FLAG_BADGE07_GET,
+        FLAG_BADGE08_GET,
+        FLAG_IS_CHAMPION,
+    };
+    struct Pokemon standardMon, nuzlockeMon;
+    u32 exp = gExperienceTables[gSpeciesInfo[SPECIES_WOBBUFFET].growthRate][16];
+
+    for (u32 i = 0; i < ARRAY_COUNT(sProgressFlags); i++)
+        FlagClear(sProgressFlags[i]);
+
+    CreateMon(&standardMon, SPECIES_WOBBUFFET, 15, 0, OTID_STRUCT_PRESET(0));
+    CreateMon(&nuzlockeMon, SPECIES_WOBBUFFET, 15, 0, OTID_STRUCT_PRESET(0));
+    SetMonData(&standardMon, MON_DATA_EXP, &exp);
+    SetMonData(&nuzlockeMon, MON_DATA_EXP, &exp);
+
+    // Standard mode: no badge cap is enforced and experience is not withheld.
+    FlagClear(FLAG_NUZLOCKE);
+    FlagClear(FLAG_STANDARD_LEVEL_CAPS);
+    EXPECT_EQ(GetProgressLevelCap(), 15);
+    EXPECT_EQ(GetCurrentLevelCap(), MAX_LEVEL);
+    EXPECT_EQ(GetSoftLevelCapExpValue(20, 1000), 1000);
+    EXPECT(TryIncrementMonLevel(&standardMon));
+    EXPECT_EQ(GetMonData(&standardMon, MON_DATA_LEVEL), 16);
+
+    // Nuzlocke mode: the badge cap still stops levels and experience.
+    FlagSet(FLAG_NUZLOCKE);
+    EXPECT_EQ(GetCurrentLevelCap(), 15);
+    EXPECT_EQ(GetSoftLevelCapExpValue(20, 1000), 0);
+    EXPECT(!TryIncrementMonLevel(&nuzlockeMon));
+    EXPECT_EQ(GetMonData(&nuzlockeMon, MON_DATA_LEVEL), 15);
+
+    // Standard mode with the Level Limiter switched on follows the badge cap too.
+    FlagClear(FLAG_NUZLOCKE);
+    FlagSet(FLAG_STANDARD_LEVEL_CAPS);
+    EXPECT_EQ(GetCurrentLevelCap(), 15);
+    EXPECT_EQ(GetSoftLevelCapExpValue(20, 1000), 0);
+    EXPECT(!TryIncrementMonLevel(&nuzlockeMon));
+
+    FlagClear(FLAG_STANDARD_LEVEL_CAPS);
+}
+
+// BPE: Nuzlocke mode uses each trainer's Level, Standard mode its Standard Level.
+TEST("Trainer parties use Standard Level outside Nuzlocke mode")
+{
+    // The test build replaces the shipped trainer table, so describe one here.
+    static const struct TrainerMon sParty[] =
+    {
+        {
+            .species = SPECIES_WOBBUFFET,
+            .lvl = 40,
+            .standardLvl = 25,
+            .iv = TRAINER_PARTY_IVS(0, 0, 0, 0, 0, 0),
+        },
+    };
+    static const struct Trainer sTrainer =
+    {
+        .party = sParty,
+        .partySize = ARRAY_COUNT(sParty),
+        .battleType = TRAINER_BATTLE_TYPE_SINGLES,
+    };
+    struct Pokemon party[PARTY_SIZE];
+
+    FlagClear(FLAG_NUZLOCKE);
+    CreateNPCTrainerPartyFromTrainer(party, &sTrainer, FALSE, BATTLE_TYPE_TRAINER);
+    EXPECT_EQ(GetMonData(&party[0], MON_DATA_LEVEL), sParty[0].standardLvl);
+
+    FlagSet(FLAG_NUZLOCKE);
+    CreateNPCTrainerPartyFromTrainer(party, &sTrainer, FALSE, BATTLE_TYPE_TRAINER);
+    EXPECT_EQ(GetMonData(&party[0], MON_DATA_LEVEL), sParty[0].lvl);
+
+    FlagClear(FLAG_NUZLOCKE);
+}
+
+// BPE: an HM in the bag lets a Pokemon use its field move only if it could learn it.
+TEST("Bag HMs need a party Pokemon that could learn them")
+{
+    ZeroPlayerPartyMons();
+    FlagClear(FLAG_NUZLOCKE);
+    RUN_OVERWORLD_SCRIPT(
+        givemon SPECIES_CHARIZARD, 50;
+        givemon SPECIES_BLASTOISE, 50;
+    );
+
+    // Neither knows these moves; only compatibility counts.
+    EXPECT(CanMonUseBagFieldMove(&gParties[B_TRAINER_PLAYER][0], MOVE_FLY));
+    EXPECT(!CanMonUseBagFieldMove(&gParties[B_TRAINER_PLAYER][0], MOVE_SURF));
+    EXPECT(CanMonUseBagFieldMove(&gParties[B_TRAINER_PLAYER][1], MOVE_SURF));
+    EXPECT(!CanMonUseBagFieldMove(&gParties[B_TRAINER_PLAYER][1], MOVE_FLY));
+
+    // The Pokemon used is one that could learn the move, not simply the lead.
+    EXPECT_EQ(GetBagFieldMoveUser(MOVE_SURF), 1);
+    EXPECT_EQ(GetBagFieldMoveUser(MOVE_CUT), 0);
+    EXPECT_EQ(GetBagFieldMoveUser(MOVE_FLASH), PARTY_SIZE);
+
+    // With the HMs in the bag, Surf works through Blastoise and Flash through nobody.
+    AddBagItem(ITEM_HM_SURF, 1);
+    AddBagItem(ITEM_HM_FLASH, 1);
+    EXPECT(PlayerHasMove(MOVE_SURF));
+    EXPECT(!PlayerHasMove(MOVE_FLASH));
+    RemoveBagItem(ITEM_HM_SURF, 1);
+    RemoveBagItem(ITEM_HM_FLASH, 1);
 }
 
 TEST("Nature independent from Hidden Nature")
@@ -616,6 +732,40 @@ TEST("CalculateMonStats")
 
 }
 
+// BPE Nuzlocke: EVs are switched off in Nuzlocke mode, for the player and for enemy trainers.
+TEST("Nuzlocke mode disables EVs")
+{
+    struct Pokemon mon;
+
+    ZeroPlayerPartyMons();
+    FlagSet(FLAG_NUZLOCKE);
+
+    RUN_OVERWORLD_SCRIPT(
+        givemon SPECIES_WOBBUFFET, 100, item=ITEM_LEFTOVERS, ball=BALL_MASTER, nature=NATURE_BOLD, abilityNum=2, gender=MON_MALE, hpEv=1, atkEv=2, defEv=3, speedEv=4, spAtkEv=5, spDefEv=6, hpIv=7, atkIv=8, defIv=9, speedIv=10, spAtkIv=11, spDefIv=12, move1=MOVE_SCRATCH, move2=MOVE_SPLASH, move3=MOVE_CELEBRATE, move4=MOVE_EXPLOSION, shinyMode=SHINY_MODE_ALWAYS, gmaxFactor=TRUE, teraType=TYPE_FIRE, dmaxLevel=7;
+    );
+
+    // The Pokemon from the CalculateMonStats test above, whose stored EVs must not count.
+    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_MAX_HP), 497);
+    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_ATK), 71);
+    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_DEF), 143);
+    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPEED), 81);
+    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPATK), 82);
+    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPDEF), 133);
+
+    // Nothing can add EVs while the cap is zero: not battles, not vitamins.
+    CreateMon(&mon, SPECIES_WOBBUFFET, 5, 0, OTID_STRUCT_PRESET(0));
+    EXPECT_EQ(GetCurrentEVCap(), 0);
+    MonGainEVs(&mon, SPECIES_WOBBUFFET);
+    EXPECT_EQ(GetMonEVCount(&mon), 0);
+    EXPECT(PokemonUseItemEffects(&mon, ITEM_HP_UP, 0, 0, FALSE));
+    EXPECT_EQ(GetMonEVCount(&mon), 0);
+
+    // Standard mode keeps EVs exactly as they were.
+    FlagClear(FLAG_NUZLOCKE);
+    EXPECT_EQ(GetCurrentEVCap(), MAX_TOTAL_EVS);
+    MonGainEVs(&mon, SPECIES_WOBBUFFET);
+    EXPECT_EQ(GetMonEVCount(&mon), gSpeciesInfo[SPECIES_WOBBUFFET].evYield_HP);
+}
 TEST("BoxPokemon encryption works")
 {
     // This test exists to ensure that expansion has not broken anything with regards to how BoxPokemon encryption works.

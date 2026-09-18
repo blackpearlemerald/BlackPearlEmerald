@@ -1916,12 +1916,17 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 otId.method = OT_ID_PRESET;
                 otId.value = HIHALF(personalityValue) ^ LOHALF(personalityValue);
             }
-            CreateMon(&party[i], partyData[monIndex].species, partyData[monIndex].lvl, personalityValue, otId);
+            // BPE: Standard mode uses the trainer's Standard Level where one is set.
+            u32 level = partyData[monIndex].lvl;
+            if (party != gParties[B_TRAINER_PLAYER] && partyData[monIndex].standardLvl != 0 && !FlagGet(FLAG_NUZLOCKE))
+                level = partyData[monIndex].standardLvl;
+
+            CreateMon(&party[i], partyData[monIndex].species, level, personalityValue, otId);
             SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[monIndex].heldItem);
 
             CustomTrainerPartyAssignMoves(&party[i], &partyData[monIndex]);
             SetMonData(&party[i], MON_DATA_IVS, &(partyData[monIndex].iv));
-            if (partyData[monIndex].ev != NULL)
+            if (partyData[monIndex].ev != NULL && !FlagGet(FLAG_NUZLOCKE)) // BPE Nuzlocke: enemy trainers battle with 0 EVs
             {
                 SetMonData(&party[i], MON_DATA_HP_EV, &(partyData[monIndex].ev[0]));
                 SetMonData(&party[i], MON_DATA_ATK_EV, &(partyData[monIndex].ev[1]));

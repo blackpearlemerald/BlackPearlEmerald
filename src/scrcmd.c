@@ -2333,10 +2333,15 @@ bool8 ScrCmd_checkfieldmove(struct ScriptContext *ctx)
             break;
         }
     }
-    //MODERN HM: If no mon has the move but the player has the HM in bag, use the first mon
-    if (gSpecialVar_Result == PARTY_SIZE && PlayerHasMove(move)) {
-            gSpecialVar_Result = 0;
-            gSpecialVar_0x8004 = GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPECIES, NULL);
+    // BPE: if no Pokemon knows the move but its HM is in the bag, use the first Pokemon
+    // that could learn it. Only the Taxi Ticket's Fly has no such Pokemon, so it falls
+    // back to the lead.
+    if (gSpecialVar_Result == PARTY_SIZE && PlayerHasMove(move))
+    {
+        u32 user = GetBagFieldMoveUser(move);
+
+        gSpecialVar_Result = (user < PARTY_SIZE) ? user : 0;
+        gSpecialVar_0x8004 = GetMonData(&gParties[B_TRAINER_PLAYER][gSpecialVar_Result], MON_DATA_SPECIES, NULL);
     }
     return FALSE;
 }

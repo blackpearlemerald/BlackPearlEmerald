@@ -178,6 +178,10 @@
   image-rendering: pixelated;
 }
 
+.tr-mon-lv-std {
+  color: #4db87a;
+}
+
 .tr-mon-lv {
   font-size: 10px;
   color: #7e93a8;

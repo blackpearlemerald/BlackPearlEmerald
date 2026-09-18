@@ -1930,6 +1930,12 @@ void ExtractMonSkillIvData(struct Pokemon *mon, struct PokeSummary *sum)
 
 void ExtractMonSkillEvData(struct Pokemon *mon, struct PokeSummary *sum)
 {
+    if (FlagGet(FLAG_NUZLOCKE)) // BPE Nuzlocke: EVs are disabled, so this page always reads zero
+    {
+        sum->currentHP = sum->atk = sum->def = sum->spatk = sum->spdef = sum->speed = 0;
+        return;
+    }
+
     sum->currentHP = GetMonData(mon, MON_DATA_HP_EV);
     sum->atk = GetMonData(mon, MON_DATA_ATK_EV);
     sum->def = GetMonData(mon, MON_DATA_DEF_EV);

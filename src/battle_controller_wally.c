@@ -341,6 +341,13 @@ static void WallyHandleChooseMove(enum BattlerId battler)
         {
             PlaySE(SE_SELECT);
             BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_EXEC_SCRIPT, 0x100);
+            // BPE: InitMoveSelectionsVarsAndStrings drew the move category icon; clear it
+            // when the move is chosen, as the player's controller does.
+            if (gCategoryIconSpriteId != 0xFF)
+            {
+                DestroySprite(&gSprites[gCategoryIconSpriteId]);
+                gCategoryIconSpriteId = 0xFF;
+            }
             BtlController_Complete(battler);
         }
         break;

@@ -72,6 +72,7 @@ struct TrainerMon
     enum Item heldItem;
     enum Ability ability;
     u8 lvl;
+    u8 standardLvl; // BPE: level used outside Nuzlocke mode; 0 means the same as lvl.
     enum PokeBall ball:8;
     u8 friendship;
     u8 nature:5;

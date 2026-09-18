@@ -72,6 +72,10 @@ struct Pokemon
     int level;
     int level_line;
 
+    // BPE: optional level used in Standard mode; 0 means "same as Level".
+    int standard_level;
+    int standard_level_line;
+
     struct String ball;
     int ball_line;
 
@@ -1458,6 +1462,14 @@ static bool parse_trainer(struct Parser *p, const struct Parsed *parsed, struct 
                 if (!token_int(p, &value, &pokemon->level))
                     any_error = !show_parse_error(p);
             }
+            else if (is_literal_token(&key, "Standard Level"))
+            {
+                if (pokemon->standard_level_line)
+                    any_error = !set_show_parse_error(p, key.location, "duplicate 'Standard Level'");
+                pokemon->standard_level_line = value.location.line;
+                if (!token_int(p, &value, &pokemon->standard_level))
+                    any_error = !show_parse_error(p);
+            }
             else if (is_literal_token(&key, "Ball"))
             {
                 if (pokemon->ball_line)
@@ -1521,7 +1533,7 @@ static bool parse_trainer(struct Parser *p, const struct Parsed *parsed, struct 
             }
             else
             {
-                any_error = !set_show_parse_error(p, key.location, "expected one of 'EVs', 'IVs', 'Ability', 'Level', 'Ball', 'Happiness', 'Nature', 'Shiny', 'Dynamax Level', 'Gigantamax', or 'Tera Type'");
+                any_error = !set_show_parse_error(p, key.location, "expected one of 'EVs', 'IVs', 'Ability', 'Level', 'Standard Level', 'Ball', 'Happiness', 'Nature', 'Shiny', 'Dynamax Level', 'Gigantamax', or 'Tera Type'");
             }
         }
 
@@ -2064,6 +2076,12 @@ static void fprint_trainers(const char *output_path, FILE *f, struct Parsed *par
             {
                 fprintf(f, "#line %d\n", pokemon->level_line);
                 fprintf(f, "            .lvl = %d,\n", pokemon->level);
+            }
+
+            if (pokemon->standard_level_line)
+            {
+                fprintf(f, "#line %d\n", pokemon->standard_level_line);
+                fprintf(f, "            .standardLvl = %d,\n", pokemon->standard_level);
             }
 
             if (pokemon->ball_line)

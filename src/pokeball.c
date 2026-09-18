@@ -1438,6 +1438,21 @@ static enum PokeBall GetBattlerPokeballItemId(enum BattlerId battler)
     return GetMonData(mon, MON_DATA_POKEBALL);
 }
 
+// BPE: which Ball item stores a Pokemon in this Ball, so a swapped out Ball can be
+// returned to the Bag. ITEM_NONE when no item corresponds to it.
+enum Item BallIdToItemId(enum PokeBall ballId)
+{
+    enum Item item;
+
+    for (item = ITEM_NONE + 1; item < ITEMS_COUNT; item++)
+    {
+        if (GetItemPocket(item) == POCKET_POKE_BALLS && GetItemSecondaryId(item) == ballId)
+            return item;
+    }
+
+    return ITEM_NONE;
+}
+
 enum PokeBall ItemIdToBallId(u32 ballItem)
 {
     enum PokeBall secondaryId = GetItemSecondaryId(ballItem);

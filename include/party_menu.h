@@ -100,6 +100,7 @@ enum Move ItemIdToBattleMoveId(enum Item item);
 bool8 MonKnowsMove(struct Pokemon *mon, enum Move move);
 bool8 BoxMonKnowsMove(struct BoxPokemon *boxMon, enum Move move);
 void ItemUseCB_TMHM(u8 taskId, TaskFunc task);
+void ItemUseCB_Ball(u8 taskId, TaskFunc task); // BPE
 void ItemUseCB_RareCandy(u8 taskId, TaskFunc task);
 void ItemUseCB_DynamaxCandy(u8 taskId, TaskFunc task);
 void ItemUseCB_SacredAsh(u8 taskId, TaskFunc task);
@@ -147,6 +148,8 @@ bool32 SetUpFieldMove_Waterfall(void);
 bool32 SetUpFieldMove_Dive(void);
 bool32 SetUpFieldMove_RockClimb(void);
 bool8 PlayerHasMove(u16 move); // BPE: used for modern HM field move checks
+bool32 CanMonUseBagFieldMove(struct Pokemon *mon, u16 move); // BPE
+u32 GetBagFieldMoveUser(u16 move); // BPE
 
 #if TESTING
 s8 Test_UpdatePartySelectionSingleLayout(s8 slotId, s8 movementDir, bool8 chooseHalf, u8 lastSelectedSlot);

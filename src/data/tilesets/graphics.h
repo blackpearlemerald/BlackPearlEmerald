@@ -416,7 +416,7 @@ const u16 gTilesetPalettes_Cave[][16] =
     INCGFX_U16("data/tilesets/secondary/cave/palettes/15.pal", ".gbapal"),
 };
 
-const u32 gTilesetTiles_PokemonSchool[] = INCGFX_U32("data/tilesets/secondary/pokemon_school/tiles.png", ".4bpp.fastSmol", "-num_tiles 278 -Wnum_tiles");
+const u32 gTilesetTiles_PokemonSchool[] = INCGFX_U32("data/tilesets/secondary/pokemon_school/tiles.png", ".4bpp.fastSmol", "-num_tiles 282 -Wnum_tiles");
 
 const u16 gTilesetPalettes_PokemonSchool[][16] =
 {

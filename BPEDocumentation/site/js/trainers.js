@@ -70,18 +70,28 @@
       locHtml = '<span class="tr-loc-none">Script / Battle only</span>';
     }
 
+    // BPE: Nuzlocke and Standard mode run different trainer levels.
+    function hasStd(m) { return m.standardLevel && m.standardLevel !== m.level; }
+    function levelText(m) {
+      return hasStd(m) ? '(nuz:' + m.level + ') [std:' + m.standardLevel + ']' : 'Lv ' + m.level;
+    }
+
     var partyHtml = t.party.map(function (m) {
       var icon = m.sprite
         ? '<img class="tr-mon-icon" src="img/pokemon/' + esc(m.sprite) + '" alt="' + esc(m.species) + '" onerror="this.remove()" loading="lazy">'
         : '';
-      return '<div class="tr-mon-chip" title="' + esc(m.species) + ' Lv ' + m.level + '">'
-        + icon + '<span class="tr-mon-lv">Lv ' + m.level + '</span></div>';
+      var lvHtml = hasStd(m)
+        ? '<span class="tr-mon-lv">nuz ' + m.level + '</span>'
+          + '<span class="tr-mon-lv tr-mon-lv-std">std ' + m.standardLevel + '</span>'
+        : '<span class="tr-mon-lv">Lv ' + m.level + '</span>';
+      return '<div class="tr-mon-chip" title="' + esc(m.species) + ' ' + levelText(m) + '">'
+        + icon + lvHtml + '</div>';
     }).join('');
 
     var detailHtml = t.party.map(function (m) {
       var head = '<strong>' + esc(m.species) + '</strong>'
         + (m.item ? ' @ ' + esc(m.item) : '');
-      var metaParts = ['Lv. ' + m.level];
+      var metaParts = [hasStd(m) ? levelText(m) : 'Lv. ' + m.level];
       if (m.nature) metaParts.push(esc(m.nature));
       if (m.ability) metaParts.push(esc(m.ability));
       if (m.tera) metaParts.push('Tera: ' + esc(m.tera));

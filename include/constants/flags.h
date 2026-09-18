@@ -1228,8 +1228,8 @@
 #define FLAG_NUZLOCKE                                               0x493 // NUZLOCKE MODE
 #define FLAG_EXP_SHARE_FLAG                                         0x494 // EXP SHARE
 #define FLAG_V1PATCH                                                0x495 // USED FOR V0.9.9.3 to v1.0 PATCH!
-#define FLAG_UNUSED_0x496                                           0x496 // Unused Flag
-#define FLAG_UNUSED_0x497                                           0x497 // Unused Flag
+#define FLAG_STANDARD_LEVEL_CAPS                                    0x496 // BPE: Standard mode level caps on (Level Limiter)
+#define FLAG_RECEIVED_LEVEL_LIMITER                                 0x497 // BPE: the Level Limiter has been handed out
 #define FLAG_UNUSED_0x498                                           0x498 // Unused Flag
 #define FLAG_UNUSED_0x499                                           0x499 // Unused Flag
 #define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag

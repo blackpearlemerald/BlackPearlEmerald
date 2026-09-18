@@ -5,7 +5,8 @@
 #include "pokemon.h"
 
 
-u32 GetCurrentLevelCap(void)
+// BPE: the badge-based progression value, whether or not it is being enforced.
+u32 GetProgressLevelCap(void)
 {
     static const u32 sLevelCapFlagMap[][2] =
     {
@@ -36,6 +37,25 @@ u32 GetCurrentLevelCap(void)
     }
 
     return MAX_LEVEL;
+}
+
+u32 GetCurrentLevelCap(void)
+{
+    // BPE: level caps always apply in Nuzlocke mode. Standard mode plays uncapped
+    // unless the player turns them on with the Level Limiter.
+    if (!FlagGet(FLAG_NUZLOCKE) && !FlagGet(FLAG_STANDARD_LEVEL_CAPS))
+        return MAX_LEVEL;
+
+    return GetProgressLevelCap();
+}
+
+// BPE: the Candy Jar stays a catch-up tool, so it follows badge progress in both modes.
+u32 GetLevelCapForItem(enum Item item)
+{
+    if (item == ITEM_CANDY_JAR)
+        return GetProgressLevelCap();
+
+    return GetCurrentLevelCap();
 }
 
 u32 GetSoftLevelCapExpValue(u32 level, u32 expValue)
@@ -96,6 +116,10 @@ u32 GetCurrentEVCap(void)
         {FLAG_BADGE08_GET, MAX_TOTAL_EVS * 15 / 17},
         {FLAG_IS_CHAMPION, MAX_TOTAL_EVS},
     };
+
+    // BPE Nuzlocke: EVs are disabled, so nothing can be gained and EV items have no effect.
+    if (FlagGet(FLAG_NUZLOCKE))
+        return 0;
 
     if (B_EV_CAP_TYPE == EV_CAP_FLAG_LIST)
     {

@@ -48,6 +48,7 @@
 #include "palette.h"
 #include "party_menu.h"
 #include "player_pc.h"
+#include "pokeball.h"
 #include "pokemon.h"
 #include "pokemon_icon.h"
 #include "pokemon_jump.h"
@@ -3037,12 +3038,14 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
         }
     }
 
-    // BPE: Modern HM system — any Pokémon can use an HM in the bag, but only where it
-    // does something, so the 8-entry list keeps room for SWITCH, ITEM and CANCEL.
+    // BPE: Modern HM system — a Pokémon can use an HM in the bag if it could learn it,
+    // but only where it does something, so the 8-entry list keeps room for SWITCH,
+    // ITEM and CANCEL.
     for (j = 0; j < ARRAY_COUNT(sBagHmFieldMoves); j++)
     {
         if (sPartyMenuInternal->numActions <= ARRAY_COUNT(sPartyMenuInternal->actions) - 4
          && CheckBagHasItem(sBagHmFieldMoves[j].item, 1)
+         && CanMonUseBagFieldMove(&mons[slotId], FieldMove_GetMoveId(sBagHmFieldMoves[j].fieldMove))
          && CanUseFieldMoveHere(sBagHmFieldMoves[j].fieldMove))
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, sBagHmFieldMoves[j].fieldMove + MENU_FIELD_MOVES);
     }
@@ -5236,6 +5239,112 @@ void ItemUseCB_AbilityPatch(u8 taskId, TaskFunc task)
 #undef tMonId
 #undef tOldFunc
 
+// BPE: use a Ball from the Bag on a party Pokemon to move it into that Ball. The
+// Ball it was in is returned to the Bag, so no Ball is lost in the swap.
+#define tState      data[0]
+#define tMonId      data[1]
+#define tBallId     data[2]
+#define tOldFunc    4
+
+static const u8 sText_AskMoveToBall[] = _("Move {STR_VAR_1} into\nthe {STR_VAR_2}?");
+static const u8 sText_MovedToBall[] = _("{STR_VAR_1} was moved into\nthe {STR_VAR_2}!");
+
+static void Task_Ball(u8 taskId)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gTasks[taskId].data[1]];
+    s16 *data = gTasks[taskId].data;
+
+    switch (tState)
+    {
+    case 0:
+        // An Egg has no Ball to show, and swapping a Ball for the same one wastes it.
+        if (GetMonData(mon, MON_DATA_IS_EGG)
+         || GetMonData(mon, MON_DATA_POKEBALL) == (u32)tBallId)
+        {
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+            ScheduleBgCopyTilemapToVram(2);
+            gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+            return;
+        }
+        gPartyMenuUseExitCallback = TRUE;
+        GetMonNickname(mon, gStringVar1);
+        CopyItemName(gSpecialVar_ItemId, gStringVar2);
+        StringExpandPlaceholders(gStringVar4, sText_AskMoveToBall);
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 1:
+        if (!IsPartyMenuTextPrinterActive())
+        {
+            PartyMenuDisplayYesNoMenu();
+            tState++;
+        }
+        break;
+    case 2:
+        switch (Menu_ProcessInputNoWrapClearOnChoose())
+        {
+        case 0:
+            tState++;
+            break;
+        case 1:
+        case MENU_B_PRESSED:
+            gPartyMenuUseExitCallback = FALSE;
+            PlaySE(SE_SELECT);
+            ScheduleBgCopyTilemapToVram(2);
+            // Don't exit the party screen, return to choosing a mon.
+            ClearStdWindowAndFrameToTransparent(6, 0);
+            ClearWindowTilemap(6);
+            DisplayPartyMenuStdMessage(5);
+            gTasks[taskId].func = (void *)GetWordTaskArg(taskId, tOldFunc);
+            return;
+        }
+        break;
+    case 3:
+        PlaySE(SE_USE_ITEM);
+        StringExpandPlaceholders(gStringVar4, sText_MovedToBall);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        tState++;
+        break;
+    case 4:
+        if (!IsPartyMenuTextPrinterActive())
+            tState++;
+        break;
+    case 5:
+    {
+        enum Item previousBall = BallIdToItemId(GetMonData(mon, MON_DATA_POKEBALL));
+        u32 ballId = tBallId;
+
+        SetMonData(mon, MON_DATA_POKEBALL, &ballId);
+        RemoveBagItem(gSpecialVar_ItemId, 1);
+        if (previousBall != ITEM_NONE)
+            AddBagItem(previousBall, 1);
+        gTasks[taskId].func = Task_ClosePartyMenu;
+        break;
+    }
+    }
+}
+
+void ItemUseCB_Ball(u8 taskId, TaskFunc task)
+{
+    s16 *data = gTasks[taskId].data;
+
+    tState = 0;
+    tMonId = gPartyMenu.slotId;
+    tBallId = ItemIdToBallId(gSpecialVar_ItemId);
+    SetWordTaskArg(taskId, tOldFunc, (uintptr_t)(gTasks[taskId].func));
+    gTasks[taskId].func = Task_Ball;
+}
+
+#undef tState
+#undef tMonId
+#undef tBallId
+#undef tOldFunc
+
 #define tState      data[0]
 #define tMonId      data[1]
 #define tOldNature  data[2]
@@ -5632,7 +5741,33 @@ bool8 MonKnowsMove(struct Pokemon *mon, enum Move move)
     return FALSE;
 }
 
-// BPE: Modern HM system — checks if player has the relevant HM item in bag
+// BPE: a Pokemon can use a field move from an HM in the Bag if it could learn
+// that HM, whether or not it knows the move. A Charizard can Fly but not Surf.
+bool32 CanMonUseBagFieldMove(struct Pokemon *mon, u16 move)
+{
+    if (GetMonData(mon, MON_DATA_IS_EGG))
+        return FALSE;
+    if (GetMonData(mon, MON_DATA_DEAD) && FlagGet(FLAG_NUZLOCKE))
+        return FALSE;
+    return MonKnowsMove(mon, move) || CanLearnTeachableMove(GetMonData(mon, MON_DATA_SPECIES), move);
+}
+
+// BPE: the first party Pokemon that could use this field move, or PARTY_SIZE.
+u32 GetBagFieldMoveUser(u16 move)
+{
+    u32 i;
+
+    for (i = 0; i < PARTY_SIZE; i++)
+    {
+        if (GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_SPECIES) == SPECIES_NONE)
+            break;
+        if (CanMonUseBagFieldMove(&gParties[B_TRAINER_PLAYER][i], move))
+            return i;
+    }
+    return PARTY_SIZE;
+}
+
+// BPE: Modern HM system — the HM is in the Bag and a party Pokemon could learn it
 bool8 PlayerHasMove(u16 move)
 {
     u16 item;
@@ -5669,7 +5804,12 @@ bool8 PlayerHasMove(u16 move)
         return FALSE;
         break;
     }
-    return CheckBagHasItem(item, 1);
+    if (!CheckBagHasItem(item, 1))
+        return FALSE;
+    // The Taxi Ticket flies without a Pokemon at all, by design.
+    if (move == MOVE_FLY)
+        return TRUE;
+    return GetBagFieldMoveUser(move) < PARTY_SIZE;
 }
 
 bool8 BoxMonKnowsMove(struct BoxPokemon *boxMon, enum Move move)
@@ -5965,7 +6105,7 @@ void ItemUseCB_RareCandy(u8 taskId, TaskFunc task)
     u8 holdEffectParam = GetItemHoldEffectParam(*itemPtr);
 
     sInitialLevel = GetMonData(mon, MON_DATA_LEVEL);
-    if (!(B_RARE_CANDY_CAP && sInitialLevel >= GetCurrentLevelCap()))
+    if (!(B_RARE_CANDY_CAP && sInitialLevel >= GetLevelCapForItem(*itemPtr)))
     {
         BufferMonStatsToTaskData(mon, arrayPtr);
         cannotUseEffect = ExecuteTableBasedItemEffect(mon, *itemPtr, gPartyMenu.slotId, 0);

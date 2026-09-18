@@ -132,6 +132,9 @@ static void PrintNameOnCardFront(void);
 static void PrintIdOnCard(void);
 static void PrintMoneyOnCard(void);
 static void PrintPokedexOnCard(void);
+static void ClearBakedRowDots(u16 *tilemap);
+static void PrintRowDotsOnCardFront(void);
+static void PrintModeOnCardFront(void);
 static void PrintProfilePhraseOnCard(void);
 static bool8 PrintAllOnCardBack(void);
 static void PrintNameOnCardBack(void);
@@ -190,6 +193,20 @@ static const u16 sTrainerCardSticker3_Pal[]      = INCGFX_U16("graphics/trainer_
 static const u16 sTrainerCardSticker4_Pal[]      = INCGFX_U16("graphics/trainer_card/frlg/stickers4.pal", ".gbapal");
 static const u32 sHoennTrainerCardBadges_Gfx[]   = INCGFX_U32("graphics/trainer_card/badges.png", ".4bpp.smol");
 static const u32 sKantoTrainerCardBadges_Gfx[]   = INCGFX_U32("graphics/trainer_card/frlg/badges.png", ".4bpp.smol");
+
+// Positions of the decorative row dots in the card front tilemap.
+#define CARD_TILEMAP_WIDTH      30
+#define ROW_DOT_TILE_COLUMN     2
+#define ROW_DOT_FIRST_TILE_ROW  4
+#define ROW_DOT_LAST_TILE_ROW   14
+#define ROW_DOT_TOP_TILE        37
+#define ROW_DOT_BOTTOM_TILE     53
+#define CARD_STRIPE_TILE        1
+// The art draws the dots with these two card palette colours. They happen to sit
+// at the same indices as the text palette's dynamic slots, so they can be copied
+// across and used directly as text colours.
+#define ROW_DOT_FILL_COLOR      TEXT_DYNAMIC_COLOR_1
+#define ROW_DOT_BORDER_COLOR    TEXT_DYNAMIC_COLOR_2
 
 static const struct BgTemplate sTrainerCardBgTemplates[4] =
 {
@@ -561,6 +578,7 @@ static bool8 LoadCardGfx(void)
             else
                 DecompressDataWithHeaderWram(gKantoTrainerCardFrontLink_Tilemap, sData->frontTilemap);
         }
+        ClearBakedRowDots(sData->frontTilemap);
         break;
     case 3:
         if (sData->cardType != CARD_TYPE_FRLG)
@@ -928,9 +946,10 @@ static bool8 PrintAllOnCardFront(void)
         break;
     case 1:
         PrintIdOnCard();
+        PrintRowDotsOnCardFront();
         break;
     case 2:
-        PrintMoneyOnCard();
+        PrintModeOnCardFront();
         break;
     case 3:
         PrintPokedexOnCard();
@@ -939,6 +958,9 @@ static bool8 PrintAllOnCardFront(void)
         PrintTimeOnCard();
         break;
     case 5:
+        PrintMoneyOnCard();
+        break;
+    case 6:
         PrintProfilePhraseOnCard();
         break;
     default:
@@ -1042,23 +1064,23 @@ static void PrintMoneyOnCard(void)
     u8 top;
 
     if (!sData->isHoenn)
-        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 20, 56, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardMoney);
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, 20, 67, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardMoney);
     else
-        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 16, 57, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardMoney);
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, 16, 68, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardMoney);
 
     ConvertIntToDecimalStringN(gStringVar1, sData->trainerCard.money, STR_CONV_MODE_LEFT_ALIGN, MAX_MONEY_DIGITS);
     StringExpandPlaceholders(gStringVar4, gText_PokedollarVar1);
     if (!sData->isHoenn)
     {
-        xOffset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 144);
-        top = 56;
+        xOffset = GetStringRightAlignXOffset(FONT_SMALL, gStringVar4, 144);
+        top = 67;
     }
     else
     {
-        xOffset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 128);
-        top = 57;
+        xOffset = GetStringRightAlignXOffset(FONT_SMALL, gStringVar4, 128);
+        top = 68;
     }
-    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, xOffset, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, xOffset, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
 }
 
 static u16 GetCaughtMonsCount(void)
@@ -1076,21 +1098,21 @@ static void PrintPokedexOnCard(void)
     if (FlagGet(FLAG_SYS_POKEDEX_GET))
     {
         if (!sData->isHoenn)
-            AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 20, 72, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardPokedex);
+            AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, 20, 78, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardPokedex);
         else
-            AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 16, 73, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardPokedex);
+            AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, 16, 79, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardPokedex);
         StringCopy(ConvertIntToDecimalStringN(gStringVar4, sData->trainerCard.caughtMonsCount, STR_CONV_MODE_LEFT_ALIGN, 4), gText_EmptyString6);
         if (!sData->isHoenn)
         {
-            xOffset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 144);
-            top = 72;
+            xOffset = GetStringRightAlignXOffset(FONT_SMALL, gStringVar4, 144);
+            top = 78;
         }
         else
         {
-            xOffset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 128);
-            top = 73;
+            xOffset = GetStringRightAlignXOffset(FONT_SMALL, gStringVar4, 128);
+            top = 79;
         }
-        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, xOffset, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, xOffset, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
     }
 }
 
@@ -1101,12 +1123,14 @@ static void PrintTimeOnCard(void)
     u16 hours;
     u16 minutes;
     s32 width;
-    u32 x, y, totalWidth;
+    u32 x, y, totalWidth, hoursWidth;
+    u8 hoursText[8];
+    u8 minutesText[8];
 
     if (!sData->isHoenn)
-        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 20, 88, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardTime);
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, 20, 89, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardTime);
     else
-        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 16, 89, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardTime);
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, 16, 90, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardTime);
 
     if (sData->isLink)
     {
@@ -1123,29 +1147,93 @@ static void PrintTimeOnCard(void)
         hours = 999;
     if (minutes > 59)
         minutes = 59;
-    width = GetStringWidth(FONT_NORMAL, gText_Colon2, 0);
+    width = GetStringWidth(FONT_SMALL, gText_Colon2, 0);
 
     if (!sData->isHoenn)
     {
         x = 144;
-        y = 88;
+        y = 89;
     }
     else
     {
         x = 128;
-        y = 89;
+        y = 90;
     }
-    totalWidth = width + 30;
+    ConvertIntToDecimalStringN(hoursText, hours, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    ConvertIntToDecimalStringN(minutesText, minutes, STR_CONV_MODE_LEADING_ZEROS, 2);
+    hoursWidth = GetStringWidth(FONT_SMALL, hoursText, 0);
+    totalWidth = hoursWidth + width + GetStringWidth(FONT_SMALL, minutesText, 0);
     x -= totalWidth;
 
-    FillWindowPixelRect(WIN_CARD_TEXT, PIXEL_FILL(0), x, y, totalWidth, 15);
-    ConvertIntToDecimalStringN(gStringVar4, hours, STR_CONV_MODE_RIGHT_ALIGN, 3);
-    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, x, y, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
-    x += 18;
-    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, x, y, sTimeColonTextColors[sData->timeColonInvisible], TEXT_SKIP_DRAW, gText_Colon2);
+    FillWindowPixelRect(WIN_CARD_TEXT, PIXEL_FILL(0), x, y, totalWidth, 12);
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, x, y, sTrainerCardTextColors, TEXT_SKIP_DRAW, hoursText);
+    x += hoursWidth;
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, x, y, sTimeColonTextColors[sData->timeColonInvisible], TEXT_SKIP_DRAW, gText_Colon2);
     x += width;
-    ConvertIntToDecimalStringN(gStringVar4, minutes, STR_CONV_MODE_LEADING_ZEROS, 2);
-    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, x, y, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, x, y, sTrainerCardTextColors, TEXT_SKIP_DRAW, minutesText);
+}
+
+// BPE: the card art carries four decorative dots down the left of the rows, baked
+// into the tilemap at fixed positions. The front now has five smaller rows, so the
+// dots are blanked here and redrawn per row in PrintRowDotsOnCardFront.
+static void ClearBakedRowDots(u16 *tilemap)
+{
+    u32 row;
+
+    // Only the Hoenn card art is known to place its dots at these tiles.
+    if (sData->cardType == CARD_TYPE_FRLG)
+        return;
+
+    for (row = ROW_DOT_FIRST_TILE_ROW; row <= ROW_DOT_LAST_TILE_ROW; row++)
+    {
+        u16 tile = tilemap[row * CARD_TILEMAP_WIDTH + ROW_DOT_TILE_COLUMN] & 0x3FF;
+
+        if (tile == ROW_DOT_TOP_TILE || tile == ROW_DOT_BOTTOM_TILE)
+            tilemap[row * CARD_TILEMAP_WIDTH + ROW_DOT_TILE_COLUMN] = CARD_STRIPE_TILE;
+    }
+}
+
+// One dot per row, sized for the smaller rows, in the card's accent colour.
+static void PrintRowDotsOnCardFront(void)
+{
+    static const u8 xOffsets[] = {14, 10};
+    static const u8 rowTops[][5] = {{28, 56, 67, 78, 89}, {33, 57, 68, 79, 90}};
+    u32 i, stars;
+
+    if (sData->cardType == CARD_TYPE_FRLG)
+        return;
+
+    // The card is recoloured as it gains stars, so take the dot colours from
+    // whichever palette this card uses rather than fixing them here.
+    stars = sData->trainerCard.stars;
+    if (stars >= ARRAY_COUNT(sHoennTrainerCardPals))
+        stars = ARRAY_COUNT(sHoennTrainerCardPals) - 1;
+    LoadPalette(&sHoennTrainerCardPals[stars][ROW_DOT_FILL_COLOR], BG_PLTT_ID(15) + ROW_DOT_FILL_COLOR, PLTT_SIZEOF(2));
+
+    for (i = 0; i < ARRAY_COUNT(rowTops[0]); i++)
+    {
+        // The name row uses the bigger font, so its dot sits a little lower.
+        u32 top = rowTops[sData->isHoenn][i] + (i == 0 ? 5 : 4);
+        u32 x = xOffsets[sData->isHoenn];
+
+        FillWindowPixelRect(WIN_CARD_TEXT, PIXEL_FILL(ROW_DOT_BORDER_COLOR), x, top, 4, 4);
+        FillWindowPixelRect(WIN_CARD_TEXT, PIXEL_FILL(ROW_DOT_FILL_COLOR), x + 1, top + 1, 2, 2);
+    }
+}
+
+// BPE: the two rulesets differ in EVs, level caps and trainer levels, so the card
+// says which one this save plays. The rows above use the small font to leave room
+// for this one without moving the badges.
+static void PrintModeOnCardFront(void)
+{
+    static const u8 xOffsets[] = {20, 16};
+    static const u8 yOffsets[] = {56, 57};
+    static const u8 widths[] = {144, 128};
+    const u8 *mode = FlagGet(FLAG_NUZLOCKE) ? gText_CardNuzlockeMode : gText_CardStandardMode;
+    u32 top = yOffsets[sData->isHoenn];
+
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, xOffsets[sData->isHoenn], top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_CardMode);
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, mode, widths[sData->isHoenn]), top, sTrainerCardTextColors, TEXT_SKIP_DRAW, mode);
 }
 
 static void PrintProfilePhraseOnCard(void)

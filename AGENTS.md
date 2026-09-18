@@ -184,7 +184,7 @@ The enum in `include/constants/species.h` uses upstream's short regional-form na
 **FRLG layouts:** BPE deleted the FRLG `data/layouts/*` folders but `layouts.json` still lists them. `mapjson` handles this itself: it skips any layout whose folder is missing and emits `0xFFFF` stubs for the required `LAYOUT_*` defines listed in `tools/mapjson/required_map_defines.json` that have no data (29 stubs today). `layouts.h` therefore regenerates cleanly and `make clean` is safe. If new upstream code references an FRLG `LAYOUT_*` that is not stubbed, add it to `required_map_defines.json` or patch the C code; do not restore the FRLG layout data.
 
 ### Item numbering
-BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`), so `ITEMS_COUNT` is 1021. New upstream items must be placed after the BPE HM block, never on top of it.
+BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`). BPE's `ITEM_LEVEL_LIMITER` follows at 1021, so `ITEMS_COUNT` is 1022. New upstream items must be placed after the BPE HM block, never on top of it.
 
 ### Audio formats
 Upstream samples are `.wav` (since expansion 1.14). BPE's 507 BW/DP expansion samples under `sound/direct_sound_samples/` are still `.aif` and are live build inputs through `audio_rules.mk`. Do not convert or delete them.
@@ -200,6 +200,43 @@ Starting with 2.1.0 the PC has 41 boxes and the save uses a new flash layout. Th
 - RAM is nearly full: 41 boxes needed a smaller `HEAP_SIZE` and `MAX_MAP_DATA_SIZE`, and contest data at the top of the heap was moved down. `BPETools/tests/test_ram_budget.py` checks the map and heap limits. Debug builds show the heap peak under Debug menu (SELECT + START) > ROM Info… > Save Block space, on the last of its five message boxes.
 - If a save block, the box header, `struct BoxPokemon` or the packed layout changes, update together: the sizes in `test/save.c`, `BPETools/bpe_save_format.py`, `BPEDocumentation/site/js/save-converter.js`, the save inspector, and (for the packed layout) the vectors with `python BPETools/save_format_vectors.py`. A changed layout also needs a new `SAVE_FORMAT_VERSION` and a converter path for existing 2.1 saves.
 - Tests: `make check TESTS=test/save.c` (packing, the box cache, save/load and power cuts in the real game), `python BPETools/save_sim/run_save_sim.py --seeds 96 --sessions 150` (host power-cut simulator for the engine, with AddressSanitizer), and `python -m unittest BPETools/tests/test_bpe_save_format.py` (Python and website converter against the game's C code and local player saves, which are never committed).
+
+### Standard and Nuzlocke mode differences
+
+Birch asks which mode the player wants at the start; `FLAG_NUZLOCKE` records the
+answer and never changes afterwards. The two modes diverge in three places, all
+gated on that flag:
+
+- **EVs** are disabled in Nuzlocke mode. `GetCurrentEVCap()` returns 0, so no
+  battle grants EVs and EV items have no effect (`B_EV_ITEMS_CAP` is `TRUE` so
+  they respect the cap), `CalculateMonStats()` ignores stored EVs for both
+  sides, trainer parties skip their authored EV spreads, and the summary screen
+  EV page reads zero. Standard mode is unchanged Gen 9 behaviour.
+- **Level caps** apply in Nuzlocke mode only. `GetCurrentLevelCap()` returns
+  `MAX_LEVEL` outside it unless `FLAG_STANDARD_LEVEL_CAPS` is set by the Level
+  Limiter key item, which Standard players get in Mom's starter kit (or from Mom
+  later, for older saves); `GetProgressLevelCap()` still returns the badge-based
+  value, and `GetLevelCapForItem()` gives the Candy Jar that value in both modes
+  so it stays a catch-up tool rather than a jump to level 100.
+- **Trainer levels** differ per fight. `struct TrainerMon` carries `standardLvl`
+  alongside `lvl`; `CreateNPCTrainerPartyFromTrainer()` uses it for opponents
+  outside Nuzlocke mode. `0` means "same as `lvl`". In trainers.party the field
+  is written as `Standard Level:` directly under `Level:`.
+
+Nuzlocke levels sit on the badge cap, which is what the game was balanced
+against. Standard levels ramp from the previous cap up to each gym leader, who
+stays exactly on the cap. Do not hand-edit the `Standard Level:` lines or the
+rematch teams; regenerate them so the rules stay consistent:
+
+```bash
+python BPETools/generate_trainer_levels.py    # add --dry-run to check first
+python BPEDocumentation/scripts/parse_trainers.py
+```
+
+The first command also gives every rematch tier in `gRematchTable` a copy of
+that trainer's first team at a higher level. The second refreshes
+`BPEDocumentation/site/js/data/trainers.json`, which the Trainers page and the
+map popups read to show both levels as `(nuz:66) [std:45]`.
 
 ### Cumulative API changes by expansion version
 

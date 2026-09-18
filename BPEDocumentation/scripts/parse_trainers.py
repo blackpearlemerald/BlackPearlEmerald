@@ -53,6 +53,11 @@ def _flush_mon(block):
                 mon["level"] = int(ln.split(":", 1)[1].strip())
             except ValueError:
                 pass
+        elif ln.lower().startswith("standard level:"):
+            try:
+                mon["standardLevel"] = int(ln.split(":", 1)[1].strip())
+            except ValueError:
+                pass
         elif ln.lower().startswith("ability:"):
             mon["ability"] = ln.split(":", 1)[1].strip()
         elif ln.lower().startswith("tera type:"):

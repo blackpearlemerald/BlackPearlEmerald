@@ -20,6 +20,8 @@ void ItemUseOutOfBattle_ReduceEV(u8 taskId);
 void ItemUseOutOfBattle_SacredAsh(u8 taskId);
 void ItemUseOutOfBattle_PPRecovery(u8 taskId);
 void ItemUseOutOfBattle_PPUp(u8 taskId);
+void ItemUseOutOfBattle_Ball(u8 taskId); // BPE
+void ItemUseOutOfBattle_LevelLimiter(u8 taskId); // BPE
 void ItemUseOutOfBattle_RareCandy(u8 taskId);
 void ItemUseOutOfBattle_DynamaxCandy(u8 taskId);
 void ItemUseOutOfBattle_TMHM(u8 taskId);

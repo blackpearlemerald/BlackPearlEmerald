@@ -49,6 +49,7 @@
 #include "new_game.h"
 #include "oras_dowse.h"
 #include "palette.h"
+#include "party_menu.h"
 #include "play_time.h"
 #include "random.h"
 #include "roamer.h"
@@ -1119,7 +1120,7 @@ bool32 Overworld_IsBikingAllowed(void)
 void SetDefaultFlashLevel(void)
 {
     //HM FLASH UPGRADE BELOW
-    if (CheckBagHasItem(ITEM_HM_FLASH, 1))
+    if (PlayerHasMove(MOVE_FLASH))
         FlagSet(FLAG_SYS_USE_FLASH);
     //HM FLASH UPGRADE ABOVE
     if (!gMapHeader.cave)

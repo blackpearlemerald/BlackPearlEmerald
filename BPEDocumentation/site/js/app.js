@@ -55,7 +55,8 @@ function trainerPopup(t, spriteFile) {
       `<a class="mon-name-link" href="${href}" title="${tip}">${prettify(m.species)}</a>`;
     html += `<div class="mon">${icon}<div class="mon-body">` +
       `<div class="mon-head">${name}` +
-      `<span class="mon-lvl"> · Lv ${m.level}</span></div>`;
+      `<span class="mon-lvl"> · ${m.standardLevel && m.standardLevel !== m.level
+        ? `(nuz:${m.level}) [std:${m.standardLevel}]` : `Lv ${m.level}`}</span></div>`;
     const meta = [];
     if (m.item) meta.push("@ " + m.item);
     if (m.ability) meta.push(m.ability);
