@@ -1,14 +1,14 @@
 {
   "format": 1,
   "roots": {
-    "SaveBlock1": "0x18463",
-    "SaveBlock2": "0xdb54",
-    "SaveBlock3": "0xcc37",
-    "PokemonStorage": "0x18b1a",
-    "SaveSector": "0x18f30",
-    "Pokemon": "0x158a4",
-    "BoxPokemon": "0x15764",
-    "PackedBoxMon": "0x18ac8"
+    "SaveBlock1": "0x1846a",
+    "SaveBlock2": "0xdb5b",
+    "SaveBlock3": "0xcc3e",
+    "PokemonStorage": "0x18b21",
+    "SaveSector": "0x18f37",
+    "Pokemon": "0x158ab",
+    "BoxPokemon": "0x1576b",
+    "PackedBoxMon": "0x18acf"
   },
   "types": {
     "0xd3": {
@@ -27,7 +27,7 @@
       "name": "s16",
       "target": "0xb72"
     },
-    "0xca50": {
+    "0xca57": {
       "kind": "structure_type",
       "name": "Coords16",
       "size": 4,
@@ -60,7 +60,7 @@
       "name": "s8",
       "target": "0xb66"
     },
-    "0x172a4": {
+    "0x172ab": {
       "kind": "structure_type",
       "name": "WarpData",
       "size": 8,
@@ -124,7 +124,7 @@
       "name": "u8",
       "target": "0xb96"
     },
-    "0x18947": {
+    "0x1894e": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
@@ -147,28 +147,28 @@
       "name": "u32",
       "target": "0xbae"
     },
-    "0xffef": {
+    "0xfff6": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         10
       ]
     },
-    "0xcfbb": {
+    "0xcfc2": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         7
       ]
     },
-    "0x15744": {
+    "0x1574b": {
       "kind": "array_type",
       "target": "0xce1",
       "dimensions": [
         12
       ]
     },
-    "0xac3b": {
+    "0xac42": {
       "kind": "enumeration_type",
       "name": "Type",
       "size": 1,
@@ -197,7 +197,7 @@
         "NUMBER_OF_MON_TYPES": 21
       }
     },
-    "0x151d2": {
+    "0x151d9": {
       "kind": "structure_type",
       "name": "PokemonSubstruct0",
       "size": 12,
@@ -211,7 +211,7 @@
         },
         {
           "name": "teraType",
-          "type": "0xac3b",
+          "type": "0xac42",
           "offset": 1,
           "bit_size": 5,
           "bit_offset": 0
@@ -284,7 +284,7 @@
         }
       ]
     },
-    "0xb06d": {
+    "0xb074": {
       "kind": "enumeration_type",
       "name": "Move",
       "size": 2,
@@ -1264,14 +1264,14 @@
         "MOVES_COUNT_ALL": 935
       }
     },
-    "0x1529a": {
+    "0x152a1": {
       "kind": "structure_type",
       "name": "PokemonSubstruct1",
       "size": 12,
       "members": [
         {
           "name": "move1",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 0,
           "bit_size": 11,
           "bit_offset": 5
@@ -1285,7 +1285,7 @@
         },
         {
           "name": "move2",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 2,
           "bit_size": 11,
           "bit_offset": 5
@@ -1299,7 +1299,7 @@
         },
         {
           "name": "move3",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 4,
           "bit_size": 11,
           "bit_offset": 5
@@ -1313,7 +1313,7 @@
         },
         {
           "name": "move4",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 6,
           "bit_size": 11,
           "bit_offset": 5
@@ -1397,7 +1397,7 @@
         }
       ]
     },
-    "0x153c8": {
+    "0x153cf": {
       "kind": "structure_type",
       "name": "PokemonSubstruct2",
       "size": 12,
@@ -1464,7 +1464,7 @@
         }
       ]
     },
-    "0x15472": {
+    "0x15479": {
       "kind": "structure_type",
       "name": "PokemonSubstruct3",
       "size": 12,
@@ -1712,62 +1712,62 @@
         }
       ]
     },
-    "0xcf9b": {
+    "0xcfa2": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         6
       ]
     },
-    "0x156d5": {
+    "0x156dc": {
       "kind": "union_type",
       "name": "PokemonSubstruct",
       "size": 12,
       "members": [
         {
           "name": "type0",
-          "type": "0x151d2"
+          "type": "0x151d9"
         },
         {
           "name": "type1",
-          "type": "0x1529a"
+          "type": "0x152a1"
         },
         {
           "name": "type2",
-          "type": "0x153c8"
+          "type": "0x153cf"
         },
         {
           "name": "type3",
-          "type": "0x15472"
+          "type": "0x15479"
         },
         {
           "name": "raw",
-          "type": "0xcf9b"
+          "type": "0xcfa2"
         }
       ]
     },
-    "0x15754": {
+    "0x1575b": {
       "kind": "array_type",
-      "target": "0x156d5",
+      "target": "0x156dc",
       "dimensions": [
         4
       ]
     },
-    "0x1571f": {
+    "0x15726": {
       "kind": "union_type",
       "size": 48,
       "members": [
         {
           "name": "raw",
-          "type": "0x15744"
+          "type": "0x1574b"
         },
         {
           "name": "substructs",
-          "type": "0x15754"
+          "type": "0x1575b"
         }
       ]
     },
-    "0x15764": {
+    "0x1576b": {
       "kind": "structure_type",
       "name": "BoxPokemon",
       "size": 80,
@@ -1784,7 +1784,7 @@
         },
         {
           "name": "nickname",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 8
         },
         {
@@ -1845,7 +1845,7 @@
         },
         {
           "name": "otName",
-          "type": "0xcfbb",
+          "type": "0xcfc2",
           "offset": 20
         },
         {
@@ -1890,19 +1890,19 @@
         },
         {
           "name": "secure",
-          "type": "0x1571f",
+          "type": "0x15726",
           "offset": 32
         }
       ]
     },
-    "0x158a4": {
+    "0x158ab": {
       "kind": "structure_type",
       "name": "Pokemon",
       "size": 100,
       "members": [
         {
           "name": "box",
-          "type": "0x15764",
+          "type": "0x1576b",
           "offset": 0
         },
         {
@@ -1957,9 +1957,9 @@
         }
       ]
     },
-    "0x1709b": {
+    "0x170a2": {
       "kind": "array_type",
-      "target": "0x158a4",
+      "target": "0x158ab",
       "dimensions": [
         6
       ]
@@ -3283,11 +3283,12 @@
         "ITEM_BAXCALIBRITE": 1018,
         "ITEM_TATSUGIRINITE": 1019,
         "ITEM_GLIMMORANITE": 1020,
-        "ITEMS_COUNT": 1021,
-        "ITEM_FIELD_ARROW": 1021
+        "ITEM_LEVEL_LIMITER": 1021,
+        "ITEMS_COUNT": 1022,
+        "ITEM_FIELD_ARROW": 1022
       }
     },
-    "0x172f5": {
+    "0x172fc": {
       "kind": "structure_type",
       "name": "ItemSlot",
       "size": 4,
@@ -3304,74 +3305,74 @@
         }
       ]
     },
-    "0x18423": {
+    "0x1842a": {
       "kind": "array_type",
-      "target": "0x172f5",
+      "target": "0x172fc",
       "dimensions": [
         30
       ]
     },
-    "0x18413": {
+    "0x1841a": {
       "kind": "array_type",
-      "target": "0x172f5",
+      "target": "0x172fc",
       "dimensions": [
         150
       ]
     },
-    "0x18433": {
+    "0x1843a": {
       "kind": "array_type",
-      "target": "0x172f5",
+      "target": "0x172fc",
       "dimensions": [
         16
       ]
     },
-    "0x18443": {
+    "0x1844a": {
       "kind": "array_type",
-      "target": "0x172f5",
+      "target": "0x172fc",
       "dimensions": [
         250
       ]
     },
-    "0x18453": {
+    "0x1845a": {
       "kind": "array_type",
-      "target": "0x172f5",
+      "target": "0x172fc",
       "dimensions": [
         46
       ]
     },
-    "0x183b9": {
+    "0x183c0": {
       "kind": "structure_type",
       "name": "Bag",
       "size": 1968,
       "members": [
         {
           "name": "items",
-          "type": "0x18413",
+          "type": "0x1841a",
           "offset": 0
         },
         {
           "name": "keyItems",
-          "type": "0x18423",
+          "type": "0x1842a",
           "offset": 600
         },
         {
           "name": "pokeBalls",
-          "type": "0x18433",
+          "type": "0x1843a",
           "offset": 720
         },
         {
           "name": "TMsHMs",
-          "type": "0x18443",
+          "type": "0x1844a",
           "offset": 784
         },
         {
           "name": "berries",
-          "type": "0x18453",
+          "type": "0x1845a",
           "offset": 1784
         }
       ]
     },
-    "0x17320": {
+    "0x17327": {
       "kind": "structure_type",
       "name": "Pokeblock",
       "size": 8,
@@ -3413,42 +3414,42 @@
         }
       ]
     },
-    "0x18957": {
+    "0x1895e": {
       "kind": "array_type",
-      "target": "0x17320",
+      "target": "0x17327",
       "dimensions": [
         40
       ]
     },
-    "0x18967": {
+    "0x1896e": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         52
       ]
     },
-    "0xd933": {
+    "0xd93a": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         3
       ]
     },
-    "0xfbf5": {
+    "0xfbfc": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         2
       ]
     },
-    "0x18977": {
+    "0x1897e": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         100
       ]
     },
-    "0xe625": {
+    "0xe62c": {
       "kind": "structure_type",
       "size": 1,
       "members": [
@@ -3468,7 +3469,7 @@
         }
       ]
     },
-    "0xe652": {
+    "0xe659": {
       "kind": "structure_type",
       "name": "ObjectEvent",
       "size": 36,
@@ -3736,17 +3737,17 @@
         },
         {
           "name": "initialCoords",
-          "type": "0xca50",
+          "type": "0xca57",
           "offset": 12
         },
         {
           "name": "currentCoords",
-          "type": "0xca50",
+          "type": "0xca57",
           "offset": 16
         },
         {
           "name": "previousCoords",
-          "type": "0xca50",
+          "type": "0xca57",
           "offset": 20
         },
         {
@@ -3765,7 +3766,7 @@
         },
         {
           "name": "range",
-          "type": "0xe625",
+          "type": "0xe62c",
           "offset": 25
         },
         {
@@ -3829,14 +3830,14 @@
         }
       ]
     },
-    "0xee8a": {
+    "0xee91": {
       "kind": "array_type",
-      "target": "0xe652",
+      "target": "0xe659",
       "dimensions": [
         16
       ]
     },
-    "0xe14f": {
+    "0xe156": {
       "kind": "structure_type",
       "size": 8,
       "members": [
@@ -3890,7 +3891,7 @@
         3
       ]
     },
-    "0xe1bd": {
+    "0xe1c4": {
       "kind": "structure_type",
       "size": 8,
       "members": [
@@ -3916,17 +3917,17 @@
         }
       ]
     },
-    "0xe1fb": {
+    "0xe202": {
       "kind": "union_type",
       "size": 8,
       "members": [
         {
           "name": "<anonymous>",
-          "type": "0xe14f"
+          "type": "0xe156"
         },
         {
           "name": "<anonymous>",
-          "type": "0xe1bd"
+          "type": "0xe1c4"
         }
       ]
     },
@@ -3939,7 +3940,7 @@
       "size": 4,
       "target": "0xcc6"
     },
-    "0xe20f": {
+    "0xe216": {
       "kind": "structure_type",
       "name": "ObjectEventTemplate",
       "size": 24,
@@ -3971,7 +3972,7 @@
         },
         {
           "name": "<anonymous>",
-          "type": "0xe1fb",
+          "type": "0xe202",
           "offset": 8
         },
         {
@@ -3991,28 +3992,28 @@
         }
       ]
     },
-    "0x18987": {
+    "0x1898e": {
       "kind": "array_type",
-      "target": "0xe20f",
+      "target": "0xe216",
       "dimensions": [
         64
       ]
     },
-    "0x18998": {
+    "0x1899f": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         300
       ]
     },
-    "0x189a9": {
+    "0x189b0": {
       "kind": "array_type",
       "target": "0xce1",
       "dimensions": [
         64
       ]
     },
-    "0xf254": {
+    "0xf25b": {
       "kind": "structure_type",
       "name": "BerryTree",
       "size": 8,
@@ -4124,9 +4125,9 @@
         }
       ]
     },
-    "0x189b9": {
+    "0x189c0": {
       "kind": "array_type",
-      "target": "0xf254",
+      "target": "0xf25b",
       "dimensions": [
         128
       ]
@@ -4136,30 +4137,30 @@
       "name": "bool8",
       "target": "0xcb6"
     },
-    "0xcfab": {
+    "0xcfb2": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         4
       ]
     },
-    "0xdebe": {
+    "0xdec5": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         16
       ]
     },
-    "0xdd9f": {
+    "0xdda6": {
       "kind": "array_type",
       "target": "0xce1",
       "dimensions": [
         6
       ]
     },
-    "0xddaf": {
+    "0xddb6": {
       "kind": "array_type",
-      "target": "0xb06d",
+      "target": "0xb074",
       "dimensions": [
         24
       ]
@@ -5845,65 +5846,65 @@
         "NUM_SPECIES": 1573
       }
     },
-    "0xddbf": {
+    "0xddc6": {
       "kind": "array_type",
       "target": "0x243a",
       "dimensions": [
         6
       ]
     },
-    "0xddcf": {
+    "0xddd6": {
       "kind": "array_type",
       "target": "0x7618",
       "dimensions": [
         6
       ]
     },
-    "0xd346": {
+    "0xd34d": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         6
       ]
     },
-    "0xdd3c": {
+    "0xdd43": {
       "kind": "structure_type",
       "name": "SecretBaseParty",
       "size": 108,
       "members": [
         {
           "name": "personality",
-          "type": "0xdd9f",
+          "type": "0xdda6",
           "offset": 0
         },
         {
           "name": "moves",
-          "type": "0xddaf",
+          "type": "0xddb6",
           "offset": 24
         },
         {
           "name": "species",
-          "type": "0xddbf",
+          "type": "0xddc6",
           "offset": 72
         },
         {
           "name": "heldItems",
-          "type": "0xddcf",
+          "type": "0xddd6",
           "offset": 84
         },
         {
           "name": "levels",
-          "type": "0xd346",
+          "type": "0xd34d",
           "offset": 96
         },
         {
           "name": "EVs",
-          "type": "0xd346",
+          "type": "0xd34d",
           "offset": 102
         }
       ]
     },
-    "0xdddf": {
+    "0xdde6": {
       "kind": "structure_type",
       "name": "SecretBase",
       "size": 160,
@@ -5943,12 +5944,12 @@
         },
         {
           "name": "trainerName",
-          "type": "0xcfbb",
+          "type": "0xcfc2",
           "offset": 2
         },
         {
           "name": "trainerId",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 9
         },
         {
@@ -5973,57 +5974,57 @@
         },
         {
           "name": "decorations",
-          "type": "0xdebe",
+          "type": "0xdec5",
           "offset": 18
         },
         {
           "name": "decorationPositions",
-          "type": "0xdebe",
+          "type": "0xdec5",
           "offset": 34
         },
         {
           "name": "party",
-          "type": "0xdd3c",
+          "type": "0xdd43",
           "offset": 52
         }
       ]
     },
-    "0x189c9": {
+    "0x189d0": {
       "kind": "array_type",
-      "target": "0xdddf",
+      "target": "0xdde6",
       "dimensions": [
         20
       ]
     },
-    "0xf60d": {
+    "0xf614": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         12
       ]
     },
-    "0x189d9": {
+    "0x189e0": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         30
       ]
     },
-    "0x17fa9": {
+    "0x17fb0": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         40
       ]
     },
-    "0xf3eb": {
+    "0xf3f2": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         26
       ]
     },
-    "0xf352": {
+    "0xf359": {
       "kind": "structure_type",
       "size": 36,
       "members": [
@@ -6039,7 +6040,7 @@
         },
         {
           "name": "data",
-          "type": "0xf3eb",
+          "type": "0xf3f2",
           "offset": 2
         },
         {
@@ -6084,14 +6085,14 @@
         }
       ]
     },
-    "0xf42c": {
+    "0xf433": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         34
       ]
     },
-    "0xf3fb": {
+    "0xf402": {
       "kind": "structure_type",
       "size": 36,
       "members": [
@@ -6107,19 +6108,19 @@
         },
         {
           "name": "data",
-          "type": "0xf42c",
+          "type": "0xf433",
           "offset": 2
         }
       ]
     },
-    "0xd1ed": {
+    "0xd1f4": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         8
       ]
     },
-    "0xf43c": {
+    "0xf443": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6140,12 +6141,12 @@
         },
         {
           "name": "words",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 4
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 16
         },
         {
@@ -6155,7 +6156,7 @@
         }
       ]
     },
-    "0xf494": {
+    "0xf49b": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6176,12 +6177,12 @@
         },
         {
           "name": "words",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 4
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 16
         },
         {
@@ -6191,21 +6192,21 @@
         }
       ]
     },
-    "0xf598": {
+    "0xf59f": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         1
       ]
     },
-    "0xd923": {
+    "0xd92a": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         2
       ]
     },
-    "0xf4ec": {
+    "0xf4f3": {
       "kind": "structure_type",
       "size": 32,
       "members": [
@@ -6240,7 +6241,7 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 5
         },
         {
@@ -6255,27 +6256,27 @@
         },
         {
           "name": "filler_0F",
-          "type": "0xf598",
+          "type": "0xf59f",
           "offset": 15
         },
         {
           "name": "nickname",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 16
         },
         {
           "name": "words18",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 24
         },
         {
           "name": "words",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 28
         }
       ]
     },
-    "0xf5a8": {
+    "0xf5af": {
       "kind": "structure_type",
       "size": 24,
       "members": [
@@ -6291,7 +6292,7 @@
         },
         {
           "name": "words",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 2
         },
         {
@@ -6306,7 +6307,7 @@
         },
         {
           "name": "name",
-          "type": "0xf60d",
+          "type": "0xf614",
           "offset": 11
         },
         {
@@ -6316,14 +6317,14 @@
         }
       ]
     },
-    "0xd134": {
+    "0xd13b": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         11
       ]
     },
-    "0xf61d": {
+    "0xf624": {
       "kind": "structure_type",
       "size": 32,
       "members": [
@@ -6344,12 +6345,12 @@
         },
         {
           "name": "pokemonName",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 4
         },
         {
           "name": "trainerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 15
         },
         {
@@ -6384,7 +6385,7 @@
         }
       ]
     },
-    "0xf6b6": {
+    "0xf6bd": {
       "kind": "structure_type",
       "size": 32,
       "members": [
@@ -6405,12 +6406,12 @@
         },
         {
           "name": "words",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 4
         },
         {
           "name": "pokemonNickname",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 8
         },
         {
@@ -6436,12 +6437,12 @@
         },
         {
           "name": "move",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 20
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 22
         },
         {
@@ -6456,14 +6457,14 @@
         }
       ]
     },
-    "0xf818": {
+    "0xf81f": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         1
       ]
     },
-    "0xf765": {
+    "0xf76c": {
       "kind": "structure_type",
       "size": 32,
       "members": [
@@ -6479,7 +6480,7 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 2
         },
         {
@@ -6489,7 +6490,7 @@
         },
         {
           "name": "opponentName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 12
         },
         {
@@ -6504,7 +6505,7 @@
         },
         {
           "name": "words",
-          "type": "0xf818",
+          "type": "0xf81f",
           "offset": 24
         },
         {
@@ -6534,7 +6535,7 @@
         }
       ]
     },
-    "0xf828": {
+    "0xf82f": {
       "kind": "structure_type",
       "size": 32,
       "members": [
@@ -6555,7 +6556,7 @@
         },
         {
           "name": "losingTrainerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
@@ -6580,7 +6581,7 @@
         },
         {
           "name": "move",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 16
         },
         {
@@ -6590,7 +6591,7 @@
         },
         {
           "name": "winningTrainerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 20
         },
         {
@@ -6610,7 +6611,7 @@
         }
       ]
     },
-    "0x9de7": {
+    "0x9dee": {
       "kind": "enumeration_type",
       "name": "Flavor",
       "size": 1,
@@ -6623,7 +6624,7 @@
         "FLAVOR_COUNT": 5
       }
     },
-    "0xf8e8": {
+    "0xf8ef": {
       "kind": "structure_type",
       "size": 24,
       "members": [
@@ -6644,7 +6645,7 @@
         },
         {
           "name": "flavor",
-          "type": "0x9de7",
+          "type": "0x9dee",
           "offset": 3,
           "bit_size": 3,
           "bit_offset": 5
@@ -6658,12 +6659,12 @@
         },
         {
           "name": "worstBlenderName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 12
         },
         {
@@ -6678,7 +6679,7 @@
         }
       ]
     },
-    "0xf96d": {
+    "0xf974": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6699,17 +6700,17 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
           "name": "linkOpponentName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 12
         },
         {
           "name": "move",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 20
         },
         {
@@ -6734,7 +6735,7 @@
         }
       ]
     },
-    "0xf9f9": {
+    "0xfa00": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6750,7 +6751,7 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 2
         },
         {
@@ -6765,12 +6766,12 @@
         },
         {
           "name": "idolName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 12
         },
         {
           "name": "words",
-          "type": "0xf818",
+          "type": "0xf81f",
           "offset": 20
         },
         {
@@ -6790,7 +6791,7 @@
         }
       ]
     },
-    "0xfa85": {
+    "0xfa8c": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6806,7 +6807,7 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 2
         },
         {
@@ -6816,7 +6817,7 @@
         },
         {
           "name": "nickname",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 11
         },
         {
@@ -6836,7 +6837,7 @@
         }
       ]
     },
-    "0xfaf7": {
+    "0xfafe": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6862,7 +6863,7 @@
         },
         {
           "name": "nickname",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 4
         },
         {
@@ -6882,12 +6883,12 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xfc05": {
+    "0xfc0c": {
       "kind": "array_type",
       "target": "0x7618",
       "dimensions": [
@@ -6899,7 +6900,7 @@
       "name": "mapsec_u8_t",
       "target": "0xcb6"
     },
-    "0xfb76": {
+    "0xfb7d": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6925,17 +6926,17 @@
         },
         {
           "name": "filler_04",
-          "type": "0xfbf5",
+          "type": "0xfbfc",
           "offset": 4
         },
         {
           "name": "itemIds",
-          "type": "0xfc05",
+          "type": "0xfc0c",
           "offset": 6
         },
         {
           "name": "itemAmounts",
-          "type": "0xd933",
+          "type": "0xd93a",
           "offset": 12
         },
         {
@@ -6945,19 +6946,19 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xfca1": {
+    "0xfca8": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         9
       ]
     },
-    "0xfc15": {
+    "0xfc1c": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -6978,7 +6979,7 @@
         },
         {
           "name": "filler_03",
-          "type": "0xfca1",
+          "type": "0xfca8",
           "offset": 3
         },
         {
@@ -7008,12 +7009,12 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xfcb1": {
+    "0xfcb8": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7049,17 +7050,17 @@
         },
         {
           "name": "filler_07",
-          "type": "0xf60d",
+          "type": "0xf614",
           "offset": 7
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xfd26": {
+    "0xfd2d": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7105,17 +7106,17 @@
         },
         {
           "name": "filler_0C",
-          "type": "0xcfbb",
+          "type": "0xcfc2",
           "offset": 12
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xfdbd": {
+    "0xfdc4": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7171,17 +7172,17 @@
         },
         {
           "name": "filler_0D",
-          "type": "0xd346",
+          "type": "0xd34d",
           "offset": 13
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xfe70": {
+    "0xfe77": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7197,12 +7198,12 @@
         },
         {
           "name": "filler_02",
-          "type": "0xfbf5",
+          "type": "0xfbfc",
           "offset": 2
         },
         {
           "name": "words",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 4
         },
         {
@@ -7217,17 +7218,17 @@
         },
         {
           "name": "filler_0a",
-          "type": "0xfca1",
+          "type": "0xfca8",
           "offset": 10
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xfeeb": {
+    "0xfef2": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7263,17 +7264,17 @@
         },
         {
           "name": "filler_08",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 8
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xff66": {
+    "0xff6d": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7304,7 +7305,7 @@
         },
         {
           "name": "filler_06",
-          "type": "0xfbf5",
+          "type": "0xfbfc",
           "offset": 6
         },
         {
@@ -7314,17 +7315,17 @@
         },
         {
           "name": "filler_09",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 9
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xffff": {
+    "0x10006": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7380,17 +7381,17 @@
         },
         {
           "name": "filler_0f",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 15
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x100b2": {
+    "0x100b9": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7416,7 +7417,7 @@
         },
         {
           "name": "decorations",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 4
         },
         {
@@ -7426,7 +7427,7 @@
         },
         {
           "name": "move",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 10
         },
         {
@@ -7436,24 +7437,24 @@
         },
         {
           "name": "filler_0d",
-          "type": "0xd346",
+          "type": "0xd34d",
           "offset": 13
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x101b6": {
+    "0x101bd": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         13
       ]
     },
-    "0x10149": {
+    "0x10150": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7484,17 +7485,17 @@
         },
         {
           "name": "filler_06",
-          "type": "0x101b6",
+          "type": "0x101bd",
           "offset": 6
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x101c6": {
+    "0x101cd": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7510,7 +7511,7 @@
         },
         {
           "name": "move",
-          "type": "0xb06d",
+          "type": "0xb074",
           "offset": 2
         },
         {
@@ -7525,7 +7526,7 @@
         },
         {
           "name": "otherMoves",
-          "type": "0xd933",
+          "type": "0xd93a",
           "offset": 8
         },
         {
@@ -7545,17 +7546,17 @@
         },
         {
           "name": "filler_12",
-          "type": "0xf598",
+          "type": "0xf59f",
           "offset": 18
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x1026b": {
+    "0x10272": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7571,12 +7572,12 @@
         },
         {
           "name": "filler_02",
-          "type": "0xfbf5",
+          "type": "0xfbfc",
           "offset": 2
         },
         {
           "name": "words",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 4
         },
         {
@@ -7586,17 +7587,17 @@
         },
         {
           "name": "filler_09",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 9
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x102d8": {
+    "0x102df": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7622,7 +7623,7 @@
         },
         {
           "name": "nickname",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 4
         },
         {
@@ -7637,24 +7638,24 @@
         },
         {
           "name": "filler_12",
-          "type": "0xfbf5",
+          "type": "0xfbfc",
           "offset": 17
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x10406": {
+    "0x1040d": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         5
       ]
     },
-    "0x10361": {
+    "0x10368": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7705,17 +7706,17 @@
         },
         {
           "name": "filler_0e",
-          "type": "0x10406",
+          "type": "0x1040d",
           "offset": 14
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x10416": {
+    "0x1041d": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7746,17 +7747,17 @@
         },
         {
           "name": "filler_06",
-          "type": "0x101b6",
+          "type": "0x101bd",
           "offset": 6
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0x10483": {
+    "0x1048a": {
       "kind": "structure_type",
       "size": 32,
       "members": [
@@ -7777,7 +7778,7 @@
         },
         {
           "name": "baseOwnersName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
@@ -7797,7 +7798,7 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         },
         {
@@ -7812,14 +7813,14 @@
         }
       ]
     },
-    "0x10587": {
+    "0x1058e": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         14
       ]
     },
-    "0x1051a": {
+    "0x10521": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7850,24 +7851,24 @@
         },
         {
           "name": "filler_05",
-          "type": "0x10587",
+          "type": "0x1058e",
           "offset": 5
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 19
         }
       ]
     },
-    "0xcedb": {
+    "0xcee2": {
       "kind": "array_type",
-      "target": "0xb06d",
+      "target": "0xb074",
       "dimensions": [
         4
       ]
     },
-    "0x10597": {
+    "0x1059e": {
       "kind": "structure_type",
       "size": 28,
       "members": [
@@ -7893,7 +7894,7 @@
         },
         {
           "name": "moves",
-          "type": "0xcedb",
+          "type": "0xcee2",
           "offset": 4
         },
         {
@@ -7948,161 +7949,161 @@
         }
       ]
     },
-    "0x10674": {
+    "0x1067b": {
       "kind": "union_type",
       "size": 36,
       "members": [
         {
           "name": "common",
-          "type": "0xf352"
+          "type": "0xf359"
         },
         {
           "name": "commonInit",
-          "type": "0xf3fb"
+          "type": "0xf402"
         },
         {
           "name": "fanclubLetter",
-          "type": "0xf43c"
+          "type": "0xf443"
         },
         {
           "name": "recentHappenings",
-          "type": "0xf494"
+          "type": "0xf49b"
         },
         {
           "name": "fanclubOpinions",
-          "type": "0xf4ec"
+          "type": "0xf4f3"
         },
         {
           "name": "dummy",
-          "type": "0xf5a8"
+          "type": "0xf5af"
         },
         {
           "name": "nameRaterShow",
-          "type": "0xf61d"
+          "type": "0xf624"
         },
         {
           "name": "bravoTrainer",
-          "type": "0xf6b6"
+          "type": "0xf6bd"
         },
         {
           "name": "bravoTrainerTower",
-          "type": "0xf765"
+          "type": "0xf76c"
         },
         {
           "name": "contestLiveUpdates",
-          "type": "0xf828"
+          "type": "0xf82f"
         },
         {
           "name": "threeCheers",
-          "type": "0xf8e8"
+          "type": "0xf8ef"
         },
         {
           "name": "battleUpdate",
-          "type": "0xf96d"
+          "type": "0xf974"
         },
         {
           "name": "fanClubSpecial",
-          "type": "0xf9f9"
+          "type": "0xfa00"
         },
         {
           "name": "contestLady",
-          "type": "0xfa85"
+          "type": "0xfa8c"
         },
         {
           "name": "pokemonToday",
-          "type": "0xfaf7"
+          "type": "0xfafe"
         },
         {
           "name": "smartshopperShow",
-          "type": "0xfb76"
+          "type": "0xfb7d"
         },
         {
           "name": "pokemonTodayFailed",
-          "type": "0xfc15"
+          "type": "0xfc1c"
         },
         {
           "name": "pokemonAngler",
-          "type": "0xfcb1"
+          "type": "0xfcb8"
         },
         {
           "name": "worldOfMasters",
-          "type": "0xfd26"
+          "type": "0xfd2d"
         },
         {
           "name": "rivalTrainer",
-          "type": "0xfdbd"
+          "type": "0xfdc4"
         },
         {
           "name": "trendWatcher",
-          "type": "0xfe70"
+          "type": "0xfe77"
         },
         {
           "name": "treasureInvestigators",
-          "type": "0xfeeb"
+          "type": "0xfef2"
         },
         {
           "name": "findThatGamer",
-          "type": "0xff66"
+          "type": "0xff6d"
         },
         {
           "name": "breakingNews",
-          "type": "0xffff"
+          "type": "0x10006"
         },
         {
           "name": "secretBaseVisit",
-          "type": "0x100b2"
+          "type": "0x100b9"
         },
         {
           "name": "lottoWinner",
-          "type": "0x10149"
+          "type": "0x10150"
         },
         {
           "name": "battleSeminar",
-          "type": "0x101c6"
+          "type": "0x101cd"
         },
         {
           "name": "trainerFanClub",
-          "type": "0x1026b"
+          "type": "0x10272"
         },
         {
           "name": "cuties",
-          "type": "0x102d8"
+          "type": "0x102df"
         },
         {
           "name": "frontier",
-          "type": "0x10361"
+          "type": "0x10368"
         },
         {
           "name": "numberOne",
-          "type": "0x10416"
+          "type": "0x1041d"
         },
         {
           "name": "secretBaseSecrets",
-          "type": "0x10483"
+          "type": "0x1048a"
         },
         {
           "name": "safariFanClub",
-          "type": "0x1051a"
+          "type": "0x10521"
         },
         {
           "name": "massOutbreak",
-          "type": "0x10597"
+          "type": "0x1059e"
         }
       ]
     },
-    "0x10827": {
+    "0x1082e": {
       "kind": "typedef",
       "name": "TVShow",
-      "target": "0x10674"
+      "target": "0x1067b"
     },
-    "0x189e9": {
+    "0x189f0": {
       "kind": "array_type",
-      "target": "0x10827",
+      "target": "0x1082e",
       "dimensions": [
         25
       ]
     },
-    "0x10834": {
+    "0x1083b": {
       "kind": "structure_type",
       "size": 4,
       "members": [
@@ -8123,26 +8124,26 @@
         }
       ]
     },
-    "0x10869": {
+    "0x10870": {
       "kind": "typedef",
       "name": "PokeNews",
-      "target": "0x10834"
+      "target": "0x1083b"
     },
-    "0x189f9": {
+    "0x18a00": {
       "kind": "array_type",
-      "target": "0x10869",
+      "target": "0x10870",
       "dimensions": [
         16
       ]
     },
-    "0xce92": {
+    "0xce99": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         4
       ]
     },
-    "0x10876": {
+    "0x1087d": {
       "kind": "structure_type",
       "name": "GabbyAndTyData",
       "size": 12,
@@ -8164,7 +8165,7 @@
         },
         {
           "name": "quote",
-          "type": "0xf818",
+          "type": "0xf81f",
           "offset": 6
         },
         {
@@ -8256,31 +8257,31 @@
         }
       ]
     },
-    "0x17a0f": {
+    "0x17a16": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         9
       ]
     },
-    "0x179ba": {
+    "0x179c1": {
       "kind": "structure_type",
       "name": "Mail",
       "size": 36,
       "members": [
         {
           "name": "words",
-          "type": "0x17a0f",
+          "type": "0x17a16",
           "offset": 0
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 18
         },
         {
           "name": "trainerId",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 26
         },
         {
@@ -8295,14 +8296,14 @@
         }
       ]
     },
-    "0x18a09": {
+    "0x18a10": {
       "kind": "array_type",
-      "target": "0x179ba",
+      "target": "0x179c1",
       "dimensions": [
         16
       ]
     },
-    "0x17562": {
+    "0x17569": {
       "kind": "structure_type",
       "name": "MauvilleManCommon",
       "size": 4,
@@ -8314,7 +8315,7 @@
         }
       ]
     },
-    "0x1757e": {
+    "0x17585": {
       "kind": "structure_type",
       "name": "MauvilleManBard",
       "size": 44,
@@ -8326,17 +8327,17 @@
         },
         {
           "name": "songLyrics",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 2
         },
         {
           "name": "newSongLyrics",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 14
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 26
         },
         {
@@ -8346,7 +8347,7 @@
         },
         {
           "name": "playerTrainerId",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 37
         },
         {
@@ -8361,14 +8362,14 @@
         }
       ]
     },
-    "0x176fa": {
+    "0x17701": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         10
       ]
     },
-    "0x17698": {
+    "0x1769f": {
       "kind": "structure_type",
       "name": "MauvilleManGiddy",
       "size": 36,
@@ -8390,12 +8391,12 @@
         },
         {
           "name": "randomWords",
-          "type": "0x176fa",
+          "type": "0x17701",
           "offset": 4
         },
         {
           "name": "questionList",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 24
         },
         {
@@ -8405,7 +8406,7 @@
         }
       ]
     },
-    "0x1770a": {
+    "0x17711": {
       "kind": "structure_type",
       "name": "MauvilleManHipster",
       "size": 4,
@@ -8427,7 +8428,7 @@
         }
       ]
     },
-    "0x17796": {
+    "0x1779d": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -8435,7 +8436,7 @@
         11
       ]
     },
-    "0x17742": {
+    "0x17749": {
       "kind": "structure_type",
       "name": "MauvilleOldManTrader",
       "size": 56,
@@ -8447,12 +8448,12 @@
         },
         {
           "name": "decorations",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 1
         },
         {
           "name": "playerNames",
-          "type": "0x17796",
+          "type": "0x1779d",
           "offset": 5
         },
         {
@@ -8462,12 +8463,12 @@
         },
         {
           "name": "language",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 50
         }
       ]
     },
-    "0x1766c": {
+    "0x17673": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -8475,7 +8476,7 @@
         7
       ]
     },
-    "0x17682": {
+    "0x17689": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -8483,7 +8484,7 @@
         4
       ]
     },
-    "0x175fc": {
+    "0x17603": {
       "kind": "structure_type",
       "name": "MauvilleManStoryteller",
       "size": 56,
@@ -8500,79 +8501,79 @@
         },
         {
           "name": "filler2",
-          "type": "0xfbf5",
+          "type": "0xfbfc",
           "offset": 2
         },
         {
           "name": "gameStatIDs",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 4
         },
         {
           "name": "trainerNames",
-          "type": "0x1766c",
+          "type": "0x17673",
           "offset": 8
         },
         {
           "name": "statValues",
-          "type": "0x17682",
+          "type": "0x17689",
           "offset": 36
         },
         {
           "name": "language",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 52
         }
       ]
     },
-    "0x17816": {
+    "0x1781d": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         64
       ]
     },
-    "0x177ac": {
+    "0x177b3": {
       "kind": "union_type",
       "name": "OldMan",
       "size": 64,
       "members": [
         {
           "name": "common",
-          "type": "0x17562"
+          "type": "0x17569"
         },
         {
           "name": "bard",
-          "type": "0x1757e"
+          "type": "0x17585"
         },
         {
           "name": "giddy",
-          "type": "0x17698"
+          "type": "0x1769f"
         },
         {
           "name": "hipster",
-          "type": "0x1770a"
+          "type": "0x17711"
         },
         {
           "name": "trader",
-          "type": "0x17742"
+          "type": "0x17749"
         },
         {
           "name": "storyteller",
-          "type": "0x175fc"
+          "type": "0x17603"
         },
         {
           "name": "filler",
-          "type": "0x17816"
+          "type": "0x1781d"
         }
       ]
     },
-    "0x17826": {
+    "0x1782d": {
       "kind": "typedef",
       "name": "OldMan",
-      "target": "0x177ac"
+      "target": "0x177b3"
     },
-    "0x17504": {
+    "0x1750b": {
       "kind": "structure_type",
       "name": "DewfordTrend",
       "size": 8,
@@ -8605,19 +8606,19 @@
         },
         {
           "name": "words",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 4
         }
       ]
     },
-    "0x18a19": {
+    "0x18a20": {
       "kind": "array_type",
-      "target": "0x17504",
+      "target": "0x1750b",
       "dimensions": [
         5
       ]
     },
-    "0x17935": {
+    "0x1793c": {
       "kind": "structure_type",
       "name": "ContestWinner",
       "size": 32,
@@ -8644,12 +8645,12 @@
         },
         {
           "name": "monName",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 11
         },
         {
           "name": "trainerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 22
         },
         {
@@ -8668,31 +8669,31 @@
         }
       ]
     },
-    "0x18a29": {
+    "0x18a30": {
       "kind": "array_type",
-      "target": "0x17935",
+      "target": "0x1793c",
       "dimensions": [
         13
       ]
     },
-    "0x17a1f": {
+    "0x17a26": {
       "kind": "structure_type",
       "name": "DaycareMail",
       "size": 56,
       "members": [
         {
           "name": "message",
-          "type": "0x179ba",
+          "type": "0x179c1",
           "offset": 0
         },
         {
           "name": "otName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 36
         },
         {
           "name": "monName",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 44
         },
         {
@@ -8711,19 +8712,19 @@
         }
       ]
     },
-    "0x17a7a": {
+    "0x17a81": {
       "kind": "structure_type",
       "name": "DaycareMon",
       "size": 140,
       "members": [
         {
           "name": "mon",
-          "type": "0x15764",
+          "type": "0x1576b",
           "offset": 0
         },
         {
           "name": "mail",
-          "type": "0x17a1f",
+          "type": "0x17a26",
           "offset": 80
         },
         {
@@ -8733,21 +8734,21 @@
         }
       ]
     },
-    "0x17aef": {
+    "0x17af6": {
       "kind": "array_type",
-      "target": "0x17a7a",
+      "target": "0x17a81",
       "dimensions": [
         2
       ]
     },
-    "0x17ab3": {
+    "0x17aba": {
       "kind": "structure_type",
       "name": "DayCare",
       "size": 288,
       "members": [
         {
           "name": "mons",
-          "type": "0x17aef",
+          "type": "0x17af6",
           "offset": 0
         },
         {
@@ -8762,14 +8763,14 @@
         }
       ]
     },
-    "0x17833": {
+    "0x1783a": {
       "kind": "structure_type",
       "name": "LinkBattleRecord",
       "size": 16,
       "members": [
         {
           "name": "name",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 0
         },
         {
@@ -8794,38 +8795,38 @@
         }
       ]
     },
-    "0x178b3": {
+    "0x178ba": {
       "kind": "array_type",
-      "target": "0x17833",
+      "target": "0x1783a",
       "dimensions": [
         5
       ]
     },
-    "0x17888": {
+    "0x1788f": {
       "kind": "structure_type",
       "name": "LinkBattleRecords",
       "size": 88,
       "members": [
         {
           "name": "entries",
-          "type": "0x178b3",
+          "type": "0x178ba",
           "offset": 0
         },
         {
           "name": "languages",
-          "type": "0x10406",
+          "type": "0x1040d",
           "offset": 80
         }
       ]
     },
-    "0x181bd": {
+    "0x181c4": {
       "kind": "structure_type",
       "name": "ExternalEventData",
       "size": 20,
       "members": [
         {
           "name": "unknownExternalDataFields1",
-          "type": "0xcfbb",
+          "type": "0xcfc2",
           "offset": 0
         },
         {
@@ -8886,12 +8887,12 @@
         },
         {
           "name": "unknownExternalDataFields4",
-          "type": "0x10406",
+          "type": "0x1040d",
           "offset": 15
         }
       ]
     },
-    "0x18270": {
+    "0x18277": {
       "kind": "structure_type",
       "name": "ExternalEventFlags",
       "size": 21,
@@ -9012,7 +9013,7 @@
         }
       ]
     },
-    "0x17391": {
+    "0x17398": {
       "kind": "structure_type",
       "name": "Roamer",
       "size": 28,
@@ -9089,19 +9090,19 @@
         },
         {
           "name": "filler",
-          "type": "0xd346",
+          "type": "0xd34d",
           "offset": 22
         }
       ]
     },
-    "0x18a39": {
+    "0x18a40": {
       "kind": "array_type",
-      "target": "0x17391",
+      "target": "0x17398",
       "dimensions": [
         1
       ]
     },
-    "0x9d79": {
+    "0x9d80": {
       "kind": "enumeration_type",
       "name": "BerryFirmness",
       "size": 4,
@@ -9114,7 +9115,7 @@
         "BERRY_FIRMNESS_SUPER_HARD": 5
       }
     },
-    "0x9db0": {
+    "0x9db7": {
       "kind": "enumeration_type",
       "name": "BerryColor",
       "size": 4,
@@ -9132,26 +9133,26 @@
       "size": 4,
       "target": "0xcb6"
     },
-    "0xf099": {
+    "0xf0a0": {
       "kind": "structure_type",
       "name": "EnigmaBerryInfo",
       "size": 28,
       "members": [
         {
           "name": "name",
-          "type": "0xcfbb",
+          "type": "0xcfc2",
           "offset": 0
         },
         {
           "name": "firmness",
-          "type": "0x9d79",
+          "type": "0x9d80",
           "offset": 4,
           "bit_size": 4,
           "bit_offset": 4
         },
         {
           "name": "color",
-          "type": "0x9db0",
+          "type": "0x9db7",
           "offset": 4,
           "bit_size": 4,
           "bit_offset": 0
@@ -9248,26 +9249,26 @@
         }
       ]
     },
-    "0xf202": {
+    "0xf209": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         18
       ]
     },
-    "0xf1b3": {
+    "0xf1ba": {
       "kind": "structure_type",
       "name": "EnigmaBerry",
       "size": 52,
       "members": [
         {
           "name": "berry",
-          "type": "0xf099",
+          "type": "0xf0a0",
           "offset": 0
         },
         {
           "name": "itemEffect",
-          "type": "0xf202",
+          "type": "0xf209",
           "offset": 28
         },
         {
@@ -9287,7 +9288,7 @@
         }
       ]
     },
-    "0x18a49": {
+    "0x18a50": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -9301,14 +9302,14 @@
         4
       ]
     },
-    "0x174c7": {
+    "0x174ce": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         995
       ]
     },
-    "0x17471": {
+    "0x17478": {
       "kind": "structure_type",
       "name": "RamScriptData",
       "size": 1000,
@@ -9335,12 +9336,12 @@
         },
         {
           "name": "script",
-          "type": "0x174c7",
+          "type": "0x174ce",
           "offset": 4
         }
       ]
     },
-    "0x174d8": {
+    "0x174df": {
       "kind": "structure_type",
       "name": "RamScript",
       "size": 1004,
@@ -9352,7 +9353,7 @@
         },
         {
           "name": "data",
-          "type": "0x17471",
+          "type": "0x17478",
           "offset": 4
         }
       ]
@@ -9363,7 +9364,7 @@
       "size": 4,
       "encoding": 5
     },
-    "0x178c3": {
+    "0x178ca": {
       "kind": "structure_type",
       "name": "RecordMixingGiftData",
       "size": 12,
@@ -9385,12 +9386,12 @@
         },
         {
           "name": "filler4",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         }
       ]
     },
-    "0x1790a": {
+    "0x17911": {
       "kind": "structure_type",
       "name": "RecordMixingGift",
       "size": 16,
@@ -9402,12 +9403,12 @@
         },
         {
           "name": "data",
-          "type": "0x178c3",
+          "type": "0x178ca",
           "offset": 4
         }
       ]
     },
-    "0x17aff": {
+    "0x17b06": {
       "kind": "structure_type",
       "name": "LilycoveLadyQuiz",
       "size": 48,
@@ -9424,7 +9425,7 @@
         },
         {
           "name": "question",
-          "type": "0x17a0f",
+          "type": "0x17a16",
           "offset": 2
         },
         {
@@ -9439,12 +9440,12 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 24
         },
         {
           "name": "playerTrainerId",
-          "type": "0xce92",
+          "type": "0xce99",
           "offset": 32
         },
         {
@@ -9474,7 +9475,7 @@
         }
       ]
     },
-    "0x17bb5": {
+    "0x17bbc": {
       "kind": "structure_type",
       "name": "LilycoveLadyFavor",
       "size": 20,
@@ -9501,7 +9502,7 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
@@ -9526,7 +9527,7 @@
         }
       ]
     },
-    "0x17c41": {
+    "0x17c48": {
       "kind": "structure_type",
       "name": "LilycoveLadyContest",
       "size": 16,
@@ -9553,7 +9554,7 @@
         },
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
@@ -9573,21 +9574,21 @@
         }
       ]
     },
-    "0x17cbf": {
+    "0x17cc6": {
       "kind": "union_type",
       "size": 64,
       "members": [
         {
           "name": "quiz",
-          "type": "0x17aff"
+          "type": "0x17b06"
         },
         {
           "name": "favor",
-          "type": "0x17bb5"
+          "type": "0x17bbc"
         },
         {
           "name": "contest",
-          "type": "0x17c41"
+          "type": "0x17c48"
         },
         {
           "name": "id",
@@ -9595,16 +9596,16 @@
         },
         {
           "name": "filler",
-          "type": "0x17816"
+          "type": "0x1781d"
         }
       ]
     },
-    "0x17d0a": {
+    "0x17d11": {
       "kind": "typedef",
       "name": "LilycoveLady",
-      "target": "0x17cbf"
+      "target": "0x17cc6"
     },
-    "0x17d6c": {
+    "0x17d73": {
       "kind": "structure_type",
       "name": "TrainerNameRecord",
       "size": 12,
@@ -9616,19 +9617,19 @@
         },
         {
           "name": "trainerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         }
       ]
     },
-    "0x18a59": {
+    "0x18a60": {
       "kind": "array_type",
-      "target": "0x17d6c",
+      "target": "0x17d73",
       "dimensions": [
         20
       ]
     },
-    "0x18a6a": {
+    "0x18a71": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -9636,7 +9637,7 @@
         21
       ]
     },
-    "0x17d99": {
+    "0x17da0": {
       "kind": "structure_type",
       "name": "TrainerHillSave",
       "size": 12,
@@ -9712,19 +9713,19 @@
         }
       ]
     },
-    "0x17d17": {
+    "0x17d1e": {
       "kind": "structure_type",
       "name": "WaldaPhrase",
       "size": 24,
       "members": [
         {
           "name": "colors",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 0
         },
         {
           "name": "text",
-          "type": "0xdebe",
+          "type": "0xdec5",
           "offset": 4
         },
         {
@@ -9744,39 +9745,39 @@
         }
       ]
     },
-    "0x18463": {
+    "0x1846a": {
       "kind": "structure_type",
       "name": "SaveBlock1",
       "size": 15836,
       "members": [
         {
           "name": "pos",
-          "type": "0xca50",
+          "type": "0xca57",
           "offset": 0
         },
         {
           "name": "location",
-          "type": "0x172a4",
+          "type": "0x172ab",
           "offset": 4
         },
         {
           "name": "continueGameWarp",
-          "type": "0x172a4",
+          "type": "0x172ab",
           "offset": 12
         },
         {
           "name": "dynamicWarp",
-          "type": "0x172a4",
+          "type": "0x172ab",
           "offset": 20
         },
         {
           "name": "lastHealLocation",
-          "type": "0x172a4",
+          "type": "0x172ab",
           "offset": 28
         },
         {
           "name": "escapeWarp",
-          "type": "0x172a4",
+          "type": "0x172ab",
           "offset": 36
         },
         {
@@ -9806,7 +9807,7 @@
         },
         {
           "name": "mapView",
-          "type": "0x18947",
+          "type": "0x1894e",
           "offset": 52
         },
         {
@@ -9816,7 +9817,7 @@
         },
         {
           "name": "playerParty",
-          "type": "0x1709b",
+          "type": "0x170a2",
           "offset": 568
         },
         {
@@ -9836,32 +9837,32 @@
         },
         {
           "name": "pcItems",
-          "type": "0x18423",
+          "type": "0x1842a",
           "offset": 1176
         },
         {
           "name": "bag",
-          "type": "0x183b9",
+          "type": "0x183c0",
           "offset": 1296
         },
         {
           "name": "pokeblocks",
-          "type": "0x18957",
+          "type": "0x1895e",
           "offset": 3264
         },
         {
           "name": "filler1",
-          "type": "0x18967",
+          "type": "0x1896e",
           "offset": 3584
         },
         {
           "name": "berryBlenderRecords",
-          "type": "0xd933",
+          "type": "0xd93a",
           "offset": 3636
         },
         {
           "name": "unused_9C2",
-          "type": "0xfbf5",
+          "type": "0xfbfc",
           "offset": 3642
         },
         {
@@ -9876,102 +9877,102 @@
         },
         {
           "name": "trainerRematches",
-          "type": "0x18977",
+          "type": "0x1897e",
           "offset": 3650
         },
         {
           "name": "objectEvents",
-          "type": "0xee8a",
+          "type": "0xee91",
           "offset": 3752
         },
         {
           "name": "objectEventTemplates",
-          "type": "0x18987",
+          "type": "0x1898e",
           "offset": 4328
         },
         {
           "name": "flags",
-          "type": "0x18998",
+          "type": "0x1899f",
           "offset": 5864
         },
         {
           "name": "vars",
-          "type": "0x18947",
+          "type": "0x1894e",
           "offset": 6164
         },
         {
           "name": "gameStats",
-          "type": "0x189a9",
+          "type": "0x189b0",
           "offset": 6676
         },
         {
           "name": "berryTrees",
-          "type": "0x189b9",
+          "type": "0x189c0",
           "offset": 6932
         },
         {
           "name": "secretBases",
-          "type": "0x189c9",
+          "type": "0x189d0",
           "offset": 7956
         },
         {
           "name": "playerRoomDecorations",
-          "type": "0xf60d",
+          "type": "0xf614",
           "offset": 11156
         },
         {
           "name": "playerRoomDecorationPositions",
-          "type": "0xf60d",
+          "type": "0xf614",
           "offset": 11168
         },
         {
           "name": "decorationDesks",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 11180
         },
         {
           "name": "decorationChairs",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 11190
         },
         {
           "name": "decorationPlants",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 11200
         },
         {
           "name": "decorationOrnaments",
-          "type": "0x189d9",
+          "type": "0x189e0",
           "offset": 11210
         },
         {
           "name": "decorationMats",
-          "type": "0x189d9",
+          "type": "0x189e0",
           "offset": 11240
         },
         {
           "name": "decorationPosters",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 11270
         },
         {
           "name": "decorationDolls",
-          "type": "0x17fa9",
+          "type": "0x17fb0",
           "offset": 11280
         },
         {
           "name": "decorationCushions",
-          "type": "0xffef",
+          "type": "0xfff6",
           "offset": 11320
         },
         {
           "name": "tvShows",
-          "type": "0x189e9",
+          "type": "0x189f0",
           "offset": 11332
         },
         {
           "name": "pokeNews",
-          "type": "0x189f9",
+          "type": "0x18a00",
           "offset": 12232
         },
         {
@@ -10006,7 +10007,7 @@
         },
         {
           "name": "outbreakPokemonMoves",
-          "type": "0xce92",
+          "type": "0xce99",
           "offset": 12304
         },
         {
@@ -10026,102 +10027,102 @@
         },
         {
           "name": "gabbyAndTyData",
-          "type": "0x10876",
+          "type": "0x1087d",
           "offset": 12316
         },
         {
           "name": "easyChatProfile",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 12328
         },
         {
           "name": "easyChatBattleStart",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 12340
         },
         {
           "name": "easyChatBattleWon",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 12352
         },
         {
           "name": "easyChatBattleLost",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 12364
         },
         {
           "name": "mail",
-          "type": "0x18a09",
+          "type": "0x18a10",
           "offset": 12376
         },
         {
           "name": "unlockedTrendySayings",
-          "type": "0x10406",
+          "type": "0x1040d",
           "offset": 12952
         },
         {
           "name": "oldMan",
-          "type": "0x17826",
+          "type": "0x1782d",
           "offset": 12960
         },
         {
           "name": "dewfordTrends",
-          "type": "0x18a19",
+          "type": "0x18a20",
           "offset": 13024
         },
         {
           "name": "contestWinners",
-          "type": "0x18a29",
+          "type": "0x18a30",
           "offset": 13064
         },
         {
           "name": "daycare",
-          "type": "0x17ab3",
+          "type": "0x17aba",
           "offset": 13480
         },
         {
           "name": "linkBattleRecords",
-          "type": "0x17888",
+          "type": "0x1788f",
           "offset": 13768
         },
         {
           "name": "giftRibbons",
-          "type": "0xcfbb",
+          "type": "0xcfc2",
           "offset": 13856
         },
         {
           "name": "padding",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 13863
         },
         {
           "name": "externalEventData",
-          "type": "0x181bd",
+          "type": "0x181c4",
           "offset": 13867
         },
         {
           "name": "externalEventFlags",
-          "type": "0x18270",
+          "type": "0x18277",
           "offset": 13887
         },
         {
           "name": "roamer",
-          "type": "0x18a39",
+          "type": "0x18a40",
           "offset": 13908
         },
         {
           "name": "enigmaBerry",
-          "type": "0xf1b3",
+          "type": "0xf1ba",
           "offset": 13936
         },
         {
           "name": "dexSeen",
-          "type": "0x18a49",
+          "type": "0x18a50",
           "offset": 13988
         },
         {
           "name": "dexCaught",
-          "type": "0x18a49",
+          "type": "0x18a50",
           "offset": 14117
         },
         {
@@ -10131,49 +10132,49 @@
         },
         {
           "name": "ramScript",
-          "type": "0x174d8",
+          "type": "0x174df",
           "offset": 14264
         },
         {
           "name": "recordMixingGift",
-          "type": "0x1790a",
+          "type": "0x17911",
           "offset": 15268
         },
         {
           "name": "lilycoveLady",
-          "type": "0x17d0a",
+          "type": "0x17d11",
           "offset": 15284
         },
         {
           "name": "trainerNameRecords",
-          "type": "0x18a59",
+          "type": "0x18a60",
           "offset": 15348
         },
         {
           "name": "registeredTexts",
-          "type": "0x18a6a",
+          "type": "0x18a71",
           "offset": 15588
         },
         {
           "name": "trainerHill",
-          "type": "0x17d99",
+          "type": "0x17da0",
           "offset": 15800
         },
         {
           "name": "waldaPhrase",
-          "type": "0x17d17",
+          "type": "0x17d1e",
           "offset": 15812
         }
       ]
     },
-    "0xcce6": {
+    "0xcced": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         104
       ]
     },
-    "0xcc67": {
+    "0xcc6e": {
       "kind": "structure_type",
       "name": "Pokedex",
       "size": 120,
@@ -10215,12 +10216,12 @@
         },
         {
           "name": "filler",
-          "type": "0xcce6",
+          "type": "0xcced",
           "offset": 16
         }
       ]
     },
-    "0xcae0": {
+    "0xcae7": {
       "kind": "structure_type",
       "name": "Time",
       "size": 8,
@@ -10247,7 +10248,7 @@
         }
       ]
     },
-    "0xd99f": {
+    "0xd9a6": {
       "kind": "structure_type",
       "name": "ApprenticeQuestion",
       "size": 4,
@@ -10287,14 +10288,14 @@
         }
       ]
     },
-    "0xda9b": {
+    "0xdaa2": {
       "kind": "array_type",
-      "target": "0xd99f",
+      "target": "0xd9a6",
       "dimensions": [
         9
       ]
     },
-    "0xda00": {
+    "0xda07": {
       "kind": "structure_type",
       "name": "PlayersApprentice",
       "size": 44,
@@ -10351,12 +10352,12 @@
         },
         {
           "name": "questions",
-          "type": "0xda9b",
+          "type": "0xdaa2",
           "offset": 8
         }
       ]
     },
-    "0xcea2": {
+    "0xcea9": {
       "kind": "structure_type",
       "name": "ApprenticeMon",
       "size": 12,
@@ -10368,7 +10369,7 @@
         },
         {
           "name": "moves",
-          "type": "0xcedb",
+          "type": "0xcee2",
           "offset": 2
         },
         {
@@ -10378,14 +10379,14 @@
         }
       ]
     },
-    "0xcf8b": {
+    "0xcf92": {
       "kind": "array_type",
-      "target": "0xcea2",
+      "target": "0xcea9",
       "dimensions": [
         3
       ]
     },
-    "0xceeb": {
+    "0xcef2": {
       "kind": "structure_type",
       "name": "Apprentice",
       "size": 68,
@@ -10416,22 +10417,22 @@
         },
         {
           "name": "party",
-          "type": "0xcf8b",
+          "type": "0xcf92",
           "offset": 4
         },
         {
           "name": "speechWon",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 40
         },
         {
           "name": "playerId",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 52
         },
         {
           "name": "playerName",
-          "type": "0xcfbb",
+          "type": "0xcfc2",
           "offset": 56
         },
         {
@@ -10446,21 +10447,21 @@
         }
       ]
     },
-    "0xdd03": {
+    "0xdd0a": {
       "kind": "array_type",
-      "target": "0xceeb",
+      "target": "0xcef2",
       "dimensions": [
         4
       ]
     },
-    "0xce59": {
+    "0xce60": {
       "kind": "structure_type",
       "name": "BerryCrush",
       "size": 16,
       "members": [
         {
           "name": "pressingSpeeds",
-          "type": "0xce92",
+          "type": "0xce99",
           "offset": 0
         },
         {
@@ -10475,7 +10476,7 @@
         }
       ]
     },
-    "0xccf6": {
+    "0xccfd": {
       "kind": "structure_type",
       "name": "PokemonJumpRecords",
       "size": 16,
@@ -10512,7 +10513,7 @@
         }
       ]
     },
-    "0xcd59": {
+    "0xcd60": {
       "kind": "structure_type",
       "name": "BerryPickingResults",
       "size": 16,
@@ -10574,7 +10575,7 @@
         }
       ]
     },
-    "0xdd13": {
+    "0xdd1a": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
@@ -10582,7 +10583,7 @@
         4
       ]
     },
-    "0xcfcb": {
+    "0xcfd2": {
       "kind": "structure_type",
       "name": "BattleTowerPokemon",
       "size": 44,
@@ -10599,7 +10600,7 @@
         },
         {
           "name": "moves",
-          "type": "0xcedb",
+          "type": "0xcee2",
           "offset": 4
         },
         {
@@ -10710,7 +10711,7 @@
         },
         {
           "name": "nickname",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 32
         },
         {
@@ -10720,14 +10721,14 @@
         }
       ]
     },
-    "0xd1fd": {
+    "0xd204": {
       "kind": "array_type",
-      "target": "0xcfcb",
+      "target": "0xcfd2",
       "dimensions": [
         4
       ]
     },
-    "0xd144": {
+    "0xd14b": {
       "kind": "structure_type",
       "name": "EmeraldBattleTowerRecord",
       "size": 236,
@@ -10749,32 +10750,32 @@
         },
         {
           "name": "name",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
           "name": "trainerId",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 12
         },
         {
           "name": "greeting",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 16
         },
         {
           "name": "speechWon",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 28
         },
         {
           "name": "speechLost",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 40
         },
         {
           "name": "party",
-          "type": "0xd1fd",
+          "type": "0xd204",
           "offset": 52
         },
         {
@@ -10789,14 +10790,14 @@
         }
       ]
     },
-    "0xd8b1": {
+    "0xd8b8": {
       "kind": "array_type",
-      "target": "0xd144",
+      "target": "0xd14b",
       "dimensions": [
         5
       ]
     },
-    "0xd20d": {
+    "0xd214": {
       "kind": "structure_type",
       "name": "BattleTowerInterview",
       "size": 24,
@@ -10813,12 +10814,12 @@
         },
         {
           "name": "opponentName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
           "name": "opponentMonNickname",
-          "type": "0xd134",
+          "type": "0xd13b",
           "offset": 12
         },
         {
@@ -10828,14 +10829,14 @@
         }
       ]
     },
-    "0xd2fd": {
+    "0xd304": {
       "kind": "array_type",
-      "target": "0xcfcb",
+      "target": "0xcfd2",
       "dimensions": [
         3
       ]
     },
-    "0xd262": {
+    "0xd269": {
       "kind": "structure_type",
       "name": "BattleTowerEReaderTrainer",
       "size": 188,
@@ -10857,32 +10858,32 @@
         },
         {
           "name": "name",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 4
         },
         {
           "name": "trainerId",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 12
         },
         {
           "name": "greeting",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 16
         },
         {
           "name": "farewellPlayerLost",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 28
         },
         {
           "name": "farewellPlayerWon",
-          "type": "0xcf9b",
+          "type": "0xcfa2",
           "offset": 40
         },
         {
           "name": "party",
-          "type": "0xd2fd",
+          "type": "0xd304",
           "offset": 52
         },
         {
@@ -10892,14 +10893,14 @@
         }
       ]
     },
-    "0xd8c1": {
+    "0xd8c8": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         20
       ]
     },
-    "0xd8d1": {
+    "0xd8d8": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
@@ -10907,7 +10908,7 @@
         2
       ]
     },
-    "0xd8e7": {
+    "0xd8ee": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
@@ -10915,7 +10916,7 @@
         2
       ]
     },
-    "0xd39d": {
+    "0xd3a4": {
       "kind": "structure_type",
       "name": "BattleDomeTrainer",
       "size": 4,
@@ -10950,14 +10951,14 @@
         }
       ]
     },
-    "0xd8fd": {
+    "0xd904": {
       "kind": "array_type",
-      "target": "0xd39d",
+      "target": "0xd3a4",
       "dimensions": [
         16
       ]
     },
-    "0xd90d": {
+    "0xd914": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
@@ -10965,7 +10966,7 @@
         3
       ]
     },
-    "0xce2d": {
+    "0xce34": {
       "kind": "array_type",
       "target": "0x7618",
       "dimensions": [
@@ -10973,7 +10974,7 @@
         10
       ]
     },
-    "0xce43": {
+    "0xce4a": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -10981,24 +10982,24 @@
         10
       ]
     },
-    "0xce02": {
+    "0xce09": {
       "kind": "structure_type",
       "name": "PyramidBag",
       "size": 60,
       "members": [
         {
           "name": "itemId",
-          "type": "0xce2d",
+          "type": "0xce34",
           "offset": 0
         },
         {
           "name": "quantity",
-          "type": "0xce43",
+          "type": "0xce4a",
           "offset": 40
         }
       ]
     },
-    "0xd356": {
+    "0xd35d": {
       "kind": "structure_type",
       "name": "RentalMon",
       "size": 12,
@@ -11025,21 +11026,21 @@
         }
       ]
     },
-    "0xd943": {
+    "0xd94a": {
       "kind": "array_type",
-      "target": "0xd356",
+      "target": "0xd35d",
       "dimensions": [
         6
       ]
     },
-    "0xd953": {
+    "0xd95a": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
         16
       ]
     },
-    "0xd963": {
+    "0xd96a": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -11047,7 +11048,7 @@
         8
       ]
     },
-    "0xd979": {
+    "0xd980": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -11055,19 +11056,19 @@
         4
       ]
     },
-    "0xd30d": {
+    "0xd314": {
       "kind": "structure_type",
       "name": "DomeMonData",
       "size": 16,
       "members": [
         {
           "name": "moves",
-          "type": "0xcedb",
+          "type": "0xcee2",
           "offset": 0
         },
         {
           "name": "evs",
-          "type": "0xd346",
+          "type": "0xd34d",
           "offset": 8
         },
         {
@@ -11077,36 +11078,36 @@
         }
       ]
     },
-    "0xd98f": {
+    "0xd996": {
       "kind": "array_type",
-      "target": "0xd30d",
+      "target": "0xd314",
       "dimensions": [
         3
       ]
     },
-    "0xd3f0": {
+    "0xd3f7": {
       "kind": "structure_type",
       "name": "BattleFrontier",
       "size": 2272,
       "members": [
         {
           "name": "towerPlayer",
-          "type": "0xd144",
+          "type": "0xd14b",
           "offset": 0
         },
         {
           "name": "towerRecords",
-          "type": "0xd8b1",
+          "type": "0xd8b8",
           "offset": 236
         },
         {
           "name": "towerInterview",
-          "type": "0xd20d",
+          "type": "0xd214",
           "offset": 1416
         },
         {
           "name": "ereaderTrainer",
-          "type": "0xd262",
+          "type": "0xd269",
           "offset": 1440
         },
         {
@@ -11137,7 +11138,7 @@
         },
         {
           "name": "selectedPartyMons",
-          "type": "0xce92",
+          "type": "0xce99",
           "offset": 1630
         },
         {
@@ -11147,7 +11148,7 @@
         },
         {
           "name": "trainerIds",
-          "type": "0xd8c1",
+          "type": "0xd8c8",
           "offset": 1640
         },
         {
@@ -11157,12 +11158,12 @@
         },
         {
           "name": "towerWinStreaks",
-          "type": "0xd8d1",
+          "type": "0xd8d8",
           "offset": 1684
         },
         {
           "name": "towerRecordWinStreaks",
-          "type": "0xd8d1",
+          "type": "0xd8d8",
           "offset": 1700
         },
         {
@@ -11263,27 +11264,27 @@
         },
         {
           "name": "domeWinStreaks",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1728
         },
         {
           "name": "domeRecordWinStreaks",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1736
         },
         {
           "name": "domeTotalChampionships",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1744
         },
         {
           "name": "domeTrainers",
-          "type": "0xd8fd",
+          "type": "0xd904",
           "offset": 1752
         },
         {
           "name": "domeMonIds",
-          "type": "0xd90d",
+          "type": "0xd914",
           "offset": 1816
         },
         {
@@ -11298,12 +11299,12 @@
         },
         {
           "name": "palaceWinStreaks",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1916
         },
         {
           "name": "palaceRecordWinStreaks",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1924
         },
         {
@@ -11313,32 +11314,32 @@
         },
         {
           "name": "arenaWinStreaks",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 1934
         },
         {
           "name": "arenaRecordStreaks",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 1938
         },
         {
           "name": "factoryWinStreaks",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1942
         },
         {
           "name": "factoryRecordWinStreaks",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1950
         },
         {
           "name": "factoryRentsCount",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1958
         },
         {
           "name": "factoryRecordRentsCount",
-          "type": "0xd8e7",
+          "type": "0xd8ee",
           "offset": 1966
         },
         {
@@ -11348,17 +11349,17 @@
         },
         {
           "name": "pikeWinStreaks",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 1976
         },
         {
           "name": "pikeRecordStreaks",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 1980
         },
         {
           "name": "pikeTotalStreaks",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 1984
         },
         {
@@ -11384,7 +11385,7 @@
         },
         {
           "name": "pikeHeldItemsBackup",
-          "type": "0xd933",
+          "type": "0xd93a",
           "offset": 1990
         },
         {
@@ -11394,17 +11395,17 @@
         },
         {
           "name": "pyramidWinStreaks",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 1998
         },
         {
           "name": "pyramidRecordStreaks",
-          "type": "0xd923",
+          "type": "0xd92a",
           "offset": 2002
         },
         {
           "name": "pyramidRandoms",
-          "type": "0xce92",
+          "type": "0xce99",
           "offset": 2006
         },
         {
@@ -11414,7 +11415,7 @@
         },
         {
           "name": "pyramidBag",
-          "type": "0xce02",
+          "type": "0xce09",
           "offset": 2016
         },
         {
@@ -11439,7 +11440,7 @@
         },
         {
           "name": "rentalMons",
-          "type": "0xd943",
+          "type": "0xd94a",
           "offset": 2084
         },
         {
@@ -11459,7 +11460,7 @@
         },
         {
           "name": "domeWinningMoves",
-          "type": "0xd953",
+          "type": "0xd95a",
           "offset": 2164
         },
         {
@@ -11469,12 +11470,12 @@
         },
         {
           "name": "opponentNames",
-          "type": "0xd963",
+          "type": "0xd96a",
           "offset": 2197
         },
         {
           "name": "opponentTrainerIds",
-          "type": "0xd979",
+          "type": "0xd980",
           "offset": 2213
         },
         {
@@ -11503,19 +11504,19 @@
         },
         {
           "name": "domePlayerPartyData",
-          "type": "0xd98f",
+          "type": "0xd996",
           "offset": 2224
         }
       ]
     },
-    "0xdb54": {
+    "0xdb5b": {
       "kind": "structure_type",
       "name": "SaveBlock2",
       "size": 2852,
       "members": [
         {
           "name": "playerName",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 0
         },
         {
@@ -11530,7 +11531,7 @@
         },
         {
           "name": "playerTrainerId",
-          "type": "0xcfab",
+          "type": "0xcfb2",
           "offset": 10
         },
         {
@@ -11602,22 +11603,22 @@
         },
         {
           "name": "pokedex",
-          "type": "0xcc67",
+          "type": "0xcc6e",
           "offset": 24
         },
         {
           "name": "filler_90",
-          "type": "0xd1ed",
+          "type": "0xd1f4",
           "offset": 144
         },
         {
           "name": "localTimeOffset",
-          "type": "0xcae0",
+          "type": "0xcae7",
           "offset": 152
         },
         {
           "name": "lastBerryTreeUpdate",
-          "type": "0xcae0",
+          "type": "0xcae7",
           "offset": 160
         },
         {
@@ -11632,42 +11633,42 @@
         },
         {
           "name": "playerApprentice",
-          "type": "0xda00",
+          "type": "0xda07",
           "offset": 176
         },
         {
           "name": "apprentices",
-          "type": "0xdd03",
+          "type": "0xdd0a",
           "offset": 220
         },
         {
           "name": "berryCrush",
-          "type": "0xce59",
+          "type": "0xce60",
           "offset": 492
         },
         {
           "name": "pokeJump",
-          "type": "0xccf6",
+          "type": "0xccfd",
           "offset": 508
         },
         {
           "name": "berryPick",
-          "type": "0xcd59",
+          "type": "0xcd60",
           "offset": 524
         },
         {
           "name": "contestLinkResults",
-          "type": "0xdd13",
+          "type": "0xdd1a",
           "offset": 540
         },
         {
           "name": "frontier",
-          "type": "0xd3f0",
+          "type": "0xd3f7",
           "offset": 580
         }
       ]
     },
-    "0xcc37": {
+    "0xcc3e": {
       "kind": "structure_type",
       "name": "SaveBlock3",
       "size": 4,
@@ -11679,7 +11680,7 @@
         }
       ]
     },
-    "0x18b6f": {
+    "0x18b76": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -11687,48 +11688,48 @@
         9
       ]
     },
-    "0x18b85": {
+    "0x18b8c": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         41
       ]
     },
-    "0x18b95": {
+    "0x18b9c": {
       "kind": "array_type",
-      "target": "0x158a4",
+      "target": "0x158ab",
       "dimensions": [
         4
       ]
     },
-    "0x18ae3": {
+    "0x18aea": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         60
       ]
     },
-    "0x18ac8": {
+    "0x18acf": {
       "kind": "structure_type",
       "name": "PackedBoxMon",
       "size": 60,
       "members": [
         {
           "name": "data",
-          "type": "0x18ae3",
+          "type": "0x18aea",
           "offset": 0
         }
       ]
     },
-    "0x18ba5": {
+    "0x18bac": {
       "kind": "array_type",
-      "target": "0x18ac8",
+      "target": "0x18acf",
       "dimensions": [
         41,
         30
       ]
     },
-    "0x18b1a": {
+    "0x18b21": {
       "kind": "structure_type",
       "name": "PokemonStorage",
       "size": 74612,
@@ -11740,53 +11741,53 @@
         },
         {
           "name": "boxNames",
-          "type": "0x18b6f",
+          "type": "0x18b76",
           "offset": 1
         },
         {
           "name": "boxWallpapers",
-          "type": "0x18b85",
+          "type": "0x18b8c",
           "offset": 370
         },
         {
           "name": "fusions",
-          "type": "0x18b95",
+          "type": "0x18b9c",
           "offset": 412
         },
         {
           "name": "boxes",
-          "type": "0x18ba5",
+          "type": "0x18bac",
           "offset": 812
         }
       ]
     },
-    "0x18f91": {
+    "0x18f98": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         3968
       ]
     },
-    "0x18fa2": {
+    "0x18fa9": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         116
       ]
     },
-    "0x18f30": {
+    "0x18f37": {
       "kind": "structure_type",
       "name": "SaveSector",
       "size": 4096,
       "members": [
         {
           "name": "data",
-          "type": "0x18f91",
+          "type": "0x18f98",
           "offset": 0
         },
         {
           "name": "saveBlock3Chunk",
-          "type": "0x18fa2",
+          "type": "0x18fa9",
           "offset": 3968
         },
         {
@@ -11813,7 +11814,7 @@
     }
   },
   "source": {
-    "git_commit": "c14f3d377abf42403c517f7efb315af9758593bd",
+    "git_commit": "327290d8cae2b8c341cf49815eaf373e2c0ebdc2",
     "game_version": "EMERALD",
     "release_build": true
   }
