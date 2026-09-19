@@ -11,6 +11,10 @@
           "body": "Professor Birch asks which mode you want right after you choose your character. Nuzlocke mode enforces the rules for you: only the first Pokémon you meet in each area can be caught (species you already own and shinies don't use up the area), Poké Balls always catch, fainted Pokémon can't be healed or used, and losing a battle ends the challenge. Nuzlocke mode also switches Effort Values off on both sides: your Pokémon gain none and vitamins and wings have no effect, and enemy trainers battle with none either, so stats come from base stats, IVs, nature and level alone. Standard mode uses Effort Values normally."
         },
         {
+          "title": "Built-in randomizer",
+          "body": "After the mode question, Birch offers to randomize your adventure. Pick the Randomlocke, Full or Chaos preset or set each option yourself: starters, wild Pokémon, gifts and trades, static encounters, legendaries, regular and boss trainers, abilities, level-up moves, TMs, field items, and for Chaos even types, evolutions, base stats and the type chart. Generations and Monotype limit which Pokémon appear. The default whole-game swap trades each species for exactly one other, so every Pokémon is still catchable somewhere. Your seed code, shown on your Trainer Card, lets friends play exactly the same game. The choice can't be changed later, and this site's route and trainer pages always show the normal game."
+        },
+        {
           "title": "Badge level caps",
           "body": "Nuzlocke mode caps levels by progress: 15 before the first badge, rising by 9 with each badge to 78 before the eighth, 90 until you become Champion, then 100. Pokémon at the cap gain no EXP, and Rare Candies and the Day Care respect it. Standard mode has no level cap unless you switch one on with the Level Limiter, and its trainers rise gradually towards each Gym Leader instead of sitting at the cap, so the climb is smoother."
         },

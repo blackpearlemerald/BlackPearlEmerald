@@ -94,6 +94,7 @@ E:\Projects\OfficialBPEemerald\
 - Follower Pokémon: `OW_FOLLOWERS_ENABLED TRUE` in `include/config/overworld.h`.
 - Day/Night System: `OW_ENABLE_DNS TRUE` in `include/config/overworld.h`. `src/day_night.c` is a small BPE stub that provides `GetCurrentTimeOfDay()`; the tinting itself is upstream code.
 - Terastallization is governed by the Tera Orb flags (`B_FLAG_TERA_ORB_CHARGED`, `B_FLAG_TERA_ORB_NO_COST`) in `include/config/battle.h`. The old `B_TERA_MECHANICS` toggle no longer exists.
+- Built-in randomizer, chosen at New Game: see "Randomizer" under Known quirks.
 
 ## Debug builds are the default
 
@@ -237,6 +238,43 @@ The first command also gives every rematch tier in `gRematchTable` a copy of
 that trainer's first team at a higher level. The second refreshes
 `BPEDocumentation/site/js/data/trainers.json`, which the Trainers page and the
 map popups read to show both levels as `(nuz:66) [std:45]`.
+
+### Randomizer
+
+Birch offers the built-in randomizer after the mode question. The settings
+screen is `src/randomizer_menu.c`; the logic is `src/randomizer.c`; the option
+list and rules are in `BPEDocumentation/RANDOMIZER_PLAN.md`.
+
+- The settings live in six variables that no release ever used:
+  `VAR_RANDOMIZER_SEED_LO/HI`, `VAR_RANDOMIZER_OPTIONS_0/1/2` and
+  `VAR_STARTER_SPECIES`. All zero means off, so the save format did not change
+  and converted saves read as unrandomized. `src/new_game.c` keeps them through
+  `NewGameInitData`, like `FLAG_NUZLOCKE`.
+- Nothing is kept in RAM. Every result is a hash of the seed and the thing being
+  randomized; the one-for-one swaps are Feistel permutations with cycle-walking.
+  EWRAM is nearly full, so keep it that way.
+- Read species data through the accessors (`GetSpeciesType`,
+  `GetSpeciesAbility`, `GetSpeciesBase*`, `CanLearnTeachableMove`,
+  `GetLearnsetMove`, `GetTMHMMoveId`, `GetEvolutionTargetSpecies`), never
+  `gSpeciesInfo` directly, or a randomized game disagrees with itself. Only
+  `src/randomizer.c` reads the raw data, on purpose.
+- `src/data/randomizer/generated.h` is written by
+  `python BPETools/generate_randomizer_data.py` (`--check` fails when it is
+  stale). Rerun it after changing evolutions, wild tables, gift or static
+  scripts, trades, item balls, hidden items or TM sources. The badge tiers for
+  TM sources are in `BPETools/randomizer_badge_tiers.json`.
+- `RANDOMIZER_ALGORITHM_VERSION` in `include/constants/randomizer.h` must rise
+  for any change that gives an existing seed different results. The hash stream
+  numbers, the option bit layout and the field item order are part of the
+  algorithm. Species added after version 1 stay out of old games through
+  `RANDOMIZER_V1_SPECIES_LIMIT`.
+- Gift scripts use the `randomgift` macro and give
+  `VAR_TEMP_TRANSFERRED_SPECIES`; eggs use `special RandomizeEggSpecies`. Static
+  battles are randomized in `ScrCmd_setwildbattle`, and `sStaticEncounters` in
+  `src/randomizer.c` lists each one's map and the object sprite to swap.
+- `VAR_STARTER_MON` stays 0 with the Birch Case: the rival scripts only handle
+  0-2. Use `GetPlayerStarterSpecies()` for the starter the player really picked.
+- Tests: `make check TESTS=test/randomizer.c`.
 
 ### Cumulative API changes by expansion version
 

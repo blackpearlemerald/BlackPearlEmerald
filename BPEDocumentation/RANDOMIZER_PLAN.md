@@ -1,8 +1,10 @@
 # BPE built-in randomizer
 
-Status: planned, not started. The options and rules below were agreed with the
-maintainer on 2026-09-18. The "Assumptions to confirm" section lists the
-smaller choices made without asking; change any of them before building.
+Status: built on the `randomizer` branch and covered by `test/randomizer.c`;
+waiting for the maintainer's mGBA playtest. The options and rules were agreed
+with the maintainer on 2026-09-18. Where the build differs from the original
+plan, this document describes what was built; "Assumptions to confirm" lists the
+smaller choices made without asking.
 
 ## Outcome
 
@@ -55,24 +57,27 @@ The safeguards that recur across all of them are:
 
 1. Birch asks for gender, then Standard or Nuzlocke, as today
    (`Task_NewGameBirchSpeech_ChooseNuzlocke` in `src/main_menu.c`).
-2. Birch asks "Would you like to randomize your adventure?" The choices are Off,
-   Randomlocke, Full, Chaos and Custom.
-3. Choosing a preset fills in every setting. The player can confirm it or open
-   the settings screen to adjust it. Custom opens the settings screen starting
-   from the Randomlocke values. The screen has six pages: L/R changes the page
-   and Left/Right changes the highlighted value.
-4. On the seed page the player picks "New random seed" or "Enter a seed code".
-   Entering a code sets the seed and every setting from the code.
-5. A summary shows the preset name (or Custom) and the seed code, then asks:
-   "These settings can't be changed later. Continue?" Yes moves on to name entry.
-
-Choosing Off skips steps 3–5.
+2. Birch asks "Would you like to randomize?" (`gText_Birch_Randomizer`). No
+   clears the randomizer and moves on to name entry.
+3. Yes opens the settings screen (`src/randomizer_menu.c`) with the Randomlocke
+   preset and a new random seed. It has six pages: L/R changes the page,
+   Up/Down picks a row and Left/Right (or A) changes its value. The first page
+   holds the preset (Randomlocke, Full or Chaos; it reads Custom once any option
+   differs) and the seed. A on Generations picks generations one by one.
+4. On the seed row, Left/Right rolls a new random seed and A opens code entry,
+   where Up/Down cycles each character. An accepted code sets the seed and every
+   setting from the code.
+5. START shows a summary with the preset name and the seed code: "These settings
+   can't be changed later." A saves them and returns to Birch; B goes back.
+   B on the pages backs out, and Birch asks the question again.
 
 ### After the game starts
 
-- The trainer card shows the preset name and seed code next to the
-  Standard/Nuzlocke mode line (`src/trainer_card.c`).
-- The Options menu gets a read-only Randomizer page that lists every setting.
+- The trainer card's mode line reads "Standard, randomized" or "Nuzlocke,
+  randomized", and the front of the player's own card shows the preset and the
+  seed code where a link partner's card shows their profile
+  (`src/trainer_card.c`). The seed code carries every setting, so no separate
+  Options page was built.
 - Nothing can be changed.
 
 ### Seed code
@@ -103,8 +108,10 @@ Randomlocke value.
 
 | # | Option | Choices |
 |---|---|---|
-| 1 | Randomizer | Off / **Randomlocke** / Full / Chaos / Custom |
+| 1 | Preset | **Randomlocke** / Full / Chaos (Custom once changed) |
 | 2 | Seed | **New random seed** / Enter a seed code |
+
+Birch's Yes/No question stands in for "Off".
 
 ### Page 2: Pokémon
 
@@ -115,18 +122,24 @@ Randomlocke value.
 | 5 | Wild consistency | **Whole game** / Per route |
 | 6 | Gift Pokémon, eggs and in-game trades | Off / **On** |
 | 7 | Static encounters | Off / **On** |
+
+### Page 3: Pokémon pool
+
+| # | Option | Choices |
+|---|---|---|
 | 8 | Legendaries | Unchanged / **Among themselves** / Mixed with all Pokémon |
 | 9 | Pokémon strength | **Similar** / Fully random |
 | 10 | Generations | Nine toggles, Gen 1–9, **all on**; any combination, at least one on |
 
-### Page 3: Trainers
+### Page 4: Trainers and items
 
 | # | Option | Choices |
 |---|---|---|
 | 11 | Regular trainers | Off / **On** |
 | 12 | Boss trainers | **Unchanged** / Random, keep their type / Fully random |
+| 18 | Field items | **Off** / Shuffled |
 
-### Page 4: Battle
+### Page 5: Battle
 
 | # | Option | Choices |
 |---|---|---|
@@ -135,12 +148,6 @@ Randomlocke value.
 | 15 | Level-up moves | **Off** / Random |
 | 16 | TM and tutor compatibility | **Off** / Random |
 | 17 | TM contents | **Off** / Shuffled |
-
-### Page 5: Items
-
-| # | Option | Choices |
-|---|---|---|
-| 18 | Field items | **Off** / Shuffled |
 
 ### Page 6: Chaos
 
@@ -223,17 +230,21 @@ Randomlocke value.
   - So the set of catchable species is the same as the normal game; only their
     places change. This keeps BPE's promise that every Pokémon line can be
     caught, and keeps the Hoenn Dex requirements working.
-  - With Similar strength, the set is sorted by BST and cut into bands whose
-    spread stays within about ±10%. Species only swap inside their band.
+  - With Similar strength, species only swap inside fixed base stat total
+    bands about 20% wide (edges at 210, 252, 302, 363, 435, 522 and 627).
+  - Species that can learn Surf only swap with each other, so everything the
+    normal game offers to Surf with is still offered somewhere.
   - The legendary setting controls legendaries:
     - Unchanged: legendaries stay out of the swap.
-    - Among themselves: legendaries get a separate swap between themselves.
+    - Among themselves: the game's own legendaries swap among themselves, so
+      the Hoenn legendaries stay catchable. Per route rolls from every legendary.
     - Mixed: legendaries are part of one swap with everything else.
   - A Generations limit or Monotype makes a true one-for-one swap impossible.
     In that case each original species still maps to one fixed replacement, but
     several originals can share one.
 - **Per route** rolls each encounter table on its own:
-  - A table is one map, one encounter method and one time of day.
+  - A table is one map and one encounter method; its day and night tables
+    share the roll.
   - Within a table, each original species maps to one replacement, so the
     table's slot rates stay meaningful. Other tables roll differently.
   - Gifts, eggs, trades and static encounters roll per event.
@@ -245,9 +256,10 @@ BPE's bag HMs still need a party Pokémon that could learn the HM
 
 1. **HM compatibility is never randomized.** "TM and tutor compatibility" and
    "TM contents" skip HMs, and HM moves never appear in randomized learnsets.
-2. **Water slots stay usable for Surf.** Surfing and fishing slots only roll
-   Pokémon that can learn Surf. If Monotype or Generations leaves none, those
-   slots ignore that filter.
+2. **Water slots stay usable for Surf.** In Per route games and games with a
+   Generations limit or Monotype, surfing and fishing slots only roll Pokémon
+   that can learn Surf. The whole-game swap keeps Pokémon that can learn Surf
+   swapping with each other instead.
 3. **HMs with no possible learner work for anyone.** When the settings are
    confirmed, the game checks each of the eight HMs against the species these
    settings can offer the player. If an HM has no possible learner, which only
@@ -269,8 +281,10 @@ BPE's bag HMs still need a party Pokémon that could learn the HM
   Route 101 battle comes right after the pick.
 - **Kecleon.** A randomized Kecleon stays invisible until the Devon Scope reveals
   it, like the original.
-- **Cutscenes.** Story cutscene sprites (the Groudon, Kyogre and Rayquaza scenes)
-  stay. Only Pokémon you actually battle change.
+- **Cutscenes and disguises.** Story cutscene sprites stay. Sky Pillar's
+  Rayquaza keeps its sprite and cry because the same map holds the story scene;
+  only its post-game battle changes. Statics disguised as statues or item balls
+  keep their look.
 
 ### Pokédex goals
 
@@ -297,8 +311,9 @@ BPE's bag HMs still need a party Pokémon that could learn the HM
   Pokémon you actually meet, so they need no changes. Level caps, the Candy Jar,
   and Standard and Nuzlocke trainer levels are unchanged; the randomizer never
   changes levels.
-- **Link play.** Trades and battles with another save only make sense when both
-  use the same seed code. This is documented, not enforced.
+- **Link play.** Link battles use the normal abilities, types, base stats and
+  type chart on both sides, so players with different settings never disagree.
+  Trades still carry whatever Pokémon each save holds.
 
 ## Option details
 
@@ -387,9 +402,13 @@ How it fits in:
   Snorlax, Sudowoodo, Kecleon, Spiritomb, Rotom and Type: Null encounters follow
   Static encounters.
 - **Levels** are unchanged.
-- **Overworld sprite:** the object you walk up to shows the new Pokémon. It uses
-  `OBJ_EVENT_GFX_SPECIES` and a graphics variable that the map script fills from
-  the randomizer when the map loads.
+- **Overworld sprite:** an object that shows its Pokémon (the Regis,
+  Latias/Latios, Sudowoodo, the Kecleon, the post-game Kyogre and Groudon, and
+  Petalburg's Snorlax) shows the new Pokémon instead, through
+  `OBJ_EVENT_GFX_SPECIES`. `sStaticEncounters` in `src/randomizer.c` lists every
+  static encounter's map and object sprite; `InitObjectEventStateFromTemplate`
+  swaps the sprite as the object spawns, and `playmoncry` plays the new
+  Pokémon's cry on those maps.
 
 ### Trainers
 
@@ -596,8 +615,8 @@ The 36 option bits:
 
 ### Determinism
 
-- **The hash.** `Randomizer_Hash(category, a, b, c)` is a 32-bit integer mix of
-  the seed and its inputs. It keeps no RNG state, so the same inputs always give
+- **The hash.** `Hash(stream, a, b)` in `src/randomizer.c` is a 32-bit integer
+  mix of the seed and its inputs. It keeps no RNG state, so the same inputs always give
   the same result, and saving or reloading never changes anything.
 - **Separate categories.** Each option hashes in its own category, so turning
   one option on never changes another option's results.
@@ -606,15 +625,14 @@ The 36 option bits:
   index range, with cycle-walking. That is a true one-for-one mapping and it can
   also run backwards. Running it backwards answers questions like "where did
   this species go?" and "where is this TM now?".
-- **Keeping old seeds stable across updates.** The generated pool tables are
-  append-only.
-  - Each entry records the algorithm version that added it, and the BST used for
-    strength bands as of that version.
-  - A save only sees entries up to its own version, so adding species or
-    rebalancing stats in a later release doesn't reshuffle existing runs.
-  - Changes to a species' own data, such as its learnset or abilities, can still
-    change that species' randomized results. The release notes must say so when
-    it happens.
+- **Keeping old seeds stable across updates.**
+  - Species IDs are stable in pokeemerald-expansion, and the species pool is
+    worked out from `gSpeciesInfo` at run time. `RANDOMIZER_V1_SPECIES_LIMIT`
+    keeps species added after version 1 out of version 1 games.
+  - The field item table is append-only: an existing location keeps its index.
+  - Changes to a species' own data, such as its base stats, learnset or
+    abilities, can still change randomized results. The release notes must say
+    so when it happens.
 - **When to bump the version.** Any other change that alters an existing seed's
   results bumps the algorithm version. Fixed expected outputs checked by tests
   catch such changes.
@@ -622,75 +640,81 @@ The 36 option bits:
 ### Generated data
 
 - **The generator.** `BPETools/generate_randomizer_data.py` writes
-  `src/data/randomizer/*.h`. The output is committed, as the generated trainer
-  levels are.
+  `src/data/randomizer/generated.h`. The output is committed, as the generated
+  trainer levels are; `--check` fails when it is stale.
 - **Its inputs:**
-  - Species data, through the documentation exporter's parsers
+  - Evolution data, through the documentation exporter's species parser
     (`BPEDocumentation/scripts/parse_pokemon.py`).
-  - Wild tables (`src/data/wild_encounters.json`).
-  - Gift, static, egg and trade lists from the scripts.
-  - Item locations, through `extract_world.py`.
-  - A hand-checked `BPETools/randomizer_badge_tiers.json`. It gives the badge
-    count needed to reach each map, with per-item overrides for items behind
-    Surf, Waterfall and similar.
-- **Its tables:**
-  - **Species pool:** species, BST, generation, family root, stage, family
-    length, legendary group, whether it can learn Surf, whether it is basic,
-    whether it can Mega Evolve, and the version that added it. Sorted by BST.
-  - **Lookup lists:** per-type lists, evolution families and strength bands.
-  - **Swap sets:** one per category.
-  - **Items:** field item locations (item flag, item, quantity, category, badge
-    tier), TM sources with their tiers, and the ability and move ban lists.
-- **Checks:**
-  - A `make check` test rebuilds the facts from `gSpeciesInfo` and `gItemsInfo`
-    and fails if the committed tables are stale.
-  - Python unit tests cover the generator.
+  - Wild tables (`src/data/wild_encounters.json`), skipping upstream's
+    FireRed/LeafGreen maps that BPE doesn't have.
+  - Gift (`randomgift`, `givemon`, eggs), static (`setwildbattle`, roamers) and
+    trade lists from the scripts.
+  - Item balls and hidden items from the map JSON files.
+  - A hand-checked `BPETools/randomizer_badge_tiers.json`: the badge count needed
+    to reach each region map section, the badge each gym's TM reward follows,
+    and per-map and per-item overrides.
+- **Its tables:** each species' evolution family root, where the normal game
+  hands out each species, where each trade's requested species is first found,
+  the field item locations (flag, item, quantity, badge tier) with a flag index,
+  and the lowest badge tier of each TM's non-field sources.
+- **Worked out at run time instead:** the species pool, generations, legendary
+  groups, strength bands, evolution stages and family lengths, all from
+  `gSpeciesInfo`, so they can't go stale.
+- **Checks:** `test/randomizer.c` checks the family table against the evolution
+  data.
 
 ### RAM and speed
 
-- **RAM:** the randomizer adds no EWRAM or IWRAM variables and saves nothing
-  beyond the six variables. The per-battle ability override lives in the battle
-  struct, which is on the heap and only exists during battle.
+- **RAM:** the randomizer keeps two EWRAM variables for the settings screen (a
+  heap pointer and a flag; 12 bytes of EWRAM in total with alignment) and saves
+  nothing beyond the six variables. The per-battle ability override lives in
+  the battle struct, which is on the heap and only exists during battle.
   `BPETools/tests/test_ram_budget.py` must stay green.
 - **Speed:**
-  - Each pick is a hash plus a binary search in ROM tables. The upstream draft
-    PR #3998 keeps a 6 KB species table in RAM instead, which BPE can't spare.
+  - Each pick tries a few hashed candidates, then counts every candidate when the
+    filter is narrow. The whole-game swap walks a Feistel permutation. The
+    upstream draft PR #3998 keeps a 6 KB species table in RAM instead, which BPE
+    can't spare.
+  - The randomizer settings are read straight from the save variables, so a game
+    with the randomizer off pays almost nothing.
   - The costliest screen is the Pokédex area map in Per route mode, which rolls
-    every table. Whole game mode runs the swap backwards instead.
-  - Measure the area screen and trainer party generation in frames in mGBA.
+    each different species in every table once. Whole game mode runs the swap
+    backwards instead.
+  - The Birch Case rolls all nine balls when it opens.
+  - Check the area screen, trainer battles and the Birch Case for delays in
+    mGBA.
 
 ### Where it hooks in
 
-New code goes in `src/randomizer.c`, `include/randomizer.h` and
-`include/constants/randomizer.h`. Every hook is a one-line call, so expansion
-upgrades touch little. The upstream filters in `src/random_mon_generation.c`
-(legendary, mythical, Ultra Beast and paradox bans; the BST filter) are reused
-where they fit.
+New code is in `src/randomizer.c`, `src/randomizer_menu.c`,
+`include/randomizer.h`, `include/randomizer_menu.h` and
+`include/constants/randomizer.h`. Most hooks are one-line calls, so expansion
+upgrades touch little.
 
 | Area | Where |
 |---|---|
 | New-game choice | `src/main_menu.c`, after `Task_NewGameBirchSpeech_ChooseNuzlocke`; `src/new_game.c` preserves the variables |
-| Birch Case | `src/ui_birch_case.c`: one species accessor instead of six `sStarterChoices[].species` reads; record `VAR_STARTER_SPECIES` |
+| Birch Case | `src/ui_birch_case.c`: the nine balls are rolled once into the menu's heap struct; record `VAR_STARTER_SPECIES` |
 | Johto balls | `data/maps/LittlerootTown_ProfessorBirchsLab/scripts.inc` |
 | Starter lookups | `GetStarterPokemon` (`src/starter_choose.c`), used by the credits and `IsStarterInParty` (`src/field_specials.c`) |
 | Wild | `src/wild_encounter.c`: `TryGenerateWildMon`, `GenerateFishingWildMon`, `GetLocalWildMon`, `GetLocalWaterMon`, `TryGetAbilityInfluencedWildMonIndex`, Feebas; outbreaks in `src/tv.c` |
 | Area screen, Match Call | `src/pokedex_area_screen.c`, `src/match_call.c` |
 | First battle, Wally | `src/battle_controllers.c` (Zigzagoon Lv 2), `StartWallyTutorialBattle` in `src/battle_setup.c` |
-| Gifts, eggs, statics | `ScriptGiveMon`, `ScriptGiveEgg`, `CreateScriptedWildMon` (`src/script_pokemon_util.c`); `InitRoamer` (`src/roamer.c`); static overworld graphics variables |
+| Gifts, eggs, statics | the `randomgift` macro and `RandomizeGiftSpecies`/`RandomizeEggSpecies` specials in the gift scripts; `ScrCmd_setwildbattle` and `ScrCmd_playmoncry` (`src/scrcmd.c`); `InitRoamer` (`src/roamer.c`); `InitObjectEventStateFromTemplate` (`src/event_object_movement.c`) for static sprites |
 | Trades | `CreateInGameTradePokemonInternal` and `GetInGameTradeSpeciesInfo` (`src/trade.c`), data in `src/data/trade.h` |
 | Trainers | `CreateNPCTrainerPartyFromTrainer` (`src/battle_main.c`), after `DoTrainerPartyPool`; `CustomTrainerPartyAssignMoves` |
-| Abilities | `GetAbilityBySpecies` (`src/pokemon.c`), plus the direct `gSpeciesInfo[].abilities` reads (six in `src/pokemon.c`, one in `src/ui_stat_editor.c`, the trainer code in `src/battle_main.c`) |
-| Types | `GetSpeciesType`, plus the direct `gSpeciesInfo[].types` reads |
-| Learnsets | The 16 `GetSpeciesLevelUpLearnset` calls in 7 files move to a per-entry accessor |
+| Abilities | `GetSpeciesAbility` (`src/pokemon.c`) and the stat editor; `ApplyRandomizerKeptAbility` (`src/battle_util.c`) for Unchanged bosses |
+| Types | `GetSpeciesType`, plus the Tera type and `IsSpeciesOfType` reads in `src/pokemon.c` |
+| Learnsets | `GetLearnsetMove` (`include/pokemon.h`) in the level-up, move relearner and Pokédex readers |
 | TM compatibility | `CanLearnTeachableMove` (12 calls) |
-| TM contents | `GetTMHMMoveId` (`include/item.h`) |
-| Evolutions | The 13 `GetSpeciesEvolutions` callers read targets through one accessor |
-| Base stats | `GetSpeciesBaseStat`, plus the direct base stat reads outside `src/pokemon.c` |
+| TM contents | `GetTMHMMoveId`, `GetItemTMHMMoveId` and `GetTMHMItemIdFromMoveId` (`include/item.h`) |
+| Evolutions | `GetEvolutionTargetSpecies` (`src/pokemon.c`) and the Pokédex evolution screen |
+| Base stats | `GetSpeciesBaseHP` and the other five base stat accessors (`src/pokemon.c`) |
 | Type chart | `GetTypeModifier` (`src/battle_util.c`), plus the one direct table read in `src/battle_script_commands.c` |
 | Field items | `GetItemBallIdAndAmountFromTemplate` (`src/item_ball.c`); the `BG_EVENT_HIDDEN_ITEM` handler in `src/field_control_avatar.c` |
-| HM fallback | `CanMonUseBagFieldMove` and `PlayerHasMove` (`src/party_menu.c`) |
+| HM fallback | `CanMonUseBagFieldMove` (`src/party_menu.c`) |
 | Dex gate | `LittlerootTown_ProfessorBirchsLab_EventScript_CheckReadyForJohtoStarter` |
-| Display | `src/trainer_card.c`, `src/option_menu.c` |
+| Display | `src/trainer_card.c` |
 
 ## Existing bug fixed along the way
 
@@ -756,12 +780,13 @@ Also run:
 
 ## Build order
 
-The whole feature ships in one release, including the Chaos page. The build
-order is:
+The whole feature ships in one release, including the Chaos page. All seven
+steps are built on the `randomizer` branch; the maintainer's mGBA playtest and
+the release remain. The build order was:
 
 1. **Core:** the variables and new-game preservation, the hash and swaps, the
-   generator and tables, the settings screen, seed codes, the trainer card and
-   Options page, and the test scaffolding.
+   generator and tables, the settings screen, seed codes, the trainer card, and
+   the test scaffolding.
 2. **Pokémon:**
    - Starters: the Birch Case and the Johto balls.
    - Wild Pokémon by every method.
@@ -780,10 +805,10 @@ order is:
 
 ## Documentation
 
-- Add a Features page entry to `BPEDocumentation/content/features.json`. It goes
-  live with the release package. It should say that the site's route and trainer
+- A Features page entry in `BPEDocumentation/content/features.json` (done). It
+  goes live with the release package and says that the site's route and trainer
   pages show the normal game.
-- Once built, add a Randomizer section to the "Known quirks" part of `AGENTS.md`:
+- A Randomizer section in the "Known quirks" part of `AGENTS.md` (done):
   - The six variables and the new-game preservation.
   - The algorithm-version rule.
   - "Species, abilities, types, learnsets, evolutions, base stats and the type
