@@ -131,24 +131,23 @@ static inline enum TMHMIndex GetItemTMHMIndex(enum Item item)
     }
 }
 
-static inline enum Move GetItemTMHMMoveId(enum Item item)
+// BPE randomizer: the TM contents option shuffles which move each TM teaches.
+u32 Randomizer_GetTMIndexContents(u32 tmIndex);
+u32 Randomizer_GetTMIndexTeaching(u32 contentsIndex);
+
+static inline enum Move GetTMHMMoveId(enum TMHMIndex index)
 {
-    switch (item)
-    {
-    /* Expands to:
-        * case ITEM_TM_FOCUS_PUNCH:
-        *     return MOVE_FOCUS_PUNCH;
-        * case ITEM_TM_DRAGON_CLAW:
-        *      return MOVE_DRAGON_CLAW;
-        * etc */
-    FOREACH_TM(UNPACK_ITEM_TO_TM_MOVE_ID)
-    FOREACH_HM(UNPACK_ITEM_TO_HM_MOVE_ID)
-    default:
-        return MOVE_NONE;
-    }
+    return gTMHMItemMoveIds[Randomizer_GetTMIndexContents(index)].moveId;
 }
 
-static inline enum Item GetTMHMItemIdFromMoveId(enum Move move)
+static inline enum Move GetItemTMHMMoveId(enum Item item)
+{
+    enum TMHMIndex index = GetItemTMHMIndex(item);
+    return index == 0 ? MOVE_NONE : GetTMHMMoveId(index);
+}
+
+// The TM or HM that teaches this move in the normal game.
+static inline enum Item GetOriginalTMHMItemIdFromMoveId(enum Move move)
 {
     switch (move)
     {
@@ -165,6 +164,12 @@ static inline enum Item GetTMHMItemIdFromMoveId(enum Move move)
     }
 }
 
+static inline enum Item GetTMHMItemIdFromMoveId(enum Move move)
+{
+    enum TMHMIndex index = GetItemTMHMIndex(GetOriginalTMHMItemIdFromMoveId(move));
+    return index == 0 ? ITEM_NONE : gTMHMItemMoveIds[Randomizer_GetTMIndexTeaching(index)].itemId;
+}
+
 #undef UNPACK_ITEM_TO_TM_INDEX
 #undef UNPACK_ITEM_TO_HM_INDEX
 #undef UNPACK_ITEM_TO_TM_MOVE_ID
@@ -175,11 +180,6 @@ static inline enum Item GetTMHMItemIdFromMoveId(enum Move move)
 static inline enum Item GetTMHMItemId(enum TMHMIndex index)
 {
     return gTMHMItemMoveIds[index].itemId;
-}
-
-static inline enum Move GetTMHMMoveId(enum TMHMIndex index)
-{
-    return gTMHMItemMoveIds[index].moveId;
 }
 
 #define GET_BERRY_ID(_berry) case ITEM_##_berry##_BERRY: return BERRY_ID_##_berry;

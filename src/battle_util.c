@@ -54,6 +54,7 @@
 #include "constants/weather.h"
 #include "constants/pokemon.h"
 #include "test/battle.h"
+#include "randomizer.h"
 
 static bool32 TryRemoveScreens(enum BattlerId battler);
 static bool32 IsUnnerveAbilityOnOpposingSide(enum BattlerId battler);
@@ -8319,8 +8320,27 @@ uq4_12_t GetOverworldTypeEffectiveness(struct Pokemon *mon, enum Type moveType)
     return modifier;
 }
 
+// BPE randomizer: an Unchanged boss's Pokémon keeps the ability it was given, even
+// when abilities are randomized.
+void ApplyRandomizerKeptAbility(enum BattlerId battler)
+{
+    enum BattleTrainer trainer;
+    u32 partyIndex = gBattlerPartyIndexes[battler];
+
+    if (IsOnPlayerSide(battler) || partyIndex >= PARTY_SIZE)
+        return;
+    trainer = GetBattlerTrainer(battler);
+    if (trainer != B_TRAINER_OPPONENT_A && trainer != B_TRAINER_OPPONENT_B)
+        return;
+    if (gBattleStruct->randomizerKeptAbility[trainer == B_TRAINER_OPPONENT_B][partyIndex] != ABILITY_NONE)
+        gBattleMons[battler].ability = gBattleStruct->randomizerKeptAbility[trainer == B_TRAINER_OPPONENT_B][partyIndex];
+}
+
 uq4_12_t GetTypeModifier(enum Type atkType, enum Type defType)
 {
+    // BPE randomizer: the type chart can be relabelled.
+    atkType = Randomizer_GetTypeChartType(atkType);
+    defType = Randomizer_GetTypeChartType(defType);
     if (B_FLAG_INVERSE_BATTLE != 0 && FlagGet(B_FLAG_INVERSE_BATTLE))
         return GetInverseTypeMultiplier(gTypeEffectivenessTable[atkType][defType]);
     return gTypeEffectivenessTable[atkType][defType];
@@ -9358,6 +9378,7 @@ void CopyMonLevelAndBaseStatsToBattleMon(enum BattlerId battler, struct Pokemon 
 void CopyMonAbilityAndTypesToBattleMon(enum BattlerId battler, struct Pokemon *mon)
 {
     gBattleMons[battler].ability = GetMonAbility(mon);
+    ApplyRandomizerKeptAbility(battler);
     #if TESTING
     if (gTestRunnerEnabled)
     {

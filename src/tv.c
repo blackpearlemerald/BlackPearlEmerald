@@ -45,6 +45,8 @@
 #include "constants/metatile_labels.h"
 #include "constants/moves.h"
 #include "constants/region_map_sections.h"
+#include "randomizer.h"
+#include "wild_encounter.h"
 
 #define LAST_TVSHOW_IDX (TV_SHOWS_COUNT - 1)
 
@@ -1652,12 +1654,20 @@ static void TryStartRandomMassOutbreak(void)
                 show->massOutbreak.level = sPokeOutbreakSpeciesList[outbreakIdx].level;
                 show->massOutbreak.unused1 = 0;
                 show->massOutbreak.unused3 = 0;
-                show->massOutbreak.species = sPokeOutbreakSpeciesList[outbreakIdx].species;
+                // BPE randomizer: the outbreak is of whatever replaced its Pokémon on that route.
+                show->massOutbreak.species = Randomizer_GetWildSpecies(sPokeOutbreakSpeciesList[outbreakIdx].species,
+                                                                       sPokeOutbreakSpeciesList[outbreakIdx].location, WILD_AREA_LAND);
                 show->massOutbreak.unused2 = 0;
                 show->massOutbreak.moves[0] = sPokeOutbreakSpeciesList[outbreakIdx].moves[0];
                 show->massOutbreak.moves[1] = sPokeOutbreakSpeciesList[outbreakIdx].moves[1];
                 show->massOutbreak.moves[2] = sPokeOutbreakSpeciesList[outbreakIdx].moves[2];
                 show->massOutbreak.moves[3] = sPokeOutbreakSpeciesList[outbreakIdx].moves[3];
+                if (show->massOutbreak.species != sPokeOutbreakSpeciesList[outbreakIdx].species)
+                {
+                    // A randomized Pokémon keeps the moves it would normally know.
+                    for (i = 0; i < MAX_MON_MOVES; i++)
+                        show->massOutbreak.moves[i] = MOVE_NONE;
+                }
                 show->massOutbreak.locationMapNum = sPokeOutbreakSpeciesList[outbreakIdx].location;
                 show->massOutbreak.locationMapGroup = 0;
                 show->massOutbreak.unused4 = 0;

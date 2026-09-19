@@ -211,6 +211,7 @@ extern const u8 gText_Birch_SoItsPlayer[];
 extern const u8 gText_Birch_YourePlayer[];
 extern const u8 gText_Birch_AreYouReady[];
 extern const u8 gText_Birch_Nuzlocke[];
+extern const u8 gText_Birch_Randomizer[];
 
 extern const u8 gText_BirchInTrouble[];
 extern const u8 gText_ConfirmStarterChoice[];
@@ -292,6 +293,10 @@ extern const u8 gText_WontHaveEffect[];
 extern const u8 gText_CardMode[]; // BPE
 extern const u8 gText_CardNuzlockeMode[]; // BPE
 extern const u8 gText_CardStandardMode[]; // BPE
+extern const u8 gText_CardNuzlockeRandomized[]; // BPE randomizer
+extern const u8 gText_CardStandardRandomized[]; // BPE randomizer
+extern const u8 gText_CardRandomizer[]; // BPE randomizer
+extern const u8 *const gText_CardRandomizerPresets[]; // BPE randomizer
 extern const u8 gText_WontHaveEffectNuzlocke[]; // BPE Nuzlocke
 extern const u8 gText_PkmnSnappedOutOfConfusion[];
 extern const u8 gText_PkmnFriendlyBaseVar2Fell[];

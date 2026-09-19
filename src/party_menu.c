@@ -82,6 +82,7 @@
 #include "constants/party_menu.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "randomizer.h"
 
 enum {
     MENU_SUMMARY,
@@ -5749,7 +5750,8 @@ bool32 CanMonUseBagFieldMove(struct Pokemon *mon, u16 move)
         return FALSE;
     if (GetMonData(mon, MON_DATA_DEAD) && FlagGet(FLAG_NUZLOCKE))
         return FALSE;
-    return MonKnowsMove(mon, move) || CanLearnTeachableMove(GetMonData(mon, MON_DATA_SPECIES), move);
+    // BPE randomizer: an HM nothing can learn in this game works for any Pokémon.
+    return MonKnowsMove(mon, move) || CanLearnTeachableMove(GetMonData(mon, MON_DATA_SPECIES), move) || Randomizer_HasHMFallback(move);
 }
 
 // BPE: the first party Pokemon that could use this field move, or PARTY_SIZE.

@@ -643,3 +643,9 @@ gSpecials::
 	def_special UpdateTrainerCardPhotoIcons
 	def_special StickerManGetBragFlags
 	def_special CheckAddCoins
+	@ BPE randomizer
+	def_special RandomizeGiftSpecies
+	def_special RandomizeEggSpecies
+	def_special GetRandomizedJohtoStarter
+	def_special IsReadyForJohtoStarter
+	def_special BufferStarterTypeInfo

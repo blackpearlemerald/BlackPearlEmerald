@@ -61,6 +61,7 @@
 #include "pokedex.h"
 #include "wild_encounter.h"
 #include "fishing.h"
+#include "randomizer.h"
 
 enum TransitionType
 {
@@ -476,7 +477,7 @@ static void DoBattlePyramidTrainerHillBattle(void)
 // Initiates battle where Wally catches Ralts
 void StartWallyTutorialBattle(void)
 {
-    CreateMaleMon(&gParties[B_TRAINER_OPPONENT_A][0], SPECIES_RALTS, 5);
+    CreateMaleMon(&gParties[B_TRAINER_OPPONENT_A][0], Randomizer_GetStoryWildSpecies(SPECIES_RALTS, MAP_ROUTE102), 5); // BPE randomizer
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_ReturnToFieldContinueScriptPlayMapMusic;
     gBattleTypeFlags = BATTLE_TYPE_CATCH_TUTORIAL;

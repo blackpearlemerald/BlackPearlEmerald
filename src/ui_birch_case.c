@@ -42,6 +42,7 @@
 #include "constants/moves.h"
 #include "naming_screen.h"
 #include "tv.h"
+#include "randomizer.h"
 
  /*
     9 Starter Selection Birch Case
@@ -62,7 +63,7 @@ struct MenuResources
     u16 selector_x;
     u16 selector_y;
     u16 movingSelector;
-
+    u16 species[9]; // BPE: the Pokémon behind each ball, after the randomizer
 };
 
 enum WindowIds
@@ -337,7 +338,7 @@ static void CreateHandSprite()
 
     for(i=0; i<9; i++)
     {
-        if(sStarterChoices[i].species == SPECIES_NONE) // Choose Non Empty Slot To Start In
+        if(sBirchCaseDataPtr->species[i] == SPECIES_NONE) // Choose Non Empty Slot To Start In
             continue;
     
         if(sBirchCaseDataPtr->handPosition <= 3)
@@ -366,7 +367,7 @@ static void CreateHandSprite()
     gSprites[sBirchCaseDataPtr->handSpriteId].callback = CursorCallback;
     StartSpriteAnim(&gSprites[sBirchCaseDataPtr->handSpriteId], 2);
     StartSpriteAnim(&gSprites[sBirchCaseDataPtr->pokeballSpriteIds[sBirchCaseDataPtr->handPosition]], 1);
-    SampleUi_DrawMonIcon(sStarterChoices[sBirchCaseDataPtr->handPosition].species);
+    SampleUi_DrawMonIcon(sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition]);
     
     return;
 }
@@ -391,7 +392,7 @@ static void CreatePokeballSprites()
     for(i=0; i<9; i++)
     {
         u16 x, y;
-        if(sStarterChoices[i].species == SPECIES_NONE)
+        if(sBirchCaseDataPtr->species[i] == SPECIES_NONE)
             continue;
 
         if(i <= 3)
@@ -464,8 +465,10 @@ static void BirchCase_GiveMon() // Function that calls the GiveMon function pull
     u8 *evs = (u8 *) sStarterChoices[sBirchCaseDataPtr->handPosition].evs;
     u8 *ivs = (u8 *) sStarterChoices[sBirchCaseDataPtr->handPosition].ivs;
     u16 *moves = (u16 *) sStarterChoices[sBirchCaseDataPtr->handPosition].moves;
+    u16 species = sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition];
     FlagSet(FLAG_SYS_POKEMON_GET);
-    gSpecialVar_Result = BirchCase_GiveMonParameterized(sStarterChoices[sBirchCaseDataPtr->handPosition].species, sStarterChoices[sBirchCaseDataPtr->handPosition].level, \
+    VarSet(VAR_STARTER_SPECIES, species); // BPE: the real starter, for the credits and NPCs
+    gSpecialVar_Result = BirchCase_GiveMonParameterized(species, sStarterChoices[sBirchCaseDataPtr->handPosition].level, \
                 sStarterChoices[sBirchCaseDataPtr->handPosition].item, sStarterChoices[sBirchCaseDataPtr->handPosition].ball, \
                 sStarterChoices[sBirchCaseDataPtr->handPosition].nature, sStarterChoices[sBirchCaseDataPtr->handPosition].abilityNum, \
                 sStarterChoices[sBirchCaseDataPtr->handPosition].gender, evs, ivs, moves, \
@@ -474,6 +477,12 @@ static void BirchCase_GiveMon() // Function that calls the GiveMon function pull
 }
 
 //==========FUNCTIONS==========//
+// BPE: the Pokémon each ball holds in the normal game, for the randomizer's starter roles.
+u16 BirchCase_GetOriginalSpecies(u32 ball)
+{
+    return ball < ARRAY_COUNT(sStarterChoices) ? sStarterChoices[ball].species : SPECIES_NONE;
+}
+
 // UI loader template functions by Ghoulslash
 void Task_OpenBirchCase(u8 taskId)
 {
@@ -505,6 +514,7 @@ void BirchCase_Init(MainCallback callback)
     {
         sBirchCaseDataPtr->pokeballSpriteIds[i] = SPRITE_NONE;
     }
+    Randomizer_FillStarters(sBirchCaseDataPtr->species, 9);
     
     SetMainCallback2(BirchCaseRunSetup);
 }
@@ -736,7 +746,7 @@ static void PrintTextToBottomBar(u8 textId)
     u8 x = 1 + 4;
     u8 y = 1 + 18;
 
-    u16 species = sStarterChoices[sBirchCaseDataPtr->handPosition].species;
+    u16 species = sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition];
     u16 dexNum = SpeciesToNationalPokedexNum(species);    
 
     FillWindowPixelBuffer(WINDOW_BOTTOM_BAR, PIXEL_FILL(TEXT_COLOR_TRANSPARENT));
@@ -758,7 +768,7 @@ static void PrintTextToBottomBar(u8 textId)
     } 
     AddTextPrinterParameterized4(WINDOW_BOTTOM_BAR, FONT_NORMAL, x, y, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, mainBarAlternatingText);
 
-    if(sStarterChoices[sBirchCaseDataPtr->handPosition].species == SPECIES_NONE)
+    if(sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition] == SPECIES_NONE)
     {
         PutWindowTilemap(WINDOW_BOTTOM_BAR);
         CopyWindowToVram(WINDOW_BOTTOM_BAR, 3);
@@ -806,8 +816,8 @@ static void Task_DelayedSpriteLoad(u8 taskId) // wait 4 frames after changing th
 {   
     if (gTasks[taskId].data[11] >= 4)
     {
-        if(sStarterChoices[sBirchCaseDataPtr->handPosition].species != SPECIES_NONE)
-            SampleUi_DrawMonIcon(sStarterChoices[sBirchCaseDataPtr->handPosition].species);
+        if(sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition] != SPECIES_NONE)
+            SampleUi_DrawMonIcon(sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition]);
         gTasks[taskId].func = Task_BirchCaseMain;
         sBirchCaseDataPtr->movingSelector = FALSE;
         return;
@@ -983,7 +993,7 @@ static void Task_BirchCaseMain(u8 taskId)
     }
     if(JOY_NEW(A_BUTTON))
     {
-        if(sStarterChoices[sBirchCaseDataPtr->handPosition].species != SPECIES_NONE) // If spot empty don't go to next control flow state
+        if(sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition] != SPECIES_NONE) // If spot empty don't go to next control flow state
         {
             PlaySE(SE_SELECT);
             PrintTextToBottomBar(CONFIRM_SELECTION);

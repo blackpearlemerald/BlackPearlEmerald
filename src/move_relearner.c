@@ -880,17 +880,17 @@ static u32 GetRelearnerLevelUpMoves(struct BoxPokemon *mon, u16 *moves)
             if (learnset[i].level > level)
                 break;
 
-            if (BoxMonKnowsMove(mon, learnset[i].move))
+            if (BoxMonKnowsMove(mon, GetLearnsetMove(species, learnset, i)))
                 continue;
 
             bool32 alreadyInList = FALSE;
             for (u32 j = 0; j < numMoves; j++)
             {
-                if (learnset[i].move == moves[j])
+                if (GetLearnsetMove(species, learnset, i) == moves[j])
                     alreadyInList = TRUE;
             }
             if (!alreadyInList)
-                moves[numMoves++] = learnset[i].move;
+                moves[numMoves++] = GetLearnsetMove(species, learnset, i);
         }
 
         species = (P_PRE_EVO_MOVES ? GetSpeciesPreEvolution(species) : SPECIES_NONE);
@@ -1016,7 +1016,7 @@ static bool32 HasRelearnerLevelUpMoves(struct BoxPokemon *boxMon)
             if (learnset[i].level > level)
                 break;
 
-            if (!BoxMonKnowsMove(boxMon, learnset[i].move))
+            if (!BoxMonKnowsMove(boxMon, GetLearnsetMove(species, learnset, i)))
                 return TRUE;
         }
 

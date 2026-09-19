@@ -10,6 +10,7 @@
 #include "battle_pyramid.h"
 #include "battle_setup.h"
 #include "battle_tower.h"
+#include "randomizer.h"
 #include "battle_z_move.h"
 #include "caps.h"
 #include "data.h"
@@ -1590,7 +1591,7 @@ void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon) //Credit: AsparagusEdua
 
         for (j = 0; j < addedMoves; j++)
         {
-            if (moves[j] == learnset[i].move)
+            if (moves[j] == GetLearnsetMove(species, learnset, i))
             {
                 alreadyKnown = TRUE;
                 break;
@@ -1601,14 +1602,14 @@ void GiveBoxMonInitialMoveset(struct BoxPokemon *boxMon) //Credit: AsparagusEdua
         {
             if (addedMoves < MAX_MON_MOVES)
             {
-                moves[addedMoves] = learnset[i].move;
+                moves[addedMoves] = GetLearnsetMove(species, learnset, i);
                 addedMoves++;
             }
             else
             {
                 for (j = 0; j < MAX_MON_MOVES - 1; j++)
                     moves[j] = moves[j + 1];
-                moves[MAX_MON_MOVES - 1] = learnset[i].move;
+                moves[MAX_MON_MOVES - 1] = GetLearnsetMove(species, learnset, i);
             }
         }
     }
@@ -1643,14 +1644,14 @@ void GiveBoxMonDefaultMove(struct BoxPokemon *boxMon, u32 slot)
 
         for (j = 0; j < slot; j++)
         {
-            if (GetBoxMonData(boxMon, MON_DATA_MOVE1 + j) == learnset[i].move)
+            if (GetBoxMonData(boxMon, MON_DATA_MOVE1 + j) == GetLearnsetMove(species, learnset, i))
             {
                 alreadyKnown = TRUE;
                 break;
             }
         }
         if (!alreadyKnown)
-            move = learnset[i].move;
+            move = GetLearnsetMove(species, learnset, i);
     }
 
     SetBoxMonData(boxMon, MON_DATA_MOVE1 + slot, &move);
@@ -1689,7 +1690,7 @@ enum Move MonTryLearningNewMoveAtLevel(struct Pokemon *mon, bool32 firstMove, u3
     for (u32 i = 0; formChanges != NULL && formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
     {
         if (formChanges[i].method == FORM_CHANGE_END_BATTLE
-            && learnset[sLearningMoveTableID].move == formChanges[i].param3)
+            && GetLearnsetMove(species, learnset, sLearningMoveTableID) == formChanges[i].param3)
         {
             for (u32 j = 0; j < MAX_MON_MOVES; j++)
             {
@@ -1701,7 +1702,7 @@ enum Move MonTryLearningNewMoveAtLevel(struct Pokemon *mon, bool32 firstMove, u3
 
     if (learnset[sLearningMoveTableID].level == level)
     {
-        gMoveToLearn = learnset[sLearningMoveTableID].move;
+        gMoveToLearn = GetLearnsetMove(species, learnset, sLearningMoveTableID);
         sLearningMoveTableID++;
         retVal = GiveMoveToMon(mon, gMoveToLearn);
     }
@@ -2830,8 +2831,7 @@ u32 GetBoxMonData3(struct BoxPokemon *boxMon, s32 field, u8 *data)
                 }
                 else if (substruct0->teraType == TYPE_NONE) // Tera Type hasn't been modified so we can just use the personality
                 {
-                    const enum Type *types = gSpeciesInfo[substruct0->species].types;
-                    retVal = (boxMon->personality & 0x1) == 0 ? types[0] : types[1];
+                    retVal = GetSpeciesType(substruct0->species, (boxMon->personality & 0x1) == 0 ? 0 : 1);
                 }
                 else
                 {
@@ -3638,44 +3638,54 @@ u32 GetSpeciesWeight(enum Species species)
     return gSpeciesInfo[SanitizeSpeciesId(species)].weight;
 }
 
+// BPE randomizer: species types, abilities and base stats can be randomized. Read
+// them through these accessors.
 enum Type GetSpeciesType(enum Species species, u8 slot)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].types[slot];
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesType(species, slot, gSpeciesInfo[species].types[slot]);
 }
 
 enum Ability GetSpeciesAbility(enum Species species, u8 slot)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].abilities[slot];
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesAbility(species, slot, gSpeciesInfo[species].abilities[slot]);
 }
 
 u32 GetSpeciesBaseHP(enum Species species)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseHP;
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesBaseStat(species, STAT_HP, gSpeciesInfo[species].baseHP);
 }
 
 u32 GetSpeciesBaseAttack(enum Species species)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseAttack;
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesBaseStat(species, STAT_ATK, gSpeciesInfo[species].baseAttack);
 }
 
 u32 GetSpeciesBaseDefense(enum Species species)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseDefense;
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesBaseStat(species, STAT_DEF, gSpeciesInfo[species].baseDefense);
 }
 
 u32 GetSpeciesBaseSpAttack(enum Species species)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseSpAttack;
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesBaseStat(species, STAT_SPATK, gSpeciesInfo[species].baseSpAttack);
 }
 
 u32 GetSpeciesBaseSpDefense(enum Species species)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseSpDefense;
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesBaseStat(species, STAT_SPDEF, gSpeciesInfo[species].baseSpDefense);
 }
 
 u32 GetSpeciesBaseSpeed(enum Species species)
 {
-    return gSpeciesInfo[SanitizeSpeciesId(species)].baseSpeed;
+    species = SanitizeSpeciesId(species);
+    return Randomizer_GetSpeciesBaseStat(species, STAT_SPEED, gSpeciesInfo[species].baseSpeed);
 }
 
 u32 GetSpeciesBaseStat(enum Species species, u32 statIndex)
@@ -5116,7 +5126,7 @@ enum Species GetEvolutionTargetSpecies(struct Pokemon *mon, enum EvolutionMode m
         return SPECIES_NONE;
     }
 
-    return targetSpecies;
+    return Randomizer_GetEvolutionTarget(species, targetSpecies); // BPE randomizer
 }
 
 bool8 IsMonPastEvolutionLevel(struct Pokemon *mon)
@@ -5584,9 +5594,9 @@ u8 CanLearnTeachableMove(enum Species species, enum Move move)
     for (u32 i = 0; teachableLearnset[i] != MOVE_UNAVAILABLE; i++)
     {
         if (teachableLearnset[i] == move)
-            return TRUE;
+            return Randomizer_CanLearnTeachableMove(species, move, TRUE);
     }
-    return FALSE;
+    return Randomizer_CanLearnTeachableMove(species, move, FALSE);
 }
 
 u8 GetLevelUpMovesBySpecies(enum Species species, u16 *moves)
@@ -5596,7 +5606,7 @@ u8 GetLevelUpMovesBySpecies(enum Species species, u16 *moves)
     const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(species);
 
     for (i = 0; i < MAX_LEVEL_UP_MOVES && learnset[i].move != LEVEL_UP_MOVE_END; i++)
-         moves[numMoves++] = learnset[i].move;
+         moves[numMoves++] = GetLearnsetMove(species, learnset, i);
 
      return numMoves;
 }
@@ -6802,7 +6812,7 @@ u16 MonTryLearningNewMoveEvolution(struct Pokemon *mon, bool8 firstMove)
         while ((learnset[sLearningMoveTableID].level == 0 || learnset[sLearningMoveTableID].level == level)
              && !(P_EVOLUTION_LEVEL_1_LEARN >= GEN_8 && learnset[sLearningMoveTableID].level == 1))
         {
-            gMoveToLearn = learnset[sLearningMoveTableID].move;
+            gMoveToLearn = GetLearnsetMove(species, learnset, sLearningMoveTableID);
             sLearningMoveTableID++;
             return GiveMoveToMon(mon, gMoveToLearn);
         }
@@ -7242,8 +7252,7 @@ bool32 IsSpeciesForeignRegionalForm(enum Species species, u32 currentRegion)
 
 enum Type GetTeraTypeFromPersonality(struct Pokemon *mon)
 {
-    const u8 *types = gSpeciesInfo[GetMonData(mon, MON_DATA_SPECIES)].types;
-    return (GetMonData(mon, MON_DATA_PERSONALITY) & 0x1) == 0 ? types[0] : types[1];
+    return GetSpeciesType(GetMonData(mon, MON_DATA_SPECIES), (GetMonData(mon, MON_DATA_PERSONALITY) & 0x1) == 0 ? 0 : 1);
 }
 
 struct Pokemon *GetSavedPlayerPartyMon(u32 index)
@@ -7263,8 +7272,8 @@ void SavePlayerPartyMon(u32 index, struct Pokemon *mon)
 
 bool32 IsSpeciesOfType(enum Species species, enum Type type)
 {
-    if (gSpeciesInfo[species].types[0] == type
-     || gSpeciesInfo[species].types[1] == type)
+    if (GetSpeciesType(species, 0) == type
+     || GetSpeciesType(species, 1) == type)
         return TRUE;
     return FALSE;
 }

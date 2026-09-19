@@ -1,6 +1,7 @@
 #include "global.h"
 #include "item_ball.h"
 #include "event_data.h"
+#include "randomizer.h"
 #include "constants/event_objects.h"
 #include "constants/items.h"
 
@@ -27,6 +28,13 @@ static u32 GetItemBallIdFromTemplate(u32 itemBallId)
 void GetItemBallIdAndAmountFromTemplate(void)
 {
     u32 itemBallId = (gSpecialVar_LastTalked - 1);
+    u16 item, amount;
     gSpecialVar_Result = GetItemBallIdFromTemplate(itemBallId);
     gSpecialVar_0x8009 = GetItemBallAmountFromTemplate(itemBallId);
+    // BPE randomizer: the item the field item shuffle put here.
+    if (Randomizer_GetFieldItem(gMapHeader.events->objectEvents[itemBallId].flagId, &item, &amount))
+    {
+        gSpecialVar_Result = item;
+        gSpecialVar_0x8009 = amount;
+    }
 }

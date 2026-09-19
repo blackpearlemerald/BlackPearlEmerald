@@ -835,6 +835,14 @@ u32 GetSpeciesBaseSpeed(enum Species species);
 u32 GetSpeciesBaseStat(enum Species species, u32 statIndex);
 u32 GetSpeciesBaseStatTotal(enum Species species);
 const struct LevelUpMove *GetSpeciesLevelUpLearnset(enum Species species);
+u16 Randomizer_GetLevelUpMove(enum Species species, u32 index, u16 move);
+
+// BPE randomizer: the move a level-up learnset entry teaches in this game. Read
+// learnset moves through this; only the LEVEL_UP_MOVE_END check uses the raw entry.
+static inline enum Move GetLearnsetMove(enum Species species, const struct LevelUpMove *learnset, u32 index)
+{
+    return Randomizer_GetLevelUpMove(species, index, learnset[index].move);
+}
 const u16 *GetSpeciesTeachableLearnset(enum Species species);
 const u16 *GetSpeciesEggMoves(enum Species species);
 const struct Evolution *GetSpeciesEvolutions(enum Species species);

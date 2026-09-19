@@ -47,6 +47,7 @@
 #include "constants/battle.h"
 #include "constants/event_objects.h"
 #include "constants/field_effects.h"
+#include "randomizer.h"
 #include "constants/items.h"
 #include "constants/mauville_old_man.h"
 #include "constants/metatile_behaviors.h"
@@ -1632,7 +1633,8 @@ static u8 InitObjectEventStateFromTemplate(const struct ObjectEventTemplate *tem
     }
     objectEvent->active = TRUE;
     objectEvent->triggerGroundEffectsOnMove = TRUE;
-    objectEvent->graphicsId = template->graphicsId;
+    // BPE randomizer: a static encounter's object shows the Pokémon it has become.
+    objectEvent->graphicsId = Randomizer_GetStaticObjectGraphics((mapGroup << 8) | mapNum, template->graphicsId);
     SetObjectEventDynamicGraphicsId(objectEvent);
     if (IS_OW_MON_OBJ(objectEvent))
     {

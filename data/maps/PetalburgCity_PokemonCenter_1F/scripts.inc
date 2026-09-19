@@ -33,10 +33,10 @@ PetalburgCity_PokemonCenter_1F_EventScript_Woman::
 	release
 	end
 
+@ BPE: names the type of whichever starter the player picked from the Birch Case.
 PetalburgCity_PokemonCenter_1F_EventScript_SayStarterTypeInfo::
-	call_if_eq VAR_STARTER_MON, 0, PetalburgCity_PokemonCenter_1F_EventScript_SayTreeckoType
-	call_if_eq VAR_STARTER_MON, 1, PetalburgCity_PokemonCenter_1F_EventScript_SayTorchicType
-	call_if_eq VAR_STARTER_MON, 2, PetalburgCity_PokemonCenter_1F_EventScript_SayMudkipType
+	special BufferStarterTypeInfo
+	msgbox PetalburgCity_PokemonCenter_1F_Text_StarterIsType, MSGBOX_DEFAULT
 	release
 	end
 
@@ -68,6 +68,12 @@ PetalburgCity_PokemonCenter_1F_Text_ManyTypesOfPokemon:
 	.string "weaknesses against other types.\p"
 	.string "Depending on the types of POKéMON,\n"
 	.string "a battle could be easy or hard.$"
+
+PetalburgCity_PokemonCenter_1F_Text_StarterIsType:
+	.string "For example, your {STR_VAR_1}\n"
+	.string "is a {STR_VAR_2} type.\p"
+	.string "Knowing a POKéMON's type helps\n"
+	.string "you choose which one to send out!$"
 
 PetalburgCity_PokemonCenter_1F_Text_TreeckoIsGrassType:
 	.string "For example, your TREECKO\n"

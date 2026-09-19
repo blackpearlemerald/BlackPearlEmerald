@@ -33,6 +33,7 @@
 #include "constants/rgb.h"
 #include "constants/trainers.h"
 #include "constants/union_room.h"
+#include "randomizer.h"
 
 enum {
     WIN_MSG,
@@ -1232,6 +1233,10 @@ static void PrintModeOnCardFront(void)
     const u8 *mode = FlagGet(FLAG_NUZLOCKE) ? gText_CardNuzlockeMode : gText_CardStandardMode;
     u32 top = yOffsets[sData->isHoenn];
 
+    // BPE randomizer: a randomized game says so.
+    if (!sData->isLink && Randomizer_IsActive())
+        mode = FlagGet(FLAG_NUZLOCKE) ? gText_CardNuzlockeRandomized : gText_CardStandardRandomized;
+
     AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, xOffsets[sData->isHoenn], top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_CardMode);
     AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_SMALL, GetStringRightAlignXOffset(FONT_SMALL, mode, widths[sData->isHoenn]), top, sTrainerCardTextColors, TEXT_SKIP_DRAW, mode);
 }
@@ -1241,6 +1246,20 @@ static void PrintProfilePhraseOnCard(void)
     static const u8 yOffsetsLine1[] = {113, 104};
     static const u8 yOffsetsLine2[] = {129, 120};
 
+    // BPE randomizer: the player's own card shows the preset and seed code where a
+    // link partner's card shows their profile.
+    if (!sData->isLink && Randomizer_IsActive())
+    {
+        struct RandomizerSettings settings;
+        u8 code[RANDOMIZER_CODE_LENGTH + 4];
+
+        Randomizer_LoadSettings(&settings);
+        StringCopy(gStringVar1, gText_CardRandomizerPresets[Randomizer_GetPreset(&settings)]);
+        StringExpandPlaceholders(gStringVar4, gText_CardRandomizer);
+        Randomizer_BufferSeedCode(code);
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 8, yOffsetsLine1[sData->isHoenn], sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 8, yOffsetsLine2[sData->isHoenn], sTrainerCardTextColors, TEXT_SKIP_DRAW, code);
+    }
     if (sData->isLink)
     {
         AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 8, yOffsetsLine1[sData->isHoenn], sTrainerCardTextColors, TEXT_SKIP_DRAW, sData->easyChatProfile[0]);

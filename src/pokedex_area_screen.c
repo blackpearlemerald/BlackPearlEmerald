@@ -28,6 +28,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "config/pokedex_plus_hgss.h"
+#include "randomizer.h"
 
 // There are two types of indicators for the area screen to show where a Pokémon can occur:
 // - Area glows, which highlight any of the maps in MAP_GROUP_TOWNS_AND_ROUTES that have the species.
@@ -121,8 +122,8 @@ static void BuildAreaGlowTilemap(void);
 static void SetAreaHasMon(u16, u16);
 static void SetSpecialMapHasMon(u16, u16);
 static mapsec_u16_t GetRegionMapSectionId(u8, u8);
-static bool8 MapHasSpecies(const struct WildEncounterTypes *, u32, enum Species);
-static bool8 MonListHasSpecies(const struct WildPokemonInfo *, enum Species, u16);
+static bool8 MapHasSpecies(const struct WildEncounterTypes *, u32, enum Species, u16, enum Species);
+static bool8 MonListHasSpecies(const struct WildPokemonInfo *, enum Species, u16, u16, u32, enum Species);
 static void DoAreaGlow(void);
 static void Task_ShowPokedexAreaScreen(u8 taskId);
 static void Task_UpdatePokedexAreaScreen(u8 taskId);
@@ -332,6 +333,9 @@ static void FindMapsWithMon(enum Species species)
     }
 
     currentRegionMapType = GetRegionMapType(gMapHeader.regionMapSectionId);
+    // BPE randomizer: when every wild slot goes through the one-for-one swap, look for
+    // the species that became this one instead of randomizing every slot.
+    enum Species swappedFrom = Randomizer_GetWildSwapOriginal(species);
     // Add regular species to the area map
     for (i = 0; gWildMonHeaders[i].mapGroup != MAP_GROUP(MAP_UNDEFINED); i++)
     {
@@ -340,7 +344,8 @@ static void FindMapsWithMon(enum Species species)
         if (GetRegionMapType(headerSectionId) != currentRegionMapType)
             continue;
 
-        if (MapHasSpecies(&gWildMonHeaders[i].encounterTypes[gAreaTimeOfDay], headerSectionId, species))
+        if (MapHasSpecies(&gWildMonHeaders[i].encounterTypes[gAreaTimeOfDay], headerSectionId, species,
+                          (gWildMonHeaders[i].mapGroup << 8) | gWildMonHeaders[i].mapNum, swappedFrom))
         {
             switch (gWildMonHeaders[i].mapGroup)
             {
@@ -429,7 +434,7 @@ static mapsec_u16_t GetRegionMapSectionId(u8 mapGroup, u8 mapNum)
     return Overworld_GetMapHeaderByGroupAndId(mapGroup, mapNum)->regionMapSectionId;
 }
 
-static bool8 MapHasSpecies(const struct WildEncounterTypes *info, u32 headerSectionId, enum Species species)
+static bool8 MapHasSpecies(const struct WildEncounterTypes *info, u32 headerSectionId, enum Species species, u16 mapId, enum Species swappedFrom)
 {
     // If this is a header for Altering Cave, skip it if it's not the current Altering Cave encounter set
     if (headerSectionId == MAPSEC_ALTERING_CAVE)
@@ -439,31 +444,45 @@ static bool8 MapHasSpecies(const struct WildEncounterTypes *info, u32 headerSect
             return FALSE;
     }
 
-    if (MonListHasSpecies(info->landMonsInfo, species, LAND_WILD_COUNT))
+    if (MonListHasSpecies(info->landMonsInfo, species, LAND_WILD_COUNT, mapId, WILD_AREA_LAND, swappedFrom))
         return TRUE;
-    if (MonListHasSpecies(info->waterMonsInfo, species, WATER_WILD_COUNT))
+    if (MonListHasSpecies(info->waterMonsInfo, species, WATER_WILD_COUNT, mapId, WILD_AREA_WATER, swappedFrom))
         return TRUE;
 // When searching the fishing encounters, this incorrectly uses the size of the land encounters.
 // As a result it's reading out of bounds of the fishing encounters tables.
 #ifdef BUGFIX
-    if (MonListHasSpecies(info->fishingMonsInfo, species, FISH_WILD_COUNT))
+    if (MonListHasSpecies(info->fishingMonsInfo, species, FISH_WILD_COUNT, mapId, WILD_AREA_FISHING, swappedFrom))
 #else
-    if (MonListHasSpecies(info->fishingMonsInfo, species, LAND_WILD_COUNT))
+    if (MonListHasSpecies(info->fishingMonsInfo, species, LAND_WILD_COUNT, mapId, WILD_AREA_FISHING, swappedFrom))
 #endif
         return TRUE;
-    if (MonListHasSpecies(info->rockSmashMonsInfo, species, ROCK_WILD_COUNT))
+    if (MonListHasSpecies(info->rockSmashMonsInfo, species, ROCK_WILD_COUNT, mapId, WILD_AREA_ROCKS, swappedFrom))
         return TRUE;
     return FALSE;
 }
 
-static bool8 MonListHasSpecies(const struct WildPokemonInfo *info, enum Species species, u16 size)
+static bool8 MonListHasSpecies(const struct WildPokemonInfo *info, enum Species species, u16 size, u16 mapId, u32 area, enum Species swappedFrom)
 {
-    u16 i;
+    u16 i, j;
     if (info != NULL)
     {
         for (i = 0; i < size; i++)
         {
-            if (info->wildPokemon[i].species == species)
+            enum Species original = info->wildPokemon[i].species;
+
+            if (swappedFrom != SPECIES_NONE)
+            {
+                if (original == swappedFrom)
+                    return TRUE;
+                continue;
+            }
+            // BPE randomizer: randomize each different species in the table once.
+            for (j = 0; j < i; j++)
+            {
+                if (info->wildPokemon[j].species == original)
+                    break;
+            }
+            if (j == i && Randomizer_GetWildSpecies(original, mapId, area) == species)
                 return TRUE;
         }
     }

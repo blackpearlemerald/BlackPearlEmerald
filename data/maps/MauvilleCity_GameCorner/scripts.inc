@@ -382,10 +382,15 @@ MauvilleCity_GameCorner_EventScript_Girl::
 	goto_if_set FLAG_RECEIVED_STARTER_DOLL, MauvilleCity_GameCorner_EventScript_ReceivedStarterDoll
 	msgbox MauvilleCity_GameCorner_Text_GotTwoOfSameDollWantOne, MSGBOX_YESNO
 	goto_if_eq VAR_RESULT, NO, MauvilleCity_GameCorner_EventScript_DeclineStarterDoll
-	switch VAR_STARTER_MON
+	@ BPE: the Birch Case offers nine starters, so the player picks the doll.
+	message MauvilleCity_GameCorner_Text_WhichDoll
+	waitmessage
+	dynmultichoice 0, 0, FALSE, 3, 0, DYN_MULTICHOICE_CB_NONE, MauvilleCity_GameCorner_Text_TreeckoDoll, MauvilleCity_GameCorner_Text_TorchicDoll, MauvilleCity_GameCorner_Text_MudkipDoll
+	switch VAR_RESULT
 	case 0, MauvilleCity_GameCorner_EventScript_GiveTreeckoDoll
 	case 1, MauvilleCity_GameCorner_EventScript_GiveTorchicDoll
 	case 2, MauvilleCity_GameCorner_EventScript_GiveMudkipDoll
+	goto MauvilleCity_GameCorner_EventScript_DeclineStarterDoll
 	end
 
 MauvilleCity_GameCorner_EventScript_GiveTreeckoDoll::
@@ -699,6 +704,18 @@ MauvilleCity_GameCorner_Text_GotTwoOfSameDollWantOne:
 	.string "I made a mistake and got two of\n"
 	.string "the same DOLLS.\p"
 	.string "Would you like one of them?$"
+
+MauvilleCity_GameCorner_Text_WhichDoll:
+	.string "Which DOLL would you like?$"
+
+MauvilleCity_GameCorner_Text_TreeckoDoll:
+	.string "TREECKO DOLL$"
+
+MauvilleCity_GameCorner_Text_TorchicDoll:
+	.string "TORCHIC DOLL$"
+
+MauvilleCity_GameCorner_Text_MudkipDoll:
+	.string "MUDKIP DOLL$"
 
 MauvilleCity_GameCorner_Text_HereYouGo2:
 	.string "Here you go!$"

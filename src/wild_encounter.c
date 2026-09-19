@@ -16,6 +16,7 @@
 #include "pokeblock.h"
 #include "pokemon.h"
 #include "random.h"
+#include "randomizer.h"
 #include "roamer.h"
 #include "safari_zone.h"
 #include "script.h"
@@ -50,9 +51,9 @@ static void ApplyFluteEncounterRateMod(u32 *encRate);
 static void ApplyCleanseTagEncounterRateMod(u32 *encRate);
 static u8 GetMaxLevelOfSpeciesInWildTable(const struct WildPokemon *wildMon, enum Species species, enum WildPokemonArea area);
 #ifdef BUGFIX
-static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex, u32 size);
+static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex, u32 size, enum WildPokemonArea area);
 #else
-static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex);
+static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex, enum WildPokemonArea area);
 #endif
 
 EWRAM_DATA static u8 sWildEncountersDisabled = 0;
@@ -463,6 +464,20 @@ static u8 PickWildMonNature(enum Species species)
     return GetSynchronizedNature(WILDMON_ORIGIN, species);
 }
 
+// BPE randomizer: the Pokémon a wild table slot holds in this game. The Battle
+// Pike and Battle Pyramid keep their own Pokémon.
+static enum Species GetEncounterSpecies(enum Species species, enum WildPokemonArea area)
+{
+    if (InBattlePike() || InBattlePyramid_())
+        return species;
+    return Randomizer_GetCurrentMapWildSpecies(species, area);
+}
+
+static enum WildPokemonArea AreaOfTable(u32 count)
+{
+    return count == WATER_WILD_COUNT ? WILD_AREA_WATER : WILD_AREA_LAND;
+}
+
 void CreateWildMon(enum Species species, u8 level)
 {
     ZeroEnemyPartyMons();
@@ -472,9 +487,9 @@ void CreateWildMon(enum Species species, u8 level)
 }
 
 #ifdef BUGFIX
-#define TRY_GET_ABILITY_INFLUENCED_WILD_MON_INDEX(wildPokemon, type, ability, ptr, count) TryGetAbilityInfluencedWildMonIndex(wildPokemon, type, ability, ptr, count)
+#define TRY_GET_ABILITY_INFLUENCED_WILD_MON_INDEX(wildPokemon, type, ability, ptr, count) TryGetAbilityInfluencedWildMonIndex(wildPokemon, type, ability, ptr, count, AreaOfTable(count))
 #else
-#define TRY_GET_ABILITY_INFLUENCED_WILD_MON_INDEX(wildPokemon, type, ability, ptr, count) TryGetAbilityInfluencedWildMonIndex(wildPokemon, type, ability, ptr)
+#define TRY_GET_ABILITY_INFLUENCED_WILD_MON_INDEX(wildPokemon, type, ability, ptr, count) TryGetAbilityInfluencedWildMonIndex(wildPokemon, type, ability, ptr, AreaOfTable(count))
 #endif
 
 bool8 TryGenerateWildMon(const struct WildPokemonInfo *wildMonInfo, enum WildPokemonArea area, u8 flags)
@@ -531,14 +546,14 @@ bool8 TryGenerateWildMon(const struct WildPokemonInfo *wildMonInfo, enum WildPok
     if (gMapHeader.mapLayoutId != LAYOUT_BATTLE_FRONTIER_BATTLE_PIKE_ROOM_WILD_MONS && flags & WILD_CHECK_KEEN_EYE && !IsAbilityAllowingEncounter(level))
         return FALSE;
 
-    CreateWildMon(wildMonInfo->wildPokemon[wildMonIndex].species, level);
+    CreateWildMon(GetEncounterSpecies(wildMonInfo->wildPokemon[wildMonIndex].species, area), level);
     return TRUE;
 }
 
 static u16 GenerateFishingWildMon(const struct WildPokemonInfo *wildMonInfo, u8 rod)
 {
     u8 wildMonIndex = ChooseWildMonIndex_Fishing(rod);
-    enum Species wildMonSpecies = wildMonInfo->wildPokemon[wildMonIndex].species;
+    enum Species wildMonSpecies = GetEncounterSpecies(wildMonInfo->wildPokemon[wildMonIndex].species, WILD_AREA_FISHING);
     u8 level = ChooseWildMonLevel(wildMonInfo->wildPokemon, wildMonIndex, WILD_AREA_FISHING);
 
     UpdateChainFishingStreak();
@@ -554,7 +569,8 @@ bool8 SetUpMassOutbreakEncounter(u8 flags)
         return FALSE;
 
     CreateWildMon(gSaveBlock1Ptr->outbreakPokemonSpecies, gSaveBlock1Ptr->outbreakPokemonLevel);
-    for (i = 0; i < MAX_MON_MOVES; i++)
+    // BPE randomizer: a randomized outbreak has no stored moves and keeps its default ones.
+    for (i = 0; i < MAX_MON_MOVES && gSaveBlock1Ptr->outbreakPokemonMoves[0] != MOVE_NONE; i++)
         SetMonMoveSlot(&gParties[B_TRAINER_OPPONENT_A][0], gSaveBlock1Ptr->outbreakPokemonMoves[i], i);
 
     return TRUE;
@@ -935,7 +951,7 @@ void FishingWildEncounter(u8 rod)
     {
         u8 level = ChooseWildMonLevel(&gWildFeebas, 0, WILD_AREA_FISHING);
 
-        species = gWildFeebas.species;
+        species = GetEncounterSpecies(gWildFeebas.species, WILD_AREA_FISHING);
         CreateWildMon(species, level);
     }
     else
@@ -973,22 +989,22 @@ u16 GetLocalWildMon(bool8 *isWaterMon)
         return SPECIES_NONE;
     // Land Pokémon
     else if (landMonsInfo != NULL && waterMonsInfo == NULL)
-        return landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species;
+        return GetEncounterSpecies(landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species, WILD_AREA_LAND);
     // Water Pokémon
     else if (landMonsInfo == NULL && waterMonsInfo != NULL)
     {
         *isWaterMon = TRUE;
-        return waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species;
+        return GetEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
     }
     // Either land or water Pokémon
     if ((Random() % 100) < 80)
     {
-        return landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species;
+        return GetEncounterSpecies(landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species, WILD_AREA_LAND);
     }
     else
     {
         *isWaterMon = TRUE;
-        return waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species;
+        return GetEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
     }
 }
 
@@ -1004,7 +1020,7 @@ u16 GetLocalWaterMon(void)
         const struct WildPokemonInfo *waterMonsInfo = gWildMonHeaders[headerId].encounterTypes[timeOfDay].waterMonsInfo;
 
         if (waterMonsInfo)
-            return waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species;
+            return GetEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
     }
     return SPECIES_NONE;
 }
@@ -1083,7 +1099,7 @@ bool8 IsAbilityAllowingEncounter(u8 level)
     return TRUE;
 }
 
-static bool8 TryGetRandomWildMonIndexByType(const struct WildPokemon *wildMon, enum Type type, u8 numMon, u8 *monIndex)
+static bool8 TryGetRandomWildMonIndexByType(const struct WildPokemon *wildMon, enum Type type, u8 numMon, u8 *monIndex, enum WildPokemonArea area)
 {
     u8 validIndexes[numMon]; // variable length array, an interesting feature
     u8 i, validMonCount;
@@ -1093,7 +1109,8 @@ static bool8 TryGetRandomWildMonIndexByType(const struct WildPokemon *wildMon, e
 
     for (validMonCount = 0, i = 0; i < numMon; i++)
     {
-        if (GetSpeciesType(wildMon[i].species, 0) == type || GetSpeciesType(wildMon[i].species, 1) == type)
+        enum Species species = GetEncounterSpecies(wildMon[i].species, area);
+        if (GetSpeciesType(species, 0) == type || GetSpeciesType(species, 1) == type)
             validIndexes[validMonCount++] = i;
     }
 
@@ -1137,9 +1154,9 @@ static u8 GetMaxLevelOfSpeciesInWildTable(const struct WildPokemon *wildMon, enu
 }
 
 #ifdef BUGFIX
-static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex, u32 size)
+static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex, u32 size, enum WildPokemonArea area)
 #else
-static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex)
+static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, enum Type type, enum Ability ability, u8 *monIndex, enum WildPokemonArea area)
 #endif
 {
     if (GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SANITY_IS_EGG))
@@ -1150,9 +1167,9 @@ static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildM
         return FALSE;
 
 #ifdef BUGFIX
-    return TryGetRandomWildMonIndexByType(wildMon, type, size, monIndex);
+    return TryGetRandomWildMonIndexByType(wildMon, type, size, monIndex, area);
 #else
-    return TryGetRandomWildMonIndexByType(wildMon, type, LAND_WILD_COUNT, monIndex);
+    return TryGetRandomWildMonIndexByType(wildMon, type, LAND_WILD_COUNT, monIndex, area);
 #endif
 }
 

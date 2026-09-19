@@ -67,6 +67,16 @@ gText_Birch_Nuzlocke::
 	.string "Would you like to play in\n"
 	.string "NUZLOCKE (EXPERT) MODE?$"
 
+gText_Birch_Randomizer::
+	.string "One more thing…\p"
+	.string "You can RANDOMIZE your adventure:\n"
+	.string "the POKéMON you meet, the trainers\l"
+	.string "you battle, and much more.\p"
+	.string "A SEED CODE lets your friends play\n"
+	.string "the very same randomized game.\p"
+	.string "Your choice can't be changed later.\n"
+	.string "Would you like to randomize?$"
+
 gText_Birch_WhatsYourName::
 	.string "All right.\n"
 	.string "What's your name?$"

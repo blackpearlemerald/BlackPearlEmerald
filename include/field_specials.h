@@ -49,4 +49,7 @@ void UpdateMirageIslandNamePopup(void);
 // Runs on every map load, before the map's ON_TRANSITION script.
 void UpdatePreE4Legendaries(void);
 
+// BPE: the Pokemon the player picked from the Birch Case.
+enum Species GetPlayerStarterSpecies(void);
+
 #endif // GUARD_FIELD_SPECIALS_H

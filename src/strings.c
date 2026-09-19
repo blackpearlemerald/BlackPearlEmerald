@@ -246,6 +246,16 @@ const u8 gText_SpDef3[] = _("SP. DEF");
 const u8 gText_CardMode[] = _("MODE:"); // BPE
 const u8 gText_CardNuzlockeMode[] = _("Nuzlocke"); // BPE
 const u8 gText_CardStandardMode[] = _("Standard"); // BPE
+const u8 gText_CardNuzlockeRandomized[] = _("Nuzlocke, randomized"); // BPE randomizer
+const u8 gText_CardStandardRandomized[] = _("Standard, randomized"); // BPE randomizer
+const u8 gText_CardRandomizer[] = _("RANDOMIZER: {STR_VAR_1}"); // BPE randomizer
+const u8 *const gText_CardRandomizerPresets[] = // BPE randomizer, by RANDOMIZER_PRESET_*
+{
+    COMPOUND_STRING("Randomlocke"),
+    COMPOUND_STRING("Full"),
+    COMPOUND_STRING("Chaos"),
+    COMPOUND_STRING("Custom"),
+};
 const u8 gText_WontHaveEffectNuzlocke[] = _("It won't have any effect due to\nrunning Nuzlocke challenge.{PAUSE_UNTIL_PRESS}");
 const u8 gText_WontHaveEffect[] = _("It won't have any effect.{PAUSE_UNTIL_PRESS}");
 const u8 gText_NextFusionMon[] = _("Choose {PKMN} to fuse with.");

@@ -23,6 +23,7 @@
 #include "pokedex.h"
 #include "event_data.h"
 #include "random.h"
+#include "field_specials.h"
 
 #if !IS_FRLG
 
@@ -1542,7 +1543,7 @@ static void SpriteCB_CreditsMonBg(struct Sprite *sprite)
 
 static void DeterminePokemonToShow(void)
 {
-    enum NationalDexOrder starter = SpeciesToNationalPokedexNum(GetStarterPokemon(VarGet(VAR_STARTER_MON)));
+    enum NationalDexOrder starter = SpeciesToNationalPokedexNum(GetPlayerStarterSpecies());
     u16 page;
     u16 dexNum;
     u16 j;

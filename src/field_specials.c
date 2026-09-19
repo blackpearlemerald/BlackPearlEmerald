@@ -85,6 +85,7 @@
 #include "battle_util.h"
 #include "naming_screen.h"
 #include "chooseboxmon.h"
+#include "battle_main.h"
 
 #define TAG_ITEM_ICON 5500
 
@@ -1549,10 +1550,27 @@ void LoadWallyZigzagoon(void)
     SetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_MOVE4, &monData);
 }
 
+// BPE: the Pokémon the player picked from the Birch Case. VAR_STARTER_MON stays 0
+// with the Birch Case (the rival scripts only handle 0-2), so older saves without
+// VAR_STARTER_SPECIES fall back to the old three-ball starter.
+enum Species GetPlayerStarterSpecies(void)
+{
+    enum Species species = VarGet(VAR_STARTER_SPECIES);
+    return species != SPECIES_NONE ? species : GetStarterPokemon(VarGet(VAR_STARTER_MON));
+}
+
+// BPE: STR_VAR_1 = the starter's name, STR_VAR_2 = its main type.
+void BufferStarterTypeInfo(void)
+{
+    enum Species starter = GetPlayerStarterSpecies();
+    StringCopy(gStringVar1, GetSpeciesName(starter));
+    StringCopy(gStringVar2, gTypesInfo[GetSpeciesType(starter, 0)].name);
+}
+
 bool8 IsStarterInParty(void)
 {
     u8 i;
-    u16 starter = GetStarterPokemon(VarGet(VAR_STARTER_MON));
+    u16 starter = GetPlayerStarterSpecies();
     u8 partyCount = CalculatePlayerPartyCount();
     for (i = 0; i < partyCount; i++)
     {

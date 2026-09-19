@@ -79,6 +79,7 @@
 #include "constants/trainers.h"
 #include "constants/weather.h"
 #include "cable_club.h"
+#include "randomizer.h"
 
 extern const struct BgTemplate gBattleBgTemplates[];
 extern const struct WindowTemplate *const gBattleWindowTemplates[];
@@ -1895,6 +1896,11 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
             const struct TrainerMon *partyData = trainer->party;
             struct OriginalTrainerId otId = OTID_STRUCT_RANDOM_NO_SHINY;
             u32 abilityNum = 0;
+            // BPE randomizer: the species this Pokémon becomes. A randomized Pokémon gets
+            // its own moveset and ability instead of the hand-made ones.
+            enum Species species = Randomizer_GetTrainerSpecies(trainer, monIndex);
+            bool32 randomized = (species != partyData[monIndex].species);
+            enum Item heldItem = Randomizer_GetTrainerHeldItem(partyData[monIndex].species, species, partyData[monIndex].heldItem);
 
             if (trainer->battleType != TRAINER_BATTLE_TYPE_SINGLES)
                 personalityValue = 0x80;
@@ -1905,11 +1911,11 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
 
             personalityValue += personalityHash << 8;
             if (partyData[monIndex].gender == TRAINER_MON_MALE)
-                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_MALE, partyData[monIndex].species);
+                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_MALE, species);
             else if (partyData[monIndex].gender == TRAINER_MON_FEMALE)
-                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, partyData[monIndex].species);
+                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(MON_FEMALE, species);
             else if (partyData[monIndex].gender == TRAINER_MON_RANDOM_GENDER)
-                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(Random() & 1 ? MON_MALE : MON_FEMALE, partyData[monIndex].species);
+                personalityValue = (personalityValue & 0xFFFFFF00) | GeneratePersonalityForGender(Random() & 1 ? MON_MALE : MON_FEMALE, species);
             ModifyPersonalityForNature(&personalityValue, partyData[monIndex].nature);
             if (partyData[monIndex].isShiny)
             {
@@ -1921,10 +1927,13 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
             if (party != gParties[B_TRAINER_PLAYER] && partyData[monIndex].standardLvl != 0 && !FlagGet(FLAG_NUZLOCKE))
                 level = partyData[monIndex].standardLvl;
 
-            CreateMon(&party[i], partyData[monIndex].species, level, personalityValue, otId);
-            SetMonData(&party[i], MON_DATA_HELD_ITEM, &partyData[monIndex].heldItem);
+            CreateMon(&party[i], species, level, personalityValue, otId);
+            SetMonData(&party[i], MON_DATA_HELD_ITEM, &heldItem);
 
-            CustomTrainerPartyAssignMoves(&party[i], &partyData[monIndex]);
+            if (randomized)
+                Randomizer_GiveTrainerMonMoves(&party[i]);
+            else
+                CustomTrainerPartyAssignMoves(&party[i], &partyData[monIndex]);
             SetMonData(&party[i], MON_DATA_IVS, &(partyData[monIndex].iv));
             if (partyData[monIndex].ev != NULL && !FlagGet(FLAG_NUZLOCKE)) // BPE Nuzlocke: enemy trainers battle with 0 EVs
             {
@@ -1935,7 +1944,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 SetMonData(&party[i], MON_DATA_SPDEF_EV, &(partyData[monIndex].ev[4]));
                 SetMonData(&party[i], MON_DATA_SPEED_EV, &(partyData[monIndex].ev[5]));
             }
-            if (partyData[monIndex].ability != ABILITY_NONE)
+            if (partyData[monIndex].ability != ABILITY_NONE && !randomized)
             {
                 const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[partyData[monIndex].species];
                 u32 maxAbilityNum = ARRAY_COUNT(speciesInfo->abilities);
@@ -1946,9 +1955,9 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 }
                 assertf(abilityNum < maxAbilityNum, "illegal ability %S for %S", gAbilitiesInfo[partyData[monIndex].ability].name, speciesInfo->speciesName);
             }
-            else if (B_TRAINER_MON_RANDOM_ABILITY)
+            else if (B_TRAINER_MON_RANDOM_ABILITY || randomized)
             {
-                const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[partyData[monIndex].species];
+                const struct SpeciesInfo *speciesInfo = &gSpeciesInfo[species];
                 abilityNum = personalityHash % 3;
                 while (speciesInfo->abilities[abilityNum] == ABILITY_NONE)
                 {
@@ -1956,6 +1965,15 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                 }
             }
             SetMonData(&party[i], MON_DATA_ABILITY_NUM, &abilityNum);
+            // BPE randomizer: an Unchanged boss keeps its normal ability.
+            if (Randomizer_KeepsTrainerAbilities(trainer) && Randomizer_GetOption(RANDOMIZER_OPTION_ABILITIES)
+             && (party == gParties[B_TRAINER_OPPONENT_A] || party == gParties[B_TRAINER_OPPONENT_B]) && i < PARTY_SIZE)
+            {
+                enum Ability kept = partyData[monIndex].ability;
+                if (kept == ABILITY_NONE)
+                    kept = gSpeciesInfo[species].abilities[abilityNum];
+                gBattleStruct->randomizerKeptAbility[party == gParties[B_TRAINER_OPPONENT_B]][i] = kept;
+            }
             SetMonData(&party[i], MON_DATA_FRIENDSHIP, &(partyData[monIndex].friendship));
             if (partyData[monIndex].ball < POKEBALL_COUNT)
             {
@@ -1978,7 +1996,7 @@ u8 CreateNPCTrainerPartyFromTrainer(struct Pokemon *party, const struct Trainer 
                     gBattleStruct->opponentMonCanDynamax |= 1 << i;
                 SetMonData(&party[i], MON_DATA_DYNAMAX_LEVEL, &data);
             }
-            if (partyData[monIndex].gigantamaxFactor)
+            if (partyData[monIndex].gigantamaxFactor && !randomized)
             {
                 u32 data = partyData[monIndex].gigantamaxFactor;
                 SetMonData(&party[i], MON_DATA_GIGANTAMAX_FACTOR, &data);
@@ -3430,6 +3448,7 @@ static void DoBattleIntro(void)
                 gBattleMons[battler].types[1] = GetSpeciesType(gBattleMons[battler].species, 1);
                 gBattleMons[battler].types[2] = TYPE_MYSTERY;
                 gBattleMons[battler].ability = GetAbilityBySpecies(gBattleMons[battler].species, gBattleMons[battler].abilityNum);
+                ApplyRandomizerKeptAbility(battler);
                 gBattleStruct->battlerState[battler].hpOnSwitchout = gBattleMons[battler].hp;
                 memset(&gBattleMons[battler].volatiles, 0, sizeof(struct Volatiles));
                 for (i = 0; i < NUM_BATTLE_STATS; i++)

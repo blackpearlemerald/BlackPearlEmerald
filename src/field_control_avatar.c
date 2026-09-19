@@ -45,6 +45,7 @@
 #include "constants/songs.h"
 #include "constants/trainer_hill.h"
 #include "constants/items.h"
+#include "randomizer.h"
 
 static EWRAM_DATA u8 sWildEncounterImmunitySteps = 0;
 static EWRAM_DATA u16 sPrevMetatileBehavior = 0;
@@ -460,6 +461,8 @@ static const u8 *GetInteractedBackgroundEventScript(struct MapPosition *position
         gSpecialVar_0x8004 = bgEvent->bgUnion.hiddenItem.hiddenItemId + FLAG_HIDDEN_ITEMS_START;
         gSpecialVar_0x8005 = bgEvent->bgUnion.hiddenItem.item;
         gSpecialVar_0x8009 = bgEvent->bgUnion.hiddenItem.quantity;
+        // BPE randomizer: the item the field item shuffle put here.
+        Randomizer_GetFieldItem(gSpecialVar_0x8004, &gSpecialVar_0x8005, &gSpecialVar_0x8009);
         if (FlagGet(gSpecialVar_0x8004) == TRUE)
             return NULL;
         return EventScript_HiddenItemScript;

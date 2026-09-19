@@ -65,6 +65,7 @@
 #include "battle.h"
 #include "constants/comparison_operators.h"
 #include "constants/event_objects.h"
+#include "randomizer.h"
 #include "day_night.h"
 #include "constants/map_types.h"
 #include "constants/party_menu.h"
@@ -2536,6 +2537,11 @@ bool8 ScrCmd_setwildbattle(struct ScriptContext *ctx)
 
     Script_RequestEffects(SCREFF_V1);
 
+    // BPE randomizer: static encounters become the Pokémon chosen for them.
+    species = Randomizer_GetStaticSpecies(species);
+    if (species2 != SPECIES_NONE)
+        species2 = Randomizer_GetStaticSpecies(species2);
+
     if (species2 == SPECIES_NONE)
     {
         CreateScriptedWildMon(species, level, item);
@@ -2733,7 +2739,7 @@ bool8 ScrCmd_playmoncry(struct ScriptContext *ctx)
 
     Script_RequestEffects(SCREFF_V1 | SCREFF_HARDWARE);
 
-    PlayCry_Script(species, mode);
+    PlayCry_Script(Randomizer_GetStaticCrySpecies(species), mode);
     return FALSE;
 }
 

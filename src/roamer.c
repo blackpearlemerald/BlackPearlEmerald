@@ -4,6 +4,7 @@
 #include "pokemon.h"
 #include "random.h"
 #include "roamer.h"
+#include "randomizer.h"
 
 // Despite having a variable to track it, the roamer is
 // hard-coded to only ever be in map group 0
@@ -155,10 +156,11 @@ bool8 TryAddRoamer(enum Species species, u8 level)
 // gSpecialVar_0x8004 here corresponds to the options in the multichoice MULTI_TV_LATI (0 for 'Red', 1 for 'Blue')
 void InitRoamer(void)
 {
+    // BPE randomizer: the roamer is whatever its species became.
     if (gSpecialVar_0x8004 == 0) // Red
-        TryAddRoamer(SPECIES_LATIAS, 40);
+        TryAddRoamer(Randomizer_GetStaticSpeciesOnMap(SPECIES_LATIAS, MAP_UNDEFINED), 40);
     else
-        TryAddRoamer(SPECIES_LATIOS, 40);
+        TryAddRoamer(Randomizer_GetStaticSpeciesOnMap(SPECIES_LATIOS, MAP_UNDEFINED), 40);
 }
 
 void UpdateLocationHistoryForRoamer(void)

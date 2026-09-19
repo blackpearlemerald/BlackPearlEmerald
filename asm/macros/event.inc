@@ -1186,6 +1186,14 @@
 	.2byte \species
 	.endm
 
+	@ BPE randomizer: sets VAR_TEMP_TRANSFERRED_SPECIES to the Pokémon a gift of this
+	@ species is in this game. Give and name that variable instead of the species.
+	.macro randomgift species:req
+	setvar VAR_RESULT, \species
+	special RandomizeGiftSpecies
+	copyvar VAR_TEMP_TRANSFERRED_SPECIES, VAR_RESULT
+	.endm
+
 	@ Replaces the move at 'slot' of the Pokémon in the player's party at 'partyIndex' with the specified move.
 	@ If a value greater than PARTY_SIZE is given for partyIndex it will use the last Pokémon in the party instead.
 	@ Note that this means in vanilla a value equal to PARTY_SIZE for partyIndex will go out of bounds.

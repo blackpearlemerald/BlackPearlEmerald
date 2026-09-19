@@ -1276,7 +1276,7 @@ static inline bool32 TryStrongWindsWeakenAttack(enum BattlerId battlerDef, enum 
     {
         if (GetMoveCategory(gCurrentMove) != DAMAGE_CATEGORY_STATUS
          && IS_BATTLER_OF_TYPE(battlerDef, TYPE_FLYING)
-         && gTypeEffectivenessTable[moveType][TYPE_FLYING] >= UQ_4_12(2.0)
+         && GetTypeModifier(moveType, TYPE_FLYING) >= UQ_4_12(2.0)
          && !gBattleStruct->printedStrongWindsWeakenedAttack)
         {
             gBattleStruct->printedStrongWindsWeakenedAttack = TRUE;
@@ -5044,6 +5044,7 @@ static void Cmd_switchindataupdate(void)
     gBattleMons[battler].types[1] = GetSpeciesType(gBattleMons[battler].species, 1);
     gBattleMons[battler].types[2] = TYPE_MYSTERY;
     gBattleMons[battler].ability = GetAbilityBySpecies(gBattleMons[battler].species, gBattleMons[battler].abilityNum);
+    ApplyRandomizerKeptAbility(battler);
     #if TESTING
     if (gTestRunnerEnabled)
     {

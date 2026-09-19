@@ -51,6 +51,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "config/pokedex_plus_hgss.h"
+#include "randomizer.h"
 
 enum
 {
@@ -5109,7 +5110,7 @@ static enum Move GetSelectedMove(enum Species species, u32 selected)
     }
     selected -= sPokedexView->numEggMoves;
     if (selected < sPokedexView->numLevelUpMoves)
-        return GetSpeciesLevelUpLearnset(species)[selected].move;
+        return GetLearnsetMove(species, GetSpeciesLevelUpLearnset(species), selected);
     selected -= sPokedexView->numLevelUpMoves;
     if (selected < sPokedexView->numTeachableMoves)
         return GetSpeciesTeachableLearnset(species)[selected];
@@ -6474,7 +6475,7 @@ static void PrintEvolutionTargetSpeciesAndMethod(u8 taskId, enum Species species
     //If there are evolutions find out which and print them 1 by 1
     for (i = 0; i < times; i++)
     {
-        targetSpecies = evolutions[i].targetSpecies;
+        targetSpecies = Randomizer_GetEvolutionTarget(species, evolutions[i].targetSpecies); // BPE randomizer
         if (!IsSpeciesEnabled(targetSpecies))
             continue;
 

@@ -51,6 +51,7 @@
 #include "constants/rgb.h"
 #include "constants/songs.h"
 #include "constants/union_room.h"
+#include "randomizer.h"
 
 // IDs for RunTradeMenuCallback
 enum {
@@ -4546,12 +4547,23 @@ static void SpriteCB_BouncingPokeballArrive(struct Sprite *sprite)
     }
 }
 
+// BPE randomizer: the Pokémon a trader offers and asks for in this game.
+static enum Species GetInGameTradeOffer(u32 trade)
+{
+    return Randomizer_GetTradeSpecies(trade, sIngameTrades[trade].species);
+}
+
+static enum Species GetInGameTradeRequest(u32 trade)
+{
+    return Randomizer_GetTradeRequestedSpecies(trade, sIngameTrades[trade].requestedSpecies);
+}
+
 u16 GetInGameTradeSpeciesInfo(void)
 {
-    const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8005];
-    StringCopy(gStringVar1, GetSpeciesName(inGameTrade->requestedSpecies));
-    StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
-    return inGameTrade->requestedSpecies;
+    enum Species requested = GetInGameTradeRequest(gSpecialVar_0x8005);
+    StringCopy(gStringVar1, GetSpeciesName(requested));
+    StringCopy(gStringVar2, GetSpeciesName(GetInGameTradeOffer(gSpecialVar_0x8005)));
+    return requested;
 }
 
 static void BufferInGameTradeMonName(void)
@@ -4560,7 +4572,7 @@ static void BufferInGameTradeMonName(void)
     const struct InGameTrade *inGameTrade = &sIngameTrades[gSpecialVar_0x8005];
     GetMonData(&gParties[B_TRAINER_PLAYER][gSpecialVar_0x8005], MON_DATA_NICKNAME, nickname);
     StringCopy_Nickname(gStringVar1, nickname);
-    StringCopy(gStringVar2, GetSpeciesName(inGameTrade->species));
+    StringCopy(gStringVar2, GetSpeciesName(GetInGameTradeOffer(inGameTrade - sIngameTrades)));
 }
 
 static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTrade)
@@ -4574,7 +4586,7 @@ static void CreateInGameTradePokemonInternal(u8 whichPlayerMon, u8 whichInGameTr
     u8 mailNum;
     struct Pokemon *pokemon = &gParties[B_TRAINER_OPPONENT_A][0];
 
-    CreateMon(pokemon, inGameTrade->species, level, inGameTrade->personality, OTID_STRUCT_PRESET(inGameTrade->otId));
+    CreateMon(pokemon, GetInGameTradeOffer(whichInGameTrade), level, inGameTrade->personality, OTID_STRUCT_PRESET(inGameTrade->otId));
     GiveMonInitialMoveset(pokemon);
 
     SetMonData(pokemon, MON_DATA_HP_IV, &inGameTrade->ivs[0]);
@@ -4627,7 +4639,7 @@ static void GetInGameTradeMail(struct Mail *mail, const struct InGameTrade *trad
     mail->trainerId[1] = trade->otId >> 16;
     mail->trainerId[2] = trade->otId >> 8;
     mail->trainerId[3] = trade->otId;
-    mail->species = trade->species;
+    mail->species = GetInGameTradeOffer(trade - sIngameTrades);
     mail->itemId = trade->heldItem;
 }
 

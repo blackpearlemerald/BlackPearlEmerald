@@ -51,6 +51,7 @@
 #include "constants/items.h"
 #include "difficulty.h"
 #include "follower_npc.h"
+#include "randomizer.h"
 
 extern const u8 EventScript_ResetAllMapFlags[];
 extern const u8 EventScript_ResetAllMapFlagsFrlg[];
@@ -161,12 +162,14 @@ void ResetMenuAndMonGlobals(void)
 void NewGameInitData(void)
 {
     bool8 nuzlockePrev = FlagGet(FLAG_NUZLOCKE); // BPE: chosen during Birch speech; InitEventData clears it, so retain and restore at the end
+    struct RandomizerSettings randomizer; // BPE: the randomizer is chosen during Birch speech too
 #if IS_FRLG
     u8 rivalName[PLAYER_NAME_LENGTH + 1];
 #endif
     if (gSaveFileStatus == SAVE_STATUS_EMPTY || gSaveFileStatus == SAVE_STATUS_CORRUPT)
         RtcReset();
 
+    Randomizer_LoadSettings(&randomizer);
 #if IS_FRLG
     StringCopy(rivalName, gSaveBlock1Ptr->rivalName);
 #endif
@@ -237,6 +240,7 @@ void NewGameInitData(void)
     ResetDexNav();
     ClearFollowerNPCData();
     nuzlockePrev ? FlagSet(FLAG_NUZLOCKE) : FlagClear(FLAG_NUZLOCKE); // BPE: restore Nuzlocke mode choice
+    Randomizer_SaveSettings(&randomizer); // BPE: restore the randomizer choice
 }
 
 static void ResetMiniGamesRecords(void)

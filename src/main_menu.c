@@ -40,6 +40,8 @@
 #include "title_screen.h"
 #include "window.h"
 #include "mystery_gift_menu.h"
+#include "randomizer.h"
+#include "randomizer_menu.h"
 #include "constants/flags.h"
 
 /*
@@ -255,6 +257,12 @@ static void Task_NewGameBirchSpeech_FadePlayerToWhite(u8);
 static void Task_NewGameBirchSpeech_Cleanup(u8);
 static void SpriteCB_Null(struct Sprite *);
 static void Task_NewGameBirchSpeech_ReturnFromNamingScreenShowTextbox(u8);
+static void Task_NewGameBirchSpeech_Randomizer(u8);
+static void Task_NewGameBirchSpeech_WaitToShowRandomizerMenu(u8);
+static void Task_NewGameBirchSpeech_ChooseRandomizer(u8);
+static void Task_NewGameBirchSpeech_OpenRandomizerMenu(u8);
+static void CB2_NewGameBirchSpeech_ReturnFromRandomizerMenu(void);
+static void Task_NewGameBirchSpeech_ReturnFromRandomizerMenuShowTextbox(u8);
 static void MainMenu_FormatSavegamePlayer(void);
 static void MainMenu_FormatSavegamePokedex(void);
 static void MainMenu_FormatSavegameTime(void);
@@ -1721,14 +1729,76 @@ static void Task_NewGameBirchSpeech_ChooseNuzlocke(u8 taskId)
             PlaySE(SE_SELECT);
             FlagSet(FLAG_NUZLOCKE);
             NewGameBirchSpeech_ClearNuzlockeWindow(1, 1);
-            gTasks[taskId].func = Task_NewGameBirchSpeech_WhatsYourName;
+            gTasks[taskId].func = Task_NewGameBirchSpeech_Randomizer;
             break;
         case 1:
             PlaySE(SE_SELECT);
             FlagClear(FLAG_NUZLOCKE);
             NewGameBirchSpeech_ClearNuzlockeWindow(1, 1);
-            gTasks[taskId].func = Task_NewGameBirchSpeech_WhatsYourName;
+            gTasks[taskId].func = Task_NewGameBirchSpeech_Randomizer;
             break;
+    }
+}
+
+// BPE: the randomizer question, asked after the mode. Yes opens the settings screen.
+static void Task_NewGameBirchSpeech_Randomizer(u8 taskId)
+{
+    NewGameBirchSpeech_ClearWindow(0);
+    StringExpandPlaceholders(gStringVar4, gText_Birch_Randomizer);
+    AddTextPrinterForMessage(TRUE);
+    gTasks[taskId].func = Task_NewGameBirchSpeech_WaitToShowRandomizerMenu;
+}
+
+static void Task_NewGameBirchSpeech_WaitToShowRandomizerMenu(u8 taskId)
+{
+    if (!RunTextPrintersAndIsPrinter0Active())
+    {
+        NewGameBirchSpeech_ShowNuzlockeMenu(); // the same Yes/No menu
+        gTasks[taskId].func = Task_NewGameBirchSpeech_ChooseRandomizer;
+    }
+}
+
+static void Task_NewGameBirchSpeech_ChooseRandomizer(u8 taskId)
+{
+    switch (NewGameBirchSpeech_ProcessNuzlockeMenuInput())
+    {
+    case 0:
+        PlaySE(SE_SELECT);
+        NewGameBirchSpeech_ClearNuzlockeWindow(1, 1);
+        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+        gTasks[taskId].func = Task_NewGameBirchSpeech_OpenRandomizerMenu;
+        break;
+    case 1:
+        PlaySE(SE_SELECT);
+        Randomizer_ClearSettings();
+        NewGameBirchSpeech_ClearNuzlockeWindow(1, 1);
+        gTasks[taskId].func = Task_NewGameBirchSpeech_WhatsYourName;
+        break;
+    }
+}
+
+static void Task_NewGameBirchSpeech_OpenRandomizerMenu(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeAllWindowBuffers();
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tLotadSpriteId);
+        DestroyTask(taskId);
+        gMain.savedCallback = CB2_NewGameBirchSpeech_ReturnFromRandomizerMenu;
+        SetMainCallback2(CB2_InitRandomizerMenu);
+    }
+}
+
+static void Task_NewGameBirchSpeech_ReturnFromRandomizerMenuShowTextbox(u8 taskId)
+{
+    if (gTasks[taskId].tTimer-- <= 0)
+    {
+        DrawDialogFrameWithCustomTile(0, TRUE, BIRCH_DLG_BASE_TILE_NUM);
+        // Backing out of the settings screen asks the question again.
+        if (RandomizerMenu_WasConfirmed())
+            gTasks[taskId].func = Task_NewGameBirchSpeech_WhatsYourName;
+        else
+            gTasks[taskId].func = Task_NewGameBirchSpeech_Randomizer;
     }
 }
 
@@ -1989,7 +2059,20 @@ static void Task_NewGameBirchSpeech_Cleanup(u8 taskId)
     }
 }
 
+static void NewGameBirchSpeech_RestoreScene(TaskFunc returnTask);
+
 static void CB2_NewGameBirchSpeech_ReturnFromNamingScreen(void)
+{
+    NewGameBirchSpeech_RestoreScene(Task_NewGameBirchSpeech_ReturnFromNamingScreenShowTextbox);
+}
+
+// BPE: the randomizer settings screen returns to Birch's speech the same way.
+static void CB2_NewGameBirchSpeech_ReturnFromRandomizerMenu(void)
+{
+    NewGameBirchSpeech_RestoreScene(Task_NewGameBirchSpeech_ReturnFromRandomizerMenuShowTextbox);
+}
+
+static void NewGameBirchSpeech_RestoreScene(TaskFunc returnTask)
 {
     u8 taskId;
     u8 spriteId;
@@ -2019,7 +2102,7 @@ static void CB2_NewGameBirchSpeech_ReturnFromNamingScreen(void)
     LoadPalette(sBirchSpeechBgPals, BG_PLTT_ID(0), 2 * PLTT_SIZE_4BPP);
     LoadPalette(&sBirchSpeechBgGradientPal[1], BG_PLTT_ID(0) + 1, PLTT_SIZEOF(8));
     ResetTasks();
-    taskId = CreateTask(Task_NewGameBirchSpeech_ReturnFromNamingScreenShowTextbox, 0);
+    taskId = CreateTask(returnTask, 0);
     gTasks[taskId].tTimer = 5;
     gTasks[taskId].tBG1HOFS = -60;
     ScanlineEffect_Stop();
