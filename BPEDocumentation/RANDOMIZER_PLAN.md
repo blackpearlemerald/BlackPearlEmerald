@@ -63,12 +63,17 @@ The safeguards that recur across all of them are:
    preset and a new random seed. It has six pages: L/R changes the page,
    Up/Down picks a row and Left/Right (or A) changes its value. The first page
    holds the preset (Randomlocke, Full or Chaos; it reads Custom once any option
-   differs) and the seed. A on Generations picks generations one by one.
+   differs), the seed and a "Start the game" row. A on Generations picks
+   generations one by one. A line of button hints under the panel always shows
+   the controls for the current mode, including START to finish. The text uses
+   the standard menu palette so the button icons draw correctly, and the
+   selected row is filled pale blue.
 4. On the seed row, Left/Right rolls a new random seed and A opens code entry,
    where Up/Down cycles each character. An accepted code sets the seed and every
    setting from the code.
-5. START shows a summary with the preset name and the seed code: "These settings
-   can't be changed later." A saves them and returns to Birch; B goes back.
+5. START on any page, or A on "Start the game", shows a summary with the preset
+   name and the seed code: "These settings can't be changed once the game
+   begins." A saves them and returns to Birch; B goes back.
    B on the pages backs out, and Birch asks the question again.
 
 ### After the game starts
@@ -83,7 +88,7 @@ The safeguards that recur across all of them are:
 ### Seed code
 
 The code is 16 characters in four groups, for example `K7QD-2MXF-9PHA-RT4C`.
-Its alphabet has 32 characters with no look-alikes (no 0/O or 1/I/L), so each
+Its alphabet has 32 characters with no look-alikes (no 0/O or 1/I), so each
 character carries 5 bits and the code carries 80:
 
 | Bits | Contents |
@@ -110,6 +115,7 @@ Randomlocke value.
 |---|---|---|
 | 1 | Preset | **Randomlocke** / Full / Chaos (Custom once changed) |
 | 2 | Seed | **New random seed** / Enter a seed code |
+| - | Start the game | Opens the summary (same as START) |
 
 Birch's Yes/No question stands in for "Off".
 
@@ -406,9 +412,12 @@ How it fits in:
   Latias/Latios, Sudowoodo, the Kecleon, the post-game Kyogre and Groudon, and
   Petalburg's Snorlax) shows the new Pokémon instead, through
   `OBJ_EVENT_GFX_SPECIES`. `sStaticEncounters` in `src/randomizer.c` lists every
-  static encounter's map and object sprite; `InitObjectEventStateFromTemplate`
-  swaps the sprite as the object spawns, and `playmoncry` plays the new
-  Pokémon's cry on those maps.
+  static encounter's map and object sprite. `TrySpawnObjectEventTemplate`
+  swaps the graphics before the sprite is built, so the object gets the new
+  Pokémon's follower sprite, palette and walking animations (the Route 101
+  chase uses them), and `InitObjectEventStateFromTemplate` swaps them for
+  objects set up another way. `playmoncry` plays the new Pokémon's cry on those
+  maps.
 
 ### Trainers
 

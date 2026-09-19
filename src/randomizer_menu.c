@@ -1,6 +1,7 @@
 // BPE: the randomizer settings screen, opened from Birch's speech.
-// Six pages of options, a seed code entry and a final summary. The layout follows
-// the Options menu (src/option_menu.c).
+// Six pages of options, a seed code entry and a final summary. The screen is a
+// title line, one framed panel (the options above a description) and a line of
+// button hints, so the controls, including how to start, are always shown.
 #include "global.h"
 #include "randomizer_menu.h"
 #include "battle_main.h"
@@ -29,6 +30,7 @@ enum
     WIN_HEADER,
     WIN_OPTIONS,
     WIN_DESCRIPTION,
+    WIN_CONTROLS,
 };
 
 enum MenuMode
@@ -43,6 +45,7 @@ enum MenuRow
 {
     ROW_PRESET,
     ROW_SEED,
+    ROW_START,
     ROW_STARTERS,
     ROW_WILD,
     ROW_CONSISTENCY,
@@ -67,17 +70,36 @@ enum MenuRow
     ROW_COUNT
 };
 
+enum TextStyle
+{
+    STYLE_NAME,
+    STYLE_VALUE,
+    STYLE_DISABLED,
+    STYLE_CURSOR,
+    STYLE_ON_BACKGROUND, // the title and button hints, on the blue background
+};
+
 #define ROWS_PER_PAGE 5
 #define PAGE_COUNT 6
 #define ROW_HEIGHT 16
+#define PANEL_WIDTH (26 * 8)
+#define BAR_WIDTH (28 * 8)
 #define VALUE_X 108
 #define OPTION_NONE 0xFF
+
+// The text palette is the standard menu palette, so button icons draw correctly,
+// with one extra color for the selected row.
+#define MENU_COLOR_HIGHLIGHT 10
+
+// The window frame's nine tiles go after every window's tiles.
+#define FRAME_BASE_TILE 0x1E0
+#define FRAME_TILE(n) (FRAME_BASE_TILE + (n))
 
 struct MenuRowInfo
 {
     const u8 *name;
     const u8 *description;
-    u8 option;                  // RANDOMIZER_OPTION_*, or OPTION_NONE for the preset and seed rows
+    u8 option;                  // RANDOMIZER_OPTION_*, or OPTION_NONE for the setup rows
     const u8 *const *valueNames;
 };
 
@@ -119,7 +141,9 @@ static const struct MenuRowInfo sRows[ROW_COUNT] =
     [ROW_PRESET] = {COMPOUND_STRING("Preset"),
         COMPOUND_STRING("Randomlocke suits a randomized\nNuzlocke. Full and Chaos go further."), OPTION_NONE, NULL},
     [ROW_SEED] = {COMPOUND_STRING("Seed"),
-        COMPOUND_STRING("{DPAD_LEFTRIGHT}: new random seed.\n{A_BUTTON}: enter a friend's seed code."), OPTION_NONE, NULL},
+        COMPOUND_STRING("Press left or right for a new seed.\nPress A to enter a friend's seed code."), OPTION_NONE, NULL},
+    [ROW_START] = {COMPOUND_STRING("Start the game"),
+        COMPOUND_STRING("Check your settings, then begin.\nSTART does the same on any page."), OPTION_NONE, NULL},
     [ROW_STARTERS] = {COMPOUND_STRING("Starters"),
         COMPOUND_STRING("Same roles keeps each ball's type.\nRandom offers nine different types."), RANDOMIZER_OPTION_STARTERS, sStarterValues},
     [ROW_WILD] = {COMPOUND_STRING("Wild POKéMON"),
@@ -135,7 +159,7 @@ static const struct MenuRowInfo sRows[ROW_COUNT] =
     [ROW_STRENGTH] = {COMPOUND_STRING("Strength"),
         COMPOUND_STRING("Similar keeps replacements about as\nstrong as the POKéMON they replace."), RANDOMIZER_OPTION_STRENGTH, sStrengthValues},
     [ROW_GENERATIONS] = {COMPOUND_STRING("Generations"),
-        COMPOUND_STRING("{A_BUTTON}: choose which generations of\nPOKéMON can appear."), RANDOMIZER_OPTION_GENERATIONS, NULL},
+        COMPOUND_STRING("Press A to choose which generations\nof POKéMON can appear."), RANDOMIZER_OPTION_GENERATIONS, NULL},
     [ROW_REGULAR_TRAINERS] = {COMPOUND_STRING("Regular trainers"),
         COMPOUND_STRING("The teams of every trainer who\nisn't a boss."), RANDOMIZER_OPTION_REGULAR_TRAINERS, sOffOn},
     [ROW_BOSS_TRAINERS] = {COMPOUND_STRING("Boss trainers"),
@@ -166,7 +190,7 @@ static const struct MenuRowInfo sRows[ROW_COUNT] =
 
 static const struct MenuPage sPages[PAGE_COUNT] =
 {
-    {COMPOUND_STRING("SETUP"), {ROW_PRESET, ROW_SEED}, 2},
+    {COMPOUND_STRING("SETUP"), {ROW_PRESET, ROW_SEED, ROW_START}, 3},
     {COMPOUND_STRING("POKéMON"), {ROW_STARTERS, ROW_WILD, ROW_CONSISTENCY, ROW_GIFTS, ROW_STATICS}, 5},
     {COMPOUND_STRING("POKéMON POOL"), {ROW_LEGENDARIES, ROW_STRENGTH, ROW_GENERATIONS}, 3},
     {COMPOUND_STRING("TRAINERS AND ITEMS"), {ROW_REGULAR_TRAINERS, ROW_BOSS_TRAINERS, ROW_FIELD_ITEMS}, 3},
@@ -174,21 +198,31 @@ static const struct MenuPage sPages[PAGE_COUNT] =
     {COMPOUND_STRING("CHAOS"), {ROW_TYPES, ROW_EVOLUTIONS, ROW_BASE_STATS, ROW_TYPE_CHART, ROW_MONOTYPE}, 5},
 };
 
-static const u8 sColor_Normal[] = {TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY};
-static const u8 sColor_Value[] = {TEXT_COLOR_WHITE, TEXT_COLOR_RED, TEXT_COLOR_LIGHT_RED};
-static const u8 sColor_Disabled[] = {TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY, TEXT_COLOR_WHITE};
-static const u8 sColor_Cursor[] = {TEXT_COLOR_WHITE, TEXT_COLOR_BLUE, TEXT_COLOR_LIGHT_BLUE};
+static const u8 sText_ControlsBrowse[] = _("{DPAD_LEFTRIGHT} Change  {L_BUTTON}{R_BUTTON} Page  {START_BUTTON} Start  {B_BUTTON} Back");
+static const u8 sText_ControlsGenerations[] = _("{DPAD_LEFTRIGHT} Choose  {A_BUTTON} Switch on or off  {B_BUTTON} Done");
+static const u8 sText_ControlsCode[] = _("{DPAD_UPDOWN} Change  {DPAD_LEFTRIGHT} Move  {A_BUTTON} Done  {B_BUTTON} Cancel");
+static const u8 sText_ControlsSummary[] = _("{A_BUTTON} Begin the game  {B_BUTTON} Go back");
 
-static const u16 sMenuText_Pal[] = INCGFX_U16("graphics/interface/option_menu_text.pal", ".gbapal");
+// {foreground, shadow}; the background is the row's.
+static const u8 sTextStyles[][2] =
+{
+    [STYLE_NAME]          = {TEXT_COLOR_DARK_GRAY, TEXT_COLOR_LIGHT_GRAY},
+    [STYLE_VALUE]         = {TEXT_COLOR_BLUE, TEXT_COLOR_LIGHT_BLUE},
+    [STYLE_DISABLED]      = {TEXT_COLOR_LIGHT_GRAY, TEXT_COLOR_WHITE},
+    [STYLE_CURSOR]        = {TEXT_COLOR_RED, TEXT_COLOR_LIGHT_RED},
+    [STYLE_ON_BACKGROUND] = {TEXT_COLOR_WHITE, TEXT_COLOR_DARK_GRAY},
+};
+
 static const u16 sMenuBg_Pal[] = {RGB(17, 18, 31)};
+static const u16 sHighlight_Pal[] = {RGB(25, 27, 31)};
 
 static const struct WindowTemplate sWindowTemplates[] =
 {
     [WIN_HEADER] = {
         .bg = 1,
-        .tilemapLeft = 2,
-        .tilemapTop = 1,
-        .width = 26,
+        .tilemapLeft = 1,
+        .tilemapTop = 0,
+        .width = 28,
         .height = 2,
         .paletteNum = 1,
         .baseBlock = 2
@@ -196,20 +230,29 @@ static const struct WindowTemplate sWindowTemplates[] =
     [WIN_OPTIONS] = {
         .bg = 0,
         .tilemapLeft = 2,
-        .tilemapTop = 5,
+        .tilemapTop = 3,
         .width = 26,
         .height = 10,
         .paletteNum = 1,
-        .baseBlock = 0x36
+        .baseBlock = 2 + 28 * 2
     },
     [WIN_DESCRIPTION] = {
         .bg = 1,
         .tilemapLeft = 2,
-        .tilemapTop = 16,
+        .tilemapTop = 13,
         .width = 26,
         .height = 4,
         .paletteNum = 1,
-        .baseBlock = 0x36 + 26 * 10
+        .baseBlock = 2 + 28 * 2 + 26 * 10
+    },
+    [WIN_CONTROLS] = {
+        .bg = 1,
+        .tilemapLeft = 1,
+        .tilemapTop = 18,
+        .width = 28,
+        .height = 2,
+        .paletteNum = 1,
+        .baseBlock = 2 + 28 * 2 + 26 * 10 + 26 * 4
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -240,7 +283,6 @@ static void Task_RandomizerMenuFadeIn(u8 taskId);
 static void Task_RandomizerMenuInput(u8 taskId);
 static void Task_RandomizerMenuFadeOut(u8 taskId);
 static void DrawPage(void);
-static void DrawDescription(const u8 *text);
 
 bool32 RandomizerMenu_WasConfirmed(void)
 {
@@ -262,27 +304,19 @@ static void VBlankCB(void)
     TransferPlttBuffer();
 }
 
-#define TILE_TOP_CORNER_L 0x1A2
-#define TILE_TOP_EDGE     0x1A3
-#define TILE_TOP_CORNER_R 0x1A4
-#define TILE_LEFT_EDGE    0x1A5
-#define TILE_RIGHT_EDGE   0x1A7
-#define TILE_BOT_CORNER_L 0x1A8
-#define TILE_BOT_EDGE     0x1A9
-#define TILE_BOT_CORNER_R 0x1AA
-
-static void DrawFrame(u32 top, u32 height)
+// The panel around the options and the description, rows 2 to 17.
+static void DrawFrame(void)
 {
-    u32 bottom = top + height + 1;
+    const u32 top = 2, height = 14, bottom = top + height + 1;
 
-    FillBgTilemapBufferRect(1, TILE_TOP_CORNER_L,  1, top,    1, 1, 7);
-    FillBgTilemapBufferRect(1, TILE_TOP_EDGE,      2, top,   26, 1, 7);
-    FillBgTilemapBufferRect(1, TILE_TOP_CORNER_R, 28, top,    1, 1, 7);
-    FillBgTilemapBufferRect(1, TILE_LEFT_EDGE,     1, top + 1, 1, height, 7);
-    FillBgTilemapBufferRect(1, TILE_RIGHT_EDGE,   28, top + 1, 1, height, 7);
-    FillBgTilemapBufferRect(1, TILE_BOT_CORNER_L,  1, bottom, 1, 1, 7);
-    FillBgTilemapBufferRect(1, TILE_BOT_EDGE,      2, bottom, 26, 1, 7);
-    FillBgTilemapBufferRect(1, TILE_BOT_CORNER_R, 28, bottom, 1, 1, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(0),  1, top,     1, 1, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(1),  2, top,    26, 1, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(2), 28, top,     1, 1, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(3),  1, top + 1, 1, height, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(5), 28, top + 1, 1, height, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(6),  1, bottom,  1, 1, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(7),  2, bottom, 26, 1, 7);
+    FillBgTilemapBufferRect(1, FRAME_TILE(8), 28, bottom,  1, 1, 7);
 }
 
 void CB2_InitRandomizerMenu(void)
@@ -319,12 +353,12 @@ void CB2_InitRandomizerMenu(void)
         DeactivateAllTextPrinters();
         SetGpuReg(REG_OFFSET_WIN0H, 0);
         SetGpuReg(REG_OFFSET_WIN0V, 0);
-        SetGpuReg(REG_OFFSET_WININ, WININ_WIN0_BG0);
-        SetGpuReg(REG_OFFSET_WINOUT, WINOUT_WIN01_BG0 | WINOUT_WIN01_BG1 | WINOUT_WIN01_CLR);
-        SetGpuReg(REG_OFFSET_BLDCNT, BLDCNT_TGT1_BG0 | BLDCNT_EFFECT_DARKEN);
+        SetGpuReg(REG_OFFSET_WININ, 0);
+        SetGpuReg(REG_OFFSET_WINOUT, 0);
+        SetGpuReg(REG_OFFSET_BLDCNT, 0);
         SetGpuReg(REG_OFFSET_BLDALPHA, 0);
-        SetGpuReg(REG_OFFSET_BLDY, 4);
-        SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_WIN0_ON | DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP);
+        SetGpuReg(REG_OFFSET_BLDY, 0);
+        SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_OBJ_ON | DISPCNT_OBJ_1D_MAP);
         ShowBg(0);
         ShowBg(1);
         gMain.state++;
@@ -337,19 +371,19 @@ void CB2_InitRandomizerMenu(void)
         gMain.state++;
         break;
     case 3:
-        LoadBgTiles(1, GetWindowFrameTilesPal(gSaveBlock2Ptr->optionsWindowFrameType)->tiles, 0x120, 0x1A2);
+        LoadBgTiles(1, GetWindowFrameTilesPal(gSaveBlock2Ptr->optionsWindowFrameType)->tiles, 0x120, FRAME_BASE_TILE);
         LoadPalette(sMenuBg_Pal, BG_PLTT_ID(0), sizeof(sMenuBg_Pal));
         LoadPalette(GetWindowFrameTilesPal(gSaveBlock2Ptr->optionsWindowFrameType)->pal, BG_PLTT_ID(7), PLTT_SIZE_4BPP);
-        LoadPalette(sMenuText_Pal, BG_PLTT_ID(1), sizeof(sMenuText_Pal));
+        LoadPalette(gStandardMenuPalette, BG_PLTT_ID(1), PLTT_SIZE_4BPP);
+        LoadPalette(sHighlight_Pal, BG_PLTT_ID(1) + MENU_COLOR_HIGHLIGHT, sizeof(sHighlight_Pal));
         gMain.state++;
         break;
     case 4:
         PutWindowTilemap(WIN_HEADER);
         PutWindowTilemap(WIN_OPTIONS);
         PutWindowTilemap(WIN_DESCRIPTION);
-        DrawFrame(0, 2);
-        DrawFrame(4, 10);
-        DrawFrame(15, 4);
+        PutWindowTilemap(WIN_CONTROLS);
+        DrawFrame();
         CopyBgTilemapBufferToVram(1);
         DrawPage();
         gMain.state++;
@@ -380,61 +414,77 @@ static bool32 IsRowDisabled(u32 row)
     return row == ROW_TROLL_ABILITIES && !sMenu->settings.options[RANDOMIZER_OPTION_ABILITIES];
 }
 
-// Everything in the options window outside WIN0 is dimmed, so the code entry and
-// the summary light up the whole window.
-#define HIGHLIGHT_ALL 0xFF
-
-static void HighlightRow(u32 index)
+static void Print(u32 windowId, u32 fontId, u32 x, u32 y, u32 background, enum TextStyle style, const u8 *text)
 {
-    if (index == HIGHLIGHT_ALL)
-    {
-        SetGpuReg(REG_OFFSET_WIN0H, WIN_RANGE(16, DISPLAY_WIDTH - 16));
-        SetGpuReg(REG_OFFSET_WIN0V, WIN_RANGE(40, 40 + ROWS_PER_PAGE * ROW_HEIGHT));
-        return;
-    }
-    SetGpuReg(REG_OFFSET_WIN0H, WIN_RANGE(16, DISPLAY_WIDTH - 16));
-    SetGpuReg(REG_OFFSET_WIN0V, WIN_RANGE(index * ROW_HEIGHT + 40, index * ROW_HEIGHT + 40 + ROW_HEIGHT));
+    const u8 colors[3] = {background, sTextStyles[style][0], sTextStyles[style][1]};
+
+    AddTextPrinterParameterized3(windowId, fontId, x, y, colors, TEXT_SKIP_DRAW, text);
 }
 
-static void DrawHeader(const u8 *title)
+static void DrawHeader(const u8 *title, bool32 showPage)
 {
     u8 text[64];
     u8 *end;
 
-    FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
+    FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(TEXT_COLOR_TRANSPARENT));
     end = StringCopy(text, COMPOUND_STRING("RANDOMIZER  "));
     StringCopy(end, title);
-    AddTextPrinterParameterized3(WIN_HEADER, FONT_NORMAL, 8, 1, sColor_Normal, TEXT_SKIP_DRAW, text);
-    if (sMenu->mode == MODE_BROWSE || sMenu->mode == MODE_GENERATIONS)
+    Print(WIN_HEADER, FONT_NORMAL, 4, 1, TEXT_COLOR_TRANSPARENT, STYLE_ON_BACKGROUND, text);
+    if (showPage)
     {
         end = ConvertIntToDecimalStringN(text, sMenu->page + 1, STR_CONV_MODE_LEFT_ALIGN, 1);
         end = StringCopy(end, COMPOUND_STRING("/"));
         ConvertIntToDecimalStringN(end, PAGE_COUNT, STR_CONV_MODE_LEFT_ALIGN, 1);
-        AddTextPrinterParameterized3(WIN_HEADER, FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, text, 200), 1, sColor_Normal, TEXT_SKIP_DRAW, text);
+        Print(WIN_HEADER, FONT_NORMAL, GetStringRightAlignXOffset(FONT_NORMAL, text, BAR_WIDTH - 4), 1, TEXT_COLOR_TRANSPARENT, STYLE_ON_BACKGROUND, text);
     }
     CopyWindowToVram(WIN_HEADER, COPYWIN_FULL);
 }
 
 static void DrawDescription(const u8 *text)
 {
-    FillWindowPixelBuffer(WIN_DESCRIPTION, PIXEL_FILL(1));
-    AddTextPrinterParameterized3(WIN_DESCRIPTION, FONT_NARROW, 4, 1, sColor_Normal, TEXT_SKIP_DRAW, text);
+    FillWindowPixelBuffer(WIN_DESCRIPTION, PIXEL_FILL(TEXT_COLOR_WHITE));
+    FillWindowPixelRect(WIN_DESCRIPTION, PIXEL_FILL(TEXT_COLOR_LIGHT_GRAY), 0, 0, PANEL_WIDTH, 1);
+    Print(WIN_DESCRIPTION, FONT_NARROW, 4, 1, TEXT_COLOR_WHITE, STYLE_NAME, text);
     CopyWindowToVram(WIN_DESCRIPTION, COPYWIN_FULL);
 }
 
-static void DrawGenerations(u32 y)
+static void DrawControls(const u8 *text)
+{
+    FillWindowPixelBuffer(WIN_CONTROLS, PIXEL_FILL(TEXT_COLOR_TRANSPARENT));
+    Print(WIN_CONTROLS, FONT_NARROW, 4, 1, TEXT_COLOR_TRANSPARENT, STYLE_ON_BACKGROUND, text);
+    CopyWindowToVram(WIN_CONTROLS, COPYWIN_FULL);
+}
+
+static void DrawGenerationDescription(void)
+{
+    u8 *end;
+    u32 generation = sMenu->generationCursor;
+    bool32 excluded = (sMenu->settings.options[RANDOMIZER_OPTION_GENERATIONS] >> generation) & 1;
+
+    end = StringCopy(gStringVar4, COMPOUND_STRING("Generation "));
+    end = ConvertIntToDecimalStringN(end, generation + 1, STR_CONV_MODE_LEFT_ALIGN, 1);
+    if (excluded)
+        StringCopy(end, COMPOUND_STRING(" is left out: its\nPOKéMON won't appear."));
+    else
+        StringCopy(end, COMPOUND_STRING(" is in. Gray numbers\nare generations that are left out."));
+    DrawDescription(gStringVar4);
+}
+
+// Every row is drawn inside its own 16 pixels, so one row can be redrawn alone.
+static void DrawGenerations(u32 top, u32 background)
 {
     u8 digit[2];
     u32 excluded = sMenu->settings.options[RANDOMIZER_OPTION_GENERATIONS];
 
     for (u32 i = 0; i < RANDOMIZER_GENERATION_COUNT; i++)
     {
-        const u8 *color = (excluded & (1u << i)) ? sColor_Disabled : sColor_Value;
-        if (sMenu->mode == MODE_GENERATIONS && sMenu->generationCursor == i)
-            color = sColor_Cursor;
+        u32 x = VALUE_X + i * 10;
+
         digit[0] = CHAR_1 + i;
         digit[1] = EOS;
-        AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, VALUE_X + i * 10, y, color, TEXT_SKIP_DRAW, digit);
+        Print(WIN_OPTIONS, FONT_NORMAL, x, top, background, (excluded & (1u << i)) ? STYLE_DISABLED : STYLE_VALUE, digit);
+        if (sMenu->mode == MODE_GENERATIONS && sMenu->generationCursor == i)
+            FillWindowPixelRect(WIN_OPTIONS, PIXEL_FILL(TEXT_COLOR_RED), x, top + 14, 6, 2);
     }
 }
 
@@ -448,6 +498,8 @@ static const u8 *GetValueName(u32 row)
         return sPresetNames[Randomizer_GetPreset(&sMenu->settings)];
     case ROW_SEED:
         return sMenu->seedFromCode ? COMPOUND_STRING("From a code") : COMPOUND_STRING("Random");
+    case ROW_START:
+        return NULL;
     case ROW_MONOTYPE:
     {
         u32 type = sMenu->settings.options[RANDOMIZER_OPTION_MONOTYPE];
@@ -461,39 +513,48 @@ static const u8 *GetValueName(u32 row)
 static void DrawRow(u32 index)
 {
     u32 row = CurrentPage()->rows[index];
-    u32 y = index * ROW_HEIGHT + 1;
+    u32 top = index * ROW_HEIGHT;
+    bool32 selected = (index == sMenu->row && (sMenu->mode == MODE_BROWSE || sMenu->mode == MODE_GENERATIONS));
+    u32 background = selected ? MENU_COLOR_HIGHLIGHT : TEXT_COLOR_WHITE;
     bool32 disabled = IsRowDisabled(row);
+    const u8 *value;
 
-    FillWindowPixelRect(WIN_OPTIONS, PIXEL_FILL(1), 0, index * ROW_HEIGHT, 26 * 8, ROW_HEIGHT);
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, 8, y, disabled ? sColor_Disabled : sColor_Normal, TEXT_SKIP_DRAW, sRows[row].name);
+    FillWindowPixelRect(WIN_OPTIONS, PIXEL_FILL(background), 0, top, PANEL_WIDTH, ROW_HEIGHT);
+    Print(WIN_OPTIONS, FONT_NORMAL, 8, top, background, disabled ? STYLE_DISABLED : STYLE_NAME, sRows[row].name);
     if (row == ROW_GENERATIONS)
-        DrawGenerations(y);
-    else
-        AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NARROW, VALUE_X, y, disabled ? sColor_Disabled : sColor_Value, TEXT_SKIP_DRAW, GetValueName(row));
+    {
+        DrawGenerations(top, background);
+        return;
+    }
+    value = GetValueName(row);
+    if (value != NULL)
+        Print(WIN_OPTIONS, FONT_NARROW, VALUE_X, top, background, disabled ? STYLE_DISABLED : STYLE_VALUE, value);
 }
 
 static void DrawPage(void)
 {
     const struct MenuPage *page = CurrentPage();
 
-    DrawHeader(page->title);
-    FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
+    DrawHeader(page->title, TRUE);
+    FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(TEXT_COLOR_WHITE));
     for (u32 i = 0; i < page->count; i++)
         DrawRow(i);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
-    HighlightRow(sMenu->row);
     if (sMenu->mode == MODE_GENERATIONS)
-        DrawDescription(COMPOUND_STRING("{DPAD_LEFTRIGHT}: choose a generation.\n{A_BUTTON}: switch it on or off. {B_BUTTON}: done."));
+    {
+        DrawGenerationDescription();
+        DrawControls(sText_ControlsGenerations);
+    }
     else
+    {
         DrawDescription(sRows[CurrentRow()].description);
+        DrawControls(sText_ControlsBrowse);
+    }
 }
 
 static void RedrawRow(u32 index)
 {
     DrawRow(index);
-    // The preset name follows every change.
-    if (sMenu->page == 0 && index != 0)
-        DrawRow(0);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_GFX);
 }
 
@@ -502,25 +563,33 @@ static void DrawCode(void)
     u8 text[2];
     u32 x = 20;
 
-    FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, 8, 1, sColor_Normal, TEXT_SKIP_DRAW, COMPOUND_STRING("Enter the seed code:"));
+    FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(TEXT_COLOR_WHITE));
+    Print(WIN_OPTIONS, FONT_NORMAL, 8, 0, TEXT_COLOR_WHITE, STYLE_NAME, COMPOUND_STRING("Enter the seed code:"));
     for (u32 i = 0; i < RANDOMIZER_CODE_LENGTH; i++)
     {
         if (i != 0 && i % 4 == 0)
         {
             text[0] = CHAR_HYPHEN;
             text[1] = EOS;
-            AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, x, 25, sColor_Normal, TEXT_SKIP_DRAW, text);
+            Print(WIN_OPTIONS, FONT_NORMAL, x, 24, TEXT_COLOR_WHITE, STYLE_NAME, text);
             x += 8;
         }
         text[0] = Randomizer_GetCodeChar(sMenu->code[i]);
         text[1] = EOS;
-        AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, x, 25, i == sMenu->codeCursor ? sColor_Cursor : sColor_Value, TEXT_SKIP_DRAW, text);
+        if (i == sMenu->codeCursor)
+        {
+            Print(WIN_OPTIONS, FONT_NORMAL, x, 24, TEXT_COLOR_WHITE, STYLE_CURSOR, text);
+            FillWindowPixelRect(WIN_OPTIONS, PIXEL_FILL(TEXT_COLOR_RED), x, 24 + 14, 7, 2);
+        }
+        else
+        {
+            Print(WIN_OPTIONS, FONT_NORMAL, x, 24, TEXT_COLOR_WHITE, STYLE_VALUE, text);
+        }
         x += 9;
     }
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NARROW, 8, 49, sColor_Normal, TEXT_SKIP_DRAW,
-                                 COMPOUND_STRING("Type the code a friend shared to play\nexactly the same game."));
-    CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
+    Print(WIN_OPTIONS, FONT_NARROW, 8, 48, TEXT_COLOR_WHITE, STYLE_NAME,
+          COMPOUND_STRING("Codes never use O, I, 0 or 1, so\nthey can't be mixed up."));
+    CopyWindowToVram(WIN_OPTIONS, COPYWIN_GFX);
 }
 
 static void DrawSummary(void)
@@ -538,16 +607,17 @@ static void DrawSummary(void)
     }
     grouped[out] = EOS;
 
-    DrawHeader(COMPOUND_STRING("READY?"));
-    HighlightRow(HIGHLIGHT_ALL);
-    FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, 8, 1, sColor_Normal, TEXT_SKIP_DRAW, COMPOUND_STRING("Preset:"));
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, 64, 1, sColor_Value, TEXT_SKIP_DRAW, sPresetNames[Randomizer_GetPreset(&sMenu->settings)]);
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, 8, 17, sColor_Normal, TEXT_SKIP_DRAW, COMPOUND_STRING("Seed code:"));
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NORMAL, 20, 33, sColor_Value, TEXT_SKIP_DRAW, grouped);
-    AddTextPrinterParameterized3(WIN_OPTIONS, FONT_NARROW, 8, 51, sColor_Normal, TEXT_SKIP_DRAW, COMPOUND_STRING("Share the code so friends can play\nexactly the same game."));
-    CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
-    DrawDescription(COMPOUND_STRING("These settings can't be changed later.\n{A_BUTTON}: begin  {B_BUTTON}: go back"));
+    DrawHeader(COMPOUND_STRING("READY?"), FALSE);
+    FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(TEXT_COLOR_WHITE));
+    Print(WIN_OPTIONS, FONT_NORMAL, 8, 0, TEXT_COLOR_WHITE, STYLE_NAME, COMPOUND_STRING("Preset"));
+    Print(WIN_OPTIONS, FONT_NARROW, VALUE_X, 0, TEXT_COLOR_WHITE, STYLE_VALUE, sPresetNames[Randomizer_GetPreset(&sMenu->settings)]);
+    Print(WIN_OPTIONS, FONT_NORMAL, 8, 16, TEXT_COLOR_WHITE, STYLE_NAME, COMPOUND_STRING("Seed code"));
+    Print(WIN_OPTIONS, FONT_NORMAL, 20, 32, TEXT_COLOR_WHITE, STYLE_VALUE, grouped);
+    Print(WIN_OPTIONS, FONT_NARROW, 8, 48, TEXT_COLOR_WHITE, STYLE_NAME,
+          COMPOUND_STRING("Share the code so friends can play\nexactly the same game."));
+    CopyWindowToVram(WIN_OPTIONS, COPYWIN_GFX);
+    DrawDescription(COMPOUND_STRING("These settings can't be changed\nonce the game begins."));
+    DrawControls(sText_ControlsSummary);
 }
 
 // ── Input ────────────────────────────────────────────────────────────────────
@@ -564,6 +634,19 @@ static void ChangePage(s32 delta)
     sMenu->row = 0;
     PlaySE(SE_SELECT);
     DrawPage();
+}
+
+static void MoveCursor(s32 delta)
+{
+    u32 count = CurrentPage()->count;
+    u32 previous = sMenu->row;
+
+    sMenu->row = (sMenu->row + count + delta) % count;
+    PlaySE(SE_SELECT);
+    DrawRow(previous);
+    DrawRow(sMenu->row);
+    CopyWindowToVram(WIN_OPTIONS, COPYWIN_GFX);
+    DrawDescription(sRows[CurrentRow()].description);
 }
 
 static u32 NextMonotype(u32 type, s32 delta)
@@ -598,6 +681,7 @@ static bool32 ChangeValue(s32 delta)
         settings->seed = Randomizer_NewSeed();
         sMenu->seedFromCode = FALSE;
         return TRUE;
+    case ROW_START:
     case ROW_GENERATIONS:
         return FALSE;
     case ROW_MONOTYPE:
@@ -611,6 +695,13 @@ static bool32 ChangeValue(s32 delta)
         return TRUE;
     }
     }
+}
+
+static void OpenSummary(void)
+{
+    PlaySE(SE_SELECT);
+    sMenu->mode = MODE_SUMMARY;
+    DrawSummary();
 }
 
 static void StartCodeEntry(void)
@@ -631,10 +722,10 @@ static void StartCodeEntry(void)
     }
     sMenu->codeCursor = 0;
     sMenu->mode = MODE_CODE;
-    DrawHeader(COMPOUND_STRING("SEED CODE"));
-    HighlightRow(HIGHLIGHT_ALL);
+    DrawHeader(COMPOUND_STRING("SEED CODE"), FALSE);
     DrawCode();
-    DrawDescription(COMPOUND_STRING("{DPAD_UPDOWN}: change  {DPAD_LEFTRIGHT}: move\n{A_BUTTON}: done  {B_BUTTON}: cancel"));
+    DrawDescription(COMPOUND_STRING("Type the code a friend shared to\nplay exactly the same game."));
+    DrawControls(sText_ControlsCode);
 }
 
 static void FinishCodeEntry(void)
@@ -711,6 +802,7 @@ static void HandleGenerationInput(void)
         *excluded = toggled;
         PlaySE(SE_SELECT);
         RedrawRow(sMenu->row);
+        DrawGenerationDescription();
     }
     else if (JOY_NEW(B_BUTTON) || JOY_NEW(START_BUTTON))
     {
@@ -724,18 +816,15 @@ static void HandleGenerationInput(void)
         sMenu->generationCursor = (sMenu->generationCursor + RANDOMIZER_GENERATION_COUNT + delta) % RANDOMIZER_GENERATION_COUNT;
         PlaySE(SE_SELECT);
         RedrawRow(sMenu->row);
+        DrawGenerationDescription();
     }
 }
 
 static void HandleBrowseInput(u8 taskId)
 {
-    const struct MenuPage *page = CurrentPage();
-
     if (JOY_NEW(START_BUTTON))
     {
-        PlaySE(SE_SELECT);
-        sMenu->mode = MODE_SUMMARY;
-        DrawSummary();
+        OpenSummary();
     }
     else if (JOY_NEW(B_BUTTON))
     {
@@ -751,6 +840,9 @@ static void HandleBrowseInput(u8 taskId)
         case ROW_SEED:
             PlaySE(SE_SELECT);
             StartCodeEntry();
+            break;
+        case ROW_START:
+            OpenSummary();
             break;
         case ROW_GENERATIONS:
             PlaySE(SE_SELECT);
@@ -776,11 +868,7 @@ static void HandleBrowseInput(u8 taskId)
     }
     else if (JOY_REPEAT(DPAD_UP) || JOY_REPEAT(DPAD_DOWN))
     {
-        s32 delta = JOY_REPEAT(DPAD_DOWN) ? 1 : -1;
-        sMenu->row = (sMenu->row + page->count + delta) % page->count;
-        PlaySE(SE_SELECT);
-        HighlightRow(sMenu->row);
-        DrawDescription(sRows[CurrentRow()].description);
+        MoveCursor(JOY_REPEAT(DPAD_DOWN) ? 1 : -1);
     }
     else if (JOY_REPEAT(DPAD_LEFT) || JOY_REPEAT(DPAD_RIGHT))
     {

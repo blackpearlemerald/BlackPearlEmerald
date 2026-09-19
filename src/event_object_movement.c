@@ -1930,8 +1930,16 @@ u8 TrySpawnObjectEventTemplate(const struct ObjectEventTemplate *objectEventTemp
     struct SpriteFrameImage spriteFrameImage;
     const struct ObjectEventGraphicsInfo *graphicsInfo;
     const struct SubspriteTable *subspriteTables = NULL;
-    const struct ObjectEventTemplate objectEventTemplateLocal = TryGetObjectEventTemplateForOWE(objectEventTemplate);
-    u16 graphicsId = objectEventTemplateLocal.graphicsId;
+    struct ObjectEventTemplate objectEventTemplateLocal = TryGetObjectEventTemplateForOWE(objectEventTemplate);
+    u16 graphicsId;
+
+    // BPE randomizer: build the sprite (size, palette and follower animations) from
+    // the Pokémon a static encounter has become, not from the map's graphics.
+    if (objectEventTemplateLocal.kind == OBJ_KIND_CLONE)
+        graphicsId = Randomizer_GetStaticObjectGraphics((objectEventTemplateLocal.targetMapGroup << 8) | objectEventTemplateLocal.targetMapNum, objectEventTemplateLocal.graphicsId);
+    else
+        graphicsId = Randomizer_GetStaticObjectGraphics((mapGroup << 8) | mapNum, objectEventTemplateLocal.graphicsId);
+    objectEventTemplateLocal.graphicsId = graphicsId;
 
     graphicsInfo = GetObjectEventGraphicsInfo(graphicsId);
     CopyObjectGraphicsInfoToSpriteTemplate_WithMovementType(graphicsId, objectEventTemplateLocal.movementType, &spriteTemplate, &subspriteTables);
