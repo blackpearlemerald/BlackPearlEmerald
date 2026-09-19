@@ -1,6 +1,17 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.2-beta": {
+      "channel": "beta",
+      "changes": [
+        "Added a built-in randomizer. After the mode question, Birch offers to randomize starters, wild Pokémon, trainers, abilities, moves and items. Pick the Randomlocke, Full or Chaos preset or set each option yourself.",
+        "Every randomized game has a seed code, shown on your Trainer Card. Share it so friends can play exactly the same game, for example in a Soul Link.",
+        "Randomizing is chosen once for a new game and can't be changed later. Existing saves stay unrandomized, and this website always shows the normal game.",
+        "Hid the Tera Type on the Pokémon summary screen.",
+        "New games start with Fast text speed.",
+        "Fixed the credits, the Petalburg Pokémon Center and the Game Corner doll always treating your starter as Treecko in new games."
+      ]
+    },
     "2.1.1-beta": {
       "channel": "beta",
       "changes": [
