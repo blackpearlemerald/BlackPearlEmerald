@@ -123,7 +123,7 @@ Birch's Yes/No question stands in for "Off".
 
 | # | Option | Choices |
 |---|---|---|
-| 3 | Starters | Off / **Same roles** / Random |
+| 3 | Starters | Off / **Same roles** / Random / Legendaries |
 | 4 | Wild Pokémon | Off / **On** |
 | 5 | Wild consistency | **Whole game** / Per route |
 | 6 | Gift Pokémon, eggs and in-game trades | Off / **On** |
@@ -283,8 +283,10 @@ BPE's bag HMs still need a party Pokémon that could learn the HM
   whatever he caught.
 - **Norman's Zigzagoon.** The Zigzagoon Norman lends for the tutorial
   (`PutZigzagoonInPlayerParty`) is not changed.
-- **Starters.** Every starter must know a damaging move at level 5, because the
-  Route 101 battle comes right after the pick.
+- **Starters.** A Birch Case starter that knows no damaging move at level 5 is
+  given Tackle, because the Route 101 battle comes right after the pick. The
+  Johto gift has no such fallback, so those three balls still only hold Pokémon
+  that can already attack.
 - **Kecleon.** A randomized Kecleon stays invisible until the Devon Scope reveals
   it, like the original.
 - **Cutscenes and disguises.** Story cutscene sprites stay. Sky Pillar's
@@ -346,6 +348,10 @@ number of evolution stages as the Pokémon it replaces.
 **Random:** the Birch Case offers nine unrelated Pokémon, each with a different
 main type. The Johto balls become three more random Pokémon.
 
+**Legendaries:** the same nine different main types, but every ball holds a
+legendary, mythical or Ultra Beast. It ignores the Legendaries option, which
+still governs the rest of the game.
+
 **Monotype** makes all twelve share the chosen type and overrides both modes.
 
 Rules for every mode:
@@ -354,8 +360,11 @@ Rules for every mode:
 - No two balls come from the same evolution family.
 - **Strength:** with Similar strength, the replacement's final evolution has a
   BST within ±10% of the original's final evolution.
-- **Legendaries:** possible only when Legendaries is Mixed.
-- **Usable immediately:** every starter needs a damaging move at level 5.
+- **Legendaries:** possible only when Legendaries is Mixed, or in the
+  Legendaries starter mode, which makes all nine of them legendary.
+- **Usable immediately:** a Birch Case starter with no damaging move at level 5
+  is handed Tackle, so any Pokémon can fill a ball. The three Johto balls keep
+  the old rule and only hold Pokémon that already attack by then.
 - With random types on, the roles use the types Pokémon have in that seed, so
   the Grass ball offers something that is Grass in that game.
 

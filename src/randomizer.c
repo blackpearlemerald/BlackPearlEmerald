@@ -114,7 +114,7 @@ static const struct OptionLayout sOptionLayout[RANDOMIZER_OPTION_COUNT] =
 
 static const u16 sOptionMax[RANDOMIZER_OPTION_COUNT] =
 {
-    [RANDOMIZER_OPTION_STARTERS]         = RANDOMIZER_STARTERS_RANDOM,
+    [RANDOMIZER_OPTION_STARTERS]         = RANDOMIZER_STARTERS_LEGENDARY,
     [RANDOMIZER_OPTION_WILD]             = 1,
     [RANDOMIZER_OPTION_WILD_CONSISTENCY] = RANDOMIZER_CONSISTENCY_PER_ROUTE,
     [RANDOMIZER_OPTION_GIFTS]            = 1,
@@ -1251,9 +1251,15 @@ static enum Species PickStarter(u32 ball, const u16 *taken, u32 takenCount, u32 
     u32 monotype = Randomizer_GetOption(RANDOMIZER_OPTION_MONOTYPE);
 
     InitFilter(&filter, original);
-    filter.legendaryPool = (GetLegendaryRule() == RANDOMIZER_LEGENDARIES_MIXED) ? POOL_ANY : POOL_REGULAR;
+    if (mode == RANDOMIZER_STARTERS_LEGENDARY)
+        filter.legendaryPool = POOL_LEGENDARY;
+    else
+        filter.legendaryPool = (GetLegendaryRule() == RANDOMIZER_LEGENDARIES_MIXED) ? POOL_ANY : POOL_REGULAR;
     filter.requireBasic = TRUE;
-    filter.requireEarlyAttack = TRUE;
+    // A Birch Case starter that cannot attack yet is given Tackle, so those balls
+    // hold any Pokemon. The Johto gift has no such fallback and still needs one
+    // that can fight at level 5.
+    filter.requireEarlyAttack = (ball >= BIRCH_CASE_BALLS);
     filter.useFinalBst = TRUE;
     filter.targetBst = IsSimilarStrength() ? GetHighestFinalBST(original, 0) : 0;
     filter.excludedFamilies = taken;
@@ -1299,6 +1305,28 @@ enum Species Randomizer_GetStarterSpecies(u32 ball, enum Species original)
         return original;
     Randomizer_FillStarters(species, ball + 1);
     return species[ball];
+}
+
+// Splash, Teleport and Transform cannot win the first battle, so a Birch Case
+// starter with nothing else at level 5 is handed Tackle. This is why the ball
+// pool takes every Pokémon rather than only the ones that already attack.
+void Randomizer_EnsureStarterCanAttack(struct Pokemon *mon)
+{
+    u32 slot = 0;
+
+    for (u32 i = 0; i < MAX_MON_MOVES; i++)
+    {
+        enum Move move = GetMonData(mon, MON_DATA_MOVE1 + i);
+
+        if (move == MOVE_NONE)
+            break;
+        if (GetMoveCategory(move) != DAMAGE_CATEGORY_STATUS && GetMovePower(move) > 1)
+            return;
+        slot = i + 1;
+    }
+    if (slot >= MAX_MON_MOVES)
+        slot = MAX_MON_MOVES - 1; // A full set of status moves loses its last one.
+    SetMonMoveSlot(mon, MOVE_TACKLE, slot);
 }
 
 // Scripts: VAR_0x8004 is the Johto ball in Birch's lab (0 Chikorita, 1 Cyndaquil,

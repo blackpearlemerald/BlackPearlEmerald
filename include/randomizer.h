@@ -58,6 +58,7 @@ enum Species Randomizer_GetTradeRequestedSpecies(u32 trade, enum Species species
 enum Species Randomizer_GetStoryWildSpecies(enum Species species, u16 mapId);
 enum Species Randomizer_GetStarterSpecies(u32 ball, enum Species original);
 void Randomizer_FillStarters(u16 *species, u32 count);
+void Randomizer_EnsureStarterCanAttack(struct Pokemon *mon);
 u16 Randomizer_GetStaticObjectGraphics(u16 mapId, u16 graphicsId);
 enum Species Randomizer_GetStaticCrySpecies(enum Species species);
 enum Species Randomizer_GetEggSpecies(enum Species species);

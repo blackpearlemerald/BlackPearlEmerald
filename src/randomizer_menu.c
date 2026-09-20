@@ -129,7 +129,7 @@ static const u8 *const sOffOn[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("On")
 static const u8 *const sOffRandom[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("Random")};
 static const u8 *const sOffShuffled[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("Shuffled")};
 static const u8 *const sNoYes[] = {COMPOUND_STRING("No"), COMPOUND_STRING("Yes")};
-static const u8 *const sStarterValues[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("Same roles"), COMPOUND_STRING("Random")};
+static const u8 *const sStarterValues[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("Same roles"), COMPOUND_STRING("Random"), COMPOUND_STRING("Legendaries")};
 static const u8 *const sConsistencyValues[] = {COMPOUND_STRING("Whole game"), COMPOUND_STRING("Per route")};
 static const u8 *const sLegendaryValues[] = {COMPOUND_STRING("Unchanged"), COMPOUND_STRING("Among themselves"), COMPOUND_STRING("Mixed with all")};
 static const u8 *const sStrengthValues[] = {COMPOUND_STRING("Similar"), COMPOUND_STRING("Fully random")};
@@ -145,7 +145,7 @@ static const struct MenuRowInfo sRows[ROW_COUNT] =
     [ROW_START] = {COMPOUND_STRING("Start the game"),
         COMPOUND_STRING("Check your settings, then begin.\nSTART does the same on any page."), OPTION_NONE, NULL},
     [ROW_STARTERS] = {COMPOUND_STRING("Starters"),
-        COMPOUND_STRING("Same roles keeps each ball's type.\nRandom offers nine different types."), RANDOMIZER_OPTION_STARTERS, sStarterValues},
+        COMPOUND_STRING("Same roles keeps each ball's type.\nLegendaries fills the case with them."), RANDOMIZER_OPTION_STARTERS, sStarterValues},
     [ROW_WILD] = {COMPOUND_STRING("Wild POKéMON"),
         COMPOUND_STRING("The POKéMON in grass, caves, water\nand fishing spots."), RANDOMIZER_OPTION_WILD, sOffOn},
     [ROW_CONSISTENCY] = {COMPOUND_STRING("Wild consistency"),

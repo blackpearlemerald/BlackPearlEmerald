@@ -1,6 +1,14 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.3-beta": {
+      "channel": "beta",
+      "changes": [
+        "Randomized starters can now be any Pokémon. One that knows no damaging move at level 5, such as Magikarp or Abra, is handed Tackle so the first battle is still winnable.",
+        "Added a Legendaries choice to the Starters option: every ball in the Birch Case holds a legendary, mythical or Ultra Beast, each a different type.",
+        "Seed codes made in 2.1.2 Beta no longer load, because randomized starters changed. Make and share a new code."
+      ]
+    },
     "2.1.2-beta": {
       "channel": "beta",
       "changes": [

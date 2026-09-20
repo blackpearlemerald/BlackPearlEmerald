@@ -22,6 +22,7 @@
 #include "pokemon_storage_system.h"
 #include "random.h"
 #include "random_mon_generation.h"
+#include "randomizer.h"
 #include "script.h"
 #include "sprite.h"
 #include "string_util.h"
@@ -682,7 +683,13 @@ u32 BirchCase_GiveMonParameterized(u16 species, u8 level, u16 item, u8 ball, u8 
         ivs16[i] = (ivs[i] >= USE_RANDOM_IVS) ? Random() % (MAX_PER_STAT_IVS + 1) : ivs[i];
     }
     enum ShinyMode shinyMode = isShinyExpansion ? SHINY_MODE_ALWAYS : SHINY_MODE_RANDOM;
-    return ScriptGiveMonParameterized(0, 0, species, level, item, ball, nature, abilityNum, gender, evs16, ivs16, (enum Move *)moves, shinyMode, ggMaxFactor, teraType, 0);
+    u32 result = ScriptGiveMonParameterized(0, 0, species, level, item, ball, nature, abilityNum, gender, evs16, ivs16, (enum Move *)moves, shinyMode, ggMaxFactor, teraType, 0);
+
+    // The randomizer can put a Pokémon with no attack at all in a ball. The call
+    // above asks for party slot 0, so that is where the starter landed.
+    if (result == MON_GIVEN_TO_PARTY)
+        Randomizer_EnsureStarterCanAttack(&gParties[B_TRAINER_PLAYER][0]);
+    return result;
 }
 
 void Script_GiveRandomBerry(struct ScriptContext *ctx)

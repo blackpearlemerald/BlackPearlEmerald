@@ -324,7 +324,20 @@ TEST("Random starters offer nine different main types")
     Randomizer_ClearSettings();
 }
 
-TEST("Every starter can attack at level 5")
+static bool32 CanAttackAtLevel5(enum Species species)
+{
+    const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(species);
+
+    for (u32 j = 0; learnset[j].move != LEVEL_UP_MOVE_END && learnset[j].level <= 5; j++)
+    {
+        enum Move move = GetLearnsetMove(species, learnset, j);
+        if (GetMoveCategory(move) != DAMAGE_CATEGORY_STATUS && GetMovePower(move) > 1)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+TEST("The Johto gift starters can attack at level 5")
 {
     u16 starters[12];
     u32 seed;
@@ -333,17 +346,62 @@ TEST("Every starter can attack at level 5")
     PARAMETRIZE { seed = SEED_B; }
     UsePreset(RANDOMIZER_PRESET_FULL, seed);
     Randomizer_FillStarters(starters, ARRAY_COUNT(starters));
+    // The Birch Case grants Tackle instead, so only the Johto balls are filtered.
+    for (u32 i = 9; i < ARRAY_COUNT(starters); i++)
+        EXPECT(CanAttackAtLevel5(starters[i]));
+    Randomizer_ClearSettings();
+}
+
+TEST("A starter that cannot attack is given Tackle")
+{
+    struct Pokemon mon;
+    enum Species species;
+    bool32 needed;
+
+    PARAMETRIZE { species = SPECIES_MAGIKARP; needed = TRUE; }
+    PARAMETRIZE { species = SPECIES_ABRA; needed = TRUE; }
+    PARAMETRIZE { species = SPECIES_WYNAUT; needed = TRUE; }
+    PARAMETRIZE { species = SPECIES_TREECKO; needed = FALSE; }
+    Randomizer_ClearSettings(); // Randomized learnsets would change the moves.
+    CreateMon(&mon, species, 5, 0, OTID_STRUCT_PRESET(0));
+    EXPECT_EQ(CanAttackAtLevel5(species), !needed);
+    GiveMonInitialMoveset(&mon);
+    Randomizer_EnsureStarterCanAttack(&mon);
+    bool32 knowsTackle = FALSE;
+    bool32 canAttack = FALSE;
+    for (u32 i = 0; i < MAX_MON_MOVES; i++)
+    {
+        enum Move move = GetMonData(&mon, MON_DATA_MOVE1 + i);
+        if (move == MOVE_TACKLE)
+            knowsTackle = TRUE;
+        if (move != MOVE_NONE && GetMoveCategory(move) != DAMAGE_CATEGORY_STATUS && GetMovePower(move) > 1)
+            canAttack = TRUE;
+    }
+    EXPECT(canAttack);
+    EXPECT_EQ(knowsTackle, needed);
+}
+
+TEST("Legendary starters are all legendary and keep nine different types")
+{
+    struct RandomizerSettings settings;
+    u16 starters[9];
+    u32 types = 0;
+    u32 seed;
+
+    PARAMETRIZE { seed = SEED_A; }
+    PARAMETRIZE { seed = SEED_B; }
+    Randomizer_ApplyPreset(&settings, RANDOMIZER_PRESET_FULL);
+    settings.seed = seed;
+    settings.options[RANDOMIZER_OPTION_STARTERS] = RANDOMIZER_STARTERS_LEGENDARY;
+    UseSettings(&settings);
+    Randomizer_FillStarters(starters, ARRAY_COUNT(starters));
     for (u32 i = 0; i < ARRAY_COUNT(starters); i++)
     {
-        const struct LevelUpMove *learnset = GetSpeciesLevelUpLearnset(starters[i]);
-        bool32 attack = FALSE;
-        for (u32 j = 0; learnset[j].move != LEVEL_UP_MOVE_END && learnset[j].level <= 5; j++)
-        {
-            enum Move move = GetLearnsetMove(starters[i], learnset, j);
-            if (GetMoveCategory(move) != DAMAGE_CATEGORY_STATUS && GetMovePower(move) > 1)
-                attack = TRUE;
-        }
-        EXPECT(attack);
+        u32 bit = 1u << GetSpeciesType(starters[i], 0);
+        EXPECT(Randomizer_IsLegendary(starters[i]));
+        EXPECT_EQ(Randomizer_GetFamilyRoot(starters[i]), starters[i]);
+        EXPECT(!(types & bit));
+        types |= bit;
     }
     Randomizer_ClearSettings();
 }
@@ -645,7 +703,7 @@ TEST("Story battles stay easy and static objects show their new Pokemon")
 // the numbers, unless the change is intended and no randomized game was released.
 TEST("Fixed seeds keep giving the same results")
 {
-    static const u16 sExpectedStarters[] = {577, 624, 590, 293, 653, 501, 650, 190, 1363};
+    static const u16 sExpectedStarters[] = {574, 624, 590, 293, 653, 501, 650, 190, 1363};
     u16 starters[ARRAY_COUNT(sExpectedStarters)];
 
     UsePreset(RANDOMIZER_PRESET_RANDOMLOCKE, SEED_A);
