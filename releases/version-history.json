@@ -1,6 +1,14 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.4-beta": {
+      "channel": "beta",
+      "changes": [
+        "HM moves can be replaced like any other move. You no longer need the Move Deleter to free the slot, and HMs still work straight from the Bag.",
+        "Wally's Ralts is no longer changed by randomizing wild Pokémon. His catch now follows the trainer options: with his fight left unchanged he catches a Ralts, and when it is randomized he catches the first stage of the line he brings to Mauville.",
+        "Seed codes made in 2.1.3 Beta no longer load, because Wally's Pokémon changed. Make and share a new code."
+      ]
+    },
     "2.1.3-beta": {
       "channel": "beta",
       "changes": [

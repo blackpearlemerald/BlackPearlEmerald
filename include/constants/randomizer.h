@@ -9,11 +9,11 @@
 // Raise this when a change would give an existing seed different results, such
 // as a new hash, a different pool rule or a reordered table. A save keeps the
 // version it was started with, and a seed code only loads on its own version.
-#define RANDOMIZER_ALGORITHM_VERSION 2
+#define RANDOMIZER_ALGORITHM_VERSION 3
 
 // Species with an ID at or above this limit were added after algorithm version 1
 // and never appear in a version 1 game, so new species don't reshuffle old runs.
-// Version 2 added no species, so it still uses the version 1 list.
+// Versions 2 and 3 added no species, so they still use the version 1 list.
 #define RANDOMIZER_V1_SPECIES_LIMIT 1573
 
 enum RandomizerOption

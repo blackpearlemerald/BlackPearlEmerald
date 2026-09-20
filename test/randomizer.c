@@ -27,6 +27,7 @@
 u32 Randomizer_Test_GetFieldItemCount(void);
 u16 Randomizer_Test_GetFieldItemFlag(u32 index);
 u16 Randomizer_Test_GetFieldItem(u32 index);
+enum Species Randomizer_Test_GetWallyCatchSpecies(const struct Trainer *wally, enum Species species);
 
 static void UseSettings(const struct RandomizerSettings *settings)
 {
@@ -418,6 +419,35 @@ TEST("Monotype starters all share the chosen type")
     Randomizer_FillStarters(starters, ARRAY_COUNT(starters));
     for (u32 i = 0; i < ARRAY_COUNT(starters); i++)
         EXPECT(GetSpeciesType(starters[i], 0) == TYPE_WATER || GetSpeciesType(starters[i], 1) == TYPE_WATER);
+    Randomizer_ClearSettings();
+}
+
+TEST("Wally's catch follows his team, not the wild option")
+{
+    struct RandomizerSettings settings;
+    struct Trainer wally;
+    struct TrainerMon party[2] = {0};
+    enum Species caught, gardevoir;
+
+    party[0].species = SPECIES_DELCATTY;
+    party[1].species = SPECIES_GARDEVOIR;
+    FillTrainer(&wally, party, ARRAY_COUNT(party), TRAINER_CLASS_RIVAL, COMPOUND_STRING("WALLY"));
+
+    // Randomlocke randomizes wild Pokemon but leaves bosses, and Wally is a rival.
+    Randomizer_ApplyPreset(&settings, RANDOMIZER_PRESET_RANDOMLOCKE);
+    settings.seed = SEED_A;
+    UseSettings(&settings);
+    EXPECT_EQ(Randomizer_Test_GetWallyCatchSpecies(&wally, SPECIES_RALTS), SPECIES_RALTS);
+    EXPECT_EQ(Randomizer_GetTrainerSpecies(&wally, 1), SPECIES_GARDEVOIR);
+
+    // With his fight randomized, he catches the first stage of his new line.
+    settings.options[RANDOMIZER_OPTION_BOSS_TRAINERS] = RANDOMIZER_BOSSES_FULLY_RANDOM;
+    UseSettings(&settings);
+    caught = Randomizer_Test_GetWallyCatchSpecies(&wally, SPECIES_RALTS);
+    gardevoir = Randomizer_GetTrainerSpecies(&wally, 1);
+    EXPECT_NE(caught, SPECIES_RALTS);
+    EXPECT_EQ(Randomizer_GetFamilyRoot(caught), caught);
+    EXPECT_EQ(Randomizer_GetFamilyRoot(gardevoir), caught);
     Randomizer_ClearSettings();
 }
 

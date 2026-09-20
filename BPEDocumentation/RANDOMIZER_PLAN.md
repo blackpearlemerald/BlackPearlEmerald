@@ -278,9 +278,11 @@ BPE's bag HMs still need a party Pokémon that could learn the HM
   `src/battle_controllers.c`), follows the Wild option but always uses Similar
   strength. The overworld Zigzagoon chasing Birch shows the new species.
 - **Wally's tutorial Ralts.** The Ralts, Lv 5 (`StartWallyTutorialBattle` in
-  `src/battle_setup.c`), follows the Wild option but always uses Similar
-  strength. In every later Wally battle, the Ralts line becomes the line of
-  whatever he caught.
+  `src/battle_setup.c`), is part of Wally's team rather than an encounter the
+  player can have, so it follows the **trainer** options, not the Wild one. It is
+  the first stage of whatever his own Ralts line becomes, so the Pokémon he
+  catches is the one he brings to Mauville. With his fight left unchanged he
+  still catches a Ralts, however the wild Pokémon are randomized.
 - **Norman's Zigzagoon.** The Zigzagoon Norman lends for the tutorial
   (`PutZigzagoonInPlayerParty`) is not changed.
 - **Starters.** A Birch Case starter that knows no damaging move at level 5 is

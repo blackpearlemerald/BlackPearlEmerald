@@ -1202,8 +1202,8 @@ void RandomizeEggSpecies(void)
     gSpecialVar_Result = Randomizer_GetEggSpecies(gSpecialVar_Result);
 }
 
-// Story battles that must stay easy (the Route 101 Zigzagoon and Wally's catch)
-// always use Similar strength, whatever the Strength option says.
+// The Route 101 Zigzagoon, a story battle that must stay easy, always uses
+// Similar strength whatever the Strength option says.
 enum Species Randomizer_GetStoryWildSpecies(enum Species species, u16 mapId)
 {
     struct SpeciesFilter filter;
@@ -1575,14 +1575,6 @@ enum Species Randomizer_GetTrainerSpecies(const struct Trainer *trainer, u32 mon
     u32 branchHash;
     enum Species newRoot;
 
-    // Wally's Ralts line becomes the line of whatever he caught in the tutorial.
-    if (trainer->trainerPic == TRAINER_PIC_WALLY && root == SPECIES_RALTS && Randomizer_GetOption(RANDOMIZER_OPTION_WILD))
-    {
-        newRoot = Randomizer_GetFamilyRoot(Randomizer_GetStoryWildSpecies(SPECIES_RALTS, MAP_ROUTE102));
-        if (newRoot == root)
-            return original;
-        return GetFamilyMemberAtStage(newRoot, stage, Hash(STREAM_TRAINER_EVOLUTION, trainerHash, newRoot));
-    }
     if (original == SPECIES_NONE || !Randomizer_ShouldRandomizeTrainer(trainer) || IsLegendaryKept(original))
         return original;
 
@@ -1615,6 +1607,35 @@ enum Species Randomizer_GetTrainerSpecies(const struct Trainer *trainer, u32 mon
     newRoot = PickSpecies(&filter, STREAM_TRAINER, trainerHash, root | (occurrence << 16));
     branchHash = filter.requireMega ? filter.branchHash : Hash(STREAM_TRAINER_EVOLUTION, trainerHash, newRoot);
     return GetFamilyMemberAtStage(newRoot, stage, branchHash);
+}
+
+// The Ralts Wally catches in the tutorial. It is the first stage of whatever his
+// own team's Ralts line becomes, so the Pokémon he catches is the one he brings to
+// Mauville. This follows the trainer options, not the wild ones: it is his team
+// rather than an encounter the player can have.
+static enum Species GetWallyCatchSpeciesFor(const struct Trainer *wally, enum Species species)
+{
+    enum Species root = Randomizer_GetFamilyRoot(species);
+
+    if (!Randomizer_ShouldRandomizeTrainer(wally))
+        return species;
+    for (u32 i = 0; i < wally->partySize; i++)
+    {
+        if (Randomizer_GetFamilyRoot(wally->party[i].species) == root)
+            return Randomizer_GetFamilyRoot(Randomizer_GetTrainerSpecies(wally, i));
+    }
+    return species;
+}
+
+enum Species Randomizer_GetWallyCatchSpecies(enum Species species)
+{
+    return GetWallyCatchSpeciesFor(GetTrainerStructFromId(TRAINER_WALLY_MAUVILLE), species);
+}
+
+// The trainer table is stubbed out in test builds, so the tests pass their own.
+enum Species Randomizer_Test_GetWallyCatchSpecies(const struct Trainer *wally, enum Species species)
+{
+    return GetWallyCatchSpeciesFor(wally, species);
 }
 
 // A randomized trainer Pokémon keeps its held item, except items that only work for
