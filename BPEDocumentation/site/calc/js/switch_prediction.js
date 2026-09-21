@@ -221,7 +221,10 @@ function get_next_in_g4() {
     var p2field = p1field.clone().swap();
 
     try {
-        p1.ability = customSets[p1.name]["My Box"].ability   
+        // BPE: use the selected imported set when a species has several
+        var p1_set = $('input.set-selector.player').val()
+        var p1_sets = customSets[p1.name]
+        p1.ability = (p1_sets[p1_set.substring(p1_set.indexOf("(") + 1, p1_set.lastIndexOf(")"))] || p1_sets["My Box"]).ability   
     } catch {
         p1.ability = "Pressure"
     }

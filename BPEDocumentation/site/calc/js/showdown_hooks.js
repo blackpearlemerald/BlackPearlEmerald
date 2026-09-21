@@ -286,7 +286,6 @@ function filter_box() {
 
     for (set in customSets) {
         
-        let setInfo = JSON.stringify(customSets[set]).toLowerCase()
         let pokedexInfo = {}
         
         try {
@@ -295,10 +294,14 @@ function filter_box() {
             pokedexInfo = JSON.stringify(pokedex[set]).toLowerCase() 
         }
         
-        let set_id = `${set} (My Box)`
+        // BPE: a species can have several imported sets ("My Box", "My Box 2", ...)
+        for (let set_name in customSets[set]) {
+            let setInfo = JSON.stringify(customSets[set][set_name]).toLowerCase()
+            let set_id = `${set} (${set_name})`
        
-        if (setInfo.includes(search_string) || set.toLowerCase().includes(search_string) || pokedexInfo.includes(search_string)) {
-            container.find(`[data-id='${set_id}']`).addClass('active')
+            if (setInfo.includes(search_string) || set.toLowerCase().includes(search_string) || pokedexInfo.includes(search_string)) {
+                container.find('[data-id]').filter(function() { return this.getAttribute('data-id') == set_id }).addClass('active')
+            }
         }
     }
 }
@@ -587,11 +590,13 @@ function displayParty() {
         }
 
         for (i in currentParty) {
-            species_name = currentParty[i]
+            // BPE: a party entry is a species or a "Species (Set Name)" data-id
+            species_name = currentParty[i].split(" (")[0]
+            var set_name = currentParty[i].includes(" (") ? currentParty[i].substring(currentParty[i].indexOf("(") + 1, currentParty[i].lastIndexOf(")")) : "My Box"
 
             var sprite_name = species_name.toLowerCase().replace(" ","-").replace(".","").replace("’","").replace(":","-")
-            var set_data = setdex[species_name]["My Box"]
-            var data_id = species_name + " (My Box)"
+            var set_data = setdex[species_name][set_name]
+            var data_id = species_name + " (" + set_name + ")"
 
 
             var pok = `<div class="trainer-pok-container">
@@ -1468,13 +1473,15 @@ $(document).ready(function() {
    })
 
    $(document).on('click', '#box-remove', function() {
-        var species = $('.set-selector')[0].value.split(" (")[0]
+        var full_set_name = $('.set-selector')[0].value
+        var species = full_set_name.split(" (")[0]
+        var set_name = full_set_name.substring(full_set_name.indexOf("(") + 1, full_set_name.lastIndexOf(")"))
         var sets = JSON.parse(BPEStorage.customsets)
         if (confirm(`Delete ${species} from imported sets?`)) {
-            delete sets[species]['My Box']
-            delete SETDEX_BW[species]['My Box']
+            delete sets[species][set_name]
+            delete SETDEX_BW[species][set_name]
             BPEStorage.customsets = JSON.stringify(sets)
-            $(`[data-id='${$('.set-selector')[0].value}']`).remove()
+            $('[data-id]').filter(function() { return this.getAttribute('data-id') == full_set_name }).remove()
         }
    })
 
@@ -1540,8 +1547,9 @@ $(document).ready(function() {
 
         var data_id = $(this).attr('data-id')
         var species_name = data_id.split(" (")[0]
+        var set_name = data_id.substring(data_id.indexOf("(") + 1, data_id.lastIndexOf(")"))
         var sprite_name = species_name.toLowerCase().replace(" ","-").replace(".","").replace("’","").replace(":","-")
-        var set_data = customSets[species_name]["My Box"]
+        var set_data = customSets[species_name][set_name]
         set_data['moves'] = padArray(set_data['moves'], 4, "-")
 
         var pok = `<div class="trainer-pok-container">

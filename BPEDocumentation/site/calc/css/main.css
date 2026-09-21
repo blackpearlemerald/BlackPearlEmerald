@@ -1467,7 +1467,7 @@ select.toxic-counter {
     margin-top: 2px
 }
 
-.field-info button, #save-state, #read-save, #import, #clearSets, #download-sav, #fragsheet-howto {
+.field-info button, #save-state, #read-save, #bpe-read-save, #import, #clearSets, #download-sav, #fragsheet-howto {
     color: #bb86fc;
     border-radius: 8px;
     background: none;
@@ -1476,6 +1476,16 @@ select.toxic-counter {
     margin-top: 10px;
     cursor: pointer;
     border: 1px solid #bb86fc ;
+}
+
+#bpe-save-status {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#bpe-save-status.is-error {
+    color: #ff8a80;
 }
 
 #fragsheet-howto {

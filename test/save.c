@@ -53,6 +53,23 @@ TEST("PC box header is backwards compatible")
     EXPECT_EQ(sizeof(gPokemonStoragePtr->boxes), TOTAL_BOXES_COUNT * IN_BOX_COUNT * 60);
 }
 
+// The damage calculator's save import (BPEDocumentation/site/js/save-converter.js)
+// reads these members directly.
+TEST("Party, flags, variables and Day Care are where the website reads them")
+{
+    EXPECT_EQ(offsetof(struct SaveBlock1, playerPartyCount), 564);
+    EXPECT_EQ(offsetof(struct SaveBlock1, playerParty), 568);
+    EXPECT_EQ(offsetof(struct SaveBlock1, flags), 5864);
+    EXPECT_EQ(offsetof(struct SaveBlock1, vars), 6164);
+    EXPECT_EQ(offsetof(struct SaveBlock1, daycare), 13480);
+    EXPECT_EQ(sizeof(struct Pokemon), 100);
+    EXPECT_EQ(offsetof(struct Pokemon, level), 84);
+    EXPECT_EQ(sizeof(struct DaycareMon), 140);
+    EXPECT_EQ(offsetof(struct DaycareMon, mon), 0);
+    EXPECT_EQ(DAYCARE_MON_COUNT, 2);
+    EXPECT_EQ(VARS_START, 0x4000);
+}
+
 TEST("Save format fits the flash layout")
 {
     EXPECT_LE(SAVE_META_SIZE + sizeof(struct SaveBlock2) + POKEMON_STORAGE_HEADER_SIZE + sizeof(struct SaveBlock3), SAVE_SECTOR_PAYLOAD_SIZE);

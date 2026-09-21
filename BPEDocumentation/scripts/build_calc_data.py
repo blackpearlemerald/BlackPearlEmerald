@@ -13,6 +13,9 @@ Schema mirrors the working Dynamic-Calc npoint example (Blaze Black):
   moves[Move Name]             = {type, category, basePower}
   formatted_sets[Species][key] = {tr_id, sub_index, level, moves, item, ability,
                                   nature, evs, ivs, sprite, battle_type, ...}
+  save_data                    = this source's species/move/item numbering and
+                                  the rules js/calc_save_import.js needs to read
+                                  a player's .sav into the calculator
 
 Run:  py BPEDocumentation/scripts/build_calc_data.py
 """
@@ -28,6 +31,7 @@ SITE = common.SITE
 SPECIES_DIR = os.path.join(SITE, "data", "species")
 MOVES_JSON = os.path.join(SITE, "data", "moves.json")
 ABIL_JSON = os.path.join(SITE, "data", "abilities.json")
+ITEMS_JSON = os.path.join(SITE, "data", "items_index.json")
 TRAINERS_JSON = os.path.join(SITE, "js", "data", "trainers.json")
 WORLD_JSON = os.path.join(SITE, "js", "data", "world.json")
 
@@ -122,6 +126,138 @@ def map_base_stats(bs):
     return {short: bs[long] for long, short in BS_MAP}
 
 
+# ── Save numbering ────────────────────────────────────────────────────────────
+
+def c_constants(path, prefix):
+    """Numeric values of the #defines and enum members named <prefix>* in a C
+    header, in declaration order. Handles both the #define lists of older
+    sources (1.0.1) and the enums of current ones, including implicit enum
+    values and members defined in terms of other constants."""
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
+    text = re.sub(r"//[^\n]*", "", text)
+    text = text.replace("\\\n", " ")
+    exprs, order = {}, []
+    for name, expr in re.findall(r"^[ \t]*#[ \t]*define[ \t]+(\w+)[ \t]+([^\n]+)", text, flags=re.M):
+        exprs[name] = expr.strip()
+        order.append(name)
+    for body in re.findall(r"\benum\b[^{;]*\{(.*?)\}", text, flags=re.S):
+        # Skip preprocessor lines and macro calls (items.h generates its
+        # ITEM_TM_<move> aliases with RECURSIVELY(...) inside the enum).
+        lines = [line for line in body.split("\n")
+                 if not line.strip().startswith("#") and not re.match(r"\s*\w+\s*\(", line)]
+        previous = None
+        for entry in " ".join(lines).split(","):
+            entry = entry.strip()
+            if not entry:
+                continue
+            m = re.fullmatch(r"(\w+)\s*(?:=\s*(.+))?", entry, flags=re.S)
+            if not m:
+                raise ValueError("Cannot read enum member %r in %s" % (entry, path))
+            name, expr = m.group(1), m.group(2)
+            if expr is None:
+                expr = "0" if previous is None else "(%s) + 1" % previous
+            exprs[name] = expr.strip()
+            order.append(name)
+            previous = name
+
+    values = {}
+
+    def value(name, depth=0):
+        if name not in values:
+            if depth > 64 or name not in exprs:
+                raise KeyError(name)
+            expr = re.sub(r"\b[A-Za-z_]\w*\b", lambda m: str(value(m.group(0), depth + 1)), exprs[name])
+            expr = re.sub(r"\b(0x[0-9A-Fa-f]+|\d+)[uUlL]*\b", lambda m: str(int(m.group(1), 0)), expr)
+            if not re.fullmatch(r"[\d\s+\-*()<>|&]*", expr):
+                raise KeyError(name)
+            values[name] = int(eval(expr, {"__builtins__": {}}))  # digits and operators only
+        return values[name]
+
+    result = {}
+    for name in order:
+        if name.startswith(prefix) and name not in result:
+            try:
+                result[name] = value(name)
+            except (KeyError, SyntaxError):
+                pass  # not a number (e.g. a function-like macro)
+    return result
+
+
+def numbered(constants, prefix, known, limit):
+    """{number: id} for the first declared <prefix><id> of each number whose id
+    has exported data, so aliases never shadow the name the data uses."""
+    result = {}
+    for name, number in constants.items():
+        key = name[len(prefix):]
+        if 0 < number < limit and number not in result and key in known:
+            result[number] = key
+    return result
+
+
+def dense(table):
+    """{number: value} -> a list indexed by number, None for gaps."""
+    out = [None] * (max(table) + 1 if table else 0)
+    for number, value in table.items():
+        out[number] = value
+    return out
+
+
+def build_save_data(species_info, poks, move_name, item_name):
+    """Tables that turn the numbers in a save file into calculator names.
+
+    species_info: {species id: (calc name, growth rate, [ability names])}
+    A species entry is [calc name, growth rate index], plus its three ability
+    slots when they differ from the calculator entry it shares (alternate forms).
+    """
+    growth_rates = sorted({growth for _, growth, _ in species_info.values()})
+    entries = {}
+    for sid, (name, growth, abilities) in species_info.items():
+        slots = (list(abilities) + [None] * 3)[:3]
+        shared = poks[name].get("abilities", {})
+        entry = [name, growth_rates.index(growth)]
+        if slots != [shared.get("0"), shared.get("1"), shared.get("H")]:
+            entry.append(slots)
+        entries[sid] = entry
+
+    def header(name):
+        return common.src("include", "constants", name)
+
+    species = c_constants(header("species.h"), "SPECIES_")
+    egg = species.get("SPECIES_EGG", 1 << 11)
+    moves = c_constants(header("moves.h"), "MOVE_")
+    items = c_constants(header("items.h"), "ITEM_")
+    flags = c_constants(header("flags.h"), "FLAG_NUZLOCKE")
+    variables = c_constants(header("vars.h"), "VAR_RANDOMIZER_")
+
+    # The box format stores species and moves in 11 bits, held items in 10.
+    by_species = numbered(species, "SPECIES_", entries, min(egg, 1 << 11))
+    by_move = numbered(moves, "MOVE_", move_name, 1 << 11)
+    by_item = numbered(items, "ITEM_", item_name, 1 << 10)
+    for table, constants, prefix, known in ((by_species, species, "SPECIES_", "BULBASAUR"),
+                                            (by_move, moves, "MOVE_", "POUND"),
+                                            (by_item, items, "ITEM_", "POKE_BALL")):
+        if table.get(constants.get(prefix + known)) != known:
+            raise ValueError("Could not number %s%s for the save importer." % (prefix, known))
+
+    # CalculateMonStats ignores EVs in Nuzlocke mode from 2.1 on; older
+    # sources count them.
+    with open(common.src("src", "pokemon.c"), encoding="utf-8") as f:
+        nuzlocke_ignores_evs = bool(re.search(
+            r"evsDisabled\s*=\s*FlagGet\(\s*FLAG_NUZLOCKE\s*\)", f.read()))
+
+    return {
+        "growthRates": growth_rates,
+        "species": dense({n: entries[k] for n, k in by_species.items()}),
+        "moves": dense({n: move_name[k] for n, k in by_move.items()}),
+        "items": dense({n: item_name[k] for n, k in by_item.items()}),
+        "nuzlockeFlag": flags.get("FLAG_NUZLOCKE"),
+        "nuzlockeIgnoresEvs": nuzlocke_ignores_evs,
+        "randomizerVars": [variables[name] for name in sorted(variables)],
+    }
+
+
 def main():
     species_files = sorted(
         f for f in os.listdir(SPECIES_DIR) if f.endswith(".json"))
@@ -136,11 +272,15 @@ def main():
     poks = {}
     norm_index = {}   # normalize(name) -> ShowdownName (for trainer matching)
     sprite_src_for = {}  # ShowdownName -> site-relative sprite path
+    save_species = {}  # species id -> (ShowdownName, growth rate, abilities)
 
     for fn in species_files:
         sid = fn[:-5]
         d = common.load_json(os.path.join(SPECIES_DIR, fn))
         name = canon_name(sid, d["name"])
+        save_species[sid] = (
+            name, d.get("growthRate", "Medium Fast"),
+            [abil_data.get(ab, {}).get("name") if ab else None for ab in d.get("abilities", [])])
         if name in poks:
             # keep first; alt/totem dupes fall through to the base entry
             norm_index.setdefault(normalize(sid), name)
@@ -287,11 +427,16 @@ def main():
                 n += 1
             sets[uniq] = set_data
 
+    items_data = common.load_json(ITEMS_JSON)
+    save_data = build_save_data(save_species, poks, move_name,
+                                {iid: item["name"] for iid, item in items_data.items()})
+
     blob = {
         "title": "BPE Emerald",
         "poks": poks,
         "moves": out_moves,
         "formatted_sets": formatted_sets,
+        "save_data": save_data,
     }
     if unmatched:
         raise ValueError("Trainer species missing from this release's calculator data: " + ", ".join(sorted(unmatched)))
@@ -321,6 +466,8 @@ def main():
     print("  moves:          %d" % len(out_moves))
     print("  trainers:       %d" % tr_id)
     print("  set species:    %d" % len(formatted_sets))
+    print("  save numbering: %d species, %d moves, %d items" % tuple(
+        sum(1 for entry in save_data[key] if entry) for key in ("species", "moves", "items")))
     print("Sprites -> %s" % NEWHD_DIR)
     print("  copied:  %d   missing: %d" % (copied, missing))
     if missing_names:

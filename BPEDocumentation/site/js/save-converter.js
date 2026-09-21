@@ -1,6 +1,7 @@
 // Black Pearl Emerald Save Converter: saves from any release before 2.1
 // (1.0.1 through 2.0.7-beta) to the 2.1 save format. Everything runs in the
-// browser; the file never leaves the player's computer.
+// browser; the file never leaves the player's computer. The damage calculator
+// also uses readSaveFile to import the Pokémon in a save of either format.
 //
 // This is a port of BPETools/bpe_save_format.py, which is checked against the
 // game's own C code. BPETools/tests/test_bpe_save_format.py runs this file in
@@ -561,11 +562,198 @@
     return { bytes: output, report: converted.report };
   }
 
+  // Reading Pokémon (damage calculator) ------------------------------------------
+  // SaveBlock1 is the same in every release, so these offsets hold for both
+  // formats. test/save.c checks them against include/global.h.
+
+  var SB1_PARTY_COUNT = 564;
+  var SB1_PARTY = 568;
+  var SB1_FLAGS = 5864;
+  var SB1_VARS = 6164;
+  var SB1_DAYCARE = 13480;
+  var PARTY_SIZE = 6;
+  var POKEMON_SIZE = 100;
+  var POKEMON_LEVEL_OFFSET = 84;
+  var DAYCARE_MON_SIZE = 140;
+  var DAYCARE_MON_COUNT = 2;
+  var VARS_START = 0x4000;
+  // Game stat order: HP, Attack, Defense, Speed, Sp. Atk, Sp. Def
+  var STATS = ['hp', 'attack', 'defense', 'speed', 'spAttack', 'spDefense'];
+  var HYPER_TRAINED = ['hyperTrainedHP', 'hyperTrainedAttack', 'hyperTrainedDefense', 'hyperTrainedSpeed',
+    'hyperTrainedSpAttack', 'hyperTrainedSpDefense'];
+
+  // Loads a 2.1 image with the same rules as SaveEngine_Load (load_v21_image in
+  // bpe_save_format.py): a box sector that disagrees with the commit is taken
+  // from the backup sector when that matches. loadImage above is stricter on
+  // purpose, because it checks the converter's own output.
+  function loadV21Image(image) {
+    var copies = [];
+    SECTOR_PROGRESS.forEach(function (first, copy) {
+      var parts = [], ok = true, counter = null;
+      for (var part = 0; part < PROGRESS_PARTS; part++) {
+        var sector = sectorOf(image, first + part);
+        if (!isSectorValid(sector, KIND_PROGRESS, part)) ok = false;
+        if (counter === null) counter = readU32(sector, COUNTER_OFFSET);
+        else if (counter !== readU32(sector, COUNTER_OFFSET)) ok = false;
+        parts.push(sector);
+      }
+      if (ok) copies.push({ counter: counter, copy: copy, parts: parts });
+    });
+    if (!copies.length) throw new Error('This save is damaged: neither copy of its progress can be read.');
+    copies.sort(function (a, b) { return b.counter - a.counter || a.copy - b.copy; });
+    var parts = copies[0].parts;
+    var gameId = readU32(parts[0], 0);
+    var saveBlock1 = new Uint8Array(SAVEBLOCK1_SIZE);
+    for (var part = 1; part < PROGRESS_PARTS; part++) {
+      var size = Math.max(0, Math.min(PAYLOAD_SIZE, SAVEBLOCK1_SIZE - (part - 1) * PAYLOAD_SIZE));
+      saveBlock1.set(parts[part].subarray(0, size), (part - 1) * PAYLOAD_SIZE);
+    }
+
+    var backup = sectorOf(image, SECTOR_BOX_BACKUP);
+    var backupId = backup[ID_OFFSET];
+    var backupValid = backupId < BOX_SECTOR_COUNT && isSectorValid(backup, KIND_BOX, backupId) &&
+      readU32(backup, BOX_GAME_ID_OFFSET) === gameId;
+    var backupCrc = readU32(backup, CRC_OFFSET);
+    var monCount = TOTAL_BOXES * IN_BOX_COUNT;
+    var boxes = new Uint8Array(monCount * BOX_MON_SIZE);
+    var loadFlags = {};
+    for (var index = 0; index < BOX_SECTOR_COUNT; index++) {
+      var data = sectorOf(image, SECTOR_BOX_FIRST + index);
+      var committed = readU32(parts[0], 4 + 4 * index);
+      var valid = isSectorValid(data, KIND_BOX, index);
+      var sameGame = readU32(data, BOX_GAME_ID_OFFSET) === gameId;
+      var source = null;
+      if (valid && sameGame && readU32(data, CRC_OFFSET) === committed) {
+        source = data;
+      } else if (backupValid && backupId === index && backupCrc === committed) {
+        source = backup;
+        loadFlags.boxRestored = true;
+      } else if (valid && sameGame) {
+        source = data;
+        loadFlags.boxUncommitted = true;
+      } else if (backupValid && backupId === index) {
+        source = backup;
+        loadFlags.boxRestored = true;
+      } else if (!valid) {
+        loadFlags.boxLost = true;
+      }
+      var first = index * BOX_MONS_PER_SECTOR;
+      var count = Math.max(0, Math.min(BOX_MONS_PER_SECTOR, monCount - first));
+      if (source) boxes.set(source.subarray(0, count * BOX_MON_SIZE), first * BOX_MON_SIZE);
+    }
+    return { gameId: gameId, saveBlock1: saveBlock1, boxes: boxes, loadFlags: loadFlags, counter: copies[0].counter };
+  }
+
+  // The fields of a decoded Pokémon in one shape for both record formats.
+  function monSummary(values, nickname) {
+    return {
+      personality: values.personality, otId: values.otId, nickname: nickname,
+      species: values.species, heldItem: values.heldItem, experience: values.experience,
+      moves: [values.move1, values.move2, values.move3, values.move4],
+      abilityNum: values.abilityNum, hiddenNatureModifier: values.hiddenNatureModifier,
+      teraType: values.teraType, friendship: values.friendship, metLocation: values.metLocation,
+      isEgg: values.isEgg, dead: values.dead,
+      ivs: STATS.map(function (stat) { return values[stat + 'IV']; }),
+      evs: STATS.map(function (stat) { return values[stat + 'EV']; }),
+      hyperTrained: HYPER_TRAINED.map(function (name) { return values[name]; })
+    };
+  }
+
+  // An encrypted 80-byte struct BoxPokemon, or null for an empty slot or a Bad Egg.
+  function readBoxMon(record) {
+    var decoded = decodeBoxMon(record);
+    var f = decoded.fields;
+    if (f.isBadEgg || !decoded.checksumValid || f.species === 0) return null;
+    var nickname = Array.prototype.slice.call(decoded.nickname).concat([f.nickname11, f.nickname12]);
+    var values = Object.assign({}, f, { personality: decoded.personality, otId: decoded.otId });
+    values.isEgg = (f.isEgg || f.s3IsEgg) ? 1 : 0;
+    return monSummary(values, nickname);
+  }
+
+  // A 60-byte packed PC record, or null when UnpackBoxMon would not give a Pokémon.
+  function unpackBoxMon(record) {
+    var packed = bytesToBig(record, 0, BOX_MON_SIZE);
+    if (packed === 0n) return null;
+    var values = {};
+    PACKED_FIELDS.forEach(function (field) {
+      values[field[0]] = Number((packed >> BigInt(field[1])) & ((1n << BigInt(field[2])) - 1n));
+    });
+    if (values.isBadEgg || values.species === 0) return null;
+    var nickname = [];
+    for (var i = 0; i < 12; i++) nickname.push(values['nickname' + i]);
+    return monSummary(values, nickname);
+  }
+
+  // Every Pokémon in a .sav/.srm from any release: party, PC boxes and Day
+  // Care, in that order. Eggs are included and marked; Bad Eggs are not.
+  function readSaveFile(fileBytes) {
+    var found = findFlashImage(fileBytes);
+    var format = detectFormat(found.image);
+    if (format === 'empty') throw new Error('This file does not contain a Pokémon Emerald save.');
+
+    var saveBlock1, boxRecords, boxRecordSize, readRecord, loadFlags = {};
+    if (format === '2.1') {
+      var loaded = loadV21Image(found.image);
+      saveBlock1 = loaded.saveBlock1;
+      boxRecords = loaded.boxes;
+      boxRecordSize = BOX_MON_SIZE;
+      readRecord = unpackBoxMon;
+      loadFlags = loaded.loadFlags;
+    } else {
+      var legacy = loadLegacyImage(found.image);
+      saveBlock1 = legacy.saveBlock1;
+      boxRecords = legacy.storage.subarray(LEGACY_BOXES_OFFSET, LEGACY_BOXES_OFFSET + LEGACY_TOTAL_BOXES * IN_BOX_COUNT * 80);
+      boxRecordSize = 80;
+      readRecord = readBoxMon;
+    }
+
+    var pokemon = [], mon, start, slot;
+    var partyCount = Math.min(saveBlock1[SB1_PARTY_COUNT], PARTY_SIZE);
+    for (slot = 0; slot < partyCount; slot++) {
+      start = SB1_PARTY + slot * POKEMON_SIZE;
+      mon = readBoxMon(saveBlock1.subarray(start, start + 80));
+      if (!mon) continue;
+      mon.place = 'party';
+      mon.slot = slot;
+      mon.level = saveBlock1[start + POKEMON_LEVEL_OFFSET];
+      pokemon.push(mon);
+    }
+    for (var index = 0; index * boxRecordSize < boxRecords.length; index++) {
+      mon = readRecord(boxRecords.subarray(index * boxRecordSize, (index + 1) * boxRecordSize));
+      if (!mon) continue;
+      mon.place = 'box';
+      mon.box = Math.floor(index / IN_BOX_COUNT);
+      mon.slot = index % IN_BOX_COUNT;
+      pokemon.push(mon);
+    }
+    for (slot = 0; slot < DAYCARE_MON_COUNT; slot++) {
+      start = SB1_DAYCARE + slot * DAYCARE_MON_SIZE;
+      mon = readBoxMon(saveBlock1.subarray(start, start + 80));
+      if (!mon) continue;
+      mon.place = 'daycare';
+      mon.slot = slot;
+      pokemon.push(mon);
+    }
+    return { format: format, loadFlags: loadFlags, saveBlock1: saveBlock1, pokemon: pokemon };
+  }
+
+  function readSaveFlag(saveBlock1, flag) {
+    return (saveBlock1[SB1_FLAGS + (flag >> 3)] >> (flag & 7)) & 1;
+  }
+
+  function readSaveVar(saveBlock1, id) {
+    return readU16(saveBlock1, SB1_VARS + 2 * (id - VARS_START));
+  }
+
   var api = {
     convertSaveFile: convertSaveFile,
     packBoxMon: packBoxMon,
     loadLegacyImage: loadLegacyImage,
     loadImage: loadImage,
+    loadV21Image: loadV21Image,
+    readSaveFile: readSaveFile,
+    readSaveFlag: readSaveFlag,
+    readSaveVar: readSaveVar,
     detectFormat: detectFormat,
     sectorCrc: sectorCrc
   };

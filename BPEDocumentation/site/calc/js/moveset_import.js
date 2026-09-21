@@ -1026,8 +1026,9 @@ $("#clearSets").click(function () {
 	
 	// Remove Set Data from Dropdown
 	$('.trainer-pok.left-side').each(function() {
-		var species_name = $(this).attr('data-id').replace(" (My Box)", "")
-		delete SETDEX_BW[species_name]["My Box"]
+		var data_id = $(this).attr('data-id')
+		var species_name = data_id.split(" (")[0]
+		delete SETDEX_BW[species_name][data_id.substring(data_id.indexOf("(") + 1, data_id.lastIndexOf(")"))]
 	})
 
 	// Remove Icons

@@ -1211,7 +1211,13 @@
                             Read .sav
                     </label>
                     <input id="save-upload-g45" type="file"/>
+                    <!-- BPE: import every Pokémon from a Black Pearl Emerald save (../js/calc_save_import.js) -->
+                    <label for="bpe-save-upload" class="bs-btn" id="bpe-read-save" style="display: none" title="Add every Pok&eacute;mon from your party, PC boxes and Day Care. Your save stays on your computer.">
+                            Import .sav
+                    </label>
+                    <input id="bpe-save-upload" type="file" accept=".sav,.srm"/>
                 </div>
+                <p id="bpe-save-status" hidden></p>
                 <span class="importedSetsOptions" style="width:auto;">
                     <button id="clearSets">Clear Imported Sets</button>
                     <button id="fragsheet-howto">View Fragsheet</button>
@@ -1812,6 +1818,9 @@
     <script type="text/javascript" src="./js/frags.js?100009"></script>
     <!-- BPE: deep-link a trainer's Pokémon from the interactive map -->
     <script type="text/javascript" src="../js/calc_deeplink.js?2"></script>
+    <!-- BPE: read a player's save into the box (save-converter.js reads both save formats) -->
+    <script type="text/javascript" src="../js/save-converter.js?2"></script>
+    <script type="text/javascript" src="../js/calc_save_import.js?1"></script>
 </div>
 
 
