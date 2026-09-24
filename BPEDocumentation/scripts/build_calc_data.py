@@ -12,7 +12,9 @@ Schema mirrors the working Dynamic-Calc npoint example (Blaze Black):
   poks[ShowdownName]            = {bs, types, abilities, weightkg, learnset_info}
   moves[Move Name]             = {type, category, basePower}
   formatted_sets[Species][key] = {tr_id, sub_index, level, moves, item, ability,
-                                  nature, evs, ivs, sprite, battle_type, ...}
+                                  nature, evs, ivs, sprite, battle_type, mega,
+                                  ...}  (mega: the form its held Mega Stone
+                                  turns it into, when it has one)
   save_data                    = this source's species/move/item numbering and
                                   the rules js/calc_save_import.js needs to read
                                   a player's .sav into the calculator
@@ -124,6 +126,30 @@ BS_MAP = [("hp", "hp"), ("atk", "at"), ("def", "df"),
 
 def map_base_stats(bs):
     return {short: bs[long] for long, short in BS_MAP}
+
+
+# ── Mega Evolution ────────────────────────────────────────────────────────────
+
+def mega_evolutions():
+    """(source species id, item id) -> Mega species id, from the game's
+    form-change tables. A trainer mon holding its Mega Stone Mega Evolves in
+    battle, so the calc shows that set in its Mega form."""
+    import parse_pokemon  # imported here: it derives its paths at import time
+    with open(common.src("src/data/pokemon/form_change_tables.h"), encoding="utf-8") as f:
+        forms = parse_pokemon.strip_c_comments(f.read())
+    tables = dict(re.findall(
+        r"static const struct FormChange s(\w+FormChangeTable)\[\]\s*=\s*\{(.*?)\n\};",
+        forms, re.DOTALL))
+    megas = {}
+    for table, species_list in parse_pokemon._form_change_sources().items():
+        rows = re.findall(
+            r"\{\s*FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM\s*,\s*SPECIES_(\w+)\s*,\s*ITEM_(\w+)\s*\}",
+            tables.get(table, ""))
+        for target, item in rows:
+            for species in species_list:
+                if species != target:
+                    megas[(species, item)] = target
+    return megas
 
 
 # ── Save numbering ────────────────────────────────────────────────────────────
@@ -362,6 +388,15 @@ def main():
     # ("GRUNT"). Non-unique labels would both break team grouping and collide
     # in formatted_sets[species] (overwriting sets). We disambiguate repeats by
     # appending an incrementing number, mirroring upstream ("Grunt6").
+    items_data = common.load_json(ITEMS_JSON)
+    mega_for = {}  # (ShowdownName, item display name) -> Mega ShowdownName
+    for (species, item), target in mega_evolutions().items():
+        source_name = norm_index.get(normalize(species))
+        target_name = norm_index.get(normalize(target))
+        item_name = items_data.get(item, {}).get("name")
+        if source_name and target_name and item_name:
+            mega_for[(source_name, item_name)] = target_name
+
     formatted_sets = {}
     unmatched = set()
     tr_id = 0
@@ -413,6 +448,8 @@ def main():
                 set_data["ability"] = mon["ability"]
             if mon.get("item"):
                 set_data["item"] = mon["item"]
+                if (key, mon["item"]) in mega_for:
+                    set_data["mega"] = mega_for[(key, mon["item"])]
             if trainer_sprite:
                 set_data["sprite"] = trainer_sprite
 
@@ -427,7 +464,6 @@ def main():
                 n += 1
             sets[uniq] = set_data
 
-    items_data = common.load_json(ITEMS_JSON)
     save_data = build_save_data(save_species, poks, move_name,
                                 {iid: item["name"] for iid, item in items_data.items()})
 

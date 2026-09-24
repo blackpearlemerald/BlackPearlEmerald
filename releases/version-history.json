@@ -1,6 +1,20 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.6-beta": {
+      "channel": "beta",
+      "changes": [
+        "Fainted Pokémon in Nuzlocke mode now stay fainted. Pokémon Centers, the PC, the Day Care and Revives can't bring them back.",
+        "Basculin evolves after taking any recoil damage.",
+        "Evolving or hatching a Mirage Island legendary no longer uses up another one.",
+        "Made the early Gym Leaders easier and the later Gym Leaders and Elite Four harder.",
+        "Sleeping trainer Pokémon use Sleep Talk instead of wasting the turn.",
+        "Trainers no longer switch out a Yawned Pokémon holding a Chesto or Lum Berry.",
+        "Website: the Pokédex lists every evolution condition, and gifts say how to get them.",
+        "Website: the map shows Game Corner prizes and the shops trainers open once beaten.",
+        "Website: the damage calculator loads Mega Stone holders in their Mega form."
+      ]
+    },
     "2.1.5-beta": {
       "channel": "beta",
       "changes": [

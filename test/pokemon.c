@@ -8,6 +8,7 @@
 #include "item.h"
 #include "party_menu.h"
 #include "pokemon.h"
+#include "pokemon_storage_system.h"
 #include "test/overworld_script.h"
 #include "test/test.h"
 #include "constants/characters.h"
@@ -766,6 +767,73 @@ TEST("Nuzlocke mode disables EVs")
     MonGainEVs(&mon, SPECIES_WOBBUFFET);
     EXPECT_EQ(GetMonEVCount(&mon), gSpeciesInfo[SPECIES_WOBBUFFET].evYield_HP);
 }
+
+// BPE Nuzlocke: the dead flag must stick. It used to be numbered among the encrypted
+// fields, where Get/SetMonData silently ignored it.
+TEST("Nuzlocke dead flag is stored and survives the packed PC record")
+{
+    struct Pokemon mon;
+    bool8 dead = TRUE;
+
+    CreateMon(&mon, SPECIES_WOBBUFFET, 50, 0, OTID_STRUCT_PRESET(0));
+    EXPECT(!GetMonData(&mon, MON_DATA_DEAD));
+    SetMonData(&mon, MON_DATA_DEAD, &dead);
+    EXPECT(GetMonData(&mon, MON_DATA_DEAD));
+    EXPECT_EQ(GetMonData(&mon, MON_DATA_SANITY_IS_BAD_EGG), 0);
+    EXPECT_EQ(GetMonData(&mon, MON_DATA_SPECIES), SPECIES_WOBBUFFET);
+
+    SetBoxMonAt(TOTAL_BOXES_COUNT - 1, 0, &mon.box); // an uncached box: packed
+    EXPECT(GetBoxMonDataAt(TOTAL_BOXES_COUNT - 1, 0, MON_DATA_DEAD));
+    SetBoxMonAt(0, 0, &mon.box);
+    EXPECT(GetBoxMonDataAt(0, 0, MON_DATA_DEAD));
+
+    ZeroBoxMonAt(TOTAL_BOXES_COUNT - 1, 0);
+    ZeroBoxMonAt(0, 0);
+}
+
+// BPE Nuzlocke: the PC heals what it stores, but a dead Pokémon comes back out fainted.
+TEST("Nuzlocke mode keeps dead Pokemon fainted through the PC")
+{
+    struct Pokemon mon, withdrawn;
+    bool8 dead = TRUE;
+    u32 hp = 0;
+
+    CreateMon(&mon, SPECIES_WOBBUFFET, 50, 0, OTID_STRUCT_PRESET(0));
+    SetMonData(&mon, MON_DATA_HP, &hp);
+    SetMonData(&mon, MON_DATA_DEAD, &dead);
+
+    FlagSet(FLAG_NUZLOCKE);
+    SetBoxMonAt(0, 0, &mon.box);
+    BoxMonAtToMon(0, 0, &withdrawn);
+    EXPECT(GetMonData(&withdrawn, MON_DATA_DEAD));
+    EXPECT_EQ(GetMonData(&withdrawn, MON_DATA_HP), 0);
+
+    // Placing it anywhere in the PC heals it (OW_PC_HEAL), which must not revive it.
+    HealPokemon(&withdrawn);
+    EXPECT_EQ(GetMonData(&withdrawn, MON_DATA_HP), 0);
+
+    // Nor can a Revive.
+    EXPECT(PokemonUseItemEffects(&withdrawn, ITEM_MAX_REVIVE, 0, 0, FALSE));
+    EXPECT_EQ(GetMonData(&withdrawn, MON_DATA_HP), 0);
+
+    // A living Pokémon is still healed on the way out.
+    dead = FALSE;
+    SetMonData(&mon, MON_DATA_DEAD, &dead);
+    SetBoxMonAt(0, 0, &mon.box);
+    BoxMonAtToMon(0, 0, &withdrawn);
+    EXPECT_EQ(GetMonData(&withdrawn, MON_DATA_HP), GetMonData(&withdrawn, MON_DATA_MAX_HP));
+
+    // Outside Nuzlocke mode the flag means nothing.
+    dead = TRUE;
+    SetMonData(&mon, MON_DATA_DEAD, &dead);
+    FlagClear(FLAG_NUZLOCKE);
+    SetBoxMonAt(0, 0, &mon.box);
+    BoxMonAtToMon(0, 0, &withdrawn);
+    EXPECT_EQ(GetMonData(&withdrawn, MON_DATA_HP), GetMonData(&withdrawn, MON_DATA_MAX_HP));
+
+    ZeroBoxMonAt(0, 0);
+}
+
 TEST("BoxPokemon encryption works")
 {
     // This test exists to ensure that expansion has not broken anything with regards to how BoxPokemon encryption works.

@@ -189,6 +189,18 @@ void LoadPlayerParty(void)
         SetBoxMonData(&gParties[B_TRAINER_PLAYER][i].box, MON_DATA_HP_LOST, &data);
         data = gParties[B_TRAINER_PLAYER][i].status;
         SetBoxMonData(&gParties[B_TRAINER_PLAYER][i].box, MON_DATA_STATUS, &data);
+
+        // BPE Nuzlocke: older releases never stored the dead flag (MON_DATA_DEAD sat
+        // in the encrypted field range), so a Pokémon that fainted in an older save
+        // is only at 0 HP. Mark it as battles do.
+        if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET)
+         && gParties[B_TRAINER_PLAYER][i].hp == 0
+         && GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_SANITY_HAS_SPECIES)
+         && !GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_IS_EGG))
+        {
+            data = TRUE;
+            SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_DEAD, &data);
+        }
     }
 }
 

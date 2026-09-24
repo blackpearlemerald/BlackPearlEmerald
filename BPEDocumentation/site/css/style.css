@@ -646,6 +646,11 @@ body.page-search {
   gap: 3px;
   margin-top: 3px;
 }
+.mon-moves-mode {
+  align-self: center;
+  font-size: 11px;
+  color: #5a6b7b;
+}
 .move {
   background: #eef2f7;
   border-radius: 4px;
@@ -732,6 +737,7 @@ body.page-search {
 }
 .mart-cond:first-of-type { border-top: none; margin-top: 0; }
 .mart-list { display: flex; flex-direction: column; gap: 2px; }
+.trainer-shop { margin: 2px 0 8px; }
 /* Named NPC vendor heading, for maps with more than one shopkeeper. */
 .mart-vendor {
   font-weight: 700;
@@ -1161,6 +1167,12 @@ body.page-search {
   border-top: none;
   margin-top: 0;
   padding-top: 0;
+}
+/* A trainer who turns into a shop once beaten (trainerPopup). */
+.detail-body .trainer-shop {
+  margin: 4px 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .detail-body .mart-list,
 .detail-body .gift-items { display: flex; flex-direction: column; gap: 3px; }

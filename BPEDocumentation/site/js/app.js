@@ -10,6 +10,7 @@ function prettify(name) {
   return name.split("_").map(w =>
     w ? w[0].toUpperCase() + w.slice(1).toLowerCase() : w)
     .join(" ")
+    .replace(/^(Tm|Hm) /, (w) => w.toUpperCase())  // "TM Psychic", not "Tm"
     .replace(/([A-Za-z])(\d)/g, "$1 $2");  // "Route102" -> "Route 102"
 }
 
@@ -35,6 +36,13 @@ function trainerPopup(t, spriteFile) {
   let html = `<div class="tcard-head">${tImg}<div class="tcard-id">` +
     `<div class="tcard-name">${t.name || "Trainer"}</div>` +
     `<div class="tcard-class">${t.class || ""}</div></div></div>`;
+  // Curated, like gift notes: who a post-game challenger is.
+  if (t.note) html += `<div class="enc-note trainer-note">${t.note}</div>`;
+  // Some trainers stay on the map as a shop once beaten.
+  if (t.shop && t.shop.length) {
+    html += `<div class="trainer-shop"><div class="mart-cond">🛒 Becomes a shop once beaten</div>` +
+      `<div class="mart-list">${t.shop.map(it => itemRow(it, 1)).join("")}</div></div>`;
+  }
   for (const m of t.party || []) {
     // Trainer mons deep-link into the damage calculator: clicking loads this
     // exact set onto the defender side (see js/calc_deeplink.js).
@@ -62,10 +70,16 @@ function trainerPopup(t, spriteFile) {
     if (m.ability) meta.push(m.ability);
     if (m.nature) meta.push(m.nature);
     if (meta.length) html += `<div class="mon-meta">${meta.join(" · ")}</div>`;
-    if (m.moves && m.moves.length) {
-      html += `<div class="mon-moves">` +
-        m.moves.map(mv => `<span class="move">${mv}</span>`).join("") +
-        `</div>`;
+    // A Pokémon with no authored moves knows its level-up moves, so a
+    // different Standard level can give it different ones.
+    const moveRow = (moves, mode) => `<div class="mon-moves">` +
+      (mode ? `<span class="mon-moves-mode">${mode}</span>` : "") +
+      moves.map(mv => `<span class="move">${mv}</span>`).join("") +
+      `</div>`;
+    if (m.standardMoves) {
+      html += moveRow(m.moves, "nuz") + moveRow(m.standardMoves, "std");
+    } else if (m.moves && m.moves.length) {
+      html += moveRow(m.moves);
     }
     html += `</div></div>`;  // close .mon-body, .mon
   }
@@ -77,13 +91,13 @@ function itemIconUrl(itemConst) {
   return `sprites/items/${key}.png`;
 }
 
-function itemRow(itemConst, qty) {
+function itemRow(itemConst, qty, trailing = "") {
   const name = prettify(itemConst);
   const id = itemPageId(itemConst);
   const icon = `<img class="pop-item-icon" src="${itemIconUrl(itemConst)}" `
     + `alt="" onerror="this.style.visibility='hidden'" loading="lazy">`;
   const qtyStr = qty > 1 ? `<span class="pop-item-qty">×${qty}</span>` : "";
-  const inner = `${icon}<span class="pop-item-name">${name}</span>${qtyStr}`;
+  const inner = `${icon}<span class="pop-item-name">${name}</span>${qtyStr}${trailing}`;
   return id
     ? `<a class="pop-item-row" href="item.html?id=${encodeURIComponent(id)}">${inner}</a>`
     : `<div class="pop-item-row">${inner}</div>`;
@@ -102,10 +116,26 @@ function itemPopup(it) {
   return `<div class="item-pop">${tag}${head}</div>${link}`;
 }
 
+// A Game Corner prize: an item (linked, like a mart row) or a decoration
+// (no item page), with its price in coins.
+function prizeRow(p) {
+  const price = `<span class="pop-item-qty">${p.coins.toLocaleString()} coins</span>`;
+  if (p.item) return itemRow(p.item, 1, price);
+  // A Pokémon doll borrows that Pokémon's menu icon.
+  const mon = (p.decoration || "").match(/^DECOR_(\w+)_DOLL$/);
+  const icon = mon
+    ? `<img class="pop-item-icon" src="img/pokemon/${mon[1]}.png" alt="" ` +
+      `onerror="this.style.visibility='hidden'" loading="lazy">`
+    : `<span class="pop-item-icon"></span>`;
+  return `<div class="pop-item-row">${icon}` +
+         `<span class="pop-item-name">${p.name}</span>${price}</div>`;
+}
+
 function martPopup(mart) {
   // Dedicated Poké Mart maps carry no title; NPC vendors (department stores,
   // the Herb Shop, post-game shop NPCs) supply their own.
-  let html = `<div class="mart-head">🛒 ${mart.title || mart.name + " Poké Mart"}</div>`;
+  const icon = mart.kind === "prizes" ? "🎰" : "🛒";
+  let html = `<div class="mart-head">${icon} ${mart.title || mart.name + " Poké Mart"}</div>`;
   let lastVendor = null;
   for (const inv of mart.inventories) {
     if (inv.vendor && inv.vendor !== lastVendor) {
@@ -114,8 +144,19 @@ function martPopup(mart) {
     }
     html += `<div class="mart-cond">${inv.condition}</div>`;
     html += `<div class="mart-list">`;
-    for (const item of inv.items) {
-      html += itemRow(item, 1);
+    if (inv.prizes) {
+      for (const p of inv.prizes) html += prizeRow(p);
+    } else {
+      for (const item of inv.items) html += itemRow(item, 1);
+    }
+    html += `</div>`;
+  }
+  if (mart.coinSales && mart.coinSales.length) {
+    html += `<div class="mart-vendor">Coins</div><div class="mart-list">`;
+    for (const s of mart.coinSales) {
+      html += `<div class="pop-item-row"><span class="pop-item-icon"></span>` +
+              `<span class="pop-item-name">${s.coins.toLocaleString()} coins</span>` +
+              `<span class="pop-item-qty">₽${s.price.toLocaleString()}</span></div>`;
     }
     html += `</div>`;
   }
@@ -129,7 +170,8 @@ function martPopup(mart) {
 function mapPopup(m, marts) {
   const mart = marts && marts[m.id];
   if (!mart) return { title: "Wild Pokémon", html: encounterPopup(m) };
-  if (!m.enc) return { title: "Poké Mart", html: martPopup(mart) };
+  const shop = mart.kind === "prizes" ? "Prize Corner" : "Poké Mart";
+  if (!m.enc) return { title: shop, html: martPopup(mart) };
   return { title: "Shop & Wild Pokémon",
            html: martPopup(mart) + encounterPopup(m) };
 }
@@ -275,7 +317,8 @@ function encounterPopup(m) {
       `appears off Route 130 and hosts <b>one legendary at a time</b>, picked at ` +
       `<b>random</b> from the pool below — so which one you meet is a random chance ` +
       `every visit. It's always one you haven't caught yet; leave and return to ` +
-      `re-roll. Catch it and it leaves the pool.</div>`;
+      `re-roll. Catch it and it leaves the pool. Evolving or hatching one doesn't ` +
+      `count: a Cosmog you catch leaves Cosmoem, Solgaleo and Lunala on the island.</div>`;
     html += mirageRows(e.mirage.mons);
   }
   return html;

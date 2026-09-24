@@ -5817,8 +5817,11 @@ bool8 CheckAddCoins(void)
 // rolls a random pool member the player hasn't caught yet, manifests it as its
 // follower overworld sprite, and lets the player battle it at Level 70. Catch
 // it and it drops out of the pool for good, whatever the player does with it
-// afterwards. "Caught" comes from the Pokedex, except for the pool members that
-// share a Pokedex number with another form (see sIslandCatchFlags).
+// afterwards. Each pool member is caught once: a legendary with several fixed
+// forms or evolutions can be caught once per pool entry, and evolving or
+// hatching one never uses up another. "Caught" comes from the Pokedex, except
+// for the pool members the Pokedex can't tell apart from a form or an
+// evolution (see sIslandCatchFlags).
 // ---------------------------------------------------------------------------
 #define ISLAND_LEGENDARY_LEVEL 70
 
@@ -5866,14 +5869,16 @@ static const u16 sIslandLegendaryPool[] =
     SPECIES_URSHIFU_RAPID_STRIKE, SPECIES_ZARUDE_DADA, SPECIES_CALYREX_ICE, SPECIES_CALYREX_SHADOW,
 };
 
-// Pool members that share a Pokedex number with another pool member or with a
-// Pokemon found elsewhere. Catching one form would mark the others as caught,
-// so each has its own flag, set when it is caught here.
+// Pool members the Pokedex would show as caught without a catch here: they
+// share a Pokedex number with another pool member or with a Pokemon found
+// elsewhere, or the player can also get them by evolving or hatching another
+// Pokemon. Each has its own flag, set when it is caught here.
 struct IslandCatchFlag
 {
     u16 species;
     u16 flag;
-    bool8 inFirstPool; // in the pool before these flags existed (see IsIslandLegendaryCaught)
+    bool8 inFirstPool; // in the pool before its flag existed (see IsIslandLegendaryCaught)
+    u16 comesFrom;     // pool Pokemon that evolves or hatches into this one
 };
 
 static const struct IslandCatchFlag sIslandCatchFlags[] =
@@ -5894,10 +5899,15 @@ static const struct IslandCatchFlag sIslandCatchFlags[] =
     { SPECIES_MAGEARNA_ORIGINAL,     FLAG_ISLAND_CAUGHT_MAGEARNA_ORIGINAL,     FALSE },
     { SPECIES_ZARUDE,                FLAG_ISLAND_CAUGHT_ZARUDE,                TRUE },
     { SPECIES_ZARUDE_DADA,           FLAG_ISLAND_CAUGHT_ZARUDE_DADA,           FALSE },
-    { SPECIES_URSHIFU_SINGLE_STRIKE, FLAG_ISLAND_CAUGHT_URSHIFU_SINGLE_STRIKE, TRUE },
-    { SPECIES_URSHIFU_RAPID_STRIKE,  FLAG_ISLAND_CAUGHT_URSHIFU_RAPID_STRIKE,  FALSE },
+    { SPECIES_URSHIFU_SINGLE_STRIKE, FLAG_ISLAND_CAUGHT_URSHIFU_SINGLE_STRIKE, TRUE,  SPECIES_KUBFU },
+    { SPECIES_URSHIFU_RAPID_STRIKE,  FLAG_ISLAND_CAUGHT_URSHIFU_RAPID_STRIKE,  FALSE, SPECIES_KUBFU },
     { SPECIES_FLOETTE_ETERNAL,       FLAG_ISLAND_CAUGHT_FLOETTE_ETERNAL,       FALSE },
     { SPECIES_SILVALLY_NORMAL,       FLAG_ISLAND_CAUGHT_SILVALLY,              FALSE },
+    { SPECIES_COSMOEM,               FLAG_ISLAND_CAUGHT_COSMOEM,               TRUE,  SPECIES_COSMOG },
+    { SPECIES_SOLGALEO,              FLAG_ISLAND_CAUGHT_SOLGALEO,              TRUE,  SPECIES_COSMOEM },
+    { SPECIES_LUNALA,                FLAG_ISLAND_CAUGHT_LUNALA,                TRUE,  SPECIES_COSMOEM },
+    { SPECIES_NAGANADEL,             FLAG_ISLAND_CAUGHT_NAGANADEL,             TRUE,  SPECIES_POIPOLE },
+    { SPECIES_PHIONE,                FLAG_ISLAND_CAUGHT_PHIONE,                TRUE,  SPECIES_MANAPHY },
 };
 
 static const struct IslandCatchFlag *GetIslandCatchFlag(u16 species)
@@ -5912,7 +5922,7 @@ static const struct IslandCatchFlag *GetIslandCatchFlag(u16 species)
     return NULL;
 }
 
-static bool32 IsIslandLegendaryCaught(u16 species)
+bool32 IsIslandLegendaryCaught(u16 species)
 {
     const struct IslandCatchFlag *catchFlag = GetIslandCatchFlag(species);
     u32 dexNum = SpeciesToNationalPokedexNum(species);
@@ -5924,8 +5934,15 @@ static bool32 IsIslandLegendaryCaught(u16 species)
         return TRUE;
     if (!catchFlag->inFirstPool || !GetSetPokedexFlag(dexNum, FLAG_GET_CAUGHT))
         return FALSE;
-    // Before the flags existed, a Kyurem the Pokedex shows as caught was caught
-    // here. Now it could be one of Kyurem's other forms instead.
+    // Before its flag existed, a pool member the Pokedex shows as caught counted
+    // as caught here. If the player also has what evolves or hatches into it,
+    // that may be where it came from, so it stays in the pool: at worst the
+    // player meets one they caught before the flag existed a second time.
+    if (catchFlag->comesFrom != SPECIES_NONE
+     && GetSetPokedexFlag(SpeciesToNationalPokedexNum(catchFlag->comesFrom), FLAG_GET_CAUGHT))
+        return FALSE;
+    // A Kyurem the Pokedex shows as caught could also be one of Kyurem's other
+    // forms caught here since.
     for (i = 0; i < ARRAY_COUNT(sIslandCatchFlags); i++)
     {
         if (sIslandCatchFlags[i].species != species
@@ -6074,7 +6091,7 @@ void SetupIslandLegendaryBattle(void)
 }
 
 // Called by Route130_EventScript_IslandLegendaryCaught. The Pokedex records the
-// catch for everything else.
+// catch for pool members without a flag.
 void RecordIslandLegendaryCatch(void)
 {
     const struct IslandCatchFlag *catchFlag = GetIslandCatchFlag(VarGet(VAR_ISLAND_LEGENDARY));

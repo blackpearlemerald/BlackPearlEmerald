@@ -1019,7 +1019,8 @@ def _evo_label(evo, source, names, form_pickers=True):
         elif cond == "IF_USED_MOVE_X_TIMES":
             words.append(f"after using {names.move(a[0])} {a[1]} times")
         elif cond == "IF_RECOIL_DAMAGE_GE":
-            words.append(f"after taking {a[0]} recoil damage without fainting")
+            amount = "" if a[0] == "1" else a[0] + " "
+            words.append(f"after taking {amount}recoil damage without fainting")
         elif cond == "IF_DEFEAT_X_WITH_ITEMS":
             words.append(f"after defeating {a[2]} {names.species(a[0])} holding {names.item(a[1])}")
         elif cond == "IF_MIN_OVERWORLD_STEPS":

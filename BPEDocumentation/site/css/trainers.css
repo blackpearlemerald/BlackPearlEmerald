@@ -257,6 +257,16 @@
   margin-top: 5px;
 }
 
+.tr-d-moves-mode {
+  align-self: center;
+  font-size: 10px;
+  color: #7e93a8;
+}
+
+.tr-d-moves-std {
+  color: #4db87a;
+}
+
 .tr-d-move {
   background: rgba(255, 255, 255, 0.07);
   border-radius: 6px;

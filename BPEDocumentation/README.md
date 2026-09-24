@@ -91,6 +91,19 @@ py -m http.server -d site 8000
   vanilla knowledge get a 🧭 marker pinned to a tile, with an optional `goto`
   that chains one note to the next (Route 120 bridge → Steven on Mt. Pyre →
   Fortree Gym). Add new ones there; the build validates the target maps exist.
+- **Gift notes** in `BPEDocumentation/content/gift_notes.json` tell players what
+  they must do to receive each 🎁 gift (badges, story events, trades, daily or
+  mode-only gifts). They are keyed by the marker's script and shown in the map
+  popup and on each item's page. An entry's `exclude` drops items the script
+  scan finds but players can't get there (debug or legacy-save branches), and
+  `add` lists items it misses or corrects a quantity. The export warns about
+  any gift without a note; write one when you add or change a gift.
+- **Trainer notes** in `BPEDocumentation/content/trainer_notes.json` add a
+  curated line to a trainer's map popup, keyed by `TRAINER_` constant (the
+  post-game challengers outside the Pokémon League were the first players to
+  beat the game in each mode). A trainer whose shop opens once beaten
+  (`checktrainerflag` → `pokemart`) lists that shop's items in the same popup
+  automatically.
 - **Wild encounters** come from `src/data/wild_encounters.json`. Each map's
   grass/surf/rock-smash/fishing slots are converted to per-species percentages
   using the group's slot rate tables (fishing split into Old/Good/Super Rod).

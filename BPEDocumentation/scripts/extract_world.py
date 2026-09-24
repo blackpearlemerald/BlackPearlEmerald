@@ -179,35 +179,67 @@ def resolve_trainer(script_label, scripts, _seen=None):
     without false-positiving ordinary NPCs. Battle scripts are often reached via
     goto/call or switch/case, so all referenced local labels are followed.
     """
+    return find_battle(script_label, scripts, _seen)[0]
+
+
+def find_battle(script_label, scripts, _seen=None):
+    """(TRAINER_*, label of the script holding the battle), or (None, None)."""
+    battles = find_battles(script_label, scripts, _seen)
+    return battles[0][:2] if battles else (None, None)
+
+
+def find_battles(script_label, scripts, _seen=None, _path=()):
+    """Every battle a script can start, as (TRAINER_*, battle label, path).
+
+    `path` is the list of labels from `script_label` to the battle label. A
+    script that battles directly stops there; otherwise every branch is
+    followed, so the rival's per-starter variants are all found.
+    """
     if not script_label:
-        return None
+        return []
     if _seen is None:
         _seen = set()
     if script_label in _seen or len(_seen) > 64:
-        return None
+        return []
     _seen.add(script_label)
     body = scripts.get(script_label)
     if body is None:
-        return None
+        return []
+    path = list(_path) + [script_label]
     m = re.search(r"\btrainerbattle\w*[ \t]+([^\n]*)", body)
     if m:
         tid = opponent_from_args(m.group(1))
         if tid:
-            return tid
+            return [(tid, script_label, path)]
     m = re.search(r"\bvsseeker_rematchid\s+(TRAINER_[A-Z0-9_]+)", body)
     if m:
-        return m.group(1)
+        return [(m.group(1), script_label, path)]
     # follow control flow into other local scripts: goto/call/case and their
     # conditional variants (goto_if_eq, call_if_set, ...). The branch target is
     # the last label argument on the line.
+    found = []
     for line in body.splitlines():
         if not re.match(r"\s*(?:goto|call|case)\w*\b", line):
             continue
         toks = re.findall(r"[A-Za-z_]\w*", line)
         if toks and toks[-1] in scripts:
-            tid = resolve_trainer(toks[-1], scripts, _seen)
-            if tid:
-                return tid
+            found += find_battles(toks[-1], scripts, _seen, path)
+    return found
+
+
+def battle_anchor(path, scripts, objects_by_local_id):
+    """The object a trigger-tile battle is fought against: the last object
+    its scripts name before branching into the battle (the Route 110 rival
+    walking up to the player), or None."""
+    for i in range(len(path) - 1, -1, -1):
+        body = scripts.get(path[i], "")
+        if i + 1 < len(path):
+            m = re.search(r"^\s*(?:goto|call|case)\w*\b[^\n]*\b%s\s*$"
+                          % re.escape(path[i + 1]), body, re.M)
+            body = body[:m.start()] if m else body
+        for lid in reversed(LOCALID_RE.findall(body)):
+            if lid in objects_by_local_id:
+                return objects_by_local_id[lid]
     return None
 
 
@@ -248,6 +280,53 @@ def _name_tokens(symbol):
     return {t for t in symbol.split("_") if t not in drop and not t.isdigit()}
 
 
+ADDOBJECT_RE = re.compile(r"\baddobject[ \t]+(LOCALID_[A-Z0-9_]+)")
+APPLYMOVEMENT_RE = re.compile(
+    r"\bapplymovement[ \t]+(LOCALID_[A-Z0-9_]+)[ \t]*,[ \t]*(\w+)")
+_STEP_DIRS = {"up": (0, -1), "down": (0, 1), "left": (-1, 0), "right": (1, 0)}
+
+
+def spawned_objects(body):
+    """LOCALIDs a script brings onto the map with `addobject`."""
+    return set(ADDOBJECT_RE.findall(body or ""))
+
+
+def walk_to_battle(ev, lid, body, pos, scripts):
+    """Replay the `applymovement` steps a script gives object `lid` before
+    text position `pos`. Returns (x, y, facing) where the object stands then.
+
+    Cutscene opponents are spawned hidden on a door or stair tile and walk to
+    where they are fought, so their map.json position is not where the player
+    meets them.
+    """
+    x, y = int(ev.get("x", 0)), int(ev.get("y", 0))
+    facing = facing_dir(ev.get("movement_type"))
+    for m in APPLYMOVEMENT_RE.finditer(body[:pos]):
+        if m.group(1) != lid:
+            continue
+        locked = False
+        for step in re.findall(r"^\s*(\w+)", scripts.get(m.group(2), ""),
+                               re.M):
+            if step == "step_end":
+                break
+            if step == "lock_facing_direction":
+                locked = True
+            elif step == "unlock_facing_direction":
+                locked = False
+            d = step.rsplit("_", 1)[-1]
+            if d not in _STEP_DIRS:
+                continue
+            if step.startswith(("walk_", "slide_", "player_run_",
+                                "ride_water_current_", "jump_")) \
+                    and "_in_place_" not in step:
+                dist = 2 if step.startswith("jump_2_") else 1
+                x += _STEP_DIRS[d][0] * dist
+                y += _STEP_DIRS[d][1] * dist
+            if not locked:
+                facing = d
+    return x, y, facing
+
+
 def scripted_battles(object_events, scripts, claimed):
     """Find trainer battles that live in map/coord scripts rather than on an
     object (e.g. the Petalburg Woods Aqua grunt, the Champions Room champion),
@@ -256,6 +335,9 @@ def scripted_battles(object_events, scripts, claimed):
     Tier 1: the LOCALID textually nearest the battle line in the same script.
     Tier 2 (champion-style, where the battle script has no LOCALID): the
     unclaimed object whose LOCALID shares the most name tokens with the trainer.
+
+    An opponent the same script spawns with `addobject` (the Oceanic Museum
+    grunts) is placed where its movements take it before the battle.
 
     Returns list of {x, y, trainerId, gfx}. `claimed` is the set of trainer ids
     already placed from object scripts (skipped here).
@@ -269,11 +351,15 @@ def scripted_battles(object_events, scripts, claimed):
     out = []
     used = set()
 
-    def place(lid, tid):
+    def place(lid, tid, body=None, pos=0):
         ev = by_localid[lid]
-        out.append({"x": int(ev.get("x", 0)), "y": int(ev.get("y", 0)),
-                    "trainerId": tid, "gfx": ev.get("graphics_id"),
-                    "dir": facing_dir(ev.get("movement_type"))})
+        if body is not None and lid in spawned_objects(body):
+            x, y, facing = walk_to_battle(ev, lid, body, pos, scripts)
+        else:
+            x, y = int(ev.get("x", 0)), int(ev.get("y", 0))
+            facing = facing_dir(ev.get("movement_type"))
+        out.append({"x": x, "y": y, "trainerId": tid,
+                    "gfx": ev.get("graphics_id"), "dir": facing})
         used.add(lid)
         claimed.add(tid)
 
@@ -293,7 +379,7 @@ def scripted_battles(object_events, scripts, claimed):
                     if best_d is None or d < best_d:
                         best, best_d = lid, d
             if best is not None:
-                place(best, tid)
+                place(best, tid, body, pos)
             else:
                 unmatched.append(tid)
 
@@ -472,7 +558,7 @@ def _spaced(ident):
     """
     s = ident.replace("_", " ")
     s = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", s)       # cityMart â†’ city Mart
-    s = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", s)  # TMClerk  â†’ TM Clerk
+    s = re.sub(r"(?<=[A-Z])(?=[A-Z](?!s\b)[a-z])", " ", s)  # TMClerk  â†’ TM Clerk, TMs stays
     s = re.sub(r"(?<=[a-z])(?=\d)", " ", s)          # Store2F  â†’ Store 2F
     return re.sub(r"\s+", " ", s).strip()
 
@@ -519,7 +605,7 @@ def parse_shop_scripts(content, trainer_names):
 
     # Which script gates which shop script, and under what condition. The
     # gater is the NPC the player actually talks to, so it names the vendor.
-    gates = {}      # shop label -> (gater label, condition, vendor name or None)
+    gates = {}      # shop label -> (gater label, condition, vendor, trainer)
     gate_flags = {}  # gater label -> (flag, kind) of its first flag branch
     for label, body in scripts.items():
         for tflag, target in SHOP_TRAINER_GATE_RE.findall(body):
@@ -529,17 +615,20 @@ def parse_shop_scripts(content, trainer_names):
                 who = (trainer_names.get(tflag) or {}).get("name")
                 gates[target] = (label,
                                  f"After defeating {who}" if who
-                                 else "After defeating this trainer", who)
+                                 else "After defeating this trainer", who,
+                                 tflag)
         for kind, flag, target in SHOP_FLAG_GATE_RE.findall(body):
             if target in opens:
-                gates[target] = (label, _describe_condition(flag, kind), None)
+                gates[target] = (label, _describe_condition(flag, kind),
+                                 None, None)
                 gate_flags.setdefault(label, (flag, kind))
 
     vendors = {}     # entry label -> [{condition, items, _rank}]
     vendor_names = {}  # entry label -> preferred display name
     for shop_label, list_label in sorted(opens.items()):
+        trainer = None
         if shop_label in gates:
-            entry, condition, who = gates[shop_label]
+            entry, condition, who, trainer = gates[shop_label]
             rank = 1
             if who:
                 vendor_names[entry] = who
@@ -551,9 +640,12 @@ def parse_shop_scripts(content, trainer_names):
             entry, condition, rank = shop_label, _describe_condition(flag, opp), 0
         else:
             entry, condition, rank = shop_label, "Always available", 0
-        vendors.setdefault(entry, []).append(
-            {"condition": condition, "items": item_lists[list_label],
-             "_rank": rank})
+        inv = {"condition": condition, "items": item_lists[list_label],
+               "_rank": rank}
+        if trainer:
+            # The trainer's map popup says they become this shop.
+            inv["trainer"] = trainer
+        vendors.setdefault(entry, []).append(inv)
 
     out = []
     for entry in sorted(vendors):
@@ -565,6 +657,89 @@ def parse_shop_scripts(content, trainer_names):
             inv["vendor"] = vendor
             out.append(inv)
     return out
+
+
+SET_CONST_RE = re.compile(r"^\s*\.set\s+(\w+)\s*,\s*(\d+)", re.MULTILINE)
+REMOVECOINS_RE = re.compile(r"\bremovecoins\s+(\w+)")
+ADDDECOR_RE = re.compile(r"\badddecoration\s+(DECOR_\w+)")
+ADDCOINS_RE = re.compile(r"\baddcoins\s+(\w+)")
+REMOVEMONEY_RE = re.compile(r"\bremovemoney\s+(\w+)")
+
+
+def parse_prize_scripts(content, object_events):
+    """Parse coin-prize counters (the Game Corner) in one map's scripts.
+
+    A prize is a script that takes coins (`removecoins`) and hands over an
+    item or a decoration. Each prize is attributed to the NPC whose script
+    reaches it, which names the counter. Returns (inventories, coin_sales):
+    inventories are mart-style [{vendor, condition, items, prizes}] and
+    coin_sales lists the coin bundles sold for money [{coins, price}].
+    """
+    if "removecoins" not in content and "addcoins" not in content:
+        return [], []
+    consts = {k: int(v) for k, v in SET_CONST_RE.findall(content)}
+
+    def value(tok):
+        return int(tok) if tok.isdigit() else consts.get(tok)
+
+    scripts = {}
+    for m in re.finditer(r"^(\w+)::(.*?)(?=^\w+::|\Z)",
+                         content, re.MULTILINE | re.DOTALL):
+        scripts[m.group(1)] = m.group(2)
+
+    prizes, sales = {}, {}
+    for label, body in scripts.items():
+        cost = REMOVECOINS_RE.search(body)
+        if cost and value(cost.group(1)):
+            item = ADDITEM_RE.search(body)
+            decor = ADDDECOR_RE.search(body)
+            if item:
+                prizes[label] = {"item": item.group(1),
+                                 "coins": value(cost.group(1))}
+            elif decor:
+                prizes[label] = {"decoration": decor.group(1),
+                                 "name": decor.group(1)[len("DECOR_"):]
+                                 .replace("_", " ").title(),
+                                 "coins": value(cost.group(1))}
+        coins, money = ADDCOINS_RE.search(body), REMOVEMONEY_RE.search(body)
+        if coins and money and value(coins.group(1)) and value(money.group(1)):
+            sales[label] = {"coins": value(coins.group(1)),
+                            "price": value(money.group(1))}
+    if not prizes:
+        return [], []
+
+    def reachable(start):
+        seen, todo = [], [start]
+        while todo:
+            label = todo.pop()
+            if label in seen or label not in scripts:
+                continue
+            seen.append(label)
+            todo.extend(script_refs(scripts[label], scripts))
+        return seen
+
+    inventories, claimed = [], set()
+    for obj in object_events:
+        entry = obj.get("script")
+        if entry not in scripts:
+            continue
+        reach = set(reachable(entry))
+        labels = [l for l in scripts
+                  if l in prizes and l not in claimed and l in reach]
+        if not labels:
+            continue
+        claimed.update(labels)
+        found = sorted((prizes[l] for l in labels), key=lambda p: p["coins"])
+        needs_case = "ITEM_COIN_CASE" in scripts[entry]
+        inventories.append({
+            "vendor": _spaced(re.sub(r"^.*?EventScript_", "", entry)),
+            "condition": "Coin Case required" if needs_case
+                         else "Always available",
+            "items": [p["item"] for p in found if "item" in p],
+            "prizes": found,
+        })
+    coin_sales = sorted(sales.values(), key=lambda s: s["coins"])
+    return inventories, coin_sales
 
 
 def parse_marts(trainer_names=None):
@@ -599,6 +774,16 @@ def parse_marts(trainer_names=None):
                 raw = dirname.replace("_Mart", "").replace("_UnusedMart", "").replace("_", " ")
                 name = re.sub(r"([a-z])([A-Z])", r"\1 \2", raw)
                 result[map_id] = {"name": name, "inventories": inventories}
+            continue
+
+        prizes, coin_sales = parse_prize_scripts(
+            content, mj.get("object_events", []))
+        if prizes:
+            result[map_id] = {"name": _spaced(dirname),
+                              "title": f"{_spaced(dirname)} Prizes",
+                              "kind": "prizes", "inventories": prizes}
+            if coin_sales:
+                result[map_id]["coinSales"] = coin_sales
             continue
 
         inventories = parse_shop_scripts(content, trainer_names)
@@ -783,6 +968,27 @@ def find_script_path(start, target, scripts, _seen=None, _depth=0):
     return None
 
 
+VAR_GFX_RE = re.compile(
+    r"\bsetvar\s+VAR_OBJ_GFX_ID_(\w)\s*,\s*(OBJ_EVENT_GFX_\w+)")
+
+
+def variable_gfx(local_scripts, scripts):
+    """OBJ_EVENT_GFX_VAR_N -> the one sprite this map's scripts set it to."""
+    values = defaultdict(set)
+    seen = set()
+    todo = list(local_scripts)
+    while todo:
+        label = todo.pop()
+        if label in seen:
+            continue
+        seen.add(label)
+        body = scripts.get(label, "")
+        for n, gfx in VAR_GFX_RE.findall(body):
+            values["OBJ_EVENT_GFX_VAR_" + n].add(gfx)
+        todo.extend(script_refs(body, scripts))
+    return {var: gfx.pop() for var, gfx in values.items() if len(gfx) == 1}
+
+
 def load_maps(dims):
     """Return dict name -> map record with objects/items resolved."""
     maps = {}
@@ -834,8 +1040,16 @@ def load_maps(dims):
             # resolve any object whose script starts a battle (covers gym
             # leaders / rivals with trainer_type NONE, not just sight trainers)
             if ev.get("script"):
-                tid = resolve_trainer(ev.get("script"), scripts)
-                if tid:
+                placed_here = set()
+                for tid, battle_label, _ in find_battles(ev.get("script"),
+                                                         scripts):
+                    # A cutscene NPC (Capt. Stern) can start a battle against
+                    # objects its script spawns; those belong to the spawned
+                    # opponents, which scripted_battles() places below.
+                    if spawned_objects(scripts.get(battle_label)) \
+                            - {ev.get("local_id")} or tid in placed_here:
+                        continue
+                    placed_here.add(tid)
                     trainers.append({"x": x, "y": y, "trainerId": tid,
                                      "gfx": ev.get("graphics_id"),
                                      "dir": facing_dir(ev.get("movement_type"))})
@@ -855,6 +1069,23 @@ def load_maps(dims):
         claimed = {t["trainerId"] for t in trainers}
         trainers.extend(
             scripted_battles(mj.get("object_events", []), scripts, claimed))
+        # Trigger tiles that start a battle whose scripts name no object
+        # near it (the rival scenes on Routes 110 and 119).
+        for ce in mj.get("coord_events", []):
+            for tid, _, path in find_battles(ce.get("script"), scripts):
+                ev = battle_anchor(path, scripts, objects_by_local_id)
+                if tid in claimed or ev is None:
+                    continue
+                claimed.add(tid)
+                trainers.append({"x": int(ev.get("x", 0)),
+                                 "y": int(ev.get("y", 0)), "trainerId": tid,
+                                 "gfx": ev.get("graphics_id"),
+                                 "dir": facing_dir(ev.get("movement_type"))})
+        # OBJ_EVENT_GFX_VAR_N objects take the sprite the map's scripts set
+        # (the Route 119 rival).
+        var_gfx = variable_gfx(local_scripts, gift_scripts)
+        for t in trainers:
+            t["gfx"] = var_gfx.get(t["gfx"], t["gfx"])
 
         for ev in mj.get("bg_events", []):
             if ev.get("type") == "hidden_item":
@@ -1048,6 +1279,12 @@ def assemble(maps):
             if wp["dest"]:
                 warp_into[wp["dest"]].append((mid, wp["x"], wp["y"]))
 
+    # Sootopolis City is reached by diving, not a warp, so nothing anchors it
+    # and it (with every building inside) would fall to the overflow grid.
+    # Treat the crater on Route 126's island as its entrance instead, so the
+    # city floats next to the island with a link drawn from the crater.
+    warp_into["MAP_SOOTOPOLIS_CITY"].insert(0, ("MAP_ROUTE126", 43, 45))
+
     # 1b. Cluster all Trick House maps into one tidy block. They are otherwise
     #     scattered: only Puzzle 1 has a static warp path from the overworld, so
     #     the entrance/corridor/end land near Route 110 while puzzle rooms 2-8
@@ -1190,11 +1427,62 @@ def assemble(maps):
 _guides_path = C.src("BPEDocumentation", "content", "guides.json")
 GUIDE_NOTES = C.load_json(_guides_path) if os.path.isfile(_guides_path) else []
 
-# How to unlock a gift NPC who is hidden until some story condition is met,
-# keyed by the NPC's script. Shown in the gift popup and on the item page.
+# What a player must do to receive each gift, keyed by the marker's script.
+# Shown in the gift popup and on the item page. The script scan cannot tell a
+# debug-only or legacy-save branch from a real one, nor see single items given
+# by shared scripts, so an entry may also correct the detected items:
+# "exclude" drops items the player can't get there, "add" adds missed items or
+# sets a quantity. A gift left with no items is not shown.
 _gift_notes_path = C.src("BPEDocumentation", "content", "gift_notes.json")
-GIFT_NOTES = ({n["script"]: n["note"] for n in C.load_json(_gift_notes_path)}
+GIFT_NOTES = ({n["script"]: n for n in C.load_json(_gift_notes_path)}
               if os.path.isfile(_gift_notes_path) else {})
+
+
+# Curated lines about a trainer, keyed by TRAINER_ constant and shown at the
+# top of the trainer's map popup (who the post-game challengers are).
+_trainer_notes_path = C.src("BPEDocumentation", "content", "trainer_notes.json")
+TRAINER_NOTES = ({n["trainer"]: n["note"] for n in C.load_json(_trainer_notes_path)}
+                 if os.path.isfile(_trainer_notes_path) else {})
+
+
+def annotate_trainer_shops(trainers, marts):
+    """Give each trainer who opens a shop once beaten that shop's items.
+
+    `trainers` is the shipped trainerData; entries are copied before they are
+    changed so the parsed trainer database stays as it was.
+    """
+    for mart in marts.values():
+        for inv in mart.get("inventories", []):
+            tid = inv.get("trainer")
+            if tid in trainers:
+                t = trainers[tid] = dict(trainers[tid])
+                t["shop"] = t.get("shop", []) + list(inv["items"])
+
+
+def apply_trainer_notes(trainers, notes):
+    """Attach curated notes; return the note keys that match no shown trainer."""
+    for tid, note in notes.items():
+        if tid in trainers:
+            trainers[tid] = {**trainers[tid], "note": note}
+    return sorted(set(notes) - set(trainers))
+
+
+def apply_gift_note(gift, entry):
+    """Attach a curated note to a gift and apply its item corrections."""
+    if entry.get("note"):
+        gift["note"] = entry["note"]
+    excluded = set(entry.get("exclude", []))
+    items = [dict(i) for i in gift["items"] if i["item"] not in excluded]
+    for extra in entry.get("add", []):
+        found = next((i for i in items if i["item"] == extra["item"]), None)
+        if found:
+            found["qty"] = extra.get("qty", 1)
+        else:
+            items.append({"item": extra["item"], "qty": extra.get("qty", 1),
+                          "carePackage": False})
+    gift["items"] = items
+    gift["carePackage"] = any(i["carePackage"] for i in items)
+    return gift
 
 
 def build_guides(placed):
@@ -1274,8 +1562,9 @@ def build():
                     "carePackage": g.get("carePackage", False),
                     "items": g["items"]}
             if gift["script"] in GIFT_NOTES:
-                gift["note"] = GIFT_NOTES[gift["script"]]
-            out_gifts.append(gift)
+                apply_gift_note(gift, GIFT_NOTES[gift["script"]])
+            if gift["items"]:
+                out_gifts.append(gift)
 
         for st in m.get("statics", []):
             entry = {"mapId": mid, "place": st["place"],
@@ -1316,8 +1605,13 @@ def build():
         [{"enc": {"land": {"mons": out_statics}}}])
 
     guides = build_guides(placed)
-    for script in set(GIFT_NOTES) - {g["script"] for g in out_gifts}:
+    all_gift_scripts = {g.get("script", "") for m in maps.values()
+                        for g in m.get("gifts", [])}
+    for script in set(GIFT_NOTES) - all_gift_scripts:
         print(f"  ! gift note '{script}' matches no gift NPC - skipped")
+    for g in out_gifts:
+        if not g.get("note"):
+            print(f"  ! gift '{g['script']}' on {g['mapId']} has no note")
 
     # render overworld sprites for trainers + gift NPCs + guides + item ball
     gfx_ids = {t["gfx"] for t in out_trainers if t.get("gfx")}
@@ -1328,6 +1622,9 @@ def build():
         gfx_ids, os.path.join(C.SITE, "img", "sprites"))
 
     marts = parse_marts(trainers_db)
+    annotate_trainer_shops(trainers_ship, marts)
+    for tid in apply_trainer_notes(trainers_ship, TRAINER_NOTES):
+        print(f"  ! trainer note '{tid}' matches no trainer on the map - skipped")
 
     world = {
         "tile": TILE,

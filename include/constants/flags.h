@@ -1254,11 +1254,11 @@
 #define FLAG_UNUSED_0x4AD                                           0x4AD // Unused Flag
 #define FLAG_UNUSED_0x4AE                                           0x4AE // Unused Flag
 #define FLAG_UNUSED_0x4AF                                           0x4AF // Unused Flag
-#define FLAG_UNUSED_0x4B0                                           0x4B0 // Unused Flag
-#define FLAG_UNUSED_0x4B1                                           0x4B1 // Unused Flag
-#define FLAG_UNUSED_0x4B2                                           0x4B2 // Unused Flag
-#define FLAG_UNUSED_0x4B3                                           0x4B3 // Unused Flag
-#define FLAG_UNUSED_0x4B4                                           0x4B4 // Unused Flag
+#define FLAG_ISLAND_CAUGHT_COSMOEM                                  0x4B0 // BPE: caught on Mirage Island (also comes from evolving or hatching)
+#define FLAG_ISLAND_CAUGHT_SOLGALEO                                 0x4B1 // BPE: caught on Mirage Island (also comes from evolving or hatching)
+#define FLAG_ISLAND_CAUGHT_LUNALA                                   0x4B2 // BPE: caught on Mirage Island (also comes from evolving or hatching)
+#define FLAG_ISLAND_CAUGHT_NAGANADEL                                0x4B3 // BPE: caught on Mirage Island (also comes from evolving or hatching)
+#define FLAG_ISLAND_CAUGHT_PHIONE                                   0x4B4 // BPE: caught on Mirage Island (also comes from evolving or hatching)
 #define FLAG_UNUSED_0x4B5                                           0x4B5 // Unused Flag
 #define FLAG_UNUSED_0x4B6                                           0x4B6 // Unused Flag
 #define FLAG_UNUSED_0x4B7                                           0x4B7 // Unused Flag

@@ -244,6 +244,15 @@ map popups read to show both levels as `(nuz:66) [std:45]`.
 The fourth difference is the **DexNav**, which only Standard games have (see
 "DexNav" below).
 
+A Pokémon that faints in a Nuzlocke game (after the Pokédex) is marked
+`MON_DATA_DEAD`, an unencrypted header bit that the packed PC record keeps
+(`PB_DEAD`). `IsMonDeadInNuzlocke()` keeps it at 0 HP: `HealPokemon()`, the PC,
+the Day Care and Revives cannot restore it. `MON_DATA_DEAD` must stay before
+`MON_DATA_ENCRYPT_SEPARATOR` in `enum MonData`; after it, `Get/SetMonData`
+silently ignore the field, which is how every release before this fix lost the
+flag. `LoadPlayerParty()` marks fainted party Pokémon from those saves.
+Tests: `make check TESTS="Nuzlocke"`.
+
 ### DexNav
 
 The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
@@ -354,7 +363,10 @@ the Mirage pool. Battle-only forms and Totem Pokémon are not required.
   (Galarian birds, Kyurem's fusions, which share one fusion slot, Dada Zarude,
   ...) are pool entries. Those that share a Pokédex number with another form
   record their catch in `FLAG_ISLAND_CAUGHT_*` (`sIslandCatchFlags`), since the
-  Pokédex can't tell the forms apart.
+  Pokédex can't tell the forms apart. So do pool members the player can also
+  get by evolving or hatching another (Cosmoem, Solgaleo, Lunala, Naganadel,
+  Urshifu, Phione): evolving or breeding one never uses up another pool entry.
+  Their `comesFrom` field lets saves from before the flag keep their catches.
 - A Peat Block evolves Ursaring into Ursaluna at night and into Bloodmoon
   Ursaluna at any other time.
 

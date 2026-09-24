@@ -17,6 +17,7 @@ try:
     import extract_world
     import build_features
     import parse_pokemon
+    import parse_trainers
 except ImportError:  # Pillow is required by the sprite helpers.
     extract_world = None
 import releases
@@ -25,6 +26,43 @@ import releases
 def write(path, text):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
+
+
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+class TrainerPlacementTests(unittest.TestCase):
+    # Shaped like the Route 110 rival: a trigger tile, a scene that moves the
+    # rival object, and per-starter battle labels that name no object.
+    SCRIPTS = {
+        "Trigger": "\tsetvar VAR_0x8008, 1\n\tgoto Scene\n",
+        "Scene": "\tapplymovement LOCALID_RIVAL, Walk\n"
+                 "\tgoto_if_eq VAR_RESULT, MALE, May\n"
+                 "\tgoto_if_eq VAR_RESULT, FEMALE, Brendan\n",
+        "May": "\tswitch VAR_STARTER_MON\n\tcase 0, MayTreecko\n\tcase 1, MayTorchic\n",
+        "MayTreecko": "\ttrainerbattle_no_intro TRAINER_MAY_TREECKO, Text\n\tgoto Exit\n",
+        "MayTorchic": "\ttrainerbattle_no_intro TRAINER_MAY_TORCHIC, Text\n\tgoto Exit\n",
+        "Brendan": "\ttrainerbattle_no_intro TRAINER_BRENDAN_TREECKO, Text\n",
+        "Exit": "\tremoveobject LOCALID_BIKE\n",
+    }
+
+    def test_every_starter_variant_is_found(self):
+        battles = extract_world.find_battles("Trigger", self.SCRIPTS)
+        self.assertEqual([tid for tid, _, _ in battles],
+                         ["TRAINER_MAY_TREECKO", "TRAINER_MAY_TORCHIC", "TRAINER_BRENDAN_TREECKO"])
+        self.assertEqual(battles[0][2], ["Trigger", "Scene", "May", "MayTreecko"])
+        self.assertEqual(extract_world.find_battle("Trigger", self.SCRIPTS),
+                         ("TRAINER_MAY_TREECKO", "MayTreecko"))
+
+    def test_trigger_battle_is_anchored_on_the_object_the_scene_moves(self):
+        rival, bike = {"local_id": "LOCALID_RIVAL"}, {"local_id": "LOCALID_BIKE"}
+        objects = {"LOCALID_RIVAL": rival, "LOCALID_BIKE": bike}
+        for _, _, path in extract_world.find_battles("Trigger", self.SCRIPTS):
+            self.assertIs(extract_world.battle_anchor(path, self.SCRIPTS, objects), rival)
+
+    def test_variable_sprite_resolves_through_called_scripts(self):
+        local = {"Map_MapScripts": "\tcall SetupRival\n"}
+        shared = dict(local, SetupRival="\tsetvar VAR_OBJ_GFX_ID_0, OBJ_EVENT_GFX_CYNTHIA\n")
+        self.assertEqual(extract_world.variable_gfx(local, shared),
+                         {"OBJ_EVENT_GFX_VAR_0": "OBJ_EVENT_GFX_CYNTHIA"})
 
 
 @unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
@@ -61,6 +99,57 @@ class GiftTests(unittest.TestCase):
         self.assertFalse(care)  # mutually exclusive single gifts never form a package
         self.assertEqual([i["item"] for i in items], ["ITEM_MACH_BIKE", "ITEM_ACRO_BIKE"])
         self.assertEqual(extract_world.collect_gift_packages("Prize", scripts), [])
+
+    def test_gift_note_corrects_detected_items(self):
+        gift = {"script": "Mom", "items": [
+            {"item": "ITEM_CANDY_JAR", "qty": 1, "carePackage": True},
+            {"item": "ITEM_TM_REST", "qty": 2, "carePackage": True}]}
+        extract_world.apply_gift_note(gift, {
+            "note": "<b>Talk to Mom.</b>", "exclude": ["ITEM_CANDY_JAR"],
+            "add": [{"item": "ITEM_TM_REST", "qty": 1}, {"item": "ITEM_AMULET_COIN"}]})
+        self.assertEqual(gift["note"], "<b>Talk to Mom.</b>")
+        self.assertEqual(gift["items"], [
+            {"item": "ITEM_TM_REST", "qty": 1, "carePackage": True},
+            {"item": "ITEM_AMULET_COIN", "qty": 1, "carePackage": False}])
+        self.assertTrue(gift["carePackage"])
+        legacy = {"script": "Mom", "carePackage": True, "items": [
+            {"item": "ITEM_CANDY_JAR", "qty": 1, "carePackage": True},
+            {"item": "ITEM_EXP_SHARE", "qty": 1, "carePackage": True}]}
+        extract_world.apply_gift_note(legacy, {
+            "exclude": ["ITEM_CANDY_JAR", "ITEM_EXP_SHARE"],
+            "add": [{"item": "ITEM_AMULET_COIN"}]})
+        self.assertFalse(legacy["carePackage"])  # only ordinary gifts remain
+        debug_only = {"script": "Receptionist", "items": [
+            {"item": "ITEM_CONTEST_PASS", "qty": 1, "carePackage": False}]}
+        extract_world.apply_gift_note(debug_only, {"exclude": ["ITEM_CONTEST_PASS"]})
+        self.assertEqual(debug_only["items"], [])  # the marker is dropped
+
+    def test_trainer_who_opens_a_shop_gets_its_items_and_note(self):
+        content = (
+            "Map_EventScript_Jacek::\n"
+            "\tchecktrainerflag TRAINER_JACEK\n"
+            "\tgoto_if TRUE, Map_EventScript_JacekShop\n"
+            "\ttrainerbattle_no_intro TRAINER_JACEK, Text\n"
+            "\tend\n"
+            "Map_EventScript_JacekShop::\n"
+            "\tpokemart Map_Pokemart_Capsule\n"
+            "\tend\n"
+            "Map_Pokemart_Capsule:\n"
+            "\t.2byte ITEM_ABILITY_CAPSULE\n"
+            "\tpokemartlistend\n")
+        db = {"TRAINER_JACEK": {"name": "Jacek", "party": []}}
+        inventories = extract_world.parse_shop_scripts(content, db)
+        self.assertEqual(inventories[0]["trainer"], "TRAINER_JACEK")
+        self.assertEqual(inventories[0]["condition"], "After defeating Jacek")
+        shipped = dict(db)
+        extract_world.annotate_trainer_shops(
+            shipped, {"MAP_X": {"inventories": inventories}})
+        missing = extract_world.apply_trainer_notes(
+            shipped, {"TRAINER_JACEK": "First!", "TRAINER_GONE": "x"})
+        self.assertEqual(shipped["TRAINER_JACEK"]["shop"], ["ITEM_ABILITY_CAPSULE"])
+        self.assertEqual(shipped["TRAINER_JACEK"]["note"], "First!")
+        self.assertEqual(missing, ["TRAINER_GONE"])
+        self.assertNotIn("shop", db["TRAINER_JACEK"])  # parsed data untouched
 
     def test_load_maps_records_local_single_gifts_but_not_shared_distributions(self):
         with tempfile.TemporaryDirectory() as folder:
@@ -145,6 +234,42 @@ class StaticEncounterTests(unittest.TestCase):
 
 
 @unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+class ScriptedTrainerTests(unittest.TestCase):
+    def test_cutscene_opponents_are_placed_where_they_are_fought(self):
+        # Oceanic Museum 2F: talking to Capt. Stern spawns two grunts on the
+        # stairs, and each walks up to the player before its battle.
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            events = {"object_events": [
+                {"graphics_id": "OBJ_EVENT_GFX_SCIENTIST_1", "x": 13, "y": 6, "local_id": "LOCALID_STERN",
+                 "movement_type": "MOVEMENT_TYPE_FACE_DOWN", "script": "Stern"},
+                {"graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M", "x": 6, "y": 1, "local_id": "LOCALID_GRUNT_1",
+                 "movement_type": "MOVEMENT_TYPE_FACE_DOWN", "script": "0x0"},
+                {"graphics_id": "OBJ_EVENT_GFX_AQUA_MEMBER_M", "x": 6, "y": 1, "local_id": "LOCALID_GRUNT_2",
+                 "movement_type": "MOVEMENT_TYPE_FACE_DOWN", "script": "0x0"},
+            ]}
+            write(root / "data/maps/Museum_2F/map.json", json.dumps(dict(events, id="MAP_MUSEUM_2F", layout="LAYOUT_TEST")))
+            write(root / "data/maps/Museum_2F/scripts.inc",
+                  "Stern::\n\taddobject LOCALID_GRUNT_1\n\tapplymovement LOCALID_GRUNT_1, Enter1\n"
+                  "\taddobject LOCALID_GRUNT_2\n\tapplymovement LOCALID_GRUNT_2, Enter2\n"
+                  "\tapplymovement LOCALID_GRUNT_2, Approach\n\ttrainerbattle_no_intro TRAINER_GRUNT_A, Text\n"
+                  "\tapplymovement LOCALID_GRUNT_2, Defeated\n\tapplymovement LOCALID_GRUNT_1, Approach\n"
+                  "\ttrainerbattle_no_intro TRAINER_GRUNT_B, Text\n\tapplymovement LOCALID_GRUNT_1, Defeated\n\tend\n"
+                  "Enter1:\n\twalk_down\n\twalk_right\n\twalk_down\n\twalk_down\n\tstep_end\n"
+                  "Enter2:\n\twalk_down\n\twalk_down\n\twalk_down\n\twalk_down\n\twalk_down\n\tstep_end\n"
+                  "Approach:\n\twalk_right\n\tstep_end\n"
+                  "Defeated:\n\tlock_facing_direction\n\twalk_left\n\tunlock_facing_direction\n\tstep_end\n")
+            write(root / "site/img/maps/test.png", "")
+            with mock_patch.object(C, "SRC_ROOT", str(root)), mock_patch.object(C, "SITE_MAPS_IMG", str(root / "site/img/maps")):
+                trainers = extract_world.load_maps({"LAYOUT_TEST": (20, 20, "test")})["MAP_MUSEUM_2F"]["trainers"]
+        # Neither battle is shown on Capt. Stern, and each grunt stands where
+        # its own battle starts rather than on the stairs.
+        self.assertEqual(sorted((t["trainerId"], t["x"], t["y"], t["gfx"], t["dir"]) for t in trainers),
+                         [("TRAINER_GRUNT_A", 7, 6, "OBJ_EVENT_GFX_AQUA_MEMBER_M", "right"),
+                          ("TRAINER_GRUNT_B", 8, 4, "OBJ_EVENT_GFX_AQUA_MEMBER_M", "right")])
+
+
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
 class WildHeldItemTests(unittest.TestCase):
     GENERAL = """#define GEN_8 7
 #define GEN_9 8
@@ -199,6 +324,47 @@ void SetWildMonHeldItem(void)
         self.assertEqual(rules[2], [])
         self.assertEqual(parse_pokemon.wild_held_items("POTION", None, rules),
                          [{"item": "POTION", "pct": 50, "boostPct": 50}])
+
+
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+class DefaultTrainerMovesTests(unittest.TestCase):
+    LEARNSET = [(0, "EVO"), (1, "TACKLE"), (1, "GROWL"), (5, "EMBER"), (5, "TACKLE"),
+                (9, "BITE"), (12, "FLAMETHROWER"), (20, "FIRE_BLAST")]
+
+    def test_last_four_distinct_level_up_moves_like_the_game(self):
+        moveset = parse_trainers.initial_moveset
+        self.assertEqual(moveset(self.LEARNSET, 1), ["TACKLE", "GROWL"])
+        self.assertEqual(moveset(self.LEARNSET, 9), ["TACKLE", "GROWL", "EMBER", "BITE"])
+        self.assertEqual(moveset(self.LEARNSET, 19), ["GROWL", "EMBER", "BITE", "FLAMETHROWER"])
+
+    def test_species_names_become_trainerproc_constants(self):
+        name = parse_trainers.species_constant
+        self.assertEqual(name("Rattata-Alola"), "SPECIES_RATTATA_ALOLA")
+        self.assertEqual(name("Mr. Mime"), "SPECIES_MR_MIME")
+        self.assertEqual(name("Farfetch’d"), "SPECIES_FARFETCHD")
+        self.assertEqual(name("Nidoran♀"), "SPECIES_NIDORAN_F")
+        self.assertEqual(name("Flabébé"), "SPECIES_FLABEBE")
+
+    def test_only_moveless_pokemon_are_filled_and_standard_levels_can_differ(self):
+        trainers = {"TRAINER_A": {"party": [
+            {"species": "Charmander", "level": 20, "standardLevel": 9},
+            {"species": "Charmander", "level": 12, "standardLevel": 13},
+            {"species": "Charmander", "level": 5, "moves": ["Scratch"]},
+        ]}}
+        data = ({"SPECIES_CHARMANDER": self.LEARNSET}, {"FIRE_BLAST": "Fire Blast"})
+        with mock_patch.object(parse_trainers, "_level_up_learnsets", return_value=data):
+            parse_trainers.fill_default_moves(trainers)
+        first, second, authored = trainers["TRAINER_A"]["party"]
+        self.assertEqual(first["moves"], ["Ember", "Bite", "Flamethrower", "Fire Blast"])
+        self.assertEqual(first["standardMoves"], ["Tackle", "Growl", "Ember", "Bite"])
+        self.assertNotIn("standardMoves", second)
+        self.assertEqual(authored["moves"], ["Scratch"])
+
+    def test_unknown_species_fails_the_export(self):
+        trainers = {"TRAINER_A": {"party": [{"species": "Missingno", "level": 5}]}}
+        with mock_patch.object(parse_trainers, "_level_up_learnsets", return_value=({}, {})):
+            with self.assertRaises(ValueError):
+                parse_trainers.fill_default_moves(trainers)
 
 
 @unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
@@ -259,11 +425,11 @@ class EvolutionLabelTests(unittest.TestCase):
 
     def test_older_methods_read_like_conditions(self):
         self.assertEqual(self.labels("BASCULIN_WHITE_STRIPED", """
-            {EVO_LEVEL_RECOIL_DAMAGE_FEMALE, 294, SPECIES_BASCULEGION_F},
+            {EVO_LEVEL_RECOIL_DAMAGE_FEMALE, 1, SPECIES_BASCULEGION_F},
             {EVO_TRADE_ITEM, ITEM_KINGS_ROCK, SPECIES_POLITOED},
             {EVO_LEVEL_FEMALE, 20, SPECIES_WORMADAM},
             {EVO_FRIENDSHIP_NIGHT, 0, SPECIES_UMBREON}"""),
-            ["Level up after taking 294 recoil damage without fainting (female)",
+            ["Level up after taking recoil damage without fainting (female)",
              "Trade holding King's Rock", "Lv. 20 (female)", "Friendship (night)"])
 
     def test_impossible_evolutions_are_left_out(self):

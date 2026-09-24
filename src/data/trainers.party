@@ -9887,49 +9887,49 @@ Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 Mugshot: Purple
 
-Gyarados @ Leftovers
+Staraptor @ Choice Band
+Quirky Nature
+Level: 90
+Standard Level: 90
+Ability: Reckless
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Brave Bird
+- Close Combat
+- Double Edge
+- U Turn
+
+Gyarados @ Lum Berry
 Quirky Nature
 Level: 90
 Standard Level: 90
 Ability: Intimidate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Outrage
 - Dragon Dance
 - Waterfall
 - Earthquake
+- Ice Fang
 
-Torterra @ Lum Berry
+Torterra @ Weakness Policy
 Quirky Nature
 Level: 90
 Standard Level: 90
-Ability: Overgrow
+Ability: Shell Armor
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Rock Polish
+- Swords Dance
 - Wood Hammer
-- Earthquake
+- Headlong Rush
 - Stone Edge
 
-Staraptor @ Rocky Helmet
-Quirky Nature
-Level: 90
-Standard Level: 90
-Ability: Intimidate
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Brave Bird
-- Roost
-- U Turn
-- Defog
-
-Azumarill @ Choice Band
+Azumarill @ Sitrus Berry
 Quirky Nature
 Level: 90
 Standard Level: 90
 Ability: Huge Power
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Play Rough
-- Waterfall
+IVs: 16 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Belly Drum
 - Aqua Jet
-- Superpower
+- Play Rough
+- Knock Off
 
 Pikachu @ Light Ball
 Quirky Nature
@@ -9937,10 +9937,10 @@ Level: 90
 Standard Level: 90
 Ability: Lightning Rod
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Volt Switch
-- Extreme Speed
+- Fake Out
+- Volt Tackle
 - Surf
-- Grass Knot
+- Knock Off
 
 Latias @ Latiasite
 Quirky Nature
@@ -9948,9 +9948,9 @@ Level: 90
 Standard Level: 90
 Ability: Levitate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Psychic
-- Dragon Pulse
-- Calm Mind
+- Draco Meteor
+- Psyshock
+- Ice Beam
 - Roost
 
 === TRAINER_PHOEBE ===
@@ -9967,36 +9967,36 @@ Quagsire @ Leftovers
 Quirky Nature
 Level: 90
 Standard Level: 90
-Ability: Water Absorb
+Ability: Unaware
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earthquake
 - Liquidation
-- Ice Punch
+- Recover
 - Toxic Spikes
 
-Altaria @ Focus Sash
+Altaria @ Altarianite
 Quirky Nature
 Level: 90
 Standard Level: 90
 Ability: Natural Cure
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Dance
-- Outrage
-- Brave Bird
+- Double Edge
 - Earthquake
+- Roost
 
-Suicune @ Chesto Berry
+Suicune @ Leftovers
 Quirky Nature
 Level: 90
 Standard Level: 90
-Ability: Inner Focus
+Ability: Pressure
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Rest
-- Scald
 - Calm Mind
-- Ice Beam
+- Scald
+- Rest
+- Sleep Talk
 
-Houndoom @ Houndoominite
+Houndoom @ Life Orb
 Quirky Nature
 Level: 90
 Standard Level: 90
@@ -10014,9 +10014,9 @@ Standard Level: 90
 Ability: Trace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Moonblast
-- Psychic
+- Psyshock
+- Mystical Fire
 - Thunderbolt
-- Energy Ball
 
 Jirachi @ Choice Scarf
 Quirky Nature
@@ -10027,7 +10027,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Iron Head
 - Zen Headbutt
 - Body Slam
-- Play Rough
+- U Turn
 
 === TRAINER_GLACIA ===
 Name: WAKE
@@ -10209,7 +10209,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mega Drain
 - Sand Tomb
 
-Diglett @ Eviolite
+Diglett
 Quirky Nature
 Level: 15
 Standard Level: 15
@@ -10248,7 +10248,7 @@ Level: 13
 Standard Level: 13
 Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Mud Shot
+- Sand Tomb
 - Shock Wave
 - Light Screen
 - Gravity
@@ -10360,9 +10360,9 @@ Level: 32
 Standard Level: 32
 Ability: Blaze
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sunny Day
+- Quick Attack
 - Endeavor
-- Temper Flare
+- Lava Plume
 
 Arcanine @ Charcoal
 Quirky Nature
@@ -10373,7 +10373,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Crunch
 - Extreme Speed
 - Fire Fang
-- Wild Charge
+- Thunder Fang
 
 Ninetales @ Heat Rock
 Quirky Nature
@@ -10489,6 +10489,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Scorching Sands
 - Psychic
 - Ancient Power
+- Ice Beam
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -10497,7 +10498,7 @@ Standard Level: 50
 Ability: Shadow Tag
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Trick
-- Rest
+- Focus Blast
 - Psychic
 - Thunderbolt
 
@@ -10510,7 +10511,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Calm Mind
 - Psyshock
 - Draining Kiss
-- Nuzzle
+- Mystical Fire
 
 Metagross @ Leftovers
 Quirky Nature
@@ -10540,10 +10541,10 @@ Level: 51
 Standard Level: 51
 Ability: Levitate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Psychic
+- Luster Purge
 - Roost
 - Ice Beam
-- Dragon Pulse
+- Draco Meteor
 
 === TRAINER_WINONA_1 ===
 Name: PHUFFZONE
@@ -10647,7 +10648,7 @@ Standard Level: 69
 Ability: Multitype
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Swords Dance
-- Shadow Claw
+- Earthquake
 - Extreme Speed
 - Recover
 
@@ -10657,10 +10658,10 @@ Level: 69
 Standard Level: 69
 Ability: Guts
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Protect
 - Facade
-- Earthquake
-- Fire Punch
-- Trailblaze
+- Headlong Rush
+- Crunch
 
 Blissey @ Leftovers
 Quirky Nature
@@ -10668,9 +10669,9 @@ Level: 69
 Standard Level: 69
 Ability: Natural Cure
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Stealth Rock
+- Thunder Wave
 - Soft Boiled
-- Toxic
-- Protect
 - Seismic Toss
 
 Zoroark-Hisui @ Choice Specs
@@ -10681,8 +10682,8 @@ Ability: Illusion
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Shadow Ball
 - Hyper Voice
-- Psychic
-- U Turn
+- Focus Blast
+- Flamethrower
 
 Slaking @ Choice Band
 Quirky Nature
@@ -10704,71 +10705,77 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Gengar @ Air Balloon
-Quirky Nature
+Gholdengo @ Air Balloon
+Timid Nature
 Level: 78
 Standard Level: 78
-Ability: Cursed Body
+Ability: Good As Gold
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sludge Bomb
+Shiny: Yes
 - Shadow Ball
-- Toxic Spikes
-- Thunderbolt
-
-Banette @ Banettite
-Quirky Nature
-Level: 78
-Standard Level: 78
-Ability: Cursed Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Poltergeist
-- Will O Wisp
-- Encore
-- Destiny Bond
+- Make It Rain
+- Recover
+- Nasty Plot
 
 Ceruledge @ Focus Sash
-Quirky Nature
+Jolly Nature
 Level: 78
 Standard Level: 78
 Ability: Weak Armor
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Sunny Day
 - Bitter Blade
-- Swords Dance
-- Poltergeist
+- Shadow Sneak
 - Destiny Bond
 
-Poltchageist @ Covert Cloak
-Quirky Nature
+Gengar @ Gengarite
+Timid Nature
 Level: 78
 Standard Level: 78
-Ability: Heatproof
+Ability: Cursed Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Strength Sap
-- Matcha Gotcha
+Shiny: Yes
 - Shadow Ball
+- Sludge Bomb
+- Icy Wind
+- Substitute
 
-Mimikyu @ Red Card
-Quirky Nature
+Annihilape @ Chesto Berry
+Careful Nature
 Level: 78
 Standard Level: 78
-Ability: Disguise
+Ability: Defiant
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Bulk Up
 - Drain Punch
-- Swords Dance
-- Shadow Claw
-- Play Rough
+- Rage Fist
+- Rest
 
-Lunala @ Leftovers
-Quirky Nature
+Flutter Mane @ Leftovers
+Timid Nature
 Level: 78
 Standard Level: 78
-Ability: Shadow Shield
+Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Moongeist Beam
-- Roost
-- Psychic
+Shiny: Yes
+- Shadow Ball
+- Moonblast
+- Power Gem
+- Mystical Fire
+
+Dragapult @ Focus Sash
+Hasty Nature
+Level: 78
+Standard Level: 78
+Ability: Infiltrator
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Dragon Darts
+- Hex
+- U Turn
+- Will O Wisp
 
 === TRAINER_JERRY_1 ===
 Name: JERRY
@@ -29256,7 +29263,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mega Drain
 - Sand Tomb
 
-Diglett @ Eviolite
+Diglett
 Quirky Nature
 Level: 20
 Ability: Sand Veil
@@ -29291,7 +29298,7 @@ Quirky Nature
 Level: 18
 Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Mud Shot
+- Sand Tomb
 - Shock Wave
 - Light Screen
 - Gravity
@@ -29324,7 +29331,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mega Drain
 - Sand Tomb
 
-Diglett @ Eviolite
+Diglett
 Quirky Nature
 Level: 25
 Ability: Sand Veil
@@ -29359,7 +29366,7 @@ Quirky Nature
 Level: 23
 Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Mud Shot
+- Sand Tomb
 - Shock Wave
 - Light Screen
 - Gravity
@@ -29392,7 +29399,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mega Drain
 - Sand Tomb
 
-Diglett @ Eviolite
+Diglett
 Quirky Nature
 Level: 30
 Ability: Sand Veil
@@ -29427,7 +29434,7 @@ Quirky Nature
 Level: 28
 Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Mud Shot
+- Sand Tomb
 - Shock Wave
 - Light Screen
 - Gravity
@@ -29460,7 +29467,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mega Drain
 - Sand Tomb
 
-Diglett @ Eviolite
+Diglett
 Quirky Nature
 Level: 35
 Ability: Sand Veil
@@ -29495,7 +29502,7 @@ Quirky Nature
 Level: 33
 Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Mud Shot
+- Sand Tomb
 - Shock Wave
 - Light Screen
 - Gravity
@@ -29790,9 +29797,9 @@ Quirky Nature
 Level: 37
 Ability: Blaze
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sunny Day
+- Quick Attack
 - Endeavor
-- Temper Flare
+- Lava Plume
 
 Arcanine @ Charcoal
 Quirky Nature
@@ -29802,7 +29809,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Crunch
 - Extreme Speed
 - Fire Fang
-- Wild Charge
+- Thunder Fang
 
 Ninetales @ Heat Rock
 Quirky Nature
@@ -29858,9 +29865,9 @@ Quirky Nature
 Level: 42
 Ability: Blaze
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sunny Day
+- Quick Attack
 - Endeavor
-- Temper Flare
+- Lava Plume
 
 Arcanine @ Charcoal
 Quirky Nature
@@ -29870,7 +29877,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Crunch
 - Extreme Speed
 - Fire Fang
-- Wild Charge
+- Thunder Fang
 
 Ninetales @ Heat Rock
 Quirky Nature
@@ -29926,9 +29933,9 @@ Quirky Nature
 Level: 47
 Ability: Blaze
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sunny Day
+- Quick Attack
 - Endeavor
-- Temper Flare
+- Lava Plume
 
 Arcanine @ Charcoal
 Quirky Nature
@@ -29938,7 +29945,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Crunch
 - Extreme Speed
 - Fire Fang
-- Wild Charge
+- Thunder Fang
 
 Ninetales @ Heat Rock
 Quirky Nature
@@ -29994,9 +30001,9 @@ Quirky Nature
 Level: 52
 Ability: Blaze
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sunny Day
+- Quick Attack
 - Endeavor
-- Temper Flare
+- Lava Plume
 
 Arcanine @ Charcoal
 Quirky Nature
@@ -30006,7 +30013,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Crunch
 - Extreme Speed
 - Fire Fang
-- Wild Charge
+- Thunder Fang
 
 Ninetales @ Heat Rock
 Quirky Nature
@@ -30317,6 +30324,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Scorching Sands
 - Psychic
 - Ancient Power
+- Ice Beam
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30324,7 +30332,7 @@ Level: 55
 Ability: Shadow Tag
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Trick
-- Rest
+- Focus Blast
 - Psychic
 - Thunderbolt
 
@@ -30336,7 +30344,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Calm Mind
 - Psyshock
 - Draining Kiss
-- Nuzzle
+- Mystical Fire
 
 Metagross @ Leftovers
 Quirky Nature
@@ -30363,10 +30371,10 @@ Quirky Nature
 Level: 56
 Ability: Levitate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Psychic
+- Luster Purge
 - Roost
 - Ice Beam
-- Dragon Pulse
+- Draco Meteor
 
 === TRAINER_NORMAN_3 ===
 Name: JORDAN
@@ -30385,6 +30393,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Scorching Sands
 - Psychic
 - Ancient Power
+- Ice Beam
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30392,7 +30401,7 @@ Level: 60
 Ability: Shadow Tag
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Trick
-- Rest
+- Focus Blast
 - Psychic
 - Thunderbolt
 
@@ -30404,7 +30413,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Calm Mind
 - Psyshock
 - Draining Kiss
-- Nuzzle
+- Mystical Fire
 
 Metagross @ Leftovers
 Quirky Nature
@@ -30431,10 +30440,10 @@ Quirky Nature
 Level: 61
 Ability: Levitate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Psychic
+- Luster Purge
 - Roost
 - Ice Beam
-- Dragon Pulse
+- Draco Meteor
 
 === TRAINER_NORMAN_4 ===
 Name: JORDAN
@@ -30453,6 +30462,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Scorching Sands
 - Psychic
 - Ancient Power
+- Ice Beam
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30460,7 +30470,7 @@ Level: 65
 Ability: Shadow Tag
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Trick
-- Rest
+- Focus Blast
 - Psychic
 - Thunderbolt
 
@@ -30472,7 +30482,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Calm Mind
 - Psyshock
 - Draining Kiss
-- Nuzzle
+- Mystical Fire
 
 Metagross @ Leftovers
 Quirky Nature
@@ -30499,10 +30509,10 @@ Quirky Nature
 Level: 66
 Ability: Levitate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Psychic
+- Luster Purge
 - Roost
 - Ice Beam
-- Dragon Pulse
+- Draco Meteor
 
 === TRAINER_NORMAN_5 ===
 Name: JORDAN
@@ -30521,6 +30531,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Scorching Sands
 - Psychic
 - Ancient Power
+- Ice Beam
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30528,7 +30539,7 @@ Level: 70
 Ability: Shadow Tag
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Trick
-- Rest
+- Focus Blast
 - Psychic
 - Thunderbolt
 
@@ -30540,7 +30551,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Calm Mind
 - Psyshock
 - Draining Kiss
-- Nuzzle
+- Mystical Fire
 
 Metagross @ Leftovers
 Quirky Nature
@@ -30567,10 +30578,10 @@ Quirky Nature
 Level: 71
 Ability: Levitate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Psychic
+- Luster Purge
 - Roost
 - Ice Beam
-- Dragon Pulse
+- Draco Meteor
 
 === TRAINER_WINONA_2 ===
 Name: PHUFFZONE
@@ -30873,7 +30884,7 @@ Level: 74
 Ability: Multitype
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Swords Dance
-- Shadow Claw
+- Earthquake
 - Extreme Speed
 - Recover
 
@@ -30882,19 +30893,19 @@ Quirky Nature
 Level: 74
 Ability: Guts
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Protect
 - Facade
-- Earthquake
-- Fire Punch
-- Trailblaze
+- Headlong Rush
+- Crunch
 
 Blissey @ Leftovers
 Quirky Nature
 Level: 74
 Ability: Natural Cure
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Stealth Rock
+- Thunder Wave
 - Soft Boiled
-- Toxic
-- Protect
 - Seismic Toss
 
 Zoroark-Hisui @ Choice Specs
@@ -30904,8 +30915,8 @@ Ability: Illusion
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Shadow Ball
 - Hyper Voice
-- Psychic
-- U Turn
+- Focus Blast
+- Flamethrower
 
 Slaking @ Choice Band
 Quirky Nature
@@ -30942,7 +30953,7 @@ Level: 79
 Ability: Multitype
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Swords Dance
-- Shadow Claw
+- Earthquake
 - Extreme Speed
 - Recover
 
@@ -30951,19 +30962,19 @@ Quirky Nature
 Level: 79
 Ability: Guts
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Protect
 - Facade
-- Earthquake
-- Fire Punch
-- Trailblaze
+- Headlong Rush
+- Crunch
 
 Blissey @ Leftovers
 Quirky Nature
 Level: 79
 Ability: Natural Cure
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Stealth Rock
+- Thunder Wave
 - Soft Boiled
-- Toxic
-- Protect
 - Seismic Toss
 
 Zoroark-Hisui @ Choice Specs
@@ -30973,8 +30984,8 @@ Ability: Illusion
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Shadow Ball
 - Hyper Voice
-- Psychic
-- U Turn
+- Focus Blast
+- Flamethrower
 
 Slaking @ Choice Band
 Quirky Nature
@@ -31011,7 +31022,7 @@ Level: 84
 Ability: Multitype
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Swords Dance
-- Shadow Claw
+- Earthquake
 - Extreme Speed
 - Recover
 
@@ -31020,19 +31031,19 @@ Quirky Nature
 Level: 84
 Ability: Guts
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Protect
 - Facade
-- Earthquake
-- Fire Punch
-- Trailblaze
+- Headlong Rush
+- Crunch
 
 Blissey @ Leftovers
 Quirky Nature
 Level: 84
 Ability: Natural Cure
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Stealth Rock
+- Thunder Wave
 - Soft Boiled
-- Toxic
-- Protect
 - Seismic Toss
 
 Zoroark-Hisui @ Choice Specs
@@ -31042,8 +31053,8 @@ Ability: Illusion
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Shadow Ball
 - Hyper Voice
-- Psychic
-- U Turn
+- Focus Blast
+- Flamethrower
 
 Slaking @ Choice Band
 Quirky Nature
@@ -31080,7 +31091,7 @@ Level: 89
 Ability: Multitype
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Swords Dance
-- Shadow Claw
+- Earthquake
 - Extreme Speed
 - Recover
 
@@ -31089,19 +31100,19 @@ Quirky Nature
 Level: 89
 Ability: Guts
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Protect
 - Facade
-- Earthquake
-- Fire Punch
-- Trailblaze
+- Headlong Rush
+- Crunch
 
 Blissey @ Leftovers
 Quirky Nature
 Level: 89
 Ability: Natural Cure
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Stealth Rock
+- Thunder Wave
 - Soft Boiled
-- Toxic
-- Protect
 - Seismic Toss
 
 Zoroark-Hisui @ Choice Specs
@@ -31111,8 +31122,8 @@ Ability: Illusion
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Shadow Ball
 - Hyper Voice
-- Psychic
-- U Turn
+- Focus Blast
+- Flamethrower
 
 Slaking @ Choice Band
 Quirky Nature
@@ -31133,65 +31144,71 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Gengar @ Air Balloon
-Quirky Nature
+Gholdengo @ Air Balloon
+Timid Nature
 Level: 83
-Ability: Cursed Body
+Ability: Good As Gold
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sludge Bomb
+Shiny: Yes
 - Shadow Ball
-- Toxic Spikes
-- Thunderbolt
-
-Banette @ Banettite
-Quirky Nature
-Level: 83
-Ability: Cursed Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Poltergeist
-- Will O Wisp
-- Encore
-- Destiny Bond
+- Make It Rain
+- Recover
+- Nasty Plot
 
 Ceruledge @ Focus Sash
-Quirky Nature
+Jolly Nature
 Level: 83
 Ability: Weak Armor
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Sunny Day
 - Bitter Blade
-- Swords Dance
-- Poltergeist
+- Shadow Sneak
 - Destiny Bond
 
-Poltchageist @ Covert Cloak
-Quirky Nature
+Gengar @ Gengarite
+Timid Nature
 Level: 83
-Ability: Heatproof
+Ability: Cursed Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Strength Sap
-- Matcha Gotcha
+Shiny: Yes
 - Shadow Ball
+- Sludge Bomb
+- Icy Wind
+- Substitute
 
-Mimikyu @ Red Card
-Quirky Nature
+Annihilape @ Chesto Berry
+Careful Nature
 Level: 83
-Ability: Disguise
+Ability: Defiant
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Bulk Up
 - Drain Punch
-- Swords Dance
-- Shadow Claw
-- Play Rough
+- Rage Fist
+- Rest
 
-Lunala @ Leftovers
-Quirky Nature
+Flutter Mane @ Leftovers
+Timid Nature
 Level: 83
-Ability: Shadow Shield
+Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Moongeist Beam
-- Roost
-- Psychic
+Shiny: Yes
+- Shadow Ball
+- Moonblast
+- Power Gem
+- Mystical Fire
+
+Dragapult @ Focus Sash
+Hasty Nature
+Level: 83
+Ability: Infiltrator
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Dragon Darts
+- Hex
+- U Turn
+- Will O Wisp
 
 === TRAINER_JUAN_3 ===
 Name: REA
@@ -31202,65 +31219,71 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Gengar @ Air Balloon
-Quirky Nature
+Gholdengo @ Air Balloon
+Timid Nature
 Level: 88
-Ability: Cursed Body
+Ability: Good As Gold
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sludge Bomb
+Shiny: Yes
 - Shadow Ball
-- Toxic Spikes
-- Thunderbolt
-
-Banette @ Banettite
-Quirky Nature
-Level: 88
-Ability: Cursed Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Poltergeist
-- Will O Wisp
-- Encore
-- Destiny Bond
+- Make It Rain
+- Recover
+- Nasty Plot
 
 Ceruledge @ Focus Sash
-Quirky Nature
+Jolly Nature
 Level: 88
 Ability: Weak Armor
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Sunny Day
 - Bitter Blade
-- Swords Dance
-- Poltergeist
+- Shadow Sneak
 - Destiny Bond
 
-Poltchageist @ Covert Cloak
-Quirky Nature
+Gengar @ Gengarite
+Timid Nature
 Level: 88
-Ability: Heatproof
+Ability: Cursed Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Strength Sap
-- Matcha Gotcha
+Shiny: Yes
 - Shadow Ball
+- Sludge Bomb
+- Icy Wind
+- Substitute
 
-Mimikyu @ Red Card
-Quirky Nature
+Annihilape @ Chesto Berry
+Careful Nature
 Level: 88
-Ability: Disguise
+Ability: Defiant
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Bulk Up
 - Drain Punch
-- Swords Dance
-- Shadow Claw
-- Play Rough
+- Rage Fist
+- Rest
 
-Lunala @ Leftovers
-Quirky Nature
+Flutter Mane @ Leftovers
+Timid Nature
 Level: 88
-Ability: Shadow Shield
+Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Moongeist Beam
-- Roost
-- Psychic
+Shiny: Yes
+- Shadow Ball
+- Moonblast
+- Power Gem
+- Mystical Fire
+
+Dragapult @ Focus Sash
+Hasty Nature
+Level: 88
+Ability: Infiltrator
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Dragon Darts
+- Hex
+- U Turn
+- Will O Wisp
 
 === TRAINER_JUAN_4 ===
 Name: REA
@@ -31271,65 +31294,71 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Gengar @ Air Balloon
-Quirky Nature
+Gholdengo @ Air Balloon
+Timid Nature
 Level: 93
-Ability: Cursed Body
+Ability: Good As Gold
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sludge Bomb
+Shiny: Yes
 - Shadow Ball
-- Toxic Spikes
-- Thunderbolt
-
-Banette @ Banettite
-Quirky Nature
-Level: 93
-Ability: Cursed Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Poltergeist
-- Will O Wisp
-- Encore
-- Destiny Bond
+- Make It Rain
+- Recover
+- Nasty Plot
 
 Ceruledge @ Focus Sash
-Quirky Nature
+Jolly Nature
 Level: 93
 Ability: Weak Armor
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Sunny Day
 - Bitter Blade
-- Swords Dance
-- Poltergeist
+- Shadow Sneak
 - Destiny Bond
 
-Poltchageist @ Covert Cloak
-Quirky Nature
+Gengar @ Gengarite
+Timid Nature
 Level: 93
-Ability: Heatproof
+Ability: Cursed Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Strength Sap
-- Matcha Gotcha
+Shiny: Yes
 - Shadow Ball
+- Sludge Bomb
+- Icy Wind
+- Substitute
 
-Mimikyu @ Red Card
-Quirky Nature
+Annihilape @ Chesto Berry
+Careful Nature
 Level: 93
-Ability: Disguise
+Ability: Defiant
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Bulk Up
 - Drain Punch
-- Swords Dance
-- Shadow Claw
-- Play Rough
+- Rage Fist
+- Rest
 
-Lunala @ Leftovers
-Quirky Nature
+Flutter Mane @ Leftovers
+Timid Nature
 Level: 93
-Ability: Shadow Shield
+Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Moongeist Beam
-- Roost
-- Psychic
+Shiny: Yes
+- Shadow Ball
+- Moonblast
+- Power Gem
+- Mystical Fire
+
+Dragapult @ Focus Sash
+Hasty Nature
+Level: 93
+Ability: Infiltrator
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Dragon Darts
+- Hex
+- U Turn
+- Will O Wisp
 
 === TRAINER_JUAN_5 ===
 Name: REA
@@ -31340,65 +31369,71 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Gengar @ Air Balloon
-Quirky Nature
+Gholdengo @ Air Balloon
+Timid Nature
 Level: 98
-Ability: Cursed Body
+Ability: Good As Gold
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Sludge Bomb
+Shiny: Yes
 - Shadow Ball
-- Toxic Spikes
-- Thunderbolt
-
-Banette @ Banettite
-Quirky Nature
-Level: 98
-Ability: Cursed Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Poltergeist
-- Will O Wisp
-- Encore
-- Destiny Bond
+- Make It Rain
+- Recover
+- Nasty Plot
 
 Ceruledge @ Focus Sash
-Quirky Nature
+Jolly Nature
 Level: 98
 Ability: Weak Armor
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Sunny Day
 - Bitter Blade
-- Swords Dance
-- Poltergeist
+- Shadow Sneak
 - Destiny Bond
 
-Poltchageist @ Covert Cloak
-Quirky Nature
+Gengar @ Gengarite
+Timid Nature
 Level: 98
-Ability: Heatproof
+Ability: Cursed Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Strength Sap
-- Matcha Gotcha
+Shiny: Yes
 - Shadow Ball
+- Sludge Bomb
+- Icy Wind
+- Substitute
 
-Mimikyu @ Red Card
-Quirky Nature
+Annihilape @ Chesto Berry
+Careful Nature
 Level: 98
-Ability: Disguise
+Ability: Defiant
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Bulk Up
 - Drain Punch
-- Swords Dance
-- Shadow Claw
-- Play Rough
+- Rage Fist
+- Rest
 
-Lunala @ Leftovers
-Quirky Nature
+Flutter Mane @ Leftovers
+Timid Nature
 Level: 98
-Ability: Shadow Shield
+Ability: Protosynthesis
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Calm Mind
-- Moongeist Beam
-- Roost
-- Psychic
+Shiny: Yes
+- Shadow Ball
+- Moonblast
+- Power Gem
+- Mystical Fire
+
+Dragapult @ Focus Sash
+Hasty Nature
+Level: 98
+Ability: Infiltrator
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+Shiny: Yes
+- Dragon Darts
+- Hex
+- U Turn
+- Will O Wisp
 
 === TRAINER_ANGELO ===
 Name: ANGELO

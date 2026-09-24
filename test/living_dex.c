@@ -1,4 +1,7 @@
 #include "global.h"
+#include "event_data.h"
+#include "field_specials.h"
+#include "pokedex.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
 #include "test/test.h"
@@ -55,4 +58,92 @@ TEST("A Peat Block evolves Ursaring into both Ursaluna forms")
     }
     EXPECT(ursaluna);
     EXPECT(bloodmoon);
+}
+
+static void AddToPokedex(u16 species)
+{
+    u32 dexNum = SpeciesToNationalPokedexNum(species);
+
+    GetSetPokedexFlag(dexNum, FLAG_SET_SEEN);
+    GetSetPokedexFlag(dexNum, FLAG_SET_CAUGHT);
+}
+
+static void CatchOnIsland(u16 species)
+{
+    AddToPokedex(species);
+    VarSet(VAR_ISLAND_LEGENDARY, species);
+    RecordIslandLegendaryCatch();
+}
+
+static void ClearIslandCatches(void)
+{
+    u32 flag;
+
+    ResetPokedex();
+    for (flag = FLAG_ISLAND_CAUGHT_ARTICUNO_GALAR; flag <= FLAG_ISLAND_CAUGHT_PHIONE; flag++)
+        FlagClear(flag);
+    VarSet(VAR_ISLAND_LEGENDARY, SPECIES_NONE);
+}
+
+TEST("Evolving an island legendary leaves its evolutions on the island")
+{
+    ClearIslandCatches();
+    CatchOnIsland(SPECIES_COSMOG);
+    AddToPokedex(SPECIES_COSMOEM);
+    AddToPokedex(SPECIES_SOLGALEO);
+    CatchOnIsland(SPECIES_POIPOLE);
+    AddToPokedex(SPECIES_NAGANADEL);
+    CatchOnIsland(SPECIES_KUBFU);
+    AddToPokedex(SPECIES_URSHIFU_SINGLE_STRIKE);
+
+    EXPECT(IsIslandLegendaryCaught(SPECIES_COSMOG));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_COSMOEM));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_SOLGALEO));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_LUNALA));
+    EXPECT(IsIslandLegendaryCaught(SPECIES_POIPOLE));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_NAGANADEL));
+    EXPECT(IsIslandLegendaryCaught(SPECIES_KUBFU));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_URSHIFU_SINGLE_STRIKE));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_URSHIFU_RAPID_STRIKE));
+
+    CatchOnIsland(SPECIES_SOLGALEO);
+    CatchOnIsland(SPECIES_URSHIFU_SINGLE_STRIKE);
+    EXPECT(IsIslandLegendaryCaught(SPECIES_SOLGALEO));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_LUNALA));
+    EXPECT(IsIslandLegendaryCaught(SPECIES_URSHIFU_SINGLE_STRIKE));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_URSHIFU_RAPID_STRIKE));
+
+    ClearIslandCatches();
+}
+
+TEST("A Phione hatched from Manaphy leaves Phione on the island")
+{
+    ClearIslandCatches();
+    CatchOnIsland(SPECIES_MANAPHY);
+    AddToPokedex(SPECIES_PHIONE);
+    EXPECT(IsIslandLegendaryCaught(SPECIES_MANAPHY));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_PHIONE));
+
+    CatchOnIsland(SPECIES_PHIONE);
+    EXPECT(IsIslandLegendaryCaught(SPECIES_PHIONE));
+    ClearIslandCatches();
+}
+
+TEST("Island catches from before the catch flags still count")
+{
+    ClearIslandCatches();
+    AddToPokedex(SPECIES_SOLGALEO);
+    AddToPokedex(SPECIES_NAGANADEL);
+    AddToPokedex(SPECIES_URSHIFU_SINGLE_STRIKE);
+    AddToPokedex(SPECIES_PHIONE);
+    AddToPokedex(SPECIES_MEWTWO);
+
+    EXPECT(IsIslandLegendaryCaught(SPECIES_SOLGALEO));
+    EXPECT(IsIslandLegendaryCaught(SPECIES_NAGANADEL));
+    EXPECT(IsIslandLegendaryCaught(SPECIES_URSHIFU_SINGLE_STRIKE));
+    EXPECT(IsIslandLegendaryCaught(SPECIES_PHIONE));
+    EXPECT(IsIslandLegendaryCaught(SPECIES_MEWTWO));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_URSHIFU_RAPID_STRIKE));
+    EXPECT(!IsIslandLegendaryCaught(SPECIES_LUNALA));
+    ClearIslandCatches();
 }

@@ -1261,6 +1261,14 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     if (gBattleStruct->battlerState[battlerDef].commandingDondozo)
         RETURN_SCORE_MINUS(20);
 
+    // BPE: A sleeping battler can only use Sleep Talk or Snore. Other moves were scored as if
+    // it were awake, so a KO move could outscore Sleep Talk and the turn was wasted.
+    if ((gBattleMons[battlerAtk].status1 & STATUS1_SLEEP)
+     && !IsWakeupTurn(battlerAtk)
+     && !IsUsableWhileAsleepEffect(moveEffect)
+     && HasMoveUsableWhileAsleep(battlerAtk))
+        RETURN_SCORE_MINUS(20);
+
     if (IsPowderMove(move) && !IsAffectedByPowderMove(battlerDef, aiData->abilities[battlerDef], aiData->holdEffects[battlerDef]))
         RETURN_SCORE_MINUS(10);
 

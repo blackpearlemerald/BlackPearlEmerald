@@ -39,6 +39,7 @@ enum MonData {
     MON_DATA_HIDDEN_NATURE,
     MON_DATA_HP_LOST,
     MON_DATA_DAYS_SINCE_FORM_CHANGE,
+    MON_DATA_DEAD, // BPE: nuzlocke death flag, an unencrypted header bit like isEgg
     MON_DATA_ENCRYPT_SEPARATOR,
     MON_DATA_NICKNAME,
     MON_DATA_NICKNAME10,
@@ -125,7 +126,6 @@ enum MonData {
     MON_DATA_GIGANTAMAX_FACTOR,
     MON_DATA_TERA_TYPE,
     MON_DATA_EVOLUTION_TRACKER,
-    MON_DATA_DEAD, // BPE: nuzlocke death flag
     MON_DATA_SPECIES2, // BPE: nuzlocke dupe clause
 };
 
@@ -949,6 +949,7 @@ enum Species SanitizeSpeciesId(enum Species species);
 bool32 IsSpeciesEnabled(enum Species species);
 enum PokemonCry GetCryIdBySpecies(enum Species species);
 enum Species GetSpeciesPreEvolution(enum Species species);
+bool32 IsMonDeadInNuzlocke(struct Pokemon *mon);
 void HealPokemon(struct Pokemon *mon);
 void HealBoxPokemon(struct BoxPokemon *boxMon);
 void UpdateDaysPassedSinceFormChange(u16 days);

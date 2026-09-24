@@ -98,15 +98,26 @@
       var icon = m.sprite
         ? '<img class="tr-d-icon" src="img/pokemon/' + esc(m.sprite) + '" alt="" onerror="this.remove()">'
         : '';
-      var moves = (m.moves || []).map(function (mv) {
-        return '<span class="tr-d-move">' + esc(mv) + '</span>';
-      }).join('');
+      function moveRow(list, mode) {
+        if (!list || !list.length) return '';
+        return '<div class="tr-mon-d-moves">'
+          + (mode ? '<span class="tr-d-moves-mode tr-d-moves-' + mode + '">' + mode + '</span>' : '')
+          + list.map(function (mv) {
+            return '<span class="tr-d-move">' + esc(mv) + '</span>';
+          }).join('')
+          + '</div>';
+      }
+      // A Pokémon with no authored moves knows its level-up moves, so a
+      // different Standard level can give it different ones.
+      var moves = m.standardMoves
+        ? moveRow(m.moves, 'nuz') + moveRow(m.standardMoves, 'std')
+        : moveRow(m.moves);
       return '<div class="tr-mon-detail">'
         + icon
         + '<div class="tr-mon-d-body">'
         + '<div class="tr-mon-d-head">' + head + '</div>'
         + '<div class="tr-mon-d-meta">' + metaParts.join(' · ') + '</div>'
-        + (moves ? '<div class="tr-mon-d-moves">' + moves + '</div>' : '')
+        + moves
         + '</div></div>';
     }).join('');
 

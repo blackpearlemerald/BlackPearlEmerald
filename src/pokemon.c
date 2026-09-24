@@ -1462,12 +1462,9 @@ void BoxMonToMon(const struct BoxPokemon *src, struct Pokemon *dest)
     SetMonData(dest, MON_DATA_MAIL, &value);
     value = GetBoxMonData(&dest->box, MON_DATA_HP_LOST);
     CalculateMonStats(dest);
-    if (GetMonData(dest, MON_DATA_DEAD) && FlagGet(FLAG_NUZLOCKE)) // BPE Nuzlocke
-    {
-        value = 0;
-        SetMonData(dest, MON_DATA_HP, &value);
-    }
     value = GetMonData(dest, MON_DATA_MAX_HP) - value;
+    if (IsMonDeadInNuzlocke(dest)) // BPE Nuzlocke: a dead Pokémon stays fainted in the PC
+        value = 0;
     SetMonData(dest, MON_DATA_HP, &value);
 }
 
@@ -4105,9 +4102,10 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, enum Item item, u8 partyIndex, 
                             itemEffectParam++;
                             break;
                         }
-                        // Check use validity.
+                        // Check use validity. BPE Nuzlocke: a dead Pokémon can't be revived.
                         if ((effectFlags & (ITEM4_REVIVE >> 2) && currentHP != 0)
-                              || (!(effectFlags & (ITEM4_REVIVE >> 2)) && currentHP == 0))
+                              || (!(effectFlags & (ITEM4_REVIVE >> 2)) && currentHP == 0)
+                              || IsMonDeadInNuzlocke(mon))
                         {
                             itemEffectParam++;
                             break;
@@ -7083,11 +7081,17 @@ void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality)
     SetBoxMonData(boxMon, MON_DATA_TERA_TYPE, &teraType);
 }
 
+bool32 IsMonDeadInNuzlocke(struct Pokemon *mon)
+{
+    return FlagGet(FLAG_NUZLOCKE) && GetMonData(mon, MON_DATA_DEAD);
+}
+
 void HealPokemon(struct Pokemon *mon)
 {
     u32 data;
 
-    data = GetMonData(mon, MON_DATA_MAX_HP);
+    // BPE Nuzlocke: nothing heals a dead Pokémon, including the PC
+    data = IsMonDeadInNuzlocke(mon) ? 0 : GetMonData(mon, MON_DATA_MAX_HP);
     SetMonData(mon, MON_DATA_HP, &data);
 
     data = STATUS1_NONE;

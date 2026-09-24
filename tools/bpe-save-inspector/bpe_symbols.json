@@ -587,17 +587,22 @@
     "FLAG_ISLAND_CAUGHT_CALYREX": 1185,
     "FLAG_ISLAND_CAUGHT_CALYREX_ICE": 1186,
     "FLAG_ISLAND_CAUGHT_CALYREX_SHADOW": 1187,
+    "FLAG_ISLAND_CAUGHT_COSMOEM": 1200,
     "FLAG_ISLAND_CAUGHT_FLOETTE_ETERNAL": 1194,
     "FLAG_ISLAND_CAUGHT_KYUREM": 1179,
     "FLAG_ISLAND_CAUGHT_KYUREM_BLACK": 1181,
     "FLAG_ISLAND_CAUGHT_KYUREM_WHITE": 1180,
+    "FLAG_ISLAND_CAUGHT_LUNALA": 1202,
     "FLAG_ISLAND_CAUGHT_MAGEARNA": 1188,
     "FLAG_ISLAND_CAUGHT_MAGEARNA_ORIGINAL": 1189,
     "FLAG_ISLAND_CAUGHT_MOLTRES_GALAR": 1178,
+    "FLAG_ISLAND_CAUGHT_NAGANADEL": 1203,
     "FLAG_ISLAND_CAUGHT_NECROZMA": 1182,
     "FLAG_ISLAND_CAUGHT_NECROZMA_DAWN_WINGS": 1184,
     "FLAG_ISLAND_CAUGHT_NECROZMA_DUSK_MANE": 1183,
+    "FLAG_ISLAND_CAUGHT_PHIONE": 1204,
     "FLAG_ISLAND_CAUGHT_SILVALLY": 1195,
+    "FLAG_ISLAND_CAUGHT_SOLGALEO": 1201,
     "FLAG_ISLAND_CAUGHT_URSHIFU_RAPID_STRIKE": 1193,
     "FLAG_ISLAND_CAUGHT_URSHIFU_SINGLE_STRIKE": 1192,
     "FLAG_ISLAND_CAUGHT_ZAPDOS_GALAR": 1177,
@@ -1247,11 +1252,6 @@
     "FLAG_UNUSED_0x4AD": 1197,
     "FLAG_UNUSED_0x4AE": 1198,
     "FLAG_UNUSED_0x4AF": 1199,
-    "FLAG_UNUSED_0x4B0": 1200,
-    "FLAG_UNUSED_0x4B1": 1201,
-    "FLAG_UNUSED_0x4B2": 1202,
-    "FLAG_UNUSED_0x4B3": 1203,
-    "FLAG_UNUSED_0x4B4": 1204,
     "FLAG_UNUSED_0x4B5": 1205,
     "FLAG_UNUSED_0x4B6": 1206,
     "FLAG_UNUSED_0x4B7": 1207,
@@ -7868,30 +7868,30 @@
       "line": 1256,
       "comment": "Unused Flag"
     },
-    "FLAG_UNUSED_0x4B0": {
+    "FLAG_ISLAND_CAUGHT_COSMOEM": {
       "file": "include/constants/flags.h",
       "line": 1257,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (also comes from evolving or hatching)"
     },
-    "FLAG_UNUSED_0x4B1": {
+    "FLAG_ISLAND_CAUGHT_SOLGALEO": {
       "file": "include/constants/flags.h",
       "line": 1258,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (also comes from evolving or hatching)"
     },
-    "FLAG_UNUSED_0x4B2": {
+    "FLAG_ISLAND_CAUGHT_LUNALA": {
       "file": "include/constants/flags.h",
       "line": 1259,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (also comes from evolving or hatching)"
     },
-    "FLAG_UNUSED_0x4B3": {
+    "FLAG_ISLAND_CAUGHT_NAGANADEL": {
       "file": "include/constants/flags.h",
       "line": 1260,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (also comes from evolving or hatching)"
     },
-    "FLAG_UNUSED_0x4B4": {
+    "FLAG_ISLAND_CAUGHT_PHIONE": {
       "file": "include/constants/flags.h",
       "line": 1261,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (also comes from evolving or hatching)"
     },
     "FLAG_UNUSED_0x4B5": {
       "file": "include/constants/flags.h",

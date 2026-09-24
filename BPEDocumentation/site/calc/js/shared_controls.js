@@ -752,6 +752,8 @@ $(".set-selector").change(function () {
 
 
 	var pokemon = pokedex[pokemonName];
+	// BPE: the sprite was just set for this set, so forget any Mega swap.
+	$(this).closest(".poke-info").find(".poke-sprite").removeAttr("data-base-src");
 
 
 	if (pokemon) {
@@ -904,6 +906,11 @@ $(".set-selector").change(function () {
 		calcStats(pokeObj);
 		abilityObj.change();
 		itemObj.change();
+		// BPE: a trainer mon holding its Mega Stone Mega Evolves in battle,
+		// so load the set in that form (build_calc_data.py records it).
+		if (regSets && !randset && set.mega && pokedex[set.mega]) {
+			selectMegaForme(formeObj, pokemonName, set.mega);
+		}
 		if (pokemon.gender === "N") {
 			pokeObj.find(".gender").parent().hide();
 			pokeObj.find(".gender").val("");
@@ -966,6 +973,16 @@ function showFormes(formeObj, pokemonName, pokemon, baseFormeName) {
 	formeObj.show();
 }
 
+function selectMegaForme(formeObj, pokemonName, megaName) {
+	var select = formeObj.children("select");
+	if (!select.children("option[value='" + megaName + "']").length) {
+		// Megas the calc's own dex doesn't list as a forme of this species.
+		select.find("option").remove().end().append(getSelectOptions([pokemonName, megaName], false, 0));
+	}
+	formeObj.show();
+	select.val(megaName).change();
+}
+
 function setSelectValueIfValid(select, value, fallback) {
 	select.val(!value ? fallback : select.children("option[value='" + value + "']").length ? value : fallback);
 }
@@ -989,7 +1006,11 @@ $(".forme").change(function () {
 	var chosenSet = pokemonSets && pokemonSets[setName];
 	var greninjaSet = $(this).val().indexOf("Greninja") !== -1;
 	var isAltForme = $(this).val() !== pokemonName;
-	if (chosenSet) {
+	// BPE: a Mega has its own ability, whatever the set's base form had.
+	var isMega = isAltForme && $(this).val().indexOf("-Mega") !== -1;
+	if (isMega && altForme.abilities && altForme.abilities[0]) {
+		container.find(".ability").val(altForme.abilities[0]);
+	} else if (chosenSet) {
 		container.find(".ability").val(chosenSet.ability);
 	} else if (isAltForme && abilities.indexOf(altForme.abilities[0]) !== -1 && !greninjaSet) {
 		container.find(".ability").val(altForme.abilities[0]);
@@ -1002,6 +1023,17 @@ $(".forme").change(function () {
 		container.find(".item").val("").keyup();
 	} else {
 		container.find(".item").prop("disabled", false);
+	}
+
+	// BPE: show the Mega's sprite, and the set's own sprite again on switching back.
+	var sprite = $(this).closest(".poke-info").find(".poke-sprite");
+	if (isMega) {
+		if (!sprite.attr("data-base-src")) sprite.attr("data-base-src", sprite.attr("src"));
+		sprite.attr("src", sprite.attr("data-base-src").replace(/[^\/]+(\.\w+)$/,
+			$(this).val().toLowerCase() + "$1"));
+	} else if (sprite.attr("data-base-src")) {
+		sprite.attr("src", sprite.attr("data-base-src"));
+		sprite.removeAttr("data-base-src");
 	}
 });
 

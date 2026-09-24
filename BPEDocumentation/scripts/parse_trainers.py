@@ -128,12 +128,103 @@ def parse_file(path, out):
     commit_trainer()
 
 
+def species_constant(name):
+    """Species name as written in trainers.party -> SPECIES_X, like trainerproc's fprint_species."""
+    if name.startswith("SPECIES_"):
+        return name
+    out, underscore = ["SPECIES_"], False
+    for c in name:
+        if c.isascii() and c.isalnum():
+            out.append(("_" if underscore else "") + c.upper())
+            underscore = False
+        elif c in "'%’":
+            pass
+        elif c in "♂♀":
+            out.append("_M" if c == "♂" else "_F")
+            underscore = False
+        elif c == "é":
+            out.append(("_" if underscore else "") + "E")
+            underscore = False
+        else:
+            underscore = True
+    return "".join(out)
+
+
+def _level_up_learnsets():
+    """SPECIES_X -> [(level, MOVE_NAME)] in learnset order, plus MOVE_NAME -> display name."""
+    import parse_pokemon as P
+    learnsets = P.parse_level_up_learnsets()
+    by_species = {}
+    for path in sorted((P.REPO / "src" / "data" / "pokemon" / "species_info").glob("gen_*_families.h")):
+        raw = P.read_file(path)
+        for key, block in P.iter_species_decls(P.strip_c_comments(raw), P.collect_macros(raw)):
+            m = re.search(r"\.levelUpLearnset\s*=\s*s(\w+)LevelUpLearnset", block)
+            if m and m[1] in learnsets:
+                by_species["SPECIES_" + key] = [(e["level"], e["move"]) for e in learnsets[m[1]]]
+    species_h = P.read_file(P.REPO / "include" / "constants" / "species.h")
+    aliases = dict(re.findall(r"^\s*(SPECIES_\w+)\s*=\s*(SPECIES_\w+)\s*,", species_h, re.M))
+    aliases.update(re.findall(r"^#define\s+(SPECIES_\w+)\s+(SPECIES_\w+)\s*$", species_h, re.M))
+    for alias, target in aliases.items():
+        seen = {alias}
+        while target in aliases and target not in seen:
+            seen.add(target)
+            target = aliases[target]
+        if alias not in by_species and target in by_species:
+            by_species[alias] = by_species[target]
+    move_names = {key: move["name"] for key, move in P.parse_moves().items()}
+    return by_species, move_names
+
+
+def initial_moveset(learnset, level):
+    """GiveBoxMonInitialMoveset: the last four distinct moves learned by `level`."""
+    moves = []
+    for learn_level, move in learnset:
+        if learn_level > level:
+            break
+        if learn_level == 0 or move in moves:
+            continue
+        if len(moves) == 4:
+            moves.pop(0)
+        moves.append(move)
+    return moves
+
+
+def fill_default_moves(trainers, move_name=None):
+    """Give every party Pokémon without moves the moveset the game gives it.
+
+    CustomTrainerPartyAssignMoves() calls GiveMonInitialMoveset() when a trainer
+    Pokémon lists no moves, so its moves follow its level. A Standard Level that
+    changes the result adds "standardMoves".
+    """
+    learnsets, move_names = _level_up_learnsets()
+    name = move_name or (lambda move: move_names.get(move, move.replace("_", " ").title()))
+    missing = set()
+    for trainer in trainers.values():
+        for mon in trainer["party"]:
+            if mon.get("moves"):
+                continue
+            learnset = learnsets.get(species_constant(mon["species"]))
+            if learnset is None:
+                missing.add(mon["species"])
+                continue
+            moves = [name(move) for move in initial_moveset(learnset, mon["level"])]
+            mon["moves"] = moves
+            standard = mon.get("standardLevel")
+            if standard and standard != mon["level"]:
+                standard_moves = [name(move) for move in initial_moveset(learnset, standard)]
+                if standard_moves != moves:
+                    mon["standardMoves"] = standard_moves
+    if missing:
+        raise ValueError("No level-up learnset for trainer species: " + ", ".join(sorted(missing)))
+
+
 def build():
     out = {}
     if not os.path.isfile(C.src("src", "data", "trainers.party")):
         return build_legacy()
     parse_file(C.src("src", "data", "trainers.party"), out)
     parse_file(C.src("src", "data", "trainers_frlg.party"), out)
+    fill_default_moves(out)
     return out
 
 
@@ -187,6 +278,7 @@ def build_legacy():
                     "pic": pretty(pic[1].removeprefix("TRAINER_PIC_")) if pic else "", "party": parties.get(party[1], []) if party else []}
     if not out or not parties:
         raise ValueError("No legacy trainer data could be imported.")
+    fill_default_moves(out, pretty)
     return out
 
 

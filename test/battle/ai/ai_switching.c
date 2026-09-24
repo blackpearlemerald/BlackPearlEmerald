@@ -1309,6 +1309,23 @@ AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will not switch out if it has
     }
 }
 
+AI_SINGLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will not switch out if it has been Yawn'd while holding a sleep-curing berry")
+{
+    enum Item item;
+    PARAMETRIZE { item = ITEM_CHESTO_BERRY; }
+    PARAMETRIZE { item = ITEM_LUM_BERRY; }
+    GIVEN {
+        ASSUME(GetMoveEffect(MOVE_YAWN) == EFFECT_YAWN);
+        AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT | AI_FLAG_SMART_SWITCHING);
+        PLAYER(SPECIES_SLAKOTH) { Moves(MOVE_SCRATCH, MOVE_YAWN); }
+        OPPONENT(SPECIES_SLAKOTH) { Moves(MOVE_SCRATCH); Item(item); HP(30); MaxHP(30); }
+        OPPONENT(SPECIES_SLAKOTH) { Moves(MOVE_HEADBUTT); }
+    } WHEN {
+        TURN { MOVE(player, MOVE_YAWN) ; EXPECT_MOVE(opponent, MOVE_SCRATCH); }
+        TURN { MOVE(player, MOVE_YAWN) ; EXPECT_MOVE(opponent, MOVE_SCRATCH); }
+    }
+}
+
 AI_DOUBLE_BATTLE_TEST("AI_FLAG_SMART_SWITCHING: AI will switch out if it has been Yawn'd with more than 1/3 HP remaining (Doubles)")
 {
     u32 hp;

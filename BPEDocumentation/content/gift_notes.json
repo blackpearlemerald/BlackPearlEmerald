@@ -1,6 +1,406 @@
 [
   {
+    "script": "LittlerootTown_BrendansHouse_2F_EventScript_WallClock",
+    "note": "<b>Automatic at the start.</b> When you set the wall clock in your bedroom at the start of a new game, you also receive an Adamant Mint, a Modest Mint, a Jolly Mint and a Timid Mint. No message mentions them; check the Bag. Setting the clock is required, so they can't be missed."
+  },
+  {
+    "script": "LittlerootTown_MaysHouse_2F_EventScript_WallClock",
+    "note": "<b>Automatic at the start.</b> When you set the wall clock in your bedroom at the start of a new game, you also receive an Adamant Mint, a Modest Mint, a Jolly Mint and a Timid Mint. No message mentions them; check the Bag. Setting the clock is required, so they can't be missed."
+  },
+  {
+    "script": "LittlerootTown_ProfessorBirchsLab_MapScripts",
+    "note": "<b>Automatic, with the Pokédex.</b> After you beat your rival on Route 103 and return to Professor Birch's lab, he gives you the Pokédex and your rival gives you a gift that depends on your mode.<br><b>Nuzlocke mode:</b> 100 Poké Balls, 100 Rare Candies, 100 Max Repels and 100 Friend Berries.<br><b>Standard mode:</b> 10 Poké Balls only.<br>It can't be missed."
+  },
+  {
+    "script": "LittlerootTown_EventScript_Mom",
+    "note": "<b>Automatic, after the Pokédex.</b> Once Professor Birch gives you the Pokédex, Mom stops you on your way out of Littleroot Town with her starter kit: Picnic Basket, Portable PC, Taxi Ticket, Candy Jar, Exp. Share, Old Rod, Escape Rope and Pocket Watch. In Standard mode the kit also includes the Level Limiter. It can't be missed."
+  },
+  {
+    "script": "PlayersHouse_1F_EventScript_Mom",
+    "note": "<b>Talk to Mom at home.</b> Mom is on the ground floor of your house.<br><b>Amulet Coin:</b> once you have the PokéNav, talk to her once so she registers her number. After you earn Badge 5 from your Dad at the Petalburg Gym, talk to her again for the Amulet Coin. <b>Can be missed:</b> once your Dad has visited after the Hall of Fame, she no longer gives it.<br><b>Level Limiter:</b> Standard players already get it in her starter kit. A Nuzlocke challenge ends after the Hall of Fame; talk to her after that and she gives it to you.",
+    "exclude": ["ITEM_CANDY_JAR", "ITEM_EXP_SHARE"],
+    "add": [{"item": "ITEM_AMULET_COIN"}, {"item": "ITEM_LEVEL_LIMITER"}]
+  },
+  {
+    "script": "LittlerootTown_BrendansHouse_1F_MapScripts",
+    "note": "<b>Postgame, automatic.</b> After you enter the Hall of Fame, your Dad is waiting when you come home. He gives you the Mystic Ticket and the Aurora Ticket from Mr. Briney, for the ferries at Slateport and Lilycove. A Nuzlocke challenge also ends at this moment. It can't be missed."
+  },
+  {
+    "script": "LittlerootTown_MaysHouse_1F_MapScripts",
+    "note": "<b>Postgame, automatic.</b> After you enter the Hall of Fame, your Dad is waiting when you come home. He gives you the Mystic Ticket and the Aurora Ticket from Mr. Briney, for the ferries at Slateport and Lilycove. A Nuzlocke challenge also ends at this moment. It can't be missed."
+  },
+  {
+    "script": "LittlerootTown_MapScripts",
+    "note": "<b>Postgame, automatic.</b> After you enter the Hall of Fame, Professor Birch meets you the first time you step outside in Littleroot Town. He gives you both the Latiosite and the Latiasite before taking you to his lab. It can't be missed."
+  },
+  {
+    "script": "OldaleTown_EventScript_MartEmployee",
+    "note": "<b>Just talk to him.</b> The Poké Mart clerk near the south entrance of Oldale Town walks you to the Mart and gives you a free Potion. Afterwards he stands outside the Mart."
+  },
+  {
+    "script": "DewfordTown_EventScript_OldRodFisherman",
+    "exclude": ["ITEM_OLD_ROD"]
+  },
+  {
+    "script": "Route104_EventScript_ExpertF",
+    "note": "<b>Just talk to her.</b> This woman in the north part of Route 104, near Rustboro City, gives you a Chesto Berry the first time you speak to her."
+  },
+  {
     "script": "Route104_EventScript_WhiteHerbFlorist",
-    "note": "<b>Not here at first.</b> This woman only appears once you have both talked to the owner inside the Pretty Petal Flower Shop and earned Wattson's badge in Mauville City (Badge 3). Leave the shop or re-enter Route 104 afterwards and she will be standing outside the shop with the White Herb."
+    "note": "<b>Not here at first.</b> This woman only appears once you have both talked to the owner inside the Pretty Petal Flower Shop and earned the Mauville City Gym badge (Badge 3). Leave the shop or re-enter Route 104 afterwards and she will be standing outside the shop with the White Herb."
+  },
+  {
+    "script": "Route104_EventScript_Boy2",
+    "note": "<b>Just talk to him.</b> This boy just south of the Pretty Petal Flower Shop on Route 104 gives you the Bullet Seed TM the first time you speak to him."
+  },
+  {
+    "script": "Route104_PrettyPetalFlowerShop_EventScript_WailmerPailGirl",
+    "note": "<b>Just talk to her.</b> The girl inside the Pretty Petal Flower Shop on Route 104 gives you the Wailmer Pail the first time you speak to her. The other girl in the shop gives you one random Berry a day."
+  },
+  {
+    "script": "PetalburgWoods_EventScript_Girl",
+    "note": "<b>Just talk to her.</b> This girl in the north part of Petalburg Woods gives you a Miracle Seed the first time you speak to her."
+  },
+  {
+    "script": "PetalburgWoods_EventScript_DevonResearcherLeft",
+    "note": "<b>Save the Devon researcher.</b> The first time you walk through the middle of Petalburg Woods, a Team Aqua Grunt corners a Devon researcher. Beat the Grunt and the researcher thanks you with a Shed Shell. <b>Can be missed:</b> it is offered only once, so make room in your Bag before you enter the woods."
+  },
+  {
+    "script": "RustboroCity_Gym_EventScript_Roxanne",
+    "note": "<b>Beat the Rustboro Gym Leader (Badge 1).</b> After the battle you get TM Package 1 (a set of TMs that go straight into your TM Case) and an Eviolite. If your Bag had no room for the Eviolite, talk to the Leader again."
+  },
+  {
+    "script": "RustboroCity_CuttersHouse_EventScript_Cutter",
+    "note": "<b>Just talk to him.</b> The man in the Cutter's House in Rustboro City gives you HM Cut the first time you speak to him. Using Cut outside of battle needs the Rustboro Gym badge (Badge 1)."
+  },
+  {
+    "script": "RustboroCity_Flat2_2F_EventScript_NinjaBoy",
+    "note": "<b>Just talk to him.</b> This boy on the second floor of an apartment building in Rustboro City gives you a Premier Ball the first time you speak to him."
+  },
+  {
+    "script": "RustboroCity_PokemonSchool_EventScript_Teacher",
+    "note": "<b>Just talk to him.</b> The teacher in the Pokémon Trainer's School in Rustboro City gives you a Quick Claw the first time you speak to him."
+  },
+  {
+    "script": "RusturfTunnel_EventScript_Grunt",
+    "note": "<b>Story: beat the Team Aqua Grunt.</b> After you earn Badge 1, a Team Aqua Grunt steals the Devon Goods in Rustboro City and flees into Rusturf Tunnel with Mr. Briney's Peeko. Beat him in the tunnel and he hands back the Devon Parts, which you later deliver to Capt. Stern in Slateport City."
+  },
+  {
+    "script": "RustboroCity_EventScript_DevonEmployee1",
+    "note": "<b>Story: return the Devon Goods.</b> After you get the Devon Goods back from the Team Aqua Grunt in Rusturf Tunnel, walk back into Rustboro City. The Devon employee thanks you with a Great Ball and takes you to meet the president of Devon. <b>Can be missed:</b> if your Bag is full, the Great Ball is lost."
+  },
+  {
+    "script": "RustboroCity_DevonCorp_3F_MapScripts",
+    "note": "<b>Story, automatic.</b> After you return the Devon Goods, a Devon employee brings you to the third floor of Devon Corporation. The president, Mr. Stone, gives you a Letter to deliver to Steven in Dewford Town, and the PokéNav. It can't be missed."
+  },
+  {
+    "script": "DewfordTown_Gym_EventScript_Brawly",
+    "note": "<b>Beat the Dewford Gym Leader (Badge 2).</b> After the battle you get TM Package 2 (a set of TMs that go straight into your TM Case) and a Focus Sash. If your Bag had no room for the Focus Sash, talk to the Leader again."
+  },
+  {
+    "script": "DewfordTown_Hall_EventScript_SludgeBombMan",
+    "note": "<b>Not here until Badge 5.</b> This man is not in Dewford Hall at first. He appears only after you beat your Dad at the Petalburg Gym (Badge 5), and then gives you the Sludge Bomb TM the first time you talk to him. The Lavaridge Gym's TM Package 4 (Badge 4) already includes Sludge Bomb, so this is a spare copy."
+  },
+  {
+    "script": "DewfordTown_House2_EventScript_Man",
+    "note": "<b>Just talk to him.</b> This fashion-loving man in a house in Dewford Town gives you the Silk Scarf the first time you speak to him."
+  },
+  {
+    "script": "GraniteCave_1F_EventScript_Hiker",
+    "note": "<b>Just talk to him.</b> The Hiker in the first room of Granite Cave gives you HM Flash the first time you speak to him. Using Flash outside of battle needs the Dewford Gym badge (Badge 2)."
+  },
+  {
+    "script": "GraniteCave_StevensRoom_EventScript_Steven",
+    "note": "<b>Deliver the Letter.</b> Mr. Stone gives you a Letter for Steven at Devon Corporation in Rustboro City. Steven waits in the room at the far end of Granite Cave. Hand him the Letter and he gives you the Steel Wing TM, then leaves. <b>Can be missed:</b> if your Bag is full, the TM is lost."
+  },
+  {
+    "script": "Route109_EventScript_SoftSandGirl",
+    "note": "<b>Just talk to her.</b> This little girl on the beach of Route 109, south of Slateport City, gives you the Soft Sand the first time you speak to her."
+  },
+  {
+    "script": "Route109_SeashoreHouse_EventScript_Owner",
+    "note": "<b>Beat the three Trainers inside.</b> The owner of the Seashore House on Route 109 gives you an Ability Capsule and a Pearl once you have beaten all three Trainers in the house. Talk to him after the last battle. After that he sells Soda Pop."
+  },
+  {
+    "script": "SlateportCity_EventScript_BerryPowderClerk",
+    "note": "<b>Just talk to her.</b> The Berry Powder clerk at Slateport's market gives you the Powder Jar the first time you speak to her. After that she trades items for Berry Powder."
+  },
+  {
+    "script": "SlateportCity_BattleTentLobby_EventScript_TormentGiver",
+    "note": "<b>Just talk to him.</b> The Sailor in the lobby of the Slateport Battle Tent gives you the Torment TM the first time you speak to him. You don't have to enter a challenge."
+  },
+  {
+    "script": "SlateportCity_OceanicMuseum_1F_EventScript_FamiliarGrunt",
+    "note": "<b>Just talk to him.</b> A Team Aqua Grunt stands on the first floor of the Oceanic Museum, past the ¥50 entrance counter. He hands you the Thief TM the first time you speak to him, then runs off."
+  },
+  {
+    "script": "SlateportCity_PokemonFanClub_EventScript_SootheBellWoman",
+    "note": "<b>Show her a friendly Pokémon.</b> Talk to this woman in the Pokémon Fan Club while the first Pokémon in your party is very friendly toward you (150 friendship or more). She then gives you the Soothe Bell. If it isn't friendly enough yet, come back later."
+  },
+  {
+    "script": "SlateportCity_PokemonFanClub_EventScript_Chairman",
+    "note": "<b>After your first Contest.</b> The Fan Club Chairman only rates Pokémon once you have entered a Pokémon Contest in Lilycove City. Then talk to him with a lead Pokémon whose Cool, Beauty, Cute, Smart or Tough condition is 200 or more (raise it with Pokéblocks). He gives the matching scarf: Red for Cool, Blue for Beauty, Pink for Cute, Green for Smart, Yellow for Tough. One scarf per conversation, each only once."
+  },
+  {
+    "script": "SlateportCity_Harbor_EventScript_CaptStern",
+    "note": "<b>After Badge 7, trade him the Scanner.</b> Once you have the Mossdeep Gym badge (Badge 7), talk to Capt. Stern in Slateport Harbor while carrying the Scanner. He trades it for your choice of the Deep Sea Tooth or the Deep Sea Scale. There is only one Scanner, so you get only one of them. The Scanner is in a locked room on the Abandoned Ship's lower deck, reached with Dive."
+  },
+  {
+    "script": "Route110_EventScript_RivalTrigger1",
+    "note": "<b>Beat Cynthia.</b> Partway up Route 110, on the way from Slateport City to Mauville City, your rival Cynthia stops you for a battle. Win and she gives you the Dowsing Machine, which finds hidden items. The battle can't be avoided and she waits for a rematch if you lose, so it can't be missed."
+  },
+  {
+    "script": "Route110_TrickHouseEnd_EventScript_TrickMaster",
+    "note": "<b>Clear the Trick House puzzles (from Badge 4).</b> The Trick House on Route 110 opens once you have the Lavaridge Gym badge (Badge 4). Find where the Trick Master is hiding in the entrance room, then go through the hole behind the scroll. He gives one reward at the end of each puzzle; leave the house and come back for the next one. Some puzzles need Cut, Rock Smash or Strength.<br><b>Puzzles 1–7:</b> Gengarite, Tyranitarite, Mawilite, Garchompite, Audinite, Choice Specs, Choice Band.<br><b>Puzzle 8:</b> Choice Scarf, a Red or Blue Tent decoration and the Poké Flute. Make room in your Bag first: these are not kept for you if it is full."
+  },
+  {
+    "script": "Route110_TrickHouseEntrance_EventScript_TrickMaster",
+    "note": "<b>Only if your Bag was full.</b> If you had no room for a puzzle reward, the Trick Master keeps it and gives it to you here, in the entrance room, the next time you come in. Otherwise this is where you find him hiding to start the next puzzle."
+  },
+  {
+    "script": "MauvilleCity_BikeShop_EventScript_Rydel",
+    "note": "<b>Choose one bike, swap any time.</b> Talk to Rydel in the Mauville City bike shop and answer Yes when he asks if you came from far away. Then pick the Mach Bike or the Acro Bike. He swaps it for the other one whenever you ask."
+  },
+  {
+    "script": "MauvilleCity_House1_EventScript_RockSmashDude",
+    "note": "<b>Just talk to him.</b> The man in this house in Mauville City gives you HM Rock Smash the first time you speak to him. Using Rock Smash outside of battle needs the Mauville Gym badge (Badge 3)."
+  },
+  {
+    "script": "MauvilleCity_House2_EventScript_Woman",
+    "note": "<b>Trade her a Harbor Mail.</b> This woman in Mauville City swaps her Coin Case for a Harbor Mail, sold at the Slateport City Poké Mart. Talk to her with one in your Bag and answer Yes."
+  },
+  {
+    "script": "MauvilleCity_Gym_EventScript_Wattson",
+    "note": "<b>Beat the Mauville Gym Leader (Badge 3).</b> After the battle you get TM Package 3 (a set of TMs that go straight into your TM Case) and a Life Orb. If your Bag had no room for the Life Orb, talk to the Leader again.",
+    "add": [
+      {"item": "ITEM_TM_METRONOME"}, {"item": "ITEM_TM_GRASS_KNOT"},
+      {"item": "ITEM_TM_THUNDER_WAVE"}, {"item": "ITEM_TM_POISON_JAB"},
+      {"item": "ITEM_TM_REST"}
+    ]
+  },
+  {
+    "script": "MauvilleCity_EventScript_Wattson",
+    "note": "<b>After Badge 5, two visits.</b> After you beat your Dad at the Petalburg Gym, the Mauville Gym Leader leaves his Gym and stands in Mauville City.<br><b>Basement Key:</b> he gives it to you the first time you talk to him.<br><b>Thunderbolt TM:</b> Surf from Route 110 to New Mauville, open it with the Basement Key and turn off the generator. Then talk to him again."
+  },
+  {
+    "script": "RusturfTunnel_MapScripts",
+    "note": "<b>Break the boulder (after Badge 3).</b> With HM Rock Smash and the Mauville Gym badge (Badge 3), smash one of the boulders in Rusturf Tunnel. Wanda's boyfriend, digging from the other side, gives you HM Strength on the spot."
+  },
+  {
+    "script": "VerdanturfTown_WandasHouse_EventScript_WandasBoyfriend",
+    "note": "<b>Once a day.</b> Wanda's boyfriend in Wanda's house in Verdanturf Town gives you a Pearl. Talk to him again each new day for another."
+  },
+  {
+    "script": "VerdanturfTown_House_EventScript_Woman2",
+    "note": "<b>Just talk to her.</b> The woman in this Verdanturf Town house gives you the Rotom Catalog the first time you speak to her."
+  },
+  {
+    "script": "VerdanturfTown_BattleTentLobby_EventScript_AttractGiver",
+    "note": "<b>Just talk to her.</b> The girl in the lobby of the Verdanturf Battle Tent gives you the Attract TM the first time you speak to her. You don't have to enter a challenge."
+  },
+  {
+    "script": "Route111_EventScript_Girl",
+    "note": "<b>Once a day.</b> This girl at the north end of Route 111, past the desert, gives you a Razz Berry. Talk to her again each new day for another."
+  },
+  {
+    "script": "Route111_WinstrateFamilysHouse_EventScript_Victoria",
+    "note": "<b>Just talk to her.</b> The mother of the Winstrate family, inside their house on Route 111, gives you an Ability Patch and 2 Pearls the first time you speak to her."
+  },
+  {
+    "script": "Route113_GlassWorkshop_EventScript_GlassWorker",
+    "note": "<b>Just talk to him.</b> The glass worker in the Glass Workshop on Route 113 gives you the Soot Sack the first time you speak to him. Walk through the ash-covered grass on Route 113 to fill it, then bring the ash back to trade for glass flutes or furniture."
+  },
+  {
+    "script": "Route114_EventScript_RoarGentleman",
+    "note": "<b>Just talk to him.</b> This gentleman on Route 114 gives you the Roar TM the first time you speak to him."
+  },
+  {
+    "script": "Route114_FossilManiacsHouse_EventScript_FossilManiacsBrother",
+    "note": "<b>Just talk to him.</b> The Fossil Maniac's little brother, inside their house on Route 114, gives you the Dig TM the first time you speak to him."
+  },
+  {
+    "script": "FallarborTown_CozmosHouse_EventScript_ProfCozmo",
+    "note": "<b>Trade him the Meteorite.</b> Prof. Cozmo is only home after you defeat Team Magma at the top of Mt. Chimney. Take the Meteorite from the machine at the summit, bring it to his house in Fallarbor Town and say Yes when he asks for it. He gives you the Return TM in exchange."
+  },
+  {
+    "script": "MtChimney_EventScript_MeteoriteMachine",
+    "note": "<b>After you beat Maxie.</b> Once you defeat Team Magma's leader Maxie at the top of Mt. Chimney, examine the machine he was using and answer Yes to take the Meteorite. Prof. Cozmo in Fallarbor Town trades the Return TM for it."
+  },
+  {
+    "script": "MtChimney_EventScript_LavaCookieLady",
+    "note": "<b>Buy it, after Maxie.</b> This woman appears on Mt. Chimney after you defeat Team Magma's leader Maxie at the summit. She sells Lava Cookies for ¥200 each, as many as you like."
+  },
+  {
+    "script": "LavaridgeTown_Gym_1F_EventScript_Flannery",
+    "note": "<b>Beat the Lavaridge Gym Leader (Badge 4).</b> After the battle you get the Mega Ring, which lets you Mega Evolve, and TM Package 4 (a set of TMs that go straight into your TM Case). If your Bag had no room, talk to the Leader again."
+  },
+  {
+    "script": "LavaridgeTown_MapScripts",
+    "note": "<b>After Badge 4, automatic.</b> When you walk out of the Lavaridge Gym with its badge, your rival Cynthia congratulates you and gives you the Go-Goggles, which let you cross the sandstorm in the Route 111 desert. It can't be missed."
+  },
+  {
+    "script": "LavaridgeTown_HerbShop_EventScript_OldMan",
+    "note": "<b>Just talk to him.</b> The old man in Lavaridge Town's Herb Shop gives you Charcoal the first time you speak to him."
+  },
+  {
+    "script": "PetalburgCity_Gym_EventScript_Norman",
+    "note": "<b>Beat your Dad (Badge 5).</b> The Petalburg Gym Leader battles you once you have the first four badges. After the battle you get TM Package 5 (a set of TMs that go straight into your TM Case) and an Assault Vest. If your Bag had no room for the Assault Vest, talk to him again.",
+    "exclude": ["ITEM_ENIGMA_BERRY_E_READER"]
+  },
+  {
+    "script": "PetalburgCity_WallysHouse_MapScripts",
+    "note": "<b>After Badge 5, automatic.</b> Right after you beat your Dad at the Petalburg Gym, Wally's father takes you to his house and gives you HM Surf. It can't be missed."
+  },
+  {
+    "script": "MirageTower_4F_EventScript_RootFossil",
+    "note": "<b>Choose one fossil.</b> At the top of Mirage Tower in the Route 111 desert. You need the Go-Goggles to cross the desert, and the Mach Bike and Rock Smash to climb. The tower only appears some of the time; leave Route 111 and come back if it isn't there. Taking the Root Fossil makes the tower collapse and the Claw Fossil is lost with it, until you find it in the Desert Underpass after the Hall of Fame."
+  },
+  {
+    "script": "MirageTower_4F_EventScript_ClawFossil",
+    "note": "<b>Choose one fossil.</b> At the top of Mirage Tower in the Route 111 desert. You need the Go-Goggles to cross the desert, and the Mach Bike and Rock Smash to climb. The tower only appears some of the time; leave Route 111 and come back if it isn't there. Taking the Claw Fossil makes the tower collapse and the Root Fossil is lost with it, until you find it in the Desert Underpass after the Hall of Fame."
+  },
+  {
+    "script": "DesertUnderpass_EventScript_Fossil",
+    "note": "<b>Postgame: the fossil you left behind.</b> After you enter the Hall of Fame, the tunnel at the back of the Fossil Maniac's house on Route 114 opens into the Desert Underpass. At its far end is the fossil you didn't take from Mirage Tower: the Claw Fossil if you took the Root Fossil, or the Root Fossil if you took the Claw Fossil. Nothing is here if you never took one."
+  },
+  {
+    "script": "Route116_EventScript_DevonEmployee",
+    "note": "<b>Not here at first.</b> This Devon employee appears after you deliver the Devon Parts to Capt. Stern at the Oceanic Museum in Slateport City. He then waits on Route 116 next to the entrance to Rusturf Tunnel and gives you a Repeat Ball."
+  },
+  {
+    "script": "Route118_EventScript_GoodRodFisherman",
+    "note": "<b>Say yes.</b> This fisherman on the west side of Route 118, just east of Mauville City, asks whether a Good Rod is good. Answer Yes and he gives you the Good Rod."
+  },
+  {
+    "script": "Route119_EventScript_RivalTrigger1",
+    "note": "<b>Beat Cynthia.</b> After you drive Team Aqua out of the Weather Institute, head north on Route 119 toward Fortree City. Your rival Cynthia challenges you on the way; win and she gives you HM Fly. The battle can't be avoided and she waits for a rematch if you lose, so it can't be missed."
+  },
+  {
+    "script": "FortreeCity_House2_EventScript_HiddenPowerGiver",
+    "note": "<b>Guess the coin three times.</b> This old woman in a house in Fortree City hides a coin in one hand three times. The answers are always <b>Right</b>, <b>Right</b>, then <b>Left</b>. Get all three right and she gives you the Hidden Power TM. A wrong guess just ends the game; talk to her again to retry."
+  },
+  {
+    "script": "FortreeCity_House4_EventScript_Boy",
+    "note": "<b>Deliver Wingull's mail.</b> Talk to this boy in Fortree City and he sends his Wingull off to Mossdeep City. In Mossdeep, find the Wingull in the house whose owner's sister writes to her boyfriend in Fortree, and talk to it so it flies home. Then return to the boy for the Mental Herb."
+  },
+  {
+    "script": "MtPyre_1F_EventScript_CleanseTagWoman",
+    "note": "<b>Just talk to her.</b> This old woman on the first floor inside Mt. Pyre gives you a Cleanse Tag the first time you speak to her."
+  },
+  {
+    "script": "MtPyre_Summit_EventScript_TeamAquaTrigger0",
+    "note": "<b>Reach the top of Mt. Pyre.</b> When you first walk up to Team Aqua's leader Archie at the summit, he runs off with the orb. The old woman who guards it then gives you the Magma Emblem Team Magma left behind. It can't be missed."
+  },
+  {
+    "script": "MtPyre_Summit_EventScript_Steven",
+    "note": "<b>Talk to Steven on the summit.</b> Steven waits on the path up the Mt. Pyre summit and gives you the Devon Scope, which you need to reveal the invisible Pokémon blocking the Fortree Gym. A Hiker on Route 120 points you here."
+  },
+  {
+    "script": "Route123_EventScript_GigaDrainGirl",
+    "note": "<b>Bring a Grass-type Pokémon.</b> This girl at the east end of Route 123, near Mt. Pyre, gives you the Giga Drain TM when you talk to her with a Grass-type Pokémon in your party (Eggs don't count)."
+  },
+  {
+    "script": "Route123_BerryMastersHouse_EventScript_BerryMastersWife",
+    "note": "<b>Once a day: tell her a saying.</b> The Berry Master's wife, in their house on Route 123, asks for a good saying once a day and gives a random Berry for any answer. Five sayings each earn a rare Berry the first time:<br><b>Spelon Berry:</b> GREAT BATTLE<br><b>Pamtre Berry:</b> CHALLENGE CONTEST (CONTEST unlocks after the Hall of Fame)<br><b>Watmel Berry:</b> OVERWHELMING LATIAS (you must have seen Latias)<br><b>Durin Berry:</b> COOL LATIOS (you must have seen Latios)<br><b>Belue Berry:</b> SUPER HUSTLE (SUPER unlocks after the Hall of Fame)<br>The Berry Master himself gives two random Berries a day."
+  },
+  {
+    "script": "LilycoveCity_ContestLobby_EventScript_ContestReceptionist",
+    "exclude": ["ITEM_CONTEST_PASS"]
+  },
+  {
+    "script": "LilycoveCity_House2_EventScript_FatMan",
+    "note": "<b>Just talk to him.</b> The sleepy man in this house in Lilycove City gives you the Rest TM the first time you speak to him."
+  },
+  {
+    "script": "MossdeepCity_EventScript_KingsRockBoy",
+    "note": "<b>Just say yes.</b> This boy in Mossdeep City offers you a King's Rock that Steven gave him. Answer Yes to take it; if you say No, ask him again later."
+  },
+  {
+    "script": "MossdeepCity_House3_EventScript_SuperRodFisherman",
+    "note": "<b>Just say yes.</b> The fisherman in this Mossdeep City house gives you the Super Rod when you say you want it."
+  },
+  {
+    "script": "MossdeepCity_SpaceCenter_1F_EventScript_SunStoneMan",
+    "note": "<b>Just talk to him.</b> This man on the ground floor of the Mossdeep Space Center gives you a Sun Stone the first time you speak to him."
+  },
+  {
+    "script": "MossdeepCity_StevensHouse_MapScripts",
+    "note": "<b>After the Space Center, automatic.</b> Once you have the Mossdeep Gym badge (Badge 7) and have fought off Team Magma at the Mossdeep Space Center with Steven, he invites you home. Walk into his house in Mossdeep City and he gives you HM Dive. It can't be missed."
+  },
+  {
+    "script": "PacifidlogTown_House2_EventScript_FanClubYoungerBrother",
+    "note": "<b>Depends on friendship, once a week.</b> This man in Pacifidlog Town judges the first Pokémon in your party.<br><b>Return:</b> it must be very friendly toward you.<br><b>Frustration:</b> it must be very unfriendly toward you.<br>In between he gives nothing. After giving a TM he makes you wait a week before the next."
+  },
+  {
+    "script": "ShoalCave_LowTideEntranceRoom_EventScript_ShellBellExpert",
+    "note": "<b>Bring 4 Shoal Salt and 4 Shoal Shells.</b> The old man at the entrance of Shoal Cave (surf from Route 125) makes a Shell Bell each time you bring him 4 Shoal Salt and 4 Shoal Shells. Collect them inside the cave; some are only reachable at low tide, and they refill each day."
+  },
+  {
+    "script": "ShoalCave_LowTideInnerRoom_EventScript_ShoalSalt1",
+    "note": "<b>Low tide only, refills daily.</b> This Shoal Salt pile is under water at high tide. Low tide is 3:00–8:59 and 15:00–20:59; the tide is set when you enter Shoal Cave. After you take it, the pile refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideInnerRoom_EventScript_ShoalSalt2",
+    "note": "<b>Low tide only, refills daily.</b> This Shoal Salt pile is under water at high tide. Low tide is 3:00–8:59 and 15:00–20:59; the tide is set when you enter Shoal Cave. After you take it, the pile refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideInnerRoom_EventScript_ShoalShell1",
+    "note": "<b>Any tide, refills daily.</b> Check the blue stone for a Shoal Shell. After you take it, the stone refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideInnerRoom_EventScript_ShoalShell2",
+    "note": "<b>Any tide, refills daily.</b> Check the blue stone for a Shoal Shell. After you take it, the stone refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideInnerRoom_EventScript_ShoalShell3",
+    "note": "<b>Any tide, refills daily.</b> Check the blue stone for a Shoal Shell. After you take it, the stone refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideInnerRoom_EventScript_ShoalShell4",
+    "note": "<b>Any tide, refills daily.</b> Check the blue stone for a Shoal Shell. After you take it, the stone refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideStairsRoom_EventScript_ShoalSalt3",
+    "note": "<b>Refills daily.</b> This Shoal Salt pile is in the small stairway room off Shoal Cave's inner chamber. After you take it, the pile refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideLowerRoom_EventScript_ShoalSalt4",
+    "note": "<b>Refills daily.</b> This Shoal Salt pile is on Shoal Cave's lower level, near the Black Belt. After you take it, the pile refills on a new day once you talk to the old man at the cave entrance, who trades 4 Shoal Salt and 4 Shoal Shells for a Shell Bell."
+  },
+  {
+    "script": "ShoalCave_LowTideLowerRoom_EventScript_BlackBelt",
+    "note": "<b>Just talk to him.</b> This Black Belt training on Shoal Cave's lower level gives you the Focus Band the first time you speak to him."
+  },
+  {
+    "script": "SootopolisCity_EventScript_Wallace",
+    "note": "<b>After the Groudon and Kyogre crisis.</b> Once Rayquaza has calmed Groudon and Kyogre and you have spoken to both Maxie and Archie in Sootopolis City, Wallace waits in front of the Gym and gives you HM Waterfall. He blocks the Gym until you talk to him, so it can't be missed."
+  },
+  {
+    "script": "SootopolisCity_Gym_1F_EventScript_Juan",
+    "note": "<b>Beat the Sootopolis Gym Leader (Badge 8).</b> After the battle you get the Old Sea Map and the Eon Ticket. Show them at Lilycove Harbor to sail to Faraway Island and Southern Island. If your Bag had no room, talk to the Leader again."
+  },
+  {
+    "script": "SootopolisCity_EventScript_Kiri",
+    "note": "<b>Once a day.</b> This girl in Sootopolis City gives you two Berries each day: a random one from Pomeg to Nomel, then either a Figy or an Iapapa Berry. She gives nothing while Groudon and Kyogre are fighting over the city, only before that and after you beat the Sootopolis Gym Leader."
+  },
+  {
+    "script": "SootopolisCity_House1_EventScript_BrickBreakBlackBelt",
+    "note": "<b>Just talk to him.</b> The Black Belt in this Sootopolis City house gives you the Brick Break TM the first time you speak to him. The city's houses are shut during the Groudon and Kyogre crisis."
+  },
+  {
+    "script": "SootopolisCity_LotadAndSeedotHouse_EventScript_LotadBrother",
+    "note": "<b>Show him a bigger Lotad.</b> This brother keeps a Lotad size record. Show him a Lotad from your party or PC that beats the record and he gives you an Elixir. Every new record earns another. The house is shut during the Groudon and Kyogre crisis."
+  },
+  {
+    "script": "SootopolisCity_LotadAndSeedotHouse_EventScript_SeedotBrother",
+    "note": "<b>Show him a bigger Seedot.</b> This brother keeps a Seedot size record. Show him a Seedot from your party or PC that beats the record and he gives you an Elixir. Every new record earns another. The house is shut during the Groudon and Kyogre crisis."
+  },
+  {
+    "script": "SSTidalRooms_EventScript_SnatchGiver",
+    "note": "<b>After Badge 8, on the ferry.</b> The S.S. Tidal between Slateport and Lilycove only takes Trainers with all eight badges. During a voyage, talk to this man in one of the cabins for the Snatch TM."
+  },
+  {
+    "script": "BattleFrontier_ScottsHouse_EventScript_Scott",
+    "note": "<b>Postgame: Frontier Symbols.</b> Scott's house is in the Battle Frontier, reached by ferry after the Hall of Fame. Talk to him once first; he gives you Battle Points.<br><b>Lansat Berry:</b> come back with all seven Silver Symbols.<br><b>Starf Berry:</b> come back with all seven Gold Symbols.<br>He gives one gift per visit, so leave the house and return for the next."
   }
 ]

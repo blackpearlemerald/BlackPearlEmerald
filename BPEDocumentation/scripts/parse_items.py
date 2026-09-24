@@ -375,6 +375,12 @@ def build_locations(items_dict):
                                  else "Always available")
                 else:
                     condition = invs[present[0]]["condition"]
+                # Game Corner prizes cost coins, which is what a reader needs.
+                coins = next((p["coins"] for p in
+                              invs[present[0]].get("prizes", [])
+                              if p.get("item") == item_const), None)
+                if coins:
+                    condition = f"{coins:,} coins"
                 locs[key]["marts"].append(
                     {"mapId": map_id, "martName": label,
                      "condition": condition})
