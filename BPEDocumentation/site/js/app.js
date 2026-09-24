@@ -201,11 +201,25 @@ function giftPopup(gift) {
   // Curated, like guide bodies: how to make a hidden gift NPC appear.
   if (gift.note) html += `<div class="enc-note gift-note">${gift.note}</div>`;
   html += `<div class="gift-items">`;
+  for (const gp of (gift.pokemon || [])) {
+    html += giftMonRow(gp);
+  }
   for (const gi of gift.items) {
     html += itemRow(gi.item, gi.qty);
   }
   html += `</div>`;
   return html;
+}
+
+// A Pokémon a gift NPC hands out (the Lavaridge Town Egg), styled like an
+// item row and linked to its Pokédex page.
+function giftMonRow(gp) {
+  const id = monPageId(gp);
+  const name = prettify(gp.species) + (gp.egg ? " Egg" : "");
+  const inner = encSprite(gp) + `<span class="pop-item-name">${name}</span>`;
+  return id
+    ? `<a class="pop-item-row" href="pokemon.html?id=${encodeURIComponent(id)}">${inner}</a>`
+    : `<div class="pop-item-row">${inner}</div>`;
 }
 
 // Scripted one-off encounters (legendaries, Snorlax, Kecleon...). The
@@ -1125,12 +1139,15 @@ async function main() {
       }
     }
 
-    // Snap to the care package on this map that contains the requested item.
+    // Snap to the gift on this map that contains the requested item or
+    // Pokémon.
     if (opts.gift) {
-      const want = String(opts.gift).replace(/^ITEM_/, "");
+      const want = String(opts.gift).replace(/^(ITEM|SPECIES)_/, "");
       const g = (world.gifts || []).find((gg) =>
-        gg.mapId === id && (gg.items || []).some((gi) =>
-          String(gi.item || "").replace(/^ITEM_/, "") === want));
+        gg.mapId === id && ((gg.items || []).some((gi) =>
+          String(gi.item || "").replace(/^ITEM_/, "") === want)
+        || (gg.pokemon || []).some((gp) =>
+          String(gp.species || "").replace(/^SPECIES_/, "") === want)));
       if (g) {
         ensureLayer(giftLayer, "t-gifts");
         map.setView(W2LL(g.gx, g.gy), 2, { animate: true });

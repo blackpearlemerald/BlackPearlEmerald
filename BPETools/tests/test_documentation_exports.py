@@ -84,6 +84,18 @@ class GiftTests(unittest.TestCase):
         self.assertEqual(items, [{"item": "ITEM_POTION", "qty": 5, "carePackage": True},
                                  {"item": "ITEM_TM_ROAR", "qty": 1, "carePackage": True}])
 
+    def test_gift_egg_takes_the_species_set_before_it(self):
+        scripts = {"EggWoman": "\tgoto_if_set FLAG_X, EggWoman_Done\n"
+                               "\tsetvar VAR_RESULT, SPECIES_TOGEPI\n"
+                               "\tspecial RandomizeEggSpecies\n\tgiveegg VAR_RESULT\n",
+                   "EggWoman_Done": "\trelease\n",
+                   "Event": "\tgiveegg SPECIES_PICHU\n"}
+        self.assertEqual(extract_world.collect_gift_eggs("EggWoman", scripts),
+                         [("EggWoman", "SPECIES_TOGEPI")])
+        self.assertEqual(extract_world.collect_gift_eggs("Event", scripts),
+                         [("Event", "SPECIES_PICHU")])
+        self.assertEqual(extract_world.collect_gift_packages("EggWoman", scripts), [])
+
     def test_mixed_and_choice_gifts_and_purchases(self):
         scripts = {"Npc": "\tcall Npc_Package\n\tgoto Npc_Single\n",
                    "Npc_Package": "\tgiveitem ITEM_POTION\n\tgiveitem ITEM_ANTIDOTE\n",

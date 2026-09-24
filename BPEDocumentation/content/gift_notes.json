@@ -243,6 +243,10 @@
     "note": "<b>Just talk to him.</b> The old man in Lavaridge Town's Herb Shop gives you Charcoal the first time you speak to him."
   },
   {
+    "script": "LavaridgeTown_EventScript_EggWoman",
+    "note": "<b>Just talk to her.</b> The old woman by the hot springs in Lavaridge Town offers you an Egg that hatches into Togepi. Say yes with a free party slot; if your party is full she keeps it until you come back. She gives only one. With the randomizer's Gifts and trades option on, the Egg holds a different Pokémon."
+  },
+  {
     "script": "PetalburgCity_Gym_EventScript_Norman",
     "note": "<b>Beat your Dad (Badge 5).</b> The Petalburg Gym Leader battles you once you have the first four badges. After the battle you get TM Package 5 (a set of TMs that go straight into your TM Case) and an Assault Vest. If your Bag had no room for the Assault Vest, talk to him again.",
     "exclude": ["ITEM_ENIGMA_BERRY_E_READER"]

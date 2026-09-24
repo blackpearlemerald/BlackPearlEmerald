@@ -31,6 +31,8 @@ TRAINER_TOK_RE = re.compile(r"\bTRAINER_[A-Z0-9_]+\b")
 PURCHASE_RE    = re.compile(r"\b(?:removecoins|removemoney)\b")
 GIVEITEM_RE    = re.compile(r"\bgiveitem\s+(ITEM_\w+)(?:\s*,\s*(\d+))?")
 ADDITEM_RE     = re.compile(r"\badditem\s+(ITEM_\w+)(?:\s*,\s*(\d+))?")
+GIVEEGG_RE     = re.compile(r"\bgiveegg\s+(\w+)")
+SETVAR_SPECIES_RE = re.compile(r"\bsetvar\s+(VAR_\w+)\s*,\s*(SPECIES_\w+)")
 
 # Fishing's 10 slots are split across the three rods (pokeemerald convention).
 FISHING_RODS = {"old": (0, 2), "good": (2, 5), "super": (5, 10)}
@@ -844,6 +846,34 @@ def collect_gift_packages(script_label, scripts, _seen=None, _depth=0):
     return packages
 
 
+def collect_gift_eggs(script_label, scripts, _seen=None, _depth=0):
+    """Return [(script label, SPECIES_*)] for each Egg an object's script
+    gives (the Lavaridge Town Egg). `giveegg VAR_RESULT` takes the species
+    the same block last set that variable to."""
+    if not script_label:
+        return []
+    if _seen is None:
+        _seen = set()
+    if script_label in _seen or _depth > 24:
+        return []
+    _seen.add(script_label)
+    body = scripts.get(script_label)
+    if body is None:
+        return []
+    eggs = []
+    for m in GIVEEGG_RE.finditer(body):
+        species = m.group(1)
+        if not species.startswith("SPECIES_"):
+            sets = [s for var, s in SETVAR_SPECIES_RE.findall(body[:m.start()])
+                    if var == species]
+            species = sets[-1] if sets else None
+        if species:
+            eggs.append((script_label, species))
+    for target in script_refs(body, scripts):
+        eggs.extend(collect_gift_eggs(target, scripts, _seen, _depth + 1))
+    return eggs
+
+
 def merge_gift_packages(packages):
     """Merge reward groups for one NPC into (items, isCarePackage).
 
@@ -1024,16 +1054,26 @@ def load_maps(dims):
             packages = [(source, items) for source, items in packages
                         if len({item for item, _ in items}) >= 2
                         or source in local_scripts]
-            if not packages:
+            # Eggs from shared scripts are event distributions too.
+            eggs = [(source, species) for source, species
+                    in collect_gift_eggs(script, gift_scripts)
+                    if source in local_scripts
+                    and source not in claimed_package_scripts]
+            if not packages and not eggs:
                 return
-            for source, _ in packages:
+            for source, _ in packages + eggs:
                 claimed_package_scripts.add(source)
             items, care_package = merge_gift_packages(packages)
-            if items:
-                gifts.append({"x": x, "y": y, "gfx": gfx,
-                              "dir": direction, "script": script,
-                              "carePackage": care_package,
-                              "items": items})
+            pokemon = [{"species": species, "egg": True}
+                       for species in dict.fromkeys(s for _, s in eggs)]
+            if items or pokemon:
+                gift = {"x": x, "y": y, "gfx": gfx,
+                        "dir": direction, "script": script,
+                        "carePackage": care_package,
+                        "items": items}
+                if pokemon:
+                    gift["pokemon"] = pokemon
+                gifts.append(gift)
 
         for ev in mj.get("object_events", []):
             x, y = int(ev.get("x", 0)), int(ev.get("y", 0))
@@ -1561,9 +1601,11 @@ def build():
                     "script": g.get("script", ""),
                     "carePackage": g.get("carePackage", False),
                     "items": g["items"]}
+            if g.get("pokemon"):
+                gift["pokemon"] = [dict(p) for p in g["pokemon"]]
             if gift["script"] in GIFT_NOTES:
                 apply_gift_note(gift, GIFT_NOTES[gift["script"]])
-            if gift["items"]:
+            if gift["items"] or gift.get("pokemon"):
                 out_gifts.append(gift)
 
         for st in m.get("statics", []):
@@ -1603,6 +1645,10 @@ def build():
     # Static encounter markers reuse the wild-encounter menu icons.
     pokemon_sprites.annotate_encounters(
         [{"enc": {"land": {"mons": out_statics}}}])
+    # So do the Pokémon (Eggs) that gift NPCs hand out.
+    pokemon_sprites.annotate_encounters(
+        [{"enc": {"land": {"mons": [p for g in out_gifts
+                                    for p in g.get("pokemon", [])]}}}])
 
     guides = build_guides(placed)
     all_gift_scripts = {g.get("script", "") for m in maps.values()
