@@ -495,8 +495,12 @@ def _extract_brace_entries(text):
             i += 1
 
 def _parse_conditions(cond_str):
-    """Parse CONDITIONS({IF_X, VAL}, ...) → list of condition keys found."""
-    return re.findall(r"IF_\w+", cond_str)
+    """Parse CONDITIONS({IF_X, A, B}, ...) → [["IF_X", "A", "B"], ...]."""
+    conds = []
+    for m in re.finditer(r"\{\s*(IF_\w+)\s*(?:,([^{}]*))?\}", cond_str):
+        args = [a.strip() for a in (m.group(2) or "").split(",") if a.strip()]
+        conds.append([m.group(1)] + args)
+    return conds
 
 def _parse_evolutions(block):
     m = re.search(r"\.evolutions\s*=\s*EVOLUTION\(", block)
@@ -540,16 +544,21 @@ def _parse_evolutions(block):
         else:
             evo["param"] = param
 
-        # Parse CONDITIONS for richer display labels
+        evo["rawParam"] = param
         if "CONDITIONS" in rest:
             conds = _parse_conditions(rest)
             if conds:
                 evo["conditions"] = conds
-            tm = re.search(r"\{\s*IF_(NOT_)?TIME\s*,\s*TIME_(\w+)\s*\}", rest)
-            if tm:
-                evo["time"] = ("not " if tm.group(1) else "") + tm.group(2).lower()
 
         evos.append(evo)
+
+    # Shedinja appears when its sibling evolves, so it shares that level.
+    for evo in evos:
+        if evo["method"] == "EVO_SPLIT_FROM_EVO":
+            evo["splitFrom"] = evo["rawParam"].replace("SPECIES_", "")
+            for other in evos:
+                if other["target"] == evo["splitFrom"] and other.get("level"):
+                    evo["level"] = other["level"]
     return evos
 
 def _collect_stat_macros(content):
@@ -872,54 +881,279 @@ def iter_species_decls(content, macros):
                 i += 1
             yield key, expanded[bi + 1:i]
 
-# ── Evolution method label (kept in sync with site/js/pokemon.js) ────────────────
+# ── Evolution method labels ──────────────────────────────────────────────────────
+#
+# Every condition the game checks (GetEvolutionTargetSpecies in src/pokemon.c)
+# is written out, so a label never says "Level up" when more is needed. Older
+# sources name one rule per method (EVO_LEVEL_FEMALE, EVO_ITEM_HOLD_NIGHT, ...)
+# instead of listing CONDITIONS; _normalize_evo translates them first.
 
-def _evo_label(evo):
-    m = evo.get("method", "")
-    conds = evo.get("conditions", [])
-    has_friend = "IF_MIN_FRIENDSHIP" in conds
-    is_night = "IF_TIME" in conds
-    is_day = "IF_NOT_TIME" in conds
-    is_map = "IF_IN_MAP" in conds
-    is_fairy = "IF_KNOWS_MOVE_TYPE" in conds
+# The player never leaves Hoenn (include/regions.h), as in
+# BPETools/audit_living_dex.py, so other regions' evolutions cannot happen.
+CURRENT_REGION = "REGION_HOENN"
 
-    if m == "EVO_LEVEL" or m.startswith("EVO_LEVEL_"):
-        if evo.get("level"):
-            return "Lv. " + str(evo["level"])
-        if has_friend and is_night:
-            return "Friendship (night)"
-        if has_friend and is_day:
-            return "Friendship (day)"
-        if has_friend and is_fairy:
-            return "Friendship + Fairy move"
-        if has_friend:
-            return "Friendship"
-        if is_map:
-            return "Level up in area"
-        return "Level up"
-    if m == "EVO_FRIENDSHIP":
-        return "Friendship"
-    if m == "EVO_FRIENDSHIP_DAY":
-        return "Friendship (day)"
-    if m == "EVO_FRIENDSHIP_NIGHT":
-        return "Friendship (night)"
-    when = f" ({evo['time']})" if evo.get("time") else ""
-    if "ITEM_HOLD" in m or m == "EVO_TRADE_ITEM":
-        return ("Trade holding " if m == "EVO_TRADE_ITEM" else "Hold ") + (evo.get("item") or "") + when
-    if "ITEM" in m:
-        return (evo.get("item") or "Use item") + when
-    if m == "EVO_TRADE":
-        return "Trade"
-    if m == "EVO_MOVE":
-        return "Know " + (evo.get("move") or "")
-    if m == "EVO_BEAUTY":
-        return "Max Beauty"
-    if m == "EVO_SPIN":
-        return "Spin w/ Sweet"
-    return m.replace("EVO_", "").replace("_", " ").title()
+# Old method → (current method, whether the old param is the level, conditions).
+# "P" stands for the old param and "SELF" for the evolving species.
+_LEGACY_EVOS = {
+    "EVO_FRIENDSHIP": ("EVO_LEVEL", False, [["IF_MIN_FRIENDSHIP"]]),
+    "EVO_FRIENDSHIP_DAY": ("EVO_LEVEL", False, [["IF_MIN_FRIENDSHIP"], ["IF_NOT_TIME", "TIME_NIGHT"]]),
+    "EVO_FRIENDSHIP_NIGHT": ("EVO_LEVEL", False, [["IF_MIN_FRIENDSHIP"], ["IF_TIME", "TIME_NIGHT"]]),
+    "EVO_TRADE_ITEM": ("EVO_TRADE", False, [["IF_HOLD_ITEM", "P"]]),
+    "EVO_TRADE_SPECIFIC_MON": ("EVO_TRADE", False, [["IF_TRADE_PARTNER_SPECIES", "P"]]),
+    "EVO_LEVEL_ATK_GT_DEF": ("EVO_LEVEL", True, [["IF_ATK_GT_DEF"]]),
+    "EVO_LEVEL_ATK_EQ_DEF": ("EVO_LEVEL", True, [["IF_ATK_EQ_DEF"]]),
+    "EVO_LEVEL_ATK_LT_DEF": ("EVO_LEVEL", True, [["IF_ATK_LT_DEF"]]),
+    "EVO_LEVEL_SILCOON": ("EVO_LEVEL", True, [["IF_PID_UPPER_MODULO_10_GT", "4"]]),
+    "EVO_LEVEL_CASCOON": ("EVO_LEVEL", True, [["IF_PID_UPPER_MODULO_10_LT", "5"]]),
+    "EVO_LEVEL_NINJASK": ("EVO_LEVEL", True, []),
+    "EVO_LEVEL_SHEDINJA": ("EVO_SPLIT_FROM_EVO", True, []),
+    "EVO_BEAUTY": ("EVO_LEVEL", False, [["IF_MIN_BEAUTY", "P"]]),
+    "EVO_LEVEL_FEMALE": ("EVO_LEVEL", True, [["IF_GENDER", "MON_FEMALE"]]),
+    "EVO_LEVEL_MALE": ("EVO_LEVEL", True, [["IF_GENDER", "MON_MALE"]]),
+    "EVO_LEVEL_NIGHT": ("EVO_LEVEL", True, [["IF_TIME", "TIME_NIGHT"]]),
+    "EVO_LEVEL_DAY": ("EVO_LEVEL", True, [["IF_NOT_TIME", "TIME_NIGHT"]]),
+    "EVO_LEVEL_DUSK": ("EVO_LEVEL", True, [["IF_TIME", "TIME_EVENING"]]),
+    "EVO_LEVEL_RAIN": ("EVO_LEVEL", True, [["IF_WEATHER", "WEATHER_RAIN"]]),
+    "EVO_LEVEL_FOG": ("EVO_LEVEL", True, [["IF_WEATHER", "WEATHER_FOG"]]),
+    "EVO_LEVEL_DARK_TYPE_MON_IN_PARTY": ("EVO_LEVEL", True, [["IF_TYPE_IN_PARTY", "TYPE_DARK"]]),
+    "EVO_LEVEL_NATURE_AMPED": ("EVO_LEVEL", True, [["IF_AMPED_NATURE"]]),
+    "EVO_LEVEL_NATURE_LOW_KEY": ("EVO_LEVEL", True, [["IF_LOW_KEY_NATURE"]]),
+    "EVO_LEVEL_FAMILY_OF_FOUR": ("EVO_LEVEL", True, [["IF_PID_MODULO_100_GT", "0"]]),
+    "EVO_LEVEL_FAMILY_OF_THREE": ("EVO_LEVEL", True, [["IF_PID_MODULO_100_EQ", "0"]]),
+    "EVO_ITEM_HOLD": ("EVO_LEVEL", False, [["IF_HOLD_ITEM", "P"]]),
+    "EVO_ITEM_HOLD_DAY": ("EVO_LEVEL", False, [["IF_HOLD_ITEM", "P"], ["IF_NOT_TIME", "TIME_NIGHT"]]),
+    "EVO_ITEM_HOLD_NIGHT": ("EVO_LEVEL", False, [["IF_HOLD_ITEM", "P"], ["IF_TIME", "TIME_NIGHT"]]),
+    "EVO_ITEM_MALE": ("EVO_ITEM", False, [["IF_GENDER", "MON_MALE"]]),
+    "EVO_ITEM_FEMALE": ("EVO_ITEM", False, [["IF_GENDER", "MON_FEMALE"]]),
+    "EVO_ITEM_DAY": ("EVO_ITEM", False, [["IF_NOT_TIME", "TIME_NIGHT"]]),
+    "EVO_ITEM_NIGHT": ("EVO_ITEM", False, [["IF_TIME", "TIME_NIGHT"]]),
+    "EVO_DARK_SCROLL": ("EVO_SCRIPT_TRIGGER", False, []),
+    "EVO_WATER_SCROLL": ("EVO_SCRIPT_TRIGGER", False, []),
+    "EVO_MOVE": ("EVO_LEVEL", False, [["IF_KNOWS_MOVE", "P"]]),
+    "EVO_MOVE_TWO_SEGMENT": ("EVO_LEVEL", False, [["IF_KNOWS_MOVE", "P"], ["IF_PID_MODULO_100_GT", "0"]]),
+    "EVO_MOVE_THREE_SEGMENT": ("EVO_LEVEL", False, [["IF_KNOWS_MOVE", "P"], ["IF_PID_MODULO_100_EQ", "0"]]),
+    "EVO_FRIENDSHIP_MOVE_TYPE": ("EVO_LEVEL", False, [["IF_MIN_FRIENDSHIP"], ["IF_KNOWS_MOVE_TYPE", "P"]]),
+    "EVO_MAPSEC": ("EVO_LEVEL", False, [["IF_IN_MAPSEC", "P"]]),
+    "EVO_SPECIFIC_MAP": ("EVO_LEVEL", False, [["IF_IN_MAP", "P"]]),
+    "EVO_SPECIFIC_MON_IN_PARTY": ("EVO_LEVEL", False, [["IF_SPECIES_IN_PARTY", "P"]]),
+    "EVO_CRITICAL_HITS": ("EVO_BATTLE_END", False, [["IF_CRITICAL_HITS_GE", "P"]]),
+    "EVO_SCRIPT_TRIGGER_DMG": ("EVO_SCRIPT_TRIGGER", False, [["IF_CURRENT_DAMAGE_GE", "P"]]),
+    "EVO_LEVEL_MOVE_TWENTY_TIMES": ("EVO_LEVEL", False, [["IF_USED_MOVE_X_TIMES", "P", "20"]]),
+    "EVO_USE_MOVE_TWENTY_TIMES": ("EVO_LEVEL", False, [["IF_USED_MOVE_X_TIMES", "P", "20"]]),
+    "EVO_LEVEL_RECOIL_DAMAGE_MALE": ("EVO_LEVEL", False, [["IF_RECOIL_DAMAGE_GE", "P"], ["IF_GENDER", "MON_MALE"]]),
+    "EVO_LEVEL_RECOIL_DAMAGE_FEMALE": ("EVO_LEVEL", False, [["IF_RECOIL_DAMAGE_GE", "P"], ["IF_GENDER", "MON_FEMALE"]]),
+    "EVO_RECOIL_DAMAGE_MALE": ("EVO_LEVEL", False, [["IF_RECOIL_DAMAGE_GE", "P"], ["IF_GENDER", "MON_MALE"]]),
+    "EVO_RECOIL_DAMAGE_FEMALE": ("EVO_LEVEL", False, [["IF_RECOIL_DAMAGE_GE", "P"], ["IF_GENDER", "MON_FEMALE"]]),
+    "EVO_ITEM_COUNT_999": ("EVO_LEVEL", False, [["IF_BAG_ITEM_COUNT", "P", "999"]]),
+    "EVO_DEFEAT_THREE_WITH_ITEM": ("EVO_LEVEL", False, [["IF_DEFEAT_X_WITH_ITEMS", "SELF", "P", "3"]]),
+    "EVO_OVERWORLD_STEPS": ("EVO_LEVEL", False, [["IF_MIN_OVERWORLD_STEPS", "P"]]),
+}
+
+# 1.0.1 gives Charmander EVO_LEVEL_AND_EVO_CHARM, which no game code handles.
+_IMPOSSIBLE_METHODS = {"EVO_NONE", "EVO_LEVEL_AND_EVO_CHARM"}
+
+_TIMES = {"TIME_NIGHT": "night", "TIME_EVENING": "evening", "TIME_MORNING": "morning", "TIME_DAY": "day"}
+# Qualifiers that only decide which of several forms appears.
+_FORM_PICKERS = ("gender", "nature", "chance")
+
+
+def _normalize_evo(evo, source):
+    """Return (method, level, conditions) in the current CONDITIONS vocabulary."""
+    method = evo["method"]
+    param = evo.get("rawParam", "")
+    level = evo.get("level") or 0
+    conds = [list(c) for c in evo.get("conditions", [])]
+    if method in _LEGACY_EVOS:
+        method, keeps_level, extra = _LEGACY_EVOS[method]
+        level = int(param) if keeps_level and param.isdigit() else level
+        subst = {"P": param, "SELF": "SPECIES_" + source}
+        conds = [[subst.get(a, a) for a in c] for c in extra] + conds
+    elif method == "EVO_LEVEL_BATTLE_ONLY" and param.isdigit():
+        level = int(param)
+    return method, level, conds
+
+
+def _evo_possible(evo, source, names):
+    """False for evolutions nothing in the game can trigger."""
+    method, _, conds = _normalize_evo(evo, source)
+    if evo["method"] in _IMPOSSIBLE_METHODS:
+        return False
+    # Script evolutions only happen where a map script runs tryspecialevo.
+    if evo["method"] == "EVO_SCRIPT_TRIGGER" and evo.get("rawParam") not in names.script_triggers:
+        return False
+    if method == "EVO_SCRIPT_TRIGGER" and not names.script_triggers:
+        return False
+    for cond, *args in conds:
+        if cond == "IF_REGION" and args and args[0] != CURRENT_REGION:
+            return False
+        if cond == "IF_NOT_REGION" and args and args[0] == CURRENT_REGION:
+            return False
+    return True
+
+
+def _chance(cond, arg):
+    a = int(arg)
+    return {"IF_PID_MODULO_100_GT": 99 - a, "IF_PID_MODULO_100_EQ": 1, "IF_PID_MODULO_100_LT": a,
+            "IF_PID_UPPER_MODULO_10_GT": (9 - a) * 10, "IF_PID_UPPER_MODULO_10_EQ": 10,
+            "IF_PID_UPPER_MODULO_10_LT": a * 10}[cond]
+
+
+def _evo_label(evo, source, names, form_pickers=True):
+    """One readable line for an evolution. Without form_pickers, the qualifiers
+    that only choose between forms shown as one Pokémon are summarised."""
+    method, level, conds = _normalize_evo(evo, source)
+    if method == "EVO_SPIN":
+        return "Spin holding a Sweet"
+
+    base = None
+    words, notes, pickers = [], [], []
+    friendship = any(c[0] == "IF_MIN_FRIENDSHIP" for c in conds)
+    for cond, *args in conds:
+        a = args + [""] * 3
+        if cond == "IF_HOLD_ITEM":
+            words.append("holding " + names.item(a[0]))
+        elif cond == "IF_KNOWS_MOVE":
+            words.append("knowing " + names.move(a[0]))
+        elif cond == "IF_KNOWS_MOVE_TYPE":
+            words.append("knowing a " + names.type(a[0]) + "-type move")
+        elif cond == "IF_USED_MOVE_X_TIMES":
+            words.append(f"after using {names.move(a[0])} {a[1]} times")
+        elif cond == "IF_RECOIL_DAMAGE_GE":
+            words.append(f"after taking {a[0]} recoil damage without fainting")
+        elif cond == "IF_DEFEAT_X_WITH_ITEMS":
+            words.append(f"after defeating {a[2]} {names.species(a[0])} holding {names.item(a[1])}")
+        elif cond == "IF_MIN_OVERWORLD_STEPS":
+            words.append(f"after walking {int(a[0]):,} steps as the party leader")
+        elif cond == "IF_CURRENT_DAMAGE_GE":
+            words.append(f"while missing at least {a[0]} HP")
+        elif cond == "IF_SPECIES_IN_PARTY":
+            words.append(f"with {names.species(a[0])} in the party")
+        elif cond == "IF_TYPE_IN_PARTY":
+            words.append(f"with a {names.type(a[0])}-type Pokémon in the party")
+        elif cond == "IF_BAG_ITEM_COUNT":
+            count, item = int(a[1] or 1), names.item(a[0])
+            words.append(f"with a {item} in the bag" if count == 1
+                         else f"with {count:,} {item}{'' if item.endswith('s') else 's'} in the bag")
+        elif cond == "IF_TRADE_PARTNER_SPECIES":
+            words.append("for " + names.species(a[0]))
+        elif cond in ("IF_IN_MAP", "IF_IN_MAPSEC"):
+            words.append("in " + names.place(a[0]))
+        elif cond == "IF_WEATHER":
+            words.append("in " + a[0].replace("WEATHER_", "").replace("_", " ").lower())
+        elif cond == "IF_MIN_BEAUTY":
+            words.append(f"with {a[0]}+ Beauty")
+        elif cond in ("IF_ATK_GT_DEF", "IF_ATK_EQ_DEF", "IF_ATK_LT_DEF"):
+            words.append("with Attack " + {"GT": ">", "EQ": "=", "LT": "<"}[cond[7:9]] + " Defense")
+        elif cond in ("IF_TIME", "IF_NOT_TIME"):
+            when = _TIMES.get(a[0], a[0].replace("TIME_", "").lower())
+            notes.append(("not at " if cond == "IF_NOT_TIME" else "") + when)
+        elif cond == "IF_GENDER":
+            pickers.append(("gender", "male" if a[0] == "MON_MALE" else "female"))
+        elif cond in ("IF_AMPED_NATURE", "IF_LOW_KEY_NATURE"):
+            pickers.append(("nature", ("Amped" if cond == "IF_AMPED_NATURE" else "Low Key") + " nature"))
+        elif cond.startswith("IF_PID_"):
+            pickers.append(("chance", f"{_chance(cond, a[0])}% chance"))
+        elif cond == "IF_CRITICAL_HITS_GE":
+            base = f"Land {a[0]} critical hit{'' if a[0] == '1' else 's'} in one battle"
+        elif cond not in ("IF_MIN_FRIENDSHIP", "IF_REGION", "IF_NOT_REGION"):
+            words.append(cond.replace("IF_", "").replace("_", " ").lower())
+
+    if base is None:
+        if method in ("EVO_LEVEL", "EVO_LEVEL_BATTLE_ONLY"):
+            base = f"Lv. {level}" if level else ("Friendship" if friendship else "Level up")
+            if method == "EVO_LEVEL_BATTLE_ONLY":
+                base += " in battle"
+        elif method == "EVO_ITEM":
+            base = names.item(evo.get("rawParam", ""))
+        elif method == "EVO_TRADE":
+            base = "Trade"
+        elif method == "EVO_BATTLE_END":
+            base = "After a battle"
+        elif method == "EVO_SPLIT_FROM_EVO":
+            base = (f"Lv. {level}" if level else "Level up") + " with a free party slot"
+        elif method == "EVO_SCRIPT_TRIGGER":
+            base = "Special event"
+        else:
+            base = method.replace("EVO_", "").replace("_", " ").title()
+    if words and method == "EVO_SPLIT_FROM_EVO" and words[0].startswith("with "):
+        words[0] = "and " + words[0][5:]
+    elif words and (base == "Friendship" or method == "EVO_ITEM"):
+        base += ","
+
+    if form_pickers:
+        notes += [text for _, text in pickers]
+    else:
+        notes += ["form by " + kind for kind in _FORM_PICKERS if any(k == kind for k, _ in pickers)]
+    label = " ".join([base] + words)
+    return label + (f" ({', '.join(notes)})" if notes else "")
+
+
+class EvoNames:
+    """Display names for the constants an evolution label mentions."""
+
+    def __init__(self, moves=None, species=None):
+        self.moves = moves or {}
+        self.species_names = species or {}
+        self.items = _read_item_names()
+        self.mapsecs = _read_mapsec_names()
+        self.script_triggers = _read_script_evo_triggers()
+
+    @staticmethod
+    def _readable(name, key):
+        # Older sources squeeze names into 12 characters ("ScrllOfDrknss").
+        if not name or (" " not in name and re.search(r"[a-z][A-Z]", name)):
+            return key.replace("_", " ").title()
+        return name
+
+    def move(self, const):
+        key = const.replace("MOVE_", "")
+        return self._readable(self.moves.get(key, {}).get("name"), key)
+
+    def item(self, const):
+        key = const.replace("ITEM_", "")
+        return self._readable(self.items.get(key), key)
+
+    def species(self, const):
+        key = const.replace("SPECIES_", "")
+        return self.species_names.get(key) or key.replace("_", " ").title()
+
+    def type(self, const):
+        return const.replace("TYPE_", "").title()
+
+    def place(self, const):
+        if const.startswith("MAPSEC_"):
+            return self.mapsecs.get(const) or const[7:].replace("_", " ").title()
+        return prettify_map(const)
+
+
+def _read_item_names():
+    path = REPO / "src" / "data" / "items.h"
+    if not path.exists():
+        return {}
+    names = {}
+    for key, block in find_blocks(strip_c_comments(read_file(path)), r"\[ITEM_(\w+)\]\s*="):
+        m = re.search(r'\.name\s*=\s*(?:ITEM_NAME|_)\("([^"]+)"\)', block)
+        if m:
+            names[key] = m.group(1)
+    return names
+
+
+def _read_mapsec_names():
+    path = REPO / "src" / "data" / "region_map" / "region_map_sections.json"
+    if not path.exists():
+        return {}
+    sections = json.loads(read_file(path)).get("map_sections", [])
+    return {s["id"]: s["name"].title() for s in sections if s.get("id") and s.get("name")}
+
+
+def _read_script_evo_triggers():
+    triggers = set()
+    for path in (REPO / "data").rglob("*.inc"):
+        triggers.update(re.findall(r"^\s*tryspecialevo\s+(\w+)", read_file(path), re.M))
+    return triggers
 
 def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters, tms, hms,
-                       held_rules=None):
+                       held_rules=None, moves=None):
     tm_set = set(tms)
     hm_set = set(hms)
     all_species = {}
@@ -1139,10 +1373,13 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
             return dex_rep[dn]
         return tkey
 
-    for entry in all_species.values():
+    names = EvoNames(moves, {k: v["name"] for k, v in all_species.items()})
+    for key, entry in all_species.items():
         groups = {}                    # canonical target -> list of raw evo dicts
         order = []
         for evo in entry.pop("_evosRaw"):
+            if not _evo_possible(evo, key, names):
+                continue
             ck = canonical_target(evo["target"])
             if ck not in groups:
                 groups[ck] = []
@@ -1150,9 +1387,12 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
             groups[ck].append(evo)
         merged = []
         for ck in order:
+            # Forms shown as one Pokémon (Meowstic, Maushold, ...) name what
+            # picks the form instead of listing each form's rule.
+            one_form = len({evo["target"] for evo in groups[ck]}) == 1
             methods = []
             for evo in groups[ck]:
-                label = _evo_label(evo)
+                label = _evo_label(evo, key, names, form_pickers=one_form)
                 if label not in methods:
                     methods.append(label)
             merged.append({"target": ck, "methods": methods})
@@ -1519,7 +1759,7 @@ def main():
     print("  [9] Species info ...")
     held_rules = read_wild_held_item_rules()
     all_species = parse_species_info(dex, learnsets, egg_moves, teachable, encounters, tms, hms,
-                                     held_rules)
+                                     held_rules, moves)
     print(f"       -> {len(all_species)} species")
 
     print("  [10] Special move sources ...")

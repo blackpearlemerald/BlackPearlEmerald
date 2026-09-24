@@ -202,6 +202,84 @@ void SetWildMonHeldItem(void)
 
 
 @unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+class EvolutionLabelTests(unittest.TestCase):
+    ITEMS = """const struct ItemInfo gItemsInfo[] =
+{
+    [ITEM_KINGS_ROCK] = { .name = ITEM_NAME("King's Rock"), },
+    [ITEM_POKE_BALL] = { .name = ITEM_NAME("Poké Ball"), },
+    [ITEM_LEADERS_CREST] = { .name = ITEM_NAME("Leader's Crest"), },
+};
+"""
+    SECTIONS = {"map_sections": [{"id": "MAPSEC_NEW_MAUVILLE", "name": "NEW MAUVILLE"}]}
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = Path(tmp.name)
+        write(root / "src/data/items.h", self.ITEMS)
+        write(root / "src/data/region_map/region_map_sections.json", json.dumps(self.SECTIONS))
+        write(root / "data/maps/Route1/scripts.inc", "Script::\n\ttryspecialevo EVO_TRIGGER_DARK_SCROLL\n\tend\n")
+        with mock_patch.object(parse_pokemon, "REPO", root):
+            self.names = parse_pokemon.EvoNames(
+                {"RAGE_FIST": {"name": "Rage Fist"}}, {"BISHARP": "Bisharp", "SHELMET": "Shelmet"})
+
+    def labels(self, source, text, form_pickers=True):
+        evos = parse_pokemon._parse_evolutions(".evolutions = EVOLUTION(%s)," % text)
+        return [parse_pokemon._evo_label(evo, source, self.names, form_pickers)
+                for evo in evos if parse_pokemon._evo_possible(evo, source, self.names)]
+
+    def test_every_condition_is_written_out(self):
+        self.assertEqual(self.labels("BASCULIN_WHITE_STRIPED", """
+            {EVO_LEVEL, 0, SPECIES_BASCULEGION_M, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_MALE})},
+            {EVO_LEVEL, 0, SPECIES_BASCULEGION_F, CONDITIONS({IF_RECOIL_DAMAGE_GE, 294}, {IF_GENDER, MON_FEMALE})}"""),
+            ["Level up after taking 294 recoil damage without fainting (male)",
+             "Level up after taking 294 recoil damage without fainting (female)"])
+        self.assertEqual(self.labels("X", """
+            {EVO_LEVEL, 0, SPECIES_ANNIHILAPE, CONDITIONS({IF_USED_MOVE_X_TIMES, MOVE_RAGE_FIST, 20})},
+            {EVO_LEVEL, 0, SPECIES_KINGAMBIT, CONDITIONS({IF_DEFEAT_X_WITH_ITEMS, SPECIES_BISHARP, ITEM_LEADERS_CREST, 3})},
+            {EVO_TRADE, 0, SPECIES_POLITOED, CONDITIONS({IF_HOLD_ITEM, ITEM_KINGS_ROCK})},
+            {EVO_TRADE, 0, SPECIES_ESCAVALIER, CONDITIONS({IF_TRADE_PARTNER_SPECIES, SPECIES_SHELMET})},
+            {EVO_LEVEL, 0, SPECIES_MAGNEZONE, CONDITIONS({IF_IN_MAPSEC, MAPSEC_NEW_MAUVILLE})},
+            {EVO_LEVEL, 0, SPECIES_ESPEON, CONDITIONS({IF_MIN_FRIENDSHIP, FRIENDSHIP_EVO_THRESHOLD}, {IF_NOT_TIME, TIME_NIGHT})},
+            {EVO_LEVEL, 20, SPECIES_HITMONTOP, CONDITIONS({IF_ATK_EQ_DEF})},
+            {EVO_LEVEL, 7, SPECIES_SILCOON, CONDITIONS({IF_PID_UPPER_MODULO_10_GT, 4})}"""),
+            ["Level up after using Rage Fist 20 times",
+             "Level up after defeating 3 Bisharp holding Leader's Crest",
+             "Trade holding King's Rock",
+             "Trade for Shelmet",
+             "Level up in New Mauville",
+             "Friendship (not at night)",
+             "Lv. 20 with Attack = Defense",
+             "Lv. 7 (50% chance)"])
+
+    def test_shedinja_shares_ninjasks_level(self):
+        self.assertEqual(self.labels("NINCADA", """{EVO_LEVEL, 20, SPECIES_NINJASK},
+            {EVO_SPLIT_FROM_EVO, SPECIES_NINJASK, SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})}"""),
+            ["Lv. 20", "Lv. 20 with a free party slot and a Poké Ball in the bag"])
+
+    def test_older_methods_read_like_conditions(self):
+        self.assertEqual(self.labels("BASCULIN_WHITE_STRIPED", """
+            {EVO_LEVEL_RECOIL_DAMAGE_FEMALE, 294, SPECIES_BASCULEGION_F},
+            {EVO_TRADE_ITEM, ITEM_KINGS_ROCK, SPECIES_POLITOED},
+            {EVO_LEVEL_FEMALE, 20, SPECIES_WORMADAM},
+            {EVO_FRIENDSHIP_NIGHT, 0, SPECIES_UMBREON}"""),
+            ["Level up after taking 294 recoil damage without fainting (female)",
+             "Trade holding King's Rock", "Lv. 20 (female)", "Friendship (night)"])
+
+    def test_impossible_evolutions_are_left_out(self):
+        self.assertEqual(self.labels("CUBONE", """{EVO_LEVEL, 28, SPECIES_MAROWAK, CONDITIONS({IF_NOT_REGION, REGION_ALOLA})},
+            {EVO_LEVEL, 28, SPECIES_MAROWAK_ALOLA, CONDITIONS({IF_REGION, REGION_ALOLA})},
+            {EVO_NONE, 0, SPECIES_MAROWAK_ALOLA_TOTEM}"""), ["Lv. 28"])
+        # Only a map script can start a script evolution.
+        self.assertEqual(self.labels("KUBFU", """{EVO_SCRIPT_TRIGGER, EVO_TRIGGER_DARK_SCROLL, SPECIES_URSHIFU_SINGLE_STRIKE},
+            {EVO_SCRIPT_TRIGGER, EVO_TRIGGER_WATER_SCROLL, SPECIES_URSHIFU_RAPID_STRIKE}"""), ["Special event"])
+
+    def test_forms_shown_as_one_pokemon_name_what_picks_the_form(self):
+        self.assertEqual(self.labels("ESPURR", """{EVO_LEVEL, 25, SPECIES_MEOWSTIC_M, CONDITIONS({IF_GENDER, MON_MALE})}""",
+                                     form_pickers=False), ["Lv. 25 (form by gender)"])
+
+
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
 class FeaturesTests(unittest.TestCase):
     STATICS = [
         {"mapId": "MAP_ROUTE134", "place": "Route 134", "species": "SPECIES_SUICUNE", "level": 75, "preE4": True, "legendary": True, "sprite": "SUICUNE.png"},
