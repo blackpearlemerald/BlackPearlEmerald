@@ -1023,7 +1023,13 @@ def load_maps(dims):
     """Return dict name -> map record with objects/items resolved."""
     maps = {}
     shared_scripts = load_shared_scripts()
-    for dirname, mj in C.iter_map_jsons():
+    map_jsons = list(C.iter_map_jsons())
+    map_scripts = {dirname: parse_scripts_inc(
+                       C.src("data", "maps", dirname, "scripts.inc"))
+                   for dirname, _ in map_jsons}
+    script_home = {label: dirname for dirname, labels in map_scripts.items()
+                   for label in labels}
+    for dirname, mj in map_jsons:
         layout_id = mj.get("layout")
         if layout_id not in dims:
             continue  # layout has no renderable blockdata (deleted FRLG etc.)
@@ -1031,9 +1037,15 @@ def load_maps(dims):
         img = layout_name + ".png"
         if not os.path.isfile(os.path.join(C.SITE_MAPS_IMG, img)):
             continue
-        local_scripts = parse_scripts_inc(
-            C.src("data", "maps", dirname, "scripts.inc"))
-        scripts = local_scripts
+        local_scripts = map_scripts[dirname]
+        scripts = dict(local_scripts)
+        # An object's script can live in another map's scripts.inc: the
+        # Lavaridge Gym B1F trainers are all defined in the 1F file.
+        for ev in mj.get("object_events", []):
+            home = script_home.get(ev.get("script"))
+            if ev.get("script") not in local_scripts and home:
+                for label, body in map_scripts[home].items():
+                    scripts.setdefault(label, body)
         gift_scripts = dict(shared_scripts)
         gift_scripts.update(local_scripts)
 
