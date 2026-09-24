@@ -102,6 +102,101 @@ def canon_name(internal_id, display_name):
     return base
 
 
+# Words of an internal form id -> Showdown form token, where title case is wrong.
+FORM_WORDS = {"ALOLAN": "Alola", "GALARIAN": "Galar", "HISUIAN": "Hisui", "PALDEAN": "Paldea",
+              "GIGANTAMAX": "Gmax", "GMAX": "Gmax", "PHD": "PhD"}
+CALC_SPECIES_JS = os.path.join(CALC_DIR, "calc", "data", "species.js")
+
+
+def calc_species_names():
+    """normalize(name) -> name for the species the vendored calculator knows."""
+    with open(CALC_SPECIES_JS, encoding="utf-8") as f:
+        text = f.read()
+    names = {}
+    for quoted, double, bare in re.findall(
+            r"^ {4}(?:'([^']+)'|\"([^\"]+)\"|([A-Za-z]\w*))\s*:\s*\{", text, flags=re.M):
+        name = quoted or double or bare
+        if "%" not in name and "\\" not in name:  # "%" breaks sprite URLs
+            names.setdefault(normalize(name), name)
+    return names
+
+
+def form_names(records, species_numbers):
+    """{species id: calc name} for every species file.
+
+    canon_name only knows the form tokens it lists, so forms such as
+    DARMANITAN_GALAR_STANDARD or LYCANROC_DUSK fall back to their display name
+    and would share one calculator entry with the regular form. Wherever forms
+    that share a name have different stats or types, the regular form (the one
+    SPECIES_<base> points to) keeps the name and the others get their own, the
+    calculator's spelling when it has one ("Darmanitan-Galar", "Lycanroc-Dusk").
+    Forms with the same stats and types, such as Vivillon's patterns, keep
+    sharing an entry; their abilities reach the save importer through its
+    per-species ability slots.
+
+    records: {species id: species json}; species_numbers: SPECIES_* constants.
+    """
+    known = calc_species_names()
+    names = {sid: canon_name(sid, d["name"]) for sid, d in records.items()}
+
+    def battle_data(sid):
+        return json.dumps([records[sid]["baseStats"], records[sid].get("types")])
+
+    def number(sid):
+        return species_numbers.get("SPECIES_" + sid, 1 << 16)
+
+    def title(words):
+        return "-".join(FORM_WORDS.get(w, w[:1] + w[1:].lower()) for w in words)
+
+    by_number = {}
+    for sid in sorted(records, key=number):
+        by_number.setdefault(number(sid), sid)
+
+    groups = {}
+    for sid in sorted(records):
+        groups.setdefault(names[sid], []).append(sid)
+    for members in groups.values():
+        if len({battle_data(sid) for sid in members}) < 2:
+            continue
+        words = [sid.split("_") for sid in members]
+        prefix = 0
+        while all(len(w) > prefix and w[prefix] == words[0][prefix] for w in words):
+            prefix += 1
+        base = "_".join(words[0][:prefix])
+        default = by_number.get(species_numbers.get("SPECIES_" + base))
+        default_words = set(default.split("_")[prefix:]) if default and default.startswith(base + "_") else set()
+        leftover = {sid: sid.split("_")[prefix:] for sid in members}
+        stripped = {sid: [w for w in leftover[sid] if w not in default_words] for sid in members}
+        keeper = min(members, key=lambda sid: (sid != default, len(stripped[sid]), number(sid)))
+        display = records[keeper]["name"]
+
+        clusters = {}
+        for sid in members:
+            if battle_data(sid) != battle_data(keeper):
+                clusters.setdefault(battle_data(sid), []).append(sid)
+        for cluster in clusters.values():
+            if len(cluster) == 1:
+                sid = cluster[0]
+                options = [leftover[sid], stripped[sid]]
+            else:  # e.g. Minior's seven Core colours -> "Minior-Core"
+                options = [[w for w in stripped[cluster[0]] if all(w in stripped[s] for s in cluster)]]
+            options = [o for o in options if o]
+            if not options:
+                options = [min((leftover[s] for s in cluster), key=len)]
+            candidates = ["%s-%s" % (display, title(o)) for o in options]
+            name = next((known[normalize(c)] for c in candidates if normalize(c) in known), candidates[-1])
+            for sid in cluster:
+                names[sid] = name
+
+    by_name = {}
+    for sid, name in names.items():
+        by_name.setdefault(name, set()).add(battle_data(sid))
+    clashes = sorted(name for name, data in by_name.items() if len(data) > 1)
+    if clashes:
+        raise ValueError("Forms with different stats share a calculator name: " + ", ".join(clashes))
+    return names
+
+
 def js_sprite_name(showdown_name):
     """Replicate the calc's JS transform used to build sprite filenames:
     name.toLowerCase().replace(" ","-").replace(".","").replace("’","").replace(":","-")
@@ -300,10 +395,13 @@ def main():
     sprite_src_for = {}  # ShowdownName -> site-relative sprite path
     save_species = {}  # species id -> (ShowdownName, growth rate, abilities)
 
-    for fn in species_files:
-        sid = fn[:-5]
-        d = common.load_json(os.path.join(SPECIES_DIR, fn))
-        name = canon_name(sid, d["name"])
+    records = {fn[:-5]: common.load_json(os.path.join(SPECIES_DIR, fn)) for fn in species_files}
+    species_numbers = c_constants(common.src("include", "constants", "species.h"), "SPECIES_")
+    names = form_names(records, species_numbers)
+    # The first form of a name supplies its calculator entry: the regular one.
+    for sid in sorted(records, key=lambda sid: (species_numbers.get("SPECIES_" + sid, 1 << 16), sid)):
+        d = records[sid]
+        name = names[sid]
         save_species[sid] = (
             name, d.get("growthRate", "Medium Fast"),
             [abil_data.get(ab, {}).get("name") if ab else None for ab in d.get("abilities", [])])

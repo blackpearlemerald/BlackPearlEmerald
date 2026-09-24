@@ -393,6 +393,28 @@ class SaveNumberingTests(unittest.TestCase):
         self.assertEqual(data["moves"][1], "Pound")
         self.assertEqual(len(data["randomizerVars"]), 5)
 
+    def test_every_form_gets_its_own_stats(self):
+        # A regular Darmanitan once imported as the Galarian one: forms with
+        # other stats or types must not share a calculator entry.
+        blob = json.loads(CALC_DATA.read_text(encoding="utf-8"))
+        species = build_calc_data.c_constants(str(REPO / "include/constants/species.h"), "SPECIES_")
+        folder = REPO / "BPEDocumentation" / "site" / "data" / "species"
+        entries = blob["save_data"]["species"]
+        for path in folder.glob("*.json"):
+            number = species.get("SPECIES_" + path.stem)
+            if number is None or number >= len(entries) or not entries[number]:
+                continue
+            record = json.loads(path.read_text(encoding="utf-8"))
+            pok = blob["poks"][entries[number][0]]
+            with self.subTest(path.stem):
+                self.assertEqual(pok["bs"], build_calc_data.map_base_stats(record["baseStats"]))
+                self.assertEqual(pok["types"], [build_calc_data.title_word(t) for t in record["types"]])
+        names = {n: entries[species["SPECIES_" + n]][0] for n in (
+            "DARMANITAN", "DARMANITAN_GALAR", "DARMANITAN_ZEN", "LYCANROC", "LYCANROC_DUSK", "URSHIFU")}
+        self.assertEqual(names, {"DARMANITAN": "Darmanitan", "DARMANITAN_GALAR": "Darmanitan-Galar",
+                                 "DARMANITAN_ZEN": "Darmanitan-Zen", "LYCANROC": "Lycanroc",
+                                 "LYCANROC_DUSK": "Lycanroc-Dusk", "URSHIFU": "Urshifu"})
+
 
 if __name__ == "__main__":
     unittest.main()
