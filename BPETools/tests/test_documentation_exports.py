@@ -1,4 +1,5 @@
-"""Exporter tests for gifts, static legendary encounters and the Features page.
+"""Exporter tests for gifts, static legendary encounters, wild held items and the
+Features page.
 
 All inputs are small synthetic game-source fragments written to temporary
 directories; nothing reads or writes the real site output.
@@ -15,6 +16,7 @@ try:
     import common as C
     import extract_world
     import build_features
+    import parse_pokemon
 except ImportError:  # Pillow is required by the sprite helpers.
     extract_world = None
 import releases
@@ -143,6 +145,63 @@ class StaticEncounterTests(unittest.TestCase):
 
 
 @unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+class WildHeldItemTests(unittest.TestCase):
+    GENERAL = """#define GEN_8 7
+#define GEN_9 8
+#define GEN_LATEST GEN_9
+"""
+    POKEMON_C = """static inline bool32 CanFirstMonBoostHeldItemRarity(void)
+{
+%s    return FALSE;
+}
+
+void SetWildMonHeldItem(void)
+{
+    bool32 itemHeldBoost = CanFirstMonBoostHeldItemRarity();
+    u16 chanceNoItem = itemHeldBoost ? 20 : 45;
+    u16 chanceNotRare = itemHeldBoost ? 80 : 95;
+}
+"""
+
+    def rules(self, boost_body, overworld):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            write(root / "src/pokemon.c", self.POKEMON_C % boost_body)
+            write(root / "include/config/general.h", self.GENERAL)
+            write(root / "include/config/overworld.h", overworld)
+            for name in ("battle.h", "pokemon.h"):
+                write(root / "include/config" / name, "")
+            with mock_patch.object(parse_pokemon, "REPO", root), \
+                    mock_patch.dict(parse_pokemon._GEN_CONFIG_CACHE, clear=True):
+                return parse_pokemon.read_wild_held_item_rules()
+
+    def test_current_rules_boost_with_compound_eyes_and_super_luck(self):
+        rules = self.rules("""    if (ability == ABILITY_COMPOUND_EYES)
+        return TRUE;
+    else if ((OW_SUPER_LUCK >= GEN_8) && ability == ABILITY_SUPER_LUCK)
+        return TRUE;
+""", "#define OW_SUPER_LUCK GEN_LATEST\n")
+        self.assertEqual(rules, ((50, 5), (60, 20), ["COMPOUND_EYES", "SUPER_LUCK"]))
+        self.assertEqual(parse_pokemon.wild_held_items("POTION", "REVIVE", rules),
+                         [{"item": "POTION", "pct": 50, "boostPct": 60}, {"item": "REVIVE", "pct": 5, "boostPct": 20}])
+        self.assertEqual(parse_pokemon.wild_held_items(None, "LIGHT_BALL", rules),
+                         [{"item": "LIGHT_BALL", "pct": 5, "boostPct": 20}])
+        self.assertEqual(parse_pokemon.wild_held_items("SACRED_ASH", "SACRED_ASH", rules),
+                         [{"item": "SACRED_ASH", "pct": 100, "boostPct": 100}])
+        self.assertEqual(parse_pokemon.wild_held_items(None, None, rules), [])
+
+    def test_release_1_0_1_had_no_boosting_ability(self):
+        rules = self.rules("""    if ((OW_COMPOUND_EYES < GEN_9) && ability == ABILITY_COMPOUND_EYES)
+        return TRUE;
+    else if ((OW_SUPER_LUCK == GEN_8) && ability == ABILITY_SUPER_LUCK)
+        return TRUE;
+""", "#define OW_COMPOUND_EYES GEN_LATEST\n#define OW_SUPER_LUCK GEN_LATEST\n")
+        self.assertEqual(rules[2], [])
+        self.assertEqual(parse_pokemon.wild_held_items("POTION", None, rules),
+                         [{"item": "POTION", "pct": 50, "boostPct": 50}])
+
+
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
 class FeaturesTests(unittest.TestCase):
     STATICS = [
         {"mapId": "MAP_ROUTE134", "place": "Route 134", "species": "SPECIES_SUICUNE", "level": 75, "preE4": True, "legendary": True, "sprite": "SUICUNE.png"},
@@ -189,8 +248,22 @@ class FeaturesTests(unittest.TestCase):
         # Without curation only flagged legendaries are listed, not Kecleon/Snorlax.
         self.assertEqual([e["species"] for e in data["legendaries"]["others"]], ["SPECIES_REGIROCK"])
 
+    def test_item_table_is_kept(self):
+        table = {"columns": ["Option", "A", "B"], "rows": [["Starters", "Same", "Random"]]}
+        content = dict(self.CONTENT, sections=[{"id": "adventure", "title": "Your adventure",
+                                                "items": [{"title": "Presets", "body": "Compare.", "table": table}]}])
+        item = self.build(content)["sections"][0]["items"][0]
+        self.assertEqual(item["table"], table)
+        self.assertNotIn("table", self.build(self.CONTENT)["sections"][0]["items"][0])
+
     def test_invalid_content_fails_the_export(self):
+        def with_table(table):
+            return dict(self.CONTENT, sections=[{"id": "adventure", "title": "Your adventure",
+                                                 "items": [{"title": "Presets", "body": "Compare.", "table": table}]}])
         broken = [dict(self.CONTENT, schemaVersion=2), dict(self.CONTENT, sections=[]),
+                  with_table([]), with_table({"columns": ["Option", "A"], "rows": []}),
+                  with_table({"columns": ["Option", "A"], "rows": [["Starters"]]}),
+                  with_table({"columns": ["Option", "A"], "rows": [["Starters", ""]]}),
                   dict(self.CONTENT, sections=[{"id": "legendaries", "title": "X", "items": [{"title": "a", "body": "b"}]}]),
                   dict(self.CONTENT, legendaries={"preE4": {"ARTICUNO": "no prefix"}}),
                   dict(self.CONTENT, legendaries={"rules": [" padded "]})]

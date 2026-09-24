@@ -904,13 +904,22 @@ LittlerootTown_EventScript_GiveLevelLimiter::
 LittlerootTown_EventScript_GiveLevelLimiterDone::
 	return
 
+@ BPE: New games start with the Running Shoes (NewGameInitData), so Mom only
+@ hands them over on a save made before that change.
 LittlerootTown_EventScript_GiveRunningShoes::
+	goto_if_set FLAG_SYS_B_DASH, LittlerootTown_EventScript_MomGiveStarterKit
 	msgbox LittlerootTown_Text_WearTheseRunningShoes, MSGBOX_DEFAULT
 	playfanfare MUS_OBTAIN_ITEM
 	message LittlerootTown_Text_SwitchShoesWithRunningShoes
 	waitfanfare
 	setflag FLAG_RECEIVED_RUNNING_SHOES
 	msgbox LittlerootTown_Text_ExplainRunningShoes, MSGBOX_DEFAULT
+	goto LittlerootTown_EventScript_GiveStarterKit
+
+LittlerootTown_EventScript_MomGiveStarterKit::
+	setflag FLAG_RECEIVED_RUNNING_SHOES
+	msgbox LittlerootTown_Text_MomTakeTheseItems, MSGBOX_DEFAULT
+LittlerootTown_EventScript_GiveStarterKit::
 	giveitem ITEM_POKEVIAL
 	giveitem ITEM_POKEMON_BOX_LINK
 	giveitem ITEM_TAXI_TICKET
@@ -957,6 +966,16 @@ LittlerootTown_Text_WearTheseRunningShoes:
 	.string "Here, honey! If you're going out on an\n"
 	.string "adventure, wear these RUNNING SHOES.\p"
 	.string "They'll put a zip in your step!$"
+
+LittlerootTown_Text_MomTakeTheseItems:
+	.string "MOM: {PLAYER}! {PLAYER}! Did you\n"
+	.string "introduce yourself to PROF. BIRCH?\p"
+	.string "Oh! What an adorable POKéMON!\n"
+	.string "You got it from PROF. BIRCH. How nice!\p"
+	.string "You're your father's child, all right.\n"
+	.string "You look good together with POKéMON!\p"
+	.string "Here, honey! If you're going out on an\n"
+	.string "adventure, please take these items...$"
 
 LittlerootTown_Text_SwitchShoesWithRunningShoes:
 	.string "{PLAYER} switched shoes with the\n"

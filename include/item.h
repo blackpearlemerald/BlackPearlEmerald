@@ -10,6 +10,9 @@
 #include "constants/item_effects.h"
 #include "constants/hold_effects.h"
 
+// BPE: how many key items SELECT can hold at once.
+#define MAX_REGISTERED_ITEMS 5
+
 /* Each of these TM_HM enums corresponds an index in the list of TMs + HMs item ids in
  * gTMHMItemMoveIds. The index for an item can be retrieved with GetItemTMHMIndex below.
  */
@@ -253,6 +256,12 @@ bool32 CheckPCHasItem(enum Item itemId, u16 count);
 bool32 AddPCItem(enum Item itemId, u16 count);
 void RemovePCItem(u8 index, u16 count);
 void CompactPCItems(void);
+enum Item GetRegisteredItem(u32 slot);
+u32 CountRegisteredItems(void);
+bool32 IsItemRegistered(enum Item itemId);
+bool32 RegisterItem(enum Item itemId);
+void UnregisterItem(enum Item itemId);
+void UnregisterMissingItems(void);
 void SwapRegisteredBike(void);
 void CompactItemsInBagPocket(enum Pocket pocketId);
 void MoveItemSlotInPocket(enum Pocket pocketId, u32 from, u32 to);

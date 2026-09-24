@@ -229,6 +229,7 @@ void ClearVariousBattlerFlags(enum BattlerId battler);
 void HandleAction_RunBattleScript(void);
 u32 SetRandomTarget(enum BattlerId battlerAtk);
 u32 GetBattleMoveTarget(enum Move move, enum MoveTarget moveTarget);
+u32 GetObedienceLevel(void);
 enum Obedience GetAttackerObedienceForAction(void);
 enum HoldEffect GetBattlerHoldEffect(enum BattlerId battler);
 enum HoldEffect GetBattlerHoldEffectIgnoreAbility(enum BattlerId battler);

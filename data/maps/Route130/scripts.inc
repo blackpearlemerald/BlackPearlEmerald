@@ -36,8 +36,8 @@ Route130_EventScript_IslandLegendary::
 	special BattleSetup_StartLegendaryBattle
 	specialvar VAR_RESULT, GetBattleOutcome
 	goto_if_eq VAR_RESULT, B_OUTCOME_CAUGHT, Route130_EventScript_IslandLegendaryCaught
-@ KO'd / ran / teleported: it vanishes, but its Pokedex caught flag is untouched, so
-@ it stays in the pool. removeobject also sets this object's FLAG_TEMP_12, which is
+@ KO'd / ran / teleported: it vanishes, but it hasn't been caught, so it stays in
+@ the pool. removeobject also sets this object's FLAG_TEMP_12, which is
 @ what UpdateMirageIslandNamePopup (src/field_specials.c) reads to know the island's
 @ resident has been used up and to roll a fresh one when the player steps back on.
 @ (Whiting out skips this script entirely - the warp out and back re-rolls anyway.)
@@ -47,6 +47,7 @@ Route130_EventScript_IslandLegendary::
 	end
 
 Route130_EventScript_IslandLegendaryCaught::
+	special RecordIslandLegendaryCatch
 	removeobject VAR_LAST_TALKED
 	release
 	end

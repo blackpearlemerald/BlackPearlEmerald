@@ -117,8 +117,9 @@
     if (m === 'EVO_FRIENDSHIP') return 'Friendship';
     if (m === 'EVO_FRIENDSHIP_DAY') return 'Friendship (day)';
     if (m === 'EVO_FRIENDSHIP_NIGHT') return 'Friendship (night)';
-    if (m.includes('ITEM_HOLD')) return 'Hold ' + (evo.item || '');
-    if (m.includes('ITEM')) return evo.item || 'Use item';
+    var when = evo.time ? ' (' + evo.time + ')' : '';
+    if (m.includes('ITEM_HOLD')) return 'Hold ' + (evo.item || '') + when;
+    if (m.includes('ITEM')) return (evo.item || 'Use item') + when;
     if (m === 'EVO_TRADE') return 'Trade';
     if (m === 'EVO_MOVE') return 'Know ' + (evo.move || '');
     if (m === 'EVO_BEAUTY') return 'Max Beauty';
@@ -260,12 +261,50 @@
       return '<tr>'
         + '<td><a class="enc-map-link" href="' + mapLink + '">' + esc(enc.mapName) + '</a></td>'
         + '<td>' + levels + '</td>'
-        + '<td><span class="enc-type-badge ' + typeCss + '">' + typeLabel + '</span></td>'
+        + '<td><span class="enc-type-badge ' + typeCss + '">' + typeLabel + '</span>'
+        + (enc.note ? '<div class="enc-note">' + esc(enc.note) + '</div>' : '') + '</td>'
         + '</tr>';
     }).join('');
     return '<table class="enc-table">'
       + '<thead><tr><th>Location</th><th>Levels</th><th>Method</th></tr></thead>'
       + '<tbody>' + rows + '</tbody></table>';
+  }
+
+  // ── Wild held items ───────────────────────────────────────────
+  // Names and icons come from each item's own file once the page is drawn.
+  function renderHeldItems(pkmn, abData) {
+    var held = pkmn.wildHeldItems || [];
+    if (!held.length) return '';
+    var rows = held.map(function (h) {
+      return '<a class="held-item" data-item="' + esc(h.item) + '" href="item.html?id=' + encodeURIComponent(h.item) + '">'
+        + '<span class="held-item-name">' + esc(prettifyConstant(h.item)) + '</span>'
+        + '<span class="held-item-pct">' + h.pct + '%</span></a>';
+    }).join('');
+    var boosters = (pkmn.heldItemBoostAbilities || []).map(function (a) {
+      return (abData[a] && abData[a].name) || prettifyConstant(a);
+    });
+    var boosted = held.some(function (h) { return h.boostPct !== h.pct; });
+    var note = boosters.length && boosted
+      ? '<div class="held-items-note">With ' + esc(boosters.join(' or ')) + ' leading the party: '
+        + held.map(function (h) { return h.boostPct + '%'; }).join(' / ') + '</div>'
+      : '';
+    return '<div class="held-items"><span class="held-items-label">Held item' + (held.length > 1 ? 's' : '') + '</span>'
+      + rows + '</div>' + note;
+  }
+
+  function hydrateHeldItems(content) {
+    content.querySelectorAll('.held-item[data-item]').forEach(function (el) {
+      fetch('data/items/' + encodeURIComponent(el.dataset.item) + '.json')
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (item) {
+          if (!item) return;
+          el.querySelector('.held-item-name').textContent = item.name;
+          if (item.icon) {
+            el.insertAdjacentHTML('afterbegin', '<img class="held-item-icon" src="' + esc(item.icon) + '" alt="" />');
+          }
+        })
+        .catch(function () {});
+    });
   }
 
   // ── Main render ───────────────────────────────────────────────
@@ -308,7 +347,7 @@
     var specialPanel = (pkmn.specialMoves || []).length
       ? '<div id="tab-special" class="tab-panel">' + specialMoves + '</div>'
       : '';
-    var encHtml = renderEncounters(pkmn.encounters);
+    var encHtml = renderHeldItems(pkmn, abilities) + renderEncounters(pkmn.encounters);
 
     var descHtml = pkmn.description
       ? '<p style="color:#7e93a8;font-size:14px;line-height:1.6;margin:0 0 12px">' + esc(pkmn.description) + '</p>'
@@ -472,7 +511,7 @@
       fetch('data/abilities.json').then(function (r) { return r.json(); }),
     ]).then(function (results) {
       var pkmn = results[0], movesData = results[1], abData = results[2];
-      render(pkmn, movesData, abData);
+      hydrateHeldItems(render(pkmn, movesData, abData));
 
       // Load index separately for evo chain (lighter if cached)
       fetch('data/pokedex_index.json')

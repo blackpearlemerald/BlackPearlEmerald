@@ -15,6 +15,7 @@
 #include "ow_abilities.h"
 #include "pokeblock.h"
 #include "pokemon.h"
+#include "pokemon_storage_system.h"
 #include "random.h"
 #include "randomizer.h"
 #include "roamer.h"
@@ -466,7 +467,7 @@ static u8 PickWildMonNature(enum Species species)
 
 // BPE randomizer: the Pokémon a wild table slot holds in this game. The Battle
 // Pike and Battle Pyramid keep their own Pokémon.
-static enum Species GetEncounterSpecies(enum Species species, enum WildPokemonArea area)
+enum Species GetWildEncounterSpecies(enum Species species, enum WildPokemonArea area)
 {
     if (InBattlePike() || InBattlePyramid_())
         return species;
@@ -478,7 +479,75 @@ static enum WildPokemonArea AreaOfTable(u32 count)
     return count == WATER_WILD_COUNT ? WILD_AREA_WATER : WILD_AREA_LAND;
 }
 
+#include "data/wild_form_variants.h"
+
+// Whether the player has this form, what it evolves into, or (for Minior) the
+// form it keeps after battle.
+static bool32 IsFormLineOwned(const u32 *owned, enum Species species, u32 depth)
+{
+    const struct Evolution *evolutions = GetSpeciesEvolutions(species);
+    const struct FormChange *formChanges = GetSpeciesFormChanges(species);
+    u32 i;
+
+    if (IsSpeciesOwned(owned, species))
+        return TRUE;
+    for (i = 0; formChanges != NULL && formChanges[i].method != FORM_CHANGE_TERMINATOR; i++)
+    {
+        if (formChanges[i].method == FORM_CHANGE_END_BATTLE && IsSpeciesOwned(owned, formChanges[i].targetSpecies))
+            return TRUE;
+    }
+    for (i = 0; depth != 0 && evolutions != NULL && evolutions[i].method != EVOLUTIONS_END; i++)
+    {
+        if (IsFormLineOwned(owned, SanitizeSpeciesId(evolutions[i].targetSpecies), depth - 1))
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// BPE: the form a wild Pokémon with several forms takes this encounter. See
+// src/data/wild_form_variants.h.
+enum Species GetWildFormVariant(enum Species species)
+{
+    const struct WildFormVariants *variants = NULL;
+    u32 owned[OWNED_SPECIES_WORDS];
+    u32 i, missing = 0;
+
+    if (InBattlePike() || InBattlePyramid_())
+        return species;
+    for (i = 0; i < ARRAY_COUNT(sWildFormVariants); i++)
+    {
+        if (sWildFormVariants[i].species == species)
+            variants = &sWildFormVariants[i];
+    }
+    if (variants == NULL || Random() % 100 >= variants->chance)
+        return species;
+
+    GetOwnedSpecies(owned);
+    for (i = 0; i < variants->count; i++)
+    {
+        if (!IsFormLineOwned(owned, variants->forms[i], 2))
+            missing++;
+    }
+    if (missing == 0)
+        return variants->forms[Random() % variants->count];
+
+    missing = Random() % missing;
+    for (i = 0; i < variants->count; i++)
+    {
+        if (!IsFormLineOwned(owned, variants->forms[i], 2) && missing-- == 0)
+            break;
+    }
+    return variants->forms[i];
+}
+
 void CreateWildMon(enum Species species, u8 level)
+{
+    CreateWildMonForm(GetWildFormVariant(species), level);
+}
+
+// BPE: a wild Pokémon of exactly this form. DexNav picks the form when a search
+// starts, so the Pokémon it shows is the one the battle uses.
+void CreateWildMonForm(enum Species species, u8 level)
 {
     ZeroEnemyPartyMons();
     u32 personality = GetMonPersonality(species, GetSynchronizedGender(WILDMON_ORIGIN, species), PickWildMonNature(species), RANDOM_UNOWN_LETTER);
@@ -546,14 +615,14 @@ bool8 TryGenerateWildMon(const struct WildPokemonInfo *wildMonInfo, enum WildPok
     if (gMapHeader.mapLayoutId != LAYOUT_BATTLE_FRONTIER_BATTLE_PIKE_ROOM_WILD_MONS && flags & WILD_CHECK_KEEN_EYE && !IsAbilityAllowingEncounter(level))
         return FALSE;
 
-    CreateWildMon(GetEncounterSpecies(wildMonInfo->wildPokemon[wildMonIndex].species, area), level);
+    CreateWildMon(GetWildEncounterSpecies(wildMonInfo->wildPokemon[wildMonIndex].species, area), level);
     return TRUE;
 }
 
 static u16 GenerateFishingWildMon(const struct WildPokemonInfo *wildMonInfo, u8 rod)
 {
     u8 wildMonIndex = ChooseWildMonIndex_Fishing(rod);
-    enum Species wildMonSpecies = GetEncounterSpecies(wildMonInfo->wildPokemon[wildMonIndex].species, WILD_AREA_FISHING);
+    enum Species wildMonSpecies = GetWildEncounterSpecies(wildMonInfo->wildPokemon[wildMonIndex].species, WILD_AREA_FISHING);
     u8 level = ChooseWildMonLevel(wildMonInfo->wildPokemon, wildMonIndex, WILD_AREA_FISHING);
 
     UpdateChainFishingStreak();
@@ -951,7 +1020,7 @@ void FishingWildEncounter(u8 rod)
     {
         u8 level = ChooseWildMonLevel(&gWildFeebas, 0, WILD_AREA_FISHING);
 
-        species = GetEncounterSpecies(gWildFeebas.species, WILD_AREA_FISHING);
+        species = GetWildEncounterSpecies(gWildFeebas.species, WILD_AREA_FISHING);
         CreateWildMon(species, level);
     }
     else
@@ -989,22 +1058,22 @@ u16 GetLocalWildMon(bool8 *isWaterMon)
         return SPECIES_NONE;
     // Land Pokémon
     else if (landMonsInfo != NULL && waterMonsInfo == NULL)
-        return GetEncounterSpecies(landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species, WILD_AREA_LAND);
+        return GetWildEncounterSpecies(landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species, WILD_AREA_LAND);
     // Water Pokémon
     else if (landMonsInfo == NULL && waterMonsInfo != NULL)
     {
         *isWaterMon = TRUE;
-        return GetEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
+        return GetWildEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
     }
     // Either land or water Pokémon
     if ((Random() % 100) < 80)
     {
-        return GetEncounterSpecies(landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species, WILD_AREA_LAND);
+        return GetWildEncounterSpecies(landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species, WILD_AREA_LAND);
     }
     else
     {
         *isWaterMon = TRUE;
-        return GetEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
+        return GetWildEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
     }
 }
 
@@ -1020,7 +1089,7 @@ u16 GetLocalWaterMon(void)
         const struct WildPokemonInfo *waterMonsInfo = gWildMonHeaders[headerId].encounterTypes[timeOfDay].waterMonsInfo;
 
         if (waterMonsInfo)
-            return GetEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
+            return GetWildEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
     }
     return SPECIES_NONE;
 }
@@ -1109,7 +1178,7 @@ static bool8 TryGetRandomWildMonIndexByType(const struct WildPokemon *wildMon, e
 
     for (validMonCount = 0, i = 0; i < numMon; i++)
     {
-        enum Species species = GetEncounterSpecies(wildMon[i].species, area);
+        enum Species species = GetWildEncounterSpecies(wildMon[i].species, area);
         if (GetSpeciesType(species, 0) == type || GetSpeciesType(species, 1) == type)
             validIndexes[validMonCount++] = i;
     }

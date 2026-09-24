@@ -156,6 +156,8 @@ function giftKind(gift) {
 
 function giftPopup(gift) {
   let html = `<div class="gift-head">🎁 ${prettify(gift.mapId)} ${giftKind(gift)}</div>`;
+  // Curated, like guide bodies: how to make a hidden gift NPC appear.
+  if (gift.note) html += `<div class="enc-note gift-note">${gift.note}</div>`;
   html += `<div class="gift-items">`;
   for (const gi of gift.items) {
     html += itemRow(gi.item, gi.qty);
@@ -334,6 +336,9 @@ async function main() {
   let detailHideTimer = null;
   let openStack = null;
   let selectionOutline = null;
+  // What the panel shows, so returning to the map can reopen it (see saveView).
+  let selection = null;
+  let restoring = false;
   const isPhone = () => window.matchMedia("(max-width: 640px)").matches;
 
   function spriteBoundsAt(gx, gy, sp) {
@@ -361,7 +366,7 @@ async function main() {
   // Pan a point target into the open area beside the desktop card so it isn't
   // hidden behind it. No-op on phones (the sheet covers the map anyway).
   function revealAt(ll) {
-    if (isPhone()) return;
+    if (isPhone() || restoring) return;
     const size = map.getSize();
     const cardReserve = 408;                 // card width + margins, in px
     const z = map.getZoom();
@@ -380,8 +385,10 @@ async function main() {
   }
 
   // Open (or re-target) the panel and outline the selected map object.
-  function openDetail(kind, html, ll, selectionBounds) {
+  function openDetail(kind, html, ll, selectionBounds, sel) {
     if (detailHideTimer) { clearTimeout(detailHideTimer); detailHideTimer = null; }
+    selection = sel || null;
+    saveView();
     updateDetail(kind, html);
     detailRoot.hidden = false;
     detailRoot.setAttribute("aria-hidden", "false");
@@ -395,6 +402,8 @@ async function main() {
     detailRoot.classList.remove("open");
     detailRoot.setAttribute("aria-hidden", "true");
     openStack = null;
+    selection = null;
+    saveView();
     selectBounds(null);
     detailHideTimer = setTimeout(() => { detailRoot.hidden = true; }, 220);
   }
@@ -485,7 +494,8 @@ async function main() {
   function openStatic(st) {
     const bounds = spriteBoundsAt(st.gx, st.gy, STATIC_ICON);
     openDetail(staticKind(st), staticPopup(st, preE4Count),
-      L.latLngBounds(bounds).getCenter(), bounds);
+      L.latLngBounds(bounds).getCenter(), bounds,
+      { k: "static", i: statics.indexOf(st) });
   }
 
   function guideAt(latlng) {
@@ -503,7 +513,8 @@ async function main() {
   function openGuide(g) {
     const sp = g.gfx && world.sprites && world.sprites[g.gfx];
     const bounds = spriteBoundsAt(g.gx, g.gy, sp);
-    openDetail("Guide", guidePopup(g), L.latLngBounds(bounds).getCenter(), bounds);
+    openDetail("Guide", guidePopup(g), L.latLngBounds(bounds).getCenter(), bounds,
+      { k: "guide", i: world.guides.indexOf(g) });
     const btn = detailBody.querySelector(".guide-goto");
     if (btn) btn.addEventListener("click", (ev) => {
       ev.preventDefault();
@@ -525,12 +536,16 @@ async function main() {
     const html = nav + trainerPopup(world.trainerData[t.trainerId], sp.file)
       + (gift ? giftPopup(gift) : "");
     const title = gift ? "Trainer & " + giftKind(gift) : "Trainer";
+    const sel = { k: "trainer", gx: st.gx, gy: st.gy, idx: st.idx,
+                  gift: gift ? world.gifts.indexOf(gift) : -1 };
     if (firstOpen) {
       const bounds = sp.bounds;
-      openDetail(title, html, L.latLngBounds(bounds).getCenter(), bounds);
+      openDetail(title, html, L.latLngBounds(bounds).getCenter(), bounds, sel);
     } else {
       updateDetail(title, html);
       selectBounds(sp.bounds);
+      selection = sel;
+      saveView();
     }
     if (n > 1) {
       const btn = detailBody.querySelector(".stack-cycle");
@@ -573,21 +588,35 @@ async function main() {
     }
     const it = itemAt(e.latlng);
     if (it) {
-      const bounds = spriteBoundsAt(it.gx, it.gy, it.hidden ? null : ballSprite);
-      openDetail("Item", itemPopup(it), L.latLngBounds(bounds).getCenter(), bounds);
+      openItem(it);
       return;
     }
     if (gf) {
-      const sp = world.sprites && world.sprites[gf.gfx];
-      const bounds = spriteBoundsAt(gf.gx, gf.gy, sp);
-      openDetail(giftKind(gf), giftPopup(gf), L.latLngBounds(bounds).getCenter(), bounds);
+      openGift(gf);
       return;
     }
     const m = mapAt(x, y);
     if (!m) return;
-    const pop = mapPopup(m, world.marts);
-    openDetail(pop.title, pop.html, e.latlng);
+    openMapPopup(m, e.latlng);
   });
+
+  function openItem(it) {
+    const bounds = spriteBoundsAt(it.gx, it.gy, it.hidden ? null : ballSprite);
+    openDetail("Item", itemPopup(it), L.latLngBounds(bounds).getCenter(), bounds,
+      { k: "item", i: world.items.indexOf(it) });
+  }
+
+  function openGift(g) {
+    const sp = world.sprites && world.sprites[g.gfx];
+    const bounds = spriteBoundsAt(g.gx, g.gy, sp);
+    openDetail(giftKind(g), giftPopup(g), L.latLngBounds(bounds).getCenter(), bounds,
+      { k: "gift", i: world.gifts.indexOf(g) });
+  }
+
+  function openMapPopup(m, ll) {
+    const pop = mapPopup(m, world.marts);
+    openDetail(pop.title, pop.html, ll, null, { k: "map", id: m.id });
+  }
   const worldBounds = L.latLngBounds(W2LL(minX, minY), W2LL(maxX, maxY));
   map.fitBounds(worldBounds.pad(0.05));
   map.setMaxBounds(worldBounds.pad(0.5));
@@ -950,12 +979,20 @@ async function main() {
   });
 
   // ---- toggles ----
+  const toggles = {};
+  function showLayer(layer, on) {
+    if (on) layer.addTo(map); else map.removeLayer(layer);
+  }
   const bind = (id, layer) => {
     const el = document.getElementById(id);
     if (!el) return;
+    toggles[id] = { el, layer };
+    // Back navigation can restore the checkbox states, so follow them.
+    showLayer(layer, el.checked);
     el.addEventListener("change", () => {
-      if (el.checked) layer.addTo(map); else map.removeLayer(layer);
+      showLayer(layer, el.checked);
       setHovered(null);
+      saveView();
     });
   };
   bind("t-trainers", trainerLayer);
@@ -1039,11 +1076,8 @@ async function main() {
       if (hit) {
         ensureLayer(hit.hidden ? hiddenLayer : itemLayer,
                     hit.hidden ? "t-hidden" : "t-items");
-        const ll = W2LL(hit.gx, hit.gy);
-        map.setView(ll, 2, { animate: true });
-        const bounds = spriteBoundsAt(hit.gx, hit.gy,
-          hit.hidden ? null : ballSprite);
-        openDetail("Item", itemPopup(hit), L.latLngBounds(bounds).getCenter(), bounds);
+        map.setView(W2LL(hit.gx, hit.gy), 2, { animate: true });
+        openItem(hit);
         return true;
       }
     }
@@ -1056,11 +1090,8 @@ async function main() {
           String(gi.item || "").replace(/^ITEM_/, "") === want));
       if (g) {
         ensureLayer(giftLayer, "t-gifts");
-        const ll = W2LL(g.gx, g.gy);
-        map.setView(ll, 2, { animate: true });
-        const sp = world.sprites && world.sprites[g.gfx];
-        const bounds = spriteBoundsAt(g.gx, g.gy, sp);
-        openDetail(giftKind(g), giftPopup(g), L.latLngBounds(bounds).getCenter(), bounds);
+        map.setView(W2LL(g.gx, g.gy), 2, { animate: true });
+        openGift(g);
         return true;
       }
     }
@@ -1068,10 +1099,74 @@ async function main() {
     // Otherwise frame the whole map and open the most relevant popup.
     const bounds = L.latLngBounds(W2LL(m.x, m.y), W2LL(m.x + m.w, m.y + m.h));
     map.fitBounds(bounds.pad(0.3), { maxZoom: 2, animate: true });
-    const center = W2LL(m.x + m.w / 2, m.y + m.h / 2);
-    const pop = mapPopup(m, world.marts);
-    openDetail(pop.title, pop.html, center);
+    openMapPopup(m, W2LL(m.x + m.w / 2, m.y + m.h / 2));
     return true;
+  }
+
+  // ---- remembered view ------------------------------------------------------
+  // Leaving the map for a Pokémon, item or calculator page and coming back
+  // returns to the same spot, zoom, layers and open card. The browser session
+  // keeps it, so a new visit still starts on the whole region. The position is
+  // shared between releases (their worlds line up); the card is not, because
+  // it is stored by index into this release's world data.
+  const release = window.BPERelease;
+  const viewKey = "bpe:" + (release ? release.siteRoot.pathname : "/") + ":map-view";
+  const releaseId = release ? release.id : "";
+  let viewReady = false;
+
+  function saveView() {
+    if (!viewReady) return;
+    const c = map.getCenter();
+    const layers = {};
+    for (const id in toggles) layers[id] = toggles[id].el.checked;
+    const state = { lat: c.lat, lng: c.lng, zoom: map.getZoom(), layers,
+                    release: releaseId, sel: selection };
+    try { sessionStorage.setItem(viewKey, JSON.stringify(state)); } catch (_) {}
+  }
+
+  function loadView() {
+    try {
+      const state = JSON.parse(sessionStorage.getItem(viewKey));
+      if (state && isFinite(state.lat) && isFinite(state.lng) && isFinite(state.zoom))
+        return state;
+    } catch (_) {}
+    return null;
+  }
+
+  function reopenSelection(sel) {
+    if (!sel) return;
+    if (sel.k === "map") {
+      const m = world.maps.find((mm) => mm.id === sel.id);
+      if (m) openMapPopup(m, null);
+    } else if (sel.k === "item" && world.items[sel.i]) {
+      openItem(world.items[sel.i]);
+    } else if (sel.k === "gift" && world.gifts && world.gifts[sel.i]) {
+      openGift(world.gifts[sel.i]);
+    } else if (sel.k === "static" && statics[sel.i]) {
+      openStatic(statics[sel.i]);
+    } else if (sel.k === "guide" && world.guides && world.guides[sel.i]) {
+      openGuide(world.guides[sel.i]);
+    } else if (sel.k === "trainer") {
+      const st = stackMap.get(sel.gx + "," + sel.gy);
+      if (!st) return;
+      st.idx = sel.idx >= 0 && sel.idx < st.trainers.length ? sel.idx : 0;
+      openStack = st;
+      showStack(st, true, (world.gifts || [])[sel.gift] || null);
+    }
+  }
+
+  function restoreView(state) {
+    for (const id in state.layers || {}) {
+      const t = toggles[id];
+      if (!t) continue;
+      t.el.checked = Boolean(state.layers[id]);
+      showLayer(t.layer, t.el.checked);
+    }
+    map.setView(L.latLng(state.lat, state.lng), state.zoom, { animate: false });
+    if (state.release === releaseId) {
+      restoring = true;
+      try { reopenSelection(state.sel); } finally { restoring = false; }
+    }
   }
 
   window.bpe = { map, world, W2LL, focusMap, terrainImages, spriteImages };
@@ -1085,10 +1180,19 @@ async function main() {
   });
 
   // Honour ?map=MAP_ID (+ optional &item=/&gift=/&mart=) — clicking a location
-  // in the Pokédex / item pages deep-links here.
+  // in the Pokédex / item pages deep-links here. Going Back to a deep link
+  // returns to where the map was left rather than to the link's target.
   const params = new URLSearchParams(location.search);
   const focusId = params.get("map");
-  if (focusId) {
+  const navEntry = performance.getEntriesByType
+    && performance.getEntriesByType("navigation")[0];
+  const saved = loadView();
+  viewReady = true;
+  map.on("moveend", saveView);
+  if (saved && (!focusId || (navEntry && navEntry.type === "back_forward"))) {
+    restoreView(saved);
+    saveView();
+  } else if (focusId) {
     // Defer so the initial world fitBounds/layout settles first, then fly in.
     setTimeout(() => focusMap(focusId, {
       item: params.get("item"),

@@ -583,6 +583,26 @@
     "FLAG_HIDE_WEATHER_INSTITUTE_2F_WORKERS": 893,
     "FLAG_INTERACTED_WITH_DEVON_EMPLOYEE_GOODS_STOLEN": 159,
     "FLAG_INTERACTED_WITH_STEVEN_SPACE_CENTER": 205,
+    "FLAG_ISLAND_CAUGHT_ARTICUNO_GALAR": 1176,
+    "FLAG_ISLAND_CAUGHT_CALYREX": 1185,
+    "FLAG_ISLAND_CAUGHT_CALYREX_ICE": 1186,
+    "FLAG_ISLAND_CAUGHT_CALYREX_SHADOW": 1187,
+    "FLAG_ISLAND_CAUGHT_FLOETTE_ETERNAL": 1194,
+    "FLAG_ISLAND_CAUGHT_KYUREM": 1179,
+    "FLAG_ISLAND_CAUGHT_KYUREM_BLACK": 1181,
+    "FLAG_ISLAND_CAUGHT_KYUREM_WHITE": 1180,
+    "FLAG_ISLAND_CAUGHT_MAGEARNA": 1188,
+    "FLAG_ISLAND_CAUGHT_MAGEARNA_ORIGINAL": 1189,
+    "FLAG_ISLAND_CAUGHT_MOLTRES_GALAR": 1178,
+    "FLAG_ISLAND_CAUGHT_NECROZMA": 1182,
+    "FLAG_ISLAND_CAUGHT_NECROZMA_DAWN_WINGS": 1184,
+    "FLAG_ISLAND_CAUGHT_NECROZMA_DUSK_MANE": 1183,
+    "FLAG_ISLAND_CAUGHT_SILVALLY": 1195,
+    "FLAG_ISLAND_CAUGHT_URSHIFU_RAPID_STRIKE": 1193,
+    "FLAG_ISLAND_CAUGHT_URSHIFU_SINGLE_STRIKE": 1192,
+    "FLAG_ISLAND_CAUGHT_ZAPDOS_GALAR": 1177,
+    "FLAG_ISLAND_CAUGHT_ZARUDE": 1190,
+    "FLAG_ISLAND_CAUGHT_ZARUDE_DADA": 1191,
     "FLAG_IS_CHAMPION": 2175,
     "FLAG_ITEM_ABANDONED_SHIP_CAPTAINS_OFFICE_STORAGE_KEY": 1100,
     "FLAG_ITEM_ABANDONED_SHIP_HIDDEN_FLOOR_ROOM_1_TM_RAIN_DANCE": 1102,
@@ -1223,26 +1243,6 @@
     "FLAG_UNUSED_0x470": 1136,
     "FLAG_UNUSED_0x472": 1138,
     "FLAG_UNUSED_0x479": 1145,
-    "FLAG_UNUSED_0x498": 1176,
-    "FLAG_UNUSED_0x499": 1177,
-    "FLAG_UNUSED_0x49A": 1178,
-    "FLAG_UNUSED_0x49B": 1179,
-    "FLAG_UNUSED_0x49C": 1180,
-    "FLAG_UNUSED_0x49D": 1181,
-    "FLAG_UNUSED_0x49E": 1182,
-    "FLAG_UNUSED_0x49F": 1183,
-    "FLAG_UNUSED_0x4A0": 1184,
-    "FLAG_UNUSED_0x4A1": 1185,
-    "FLAG_UNUSED_0x4A2": 1186,
-    "FLAG_UNUSED_0x4A3": 1187,
-    "FLAG_UNUSED_0x4A4": 1188,
-    "FLAG_UNUSED_0x4A5": 1189,
-    "FLAG_UNUSED_0x4A6": 1190,
-    "FLAG_UNUSED_0x4A7": 1191,
-    "FLAG_UNUSED_0x4A8": 1192,
-    "FLAG_UNUSED_0x4A9": 1193,
-    "FLAG_UNUSED_0x4AA": 1194,
-    "FLAG_UNUSED_0x4AB": 1195,
     "FLAG_UNUSED_0x4AC": 1196,
     "FLAG_UNUSED_0x4AD": 1197,
     "FLAG_UNUSED_0x4AE": 1198,
@@ -1493,6 +1493,8 @@
     "VAR_DEPT_STORE_FLOOR": 16451,
     "VAR_DEVON_CORP_3F_STATE": 16527,
     "VAR_DEWFORD_TOWN_STATE": 16466,
+    "VAR_DEXNAV_SPECIES": 16603,
+    "VAR_DEXNAV_STEP_COUNTER": 16604,
     "VAR_DEX_UPGRADE_JOHTO_STARTER_STATE": 16595,
     "VAR_DISTRIBUTE_EON_TICKET": 16447,
     "VAR_ELITE_4_STATE": 16540,
@@ -1590,6 +1592,10 @@
     "VAR_REGICE_STEPS_1": 16443,
     "VAR_REGICE_STEPS_2": 16444,
     "VAR_REGICE_STEPS_3": 16445,
+    "VAR_REGISTERED_ITEM_2": 16552,
+    "VAR_REGISTERED_ITEM_3": 16568,
+    "VAR_REGISTERED_ITEM_4": 16571,
+    "VAR_REGISTERED_ITEM_5": 16613,
     "VAR_REGISTER_BIRCH_STATE": 16602,
     "VAR_REPEL_STEP_COUNT": 16417,
     "VAR_RESET_RTC_ENABLE": 16428,
@@ -1701,12 +1707,6 @@
     "VAR_TRICK_HOUSE_PUZZLE_7_STATE": 16561,
     "VAR_TRICK_HOUSE_PUZZLE_7_STATE_2": 16566,
     "VAR_TRICK_HOUSE_PUZZLE_8_STATE": 16562,
-    "VAR_UNUSED_0x40A8": 16552,
-    "VAR_UNUSED_0x40B8": 16568,
-    "VAR_UNUSED_0x40BB": 16571,
-    "VAR_UNUSED_0x40DB": 16603,
-    "VAR_UNUSED_0x40DC": 16604,
-    "VAR_UNUSED_0x40E5": 16613,
     "VAR_UNUSED_0x40FE": 16638,
     "VAR_UNUSED_0x40FF": 16639,
     "VAR_VERDANTURF_TOWN_STATE": 16469,
@@ -7748,105 +7748,105 @@
       "line": 1232,
       "comment": "BPE: the Level Limiter has been handed out"
     },
-    "FLAG_UNUSED_0x498": {
+    "FLAG_ISLAND_CAUGHT_ARTICUNO_GALAR": {
       "file": "include/constants/flags.h",
       "line": 1233,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x499": {
+    "FLAG_ISLAND_CAUGHT_ZAPDOS_GALAR": {
       "file": "include/constants/flags.h",
       "line": 1234,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x49A": {
+    "FLAG_ISLAND_CAUGHT_MOLTRES_GALAR": {
       "file": "include/constants/flags.h",
       "line": 1235,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x49B": {
+    "FLAG_ISLAND_CAUGHT_KYUREM": {
       "file": "include/constants/flags.h",
       "line": 1236,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x49C": {
+    "FLAG_ISLAND_CAUGHT_KYUREM_WHITE": {
       "file": "include/constants/flags.h",
       "line": 1237,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x49D": {
+    "FLAG_ISLAND_CAUGHT_KYUREM_BLACK": {
       "file": "include/constants/flags.h",
       "line": 1238,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x49E": {
+    "FLAG_ISLAND_CAUGHT_NECROZMA": {
       "file": "include/constants/flags.h",
       "line": 1239,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x49F": {
+    "FLAG_ISLAND_CAUGHT_NECROZMA_DUSK_MANE": {
       "file": "include/constants/flags.h",
       "line": 1240,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A0": {
+    "FLAG_ISLAND_CAUGHT_NECROZMA_DAWN_WINGS": {
       "file": "include/constants/flags.h",
       "line": 1241,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A1": {
+    "FLAG_ISLAND_CAUGHT_CALYREX": {
       "file": "include/constants/flags.h",
       "line": 1242,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A2": {
+    "FLAG_ISLAND_CAUGHT_CALYREX_ICE": {
       "file": "include/constants/flags.h",
       "line": 1243,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A3": {
+    "FLAG_ISLAND_CAUGHT_CALYREX_SHADOW": {
       "file": "include/constants/flags.h",
       "line": 1244,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A4": {
+    "FLAG_ISLAND_CAUGHT_MAGEARNA": {
       "file": "include/constants/flags.h",
       "line": 1245,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A5": {
+    "FLAG_ISLAND_CAUGHT_MAGEARNA_ORIGINAL": {
       "file": "include/constants/flags.h",
       "line": 1246,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A6": {
+    "FLAG_ISLAND_CAUGHT_ZARUDE": {
       "file": "include/constants/flags.h",
       "line": 1247,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A7": {
+    "FLAG_ISLAND_CAUGHT_ZARUDE_DADA": {
       "file": "include/constants/flags.h",
       "line": 1248,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A8": {
+    "FLAG_ISLAND_CAUGHT_URSHIFU_SINGLE_STRIKE": {
       "file": "include/constants/flags.h",
       "line": 1249,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4A9": {
+    "FLAG_ISLAND_CAUGHT_URSHIFU_RAPID_STRIKE": {
       "file": "include/constants/flags.h",
       "line": 1250,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4AA": {
+    "FLAG_ISLAND_CAUGHT_FLOETTE_ETERNAL": {
       "file": "include/constants/flags.h",
       "line": 1251,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
-    "FLAG_UNUSED_0x4AB": {
+    "FLAG_ISLAND_CAUGHT_SILVALLY": {
       "file": "include/constants/flags.h",
       "line": 1252,
-      "comment": "Unused Flag"
+      "comment": "BPE: caught on Mirage Island (shares its Pok\u00e9dex number)"
     },
     "FLAG_UNUSED_0x4AC": {
       "file": "include/constants/flags.h",
@@ -9550,27 +9550,27 @@
     },
     "FLAG_TEMP_SKIP_GABBY_INTERVIEW": {
       "file": "include/constants/flags.h",
-      "line": 1661,
+      "line": 1662,
       "comment": ""
     },
     "FLAG_TEMP_REGICE_PUZZLE_STARTED": {
       "file": "include/constants/flags.h",
-      "line": 1662,
+      "line": 1663,
       "comment": ""
     },
     "FLAG_TEMP_REGICE_PUZZLE_FAILED": {
       "file": "include/constants/flags.h",
-      "line": 1663,
+      "line": 1664,
       "comment": ""
     },
     "FLAG_TEMP_HIDE_FOLLOWER": {
       "file": "include/constants/flags.h",
-      "line": 1664,
+      "line": 1665,
       "comment": ""
     },
     "FLAG_TEMP_HIDE_MIRAGE_ISLAND_BERRY_TREE": {
       "file": "include/constants/flags.h",
-      "line": 1665,
+      "line": 1666,
       "comment": ""
     },
     "GAME_STAT_SAVED_GAME": {
@@ -10678,10 +10678,10 @@
       "line": 189,
       "comment": ""
     },
-    "VAR_UNUSED_0x40A8": {
+    "VAR_REGISTERED_ITEM_2": {
       "file": "include/constants/vars.h",
       "line": 190,
-      "comment": "Unused Var"
+      "comment": "BPE: second SELECT-registered item"
     },
     "VAR_CYCLING_CHALLENGE_STATE": {
       "file": "include/constants/vars.h",
@@ -10758,10 +10758,10 @@
       "line": 205,
       "comment": ""
     },
-    "VAR_UNUSED_0x40B8": {
+    "VAR_REGISTERED_ITEM_3": {
       "file": "include/constants/vars.h",
       "line": 206,
-      "comment": "Unused Var"
+      "comment": "BPE: third SELECT-registered item"
     },
     "VAR_MT_PYRE_STATE": {
       "file": "include/constants/vars.h",
@@ -10773,10 +10773,10 @@
       "line": 208,
       "comment": ""
     },
-    "VAR_UNUSED_0x40BB": {
+    "VAR_REGISTERED_ITEM_4": {
       "file": "include/constants/vars.h",
       "line": 209,
-      "comment": "Unused Var"
+      "comment": "BPE: fourth SELECT-registered item"
     },
     "VAR_BRAVO_TRAINER_BATTLE_TOWER_ON": {
       "file": "include/constants/vars.h",
@@ -10933,15 +10933,15 @@
       "line": 240,
       "comment": ""
     },
-    "VAR_UNUSED_0x40DB": {
+    "VAR_DEXNAV_SPECIES": {
       "file": "include/constants/vars.h",
       "line": 241,
-      "comment": "Unused Var"
+      "comment": "BPE: DexNav registered species (bits 0-13) and area (bits 14-15)"
     },
-    "VAR_UNUSED_0x40DC": {
+    "VAR_DEXNAV_STEP_COUNTER": {
       "file": "include/constants/vars.h",
       "line": 242,
-      "comment": "Unused Var"
+      "comment": "BPE: DexNav steps towards the next hidden Pok\u00e9mon check"
     },
     "VAR_GIFT_PICHU_SLOT": {
       "file": "include/constants/vars.h",
@@ -10983,10 +10983,10 @@
       "line": 250,
       "comment": "var is written to, but never read"
     },
-    "VAR_UNUSED_0x40E5": {
+    "VAR_REGISTERED_ITEM_5": {
       "file": "include/constants/vars.h",
       "line": 251,
-      "comment": "Unused Var"
+      "comment": "BPE: fifth SELECT-registered item"
     },
     "VAR_DAILY_SLOTS": {
       "file": "include/constants/vars.h",

@@ -720,7 +720,7 @@
               {
                 "min_level": 20,
                 "max_level": 26,
-                "species": "SPECIES_VULPIX"
+                "species": "SPECIES_EEVEE"
               },
               {
                 "min_level": 20,
@@ -1588,7 +1588,7 @@
               {
                 "min_level": 47,
                 "max_level": 53,
-                "species": "SPECIES_BRONZONG"
+                "species": "SPECIES_DEERLING"
               },
               {
                 "min_level": 47,
@@ -1643,7 +1643,7 @@
               {
                 "min_level": 47,
                 "max_level": 53,
-                "species": "SPECIES_DEERLING"
+                "species": "SPECIES_BRONZONG"
               }
             ]
           },
@@ -3412,7 +3412,7 @@
               {
                 "min_level": 47,
                 "max_level": 53,
-                "species": "SPECIES_HERACROSS"
+                "species": "SPECIES_FURFROU"
               },
               {
                 "min_level": 47,
@@ -3462,7 +3462,7 @@
               {
                 "min_level": 47,
                 "max_level": 53,
-                "species": "SPECIES_FURFROU"
+                "species": "SPECIES_HERACROSS"
               }
             ]
           },
@@ -3566,7 +3566,7 @@
               {
                 "min_level": 47,
                 "max_level": 53,
-                "species": "SPECIES_DONPHAN"
+                "species": "SPECIES_SCATTERBUG"
               },
               {
                 "min_level": 47,
@@ -3596,7 +3596,7 @@
               {
                 "min_level": 47,
                 "max_level": 53,
-                "species": "SPECIES_SCATTERBUG"
+                "species": "SPECIES_DONPHAN"
               },
               {
                 "min_level": 47,
@@ -3740,7 +3740,7 @@
               {
                 "min_level": 47,
                 "max_level": 53,
-                "species": "SPECIES_DRIFLOON"
+                "species": "SPECIES_FLORGES"
               },
               {
                 "min_level": 47,
@@ -5229,7 +5229,7 @@
               {
                 "min_level": 56,
                 "max_level": 62,
-                "species": "SPECIES_KLEFKI"
+                "species": "SPECIES_GIMMIGHOUL"
               },
               {
                 "min_level": 56,
@@ -5249,7 +5249,7 @@
               {
                 "min_level": 56,
                 "max_level": 62,
-                "species": "SPECIES_GIMMIGHOUL"
+                "species": "SPECIES_KLEFKI"
               }
             ]
           }

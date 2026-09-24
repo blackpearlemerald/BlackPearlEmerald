@@ -95,6 +95,7 @@ E:\Projects\OfficialBPEemerald\
 - Day/Night System: `OW_ENABLE_DNS TRUE` in `include/config/overworld.h`. `src/day_night.c` is a small BPE stub that provides `GetCurrentTimeOfDay()`; the tinting itself is upstream code.
 - Terastallization is governed by the Tera Orb flags (`B_FLAG_TERA_ORB_CHARGED`, `B_FLAG_TERA_ORB_NO_COST`) in `include/config/battle.h`. The old `B_TERA_MECHANICS` toggle no longer exists.
 - Built-in randomizer, chosen at New Game: see "Randomizer" under Known quirks.
+- DexNav, Standard mode only: `DEXNAV_ENABLED TRUE` in `include/config/dexnav.h`. See "DexNav" under Known quirks.
 
 ## Debug builds are the default
 
@@ -206,7 +207,7 @@ Starting with 2.1.0 the PC has 41 boxes and the save uses a new flash layout. Th
 ### Standard and Nuzlocke mode differences
 
 Birch asks which mode the player wants at the start; `FLAG_NUZLOCKE` records the
-answer and never changes afterwards. The two modes diverge in three places, all
+answer and never changes afterwards. The two modes diverge in four places, all
 gated on that flag:
 
 - **EVs** are disabled in Nuzlocke mode. `GetCurrentEVCap()` returns 0, so no
@@ -239,6 +240,46 @@ The first command also gives every rematch tier in `gRematchTable` a copy of
 that trainer's first team at a higher level. The second refreshes
 `BPEDocumentation/site/js/data/trainers.json`, which the Trainers page and the
 map popups read to show both levels as `(nuz:66) [std:45]`.
+
+The fourth difference is the **DexNav**, which only Standard games have (see
+"DexNav" below).
+
+### DexNav
+
+The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
+
+- It unlocks with the Pokédex: `DN_FLAG_DEXNAV_GET` is `FLAG_SYS_POKEDEX_GET`,
+  and `IsDexNavUnlocked()` also requires `!FLAG_NUZLOCKE`. The Start menu entry,
+  the R-button search and hidden Pokémon all check it. `IsDexNavUsableHere()`
+  keeps it out of the Safari Zone, Battle Pike and Battle Pyramid, whose wild
+  battles have their own rules.
+- `DN_FLAG_SEARCHING` is the RAM-only special flag `FLAG_DEXNAV_SEARCHING`, so a
+  save never holds a search in progress. `VAR_DEXNAV_SPECIES` (registered
+  species) and `VAR_DEXNAV_STEP_COUNTER` use variables no release ever used; the
+  chain is the existing `dexNavChain` byte in SaveBlock3. The save layout did not
+  change.
+- `USE_DEXNAV_SEARCH_LEVELS` stays `FALSE`: a byte per species does not fit in the
+  save. `GetSearchLevel()` returns the current chain instead, so chaining unlocks
+  the Egg Move, Hidden Ability, held item and perfect IV bonuses.
+- It reads the wild tables through `GetWildEncounterSpecies()`, so it lists and
+  spawns the randomizer's Pokémon. The form (`GetWildFormVariant()`) is chosen
+  when a search starts and created with `CreateWildMonForm()`, so the battle
+  uses the Pokémon the search window showed. With the Level Limiter on, the
+  chain's level bonus stops at the level cap.
+- BPE fixes to upstream code, marked `BPE:` in the source: tile picking (u8
+  overflow, sprite id used as an object event id), the held-item palette written
+  into a fixed OBJ slot, a one-shot sparkle effect that was later stopped as a
+  stale sprite, inverted held-item odds, duplicate Egg Moves, the hidden
+  Pokémon check that could never run, and a search started from the menu that
+  returned to the field mid-fade (sprites flashed untinted for a frame). BPE's
+  wild tables have no hidden Pokémon.
+- Found through DexNav but game-wide: the weather color maps in
+  `src/field_weather.c` copy the unfaded palettes into the faded buffer and then
+  darken them in place. On a heavy frame the VBlank interrupt could send the
+  half-done palettes to the screen, so the follower or grass sprites flashed at
+  full brightness for a frame during a fade in the rain. `HoldPaletteTransfer()`
+  now holds the transfer while they run.
+- Tests: `make check TESTS=test/dexnav.c`.
 
 ### Randomizer
 
@@ -276,6 +317,46 @@ list and rules are in `BPEDocumentation/RANDOMIZER_PLAN.md`.
 - `VAR_STARTER_MON` stays 0 with the Birch Case: the rival scripts only handle
   0-2. Use `GetPlayerStarterSpecies()` for the starter the player really picked.
 - Tests: `make check TESTS=test/randomizer.c`.
+
+### Registered items
+
+SELECT holds up to `MAX_REGISTERED_ITEMS` (5) key items. With one registered it
+is used at once; with more, `UseRegisteredKeyItemOnField()` in
+`src/item_menu.c` opens a list in the field corner.
+
+- Slot 1 is the vanilla `gSaveBlock1Ptr->registeredItem`, so older saves keep
+  theirs; slots 2-5 are `VAR_REGISTERED_ITEM_2` to `_5`, variables no release
+  used before. The save layout did not change.
+- Go through the helpers in `src/item.c` (`GetRegisteredItem`, `RegisterItem`,
+  `UnregisterItem`, `IsItemRegistered`, `UnregisterMissingItems`), never the
+  save block field directly.
+- The bag's "full" message spells out "five"; change it with the limit.
+- Tests: `make check TESTS=test/registered_items.c`.
+
+### Living dex of every form
+
+Every species and every form that can be kept in the PC must stay obtainable.
+`python BPETools/audit_living_dex.py` checks this from the source (wild tables,
+gifts, Mirage Island, evolutions and the items they need, breeding and form
+changes) and exits 1 listing any gap; `--verbose` shows how each form is
+reached. Run it after changing wild tables, evolutions, marts, item balls or
+the Mirage pool. Battle-only forms and Totem Pokémon are not required.
+
+- `src/data/wild_form_variants.h` lists wild species that appear in several
+  forms (Vivillon patterns, Flabébé colours, Minior, Furfrou trims, costumed
+  Pikachu, ...). `CreateWildMon` picks a form, preferring ones the player
+  doesn't own. The documentation's Pokédex reads the same table.
+- Each Mirage Island legendary (`sIslandLegendaryPool` in `src/field_specials.c`)
+  can be caught once. Forms the player can switch freely (Arceus, Deoxys,
+  Therians, Origin forms, ...) are not separate pool entries: one of each
+  legendary is all a player gets. Their key items are item balls on the island
+  and their held items are in the postgame Bean Shop. Forms no switch can reach
+  (Galarian birds, Kyurem's fusions, which share one fusion slot, Dada Zarude,
+  ...) are pool entries. Those that share a Pokédex number with another form
+  record their catch in `FLAG_ISLAND_CAUGHT_*` (`sIslandCatchFlags`), since the
+  Pokédex can't tell the forms apart.
+- A Peat Block evolves Ursaring into Ursaluna at night and into Bloodmoon
+  Ursaluna at any other time.
 
 ### Cumulative API changes by expansion version
 

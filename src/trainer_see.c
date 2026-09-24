@@ -454,6 +454,14 @@ bool8 CheckForTrainersWantingBattle(void)
             continue;
         if (gObjectEvents[i].trainerType != TRAINER_TYPE_NORMAL && gObjectEvents[i].trainerType != TRAINER_TYPE_SEE_ALL_DIRECTIONS && gObjectEvents[i].trainerType != TRAINER_TYPE_BURIED)
             continue;
+        // BPE: a trainer without a sprite of its own can't walk over, so its
+        // approach would never end and the game would freeze (Victory Road).
+        // Drop it; the next step spawns it again from its template, with a sprite.
+        if (!ObjectEventHasOwnSprite(&gObjectEvents[i]))
+        {
+            gObjectEvents[i].active = FALSE;
+            continue;
+        }
         trainerObjects[trainerObjectsCount++] = i;
     }
 

@@ -107,7 +107,18 @@ counter at the moment of choosing.
 ## The options
 
 **Bold** in the Choices column marks the value Custom starts from. That is the
-Randomlocke value.
+Randomlocke value. The choices are the labels the settings screen shows; they say
+plainly whether something is random, matching the Features page. The rest of this
+plan uses the internal names, which the screen spells differently:
+
+| Internal name | On screen |
+|---|---|
+| Whole game / Per route (wild consistency) | Wild swaps: All catchable / Per route |
+| Same roles / Random (starters) | Same type / Any type |
+| Unchanged / Among themselves / Mixed (legendaries) | Not random / Legendaries only / Can be anywhere |
+| Similar / Fully random (strength) | Close to original / Anything |
+| Unchanged / Keep their type / Fully random (bosses) | Not random / Random, same type / Random, any type |
+| Troll abilities | Harmful abilities: Not allowed / Allowed |
 
 ### Page 1: Setup
 
@@ -117,75 +128,76 @@ Randomlocke value.
 | 2 | Seed | **New random seed** / Enter a seed code |
 | - | Start the game | Opens the summary (same as START) |
 
-Birch's Yes/No question stands in for "Off".
+Birch's Yes/No question stands in for "Off". The Preset row's description
+changes with the selected preset.
 
 ### Page 2: Pokémon
 
 | # | Option | Choices |
 |---|---|---|
-| 3 | Starters | Off / **Same roles** / Random / Legendaries |
-| 4 | Wild Pokémon | Off / **On** |
-| 5 | Wild consistency | **Whole game** / Per route |
-| 6 | Gift Pokémon, eggs and in-game trades | Off / **On** |
-| 7 | Static encounters | Off / **On** |
+| 3 | Starters | Not random / **Same type** / Any type / Legendaries |
+| 4 | Wild Pokémon | Not random / **Random** |
+| 5 | Wild swaps | **All catchable** / Per route |
+| 6 | Gift Pokémon, eggs and in-game trades | Not random / **Random** |
+| 7 | Static encounters | Not random / **Random** |
 
 ### Page 3: Pokémon pool
 
 | # | Option | Choices |
 |---|---|---|
-| 8 | Legendaries | Unchanged / **Among themselves** / Mixed with all Pokémon |
-| 9 | Pokémon strength | **Similar** / Fully random |
+| 8 | Legendaries | Not random / **Legendaries only** / Can be anywhere |
+| 9 | Strength | **Close to original** / Anything |
 | 10 | Generations | Nine toggles, Gen 1–9, **all on**; any combination, at least one on |
 
 ### Page 4: Trainers and items
 
 | # | Option | Choices |
 |---|---|---|
-| 11 | Regular trainers | Off / **On** |
-| 12 | Boss trainers | **Unchanged** / Random, keep their type / Fully random |
-| 18 | Field items | **Off** / Shuffled |
+| 11 | Regular trainers | Not random / **Random** |
+| 12 | Boss trainers | **Not random** / Random, same type / Random, any type |
+| 18 | Field items | **Not random** / Shuffled |
 
 ### Page 5: Battle
 
 | # | Option | Choices |
 |---|---|---|
-| 13 | Abilities | **Off** / Random |
-| 14 | Allow troll abilities (shown only when abilities are Random) | **No** / Yes |
-| 15 | Level-up moves | **Off** / Random |
-| 16 | TM and tutor compatibility | **Off** / Random |
-| 17 | TM contents | **Off** / Shuffled |
+| 13 | Abilities | **Not random** / Random |
+| 14 | Harmful abilities (shown only when abilities are Random) | **Not allowed** / Allowed |
+| 15 | Level-up moves | **Not random** / Random |
+| 16 | TM and tutor compatibility | **Not random** / Random |
+| 17 | TM contents | **Not random** / Shuffled |
 
 ### Page 6: Chaos
 
 | # | Option | Choices |
 |---|---|---|
-| 19 | Pokémon types | **Off** / Random |
-| 20 | Evolutions | **Off** / Random |
-| 21 | Base stats | **Off** / Shuffled |
-| 22 | Type chart | **Off** / Shuffled |
+| 19 | Pokémon types | **Not random** / Random |
+| 20 | Evolutions | **Not random** / Random |
+| 21 | Base stats | **Not random** / Shuffled |
+| 22 | Type chart | **Not random** / Shuffled |
 | 23 | Monotype | **Off** / one of the 18 types |
 
 ### Presets
 
 | Option | Randomlocke | Full | Chaos |
 |---|---|---|---|
-| Starters | Same roles | Same roles | Random |
-| Wild Pokémon | On | On | On |
-| Wild consistency | Whole game | Whole game | Per route |
-| Gifts, eggs, trades | On | On | On |
-| Static encounters | On | On | On |
-| Legendaries | Among themselves | Among themselves | Mixed with all Pokémon |
-| Pokémon strength | Similar | Similar | Fully random |
+| Starters | Same type | Same type | Any type |
+| Wild Pokémon | Random | Random | Random |
+| Wild swaps | All catchable | All catchable | Per route |
+| Gifts, eggs, trades | Random | Random | Random |
+| Static encounters | Random | Random | Random |
+| Legendaries | Legendaries only | Legendaries only | Can be anywhere |
+| Strength | Close to original | Close to original | Anything |
 | Generations | All | All | All |
-| Regular trainers | On | On | On |
-| Boss trainers | Unchanged | Random, keep their type | Fully random |
-| Abilities | Off | Random | Random |
-| Troll abilities | No | No | Yes |
-| Level-up moves | Off | Random | Random |
-| TM and tutor compatibility | Off | Random | Random |
-| TM contents | Off | Shuffled | Shuffled |
-| Field items | Off | Shuffled | Shuffled |
-| Types, evolutions, base stats, type chart | Off | Off | On |
+| Regular trainers | Random | Random | Random |
+| Boss trainers | Not random | Random, same type | Random, any type |
+| Abilities | Not random | Random | Random |
+| Harmful abilities | Not allowed | Not allowed | Allowed |
+| Level-up moves | Not random | Random | Random |
+| TM and tutor compatibility | Not random | Random | Random |
+| TM contents | Not random | Shuffled | Shuffled |
+| Field items | Not random | Shuffled | Shuffled |
+| Types, evolutions, base stats, type chart | Not random | Not random | Random / Shuffled |
 | Monotype | Off | Off | Off |
 
 ## Rules that apply everywhere

@@ -649,3 +649,4 @@ gSpecials::
 	def_special GetRandomizedJohtoStarter
 	def_special IsReadyForJohtoStarter
 	def_special BufferStarterTypeInfo
+	def_special RecordIslandLegendaryCatch

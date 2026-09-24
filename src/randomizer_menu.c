@@ -125,51 +125,59 @@ struct RandomizerMenu
 static EWRAM_DATA struct RandomizerMenu *sMenu = NULL;
 static EWRAM_DATA bool8 sConfirmed = FALSE;
 
-static const u8 *const sOffOn[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("On")};
-static const u8 *const sOffRandom[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("Random")};
-static const u8 *const sOffShuffled[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("Shuffled")};
-static const u8 *const sNoYes[] = {COMPOUND_STRING("No"), COMPOUND_STRING("Yes")};
-static const u8 *const sStarterValues[] = {COMPOUND_STRING("Off"), COMPOUND_STRING("Same roles"), COMPOUND_STRING("Random"), COMPOUND_STRING("Legendaries")};
-static const u8 *const sConsistencyValues[] = {COMPOUND_STRING("Whole game"), COMPOUND_STRING("Per route")};
-static const u8 *const sLegendaryValues[] = {COMPOUND_STRING("Unchanged"), COMPOUND_STRING("Among themselves"), COMPOUND_STRING("Mixed with all")};
-static const u8 *const sStrengthValues[] = {COMPOUND_STRING("Similar"), COMPOUND_STRING("Fully random")};
-static const u8 *const sBossValues[] = {COMPOUND_STRING("Unchanged"), COMPOUND_STRING("Keep their type"), COMPOUND_STRING("Fully random")};
+// Values say plainly whether something is random, matching the Features page.
+static const u8 *const sOffRandom[] = {COMPOUND_STRING("Not random"), COMPOUND_STRING("Random")};
+static const u8 *const sOffShuffled[] = {COMPOUND_STRING("Not random"), COMPOUND_STRING("Shuffled")};
+static const u8 *const sNotAllowedAllowed[] = {COMPOUND_STRING("Not allowed"), COMPOUND_STRING("Allowed")};
+static const u8 *const sStarterValues[] = {COMPOUND_STRING("Not random"), COMPOUND_STRING("Same type"), COMPOUND_STRING("Any type"), COMPOUND_STRING("Legendaries")};
+static const u8 *const sConsistencyValues[] = {COMPOUND_STRING("All catchable"), COMPOUND_STRING("Per route")};
+static const u8 *const sLegendaryValues[] = {COMPOUND_STRING("Not random"), COMPOUND_STRING("Legendaries only"), COMPOUND_STRING("Can be anywhere")};
+static const u8 *const sStrengthValues[] = {COMPOUND_STRING("Close to original"), COMPOUND_STRING("Anything")};
+static const u8 *const sBossValues[] = {COMPOUND_STRING("Not random"), COMPOUND_STRING("Random, same type"), COMPOUND_STRING("Random, any type")};
 static const u8 *const sPresetNames[] = {COMPOUND_STRING("Randomlocke"), COMPOUND_STRING("Full"), COMPOUND_STRING("Chaos"), COMPOUND_STRING("Custom")};
+
+// The Preset row describes whichever preset is selected.
+static const u8 *const sPresetDescriptions[] =
+{
+    [RANDOMIZER_PRESET_RANDOMLOCKE] = COMPOUND_STRING("Random POKéMON, all still catchable.\nBosses and battle data aren't random."),
+    [RANDOMIZER_PRESET_FULL]        = COMPOUND_STRING("Also random: bosses, abilities,\nmoves, TMs and items."),
+    [RANDOMIZER_PRESET_CHAOS]       = COMPOUND_STRING("Everything is random, even types.\nSome POKéMON may not appear at all."),
+    [RANDOMIZER_PRESET_CUSTOM]      = COMPOUND_STRING("Your own mix of options. Press left\nor right to go back to a preset."),
+};
 
 static const struct MenuRowInfo sRows[ROW_COUNT] =
 {
-    [ROW_PRESET] = {COMPOUND_STRING("Preset"),
-        COMPOUND_STRING("Randomlocke suits a randomized\nNuzlocke. Full and Chaos go further."), OPTION_NONE, NULL},
+    [ROW_PRESET] = {COMPOUND_STRING("Preset"), NULL, OPTION_NONE, NULL},
     [ROW_SEED] = {COMPOUND_STRING("Seed"),
         COMPOUND_STRING("Press left or right for a new seed.\nPress A to enter a friend's seed code."), OPTION_NONE, NULL},
     [ROW_START] = {COMPOUND_STRING("Start the game"),
         COMPOUND_STRING("Check your settings, then begin.\nSTART does the same on any page."), OPTION_NONE, NULL},
     [ROW_STARTERS] = {COMPOUND_STRING("Starters"),
-        COMPOUND_STRING("Same roles keeps each ball's type.\nLegendaries fills the case with them."), RANDOMIZER_OPTION_STARTERS, sStarterValues},
+        COMPOUND_STRING("Same type keeps each ball's type.\nLegendaries fills the case with them."), RANDOMIZER_OPTION_STARTERS, sStarterValues},
     [ROW_WILD] = {COMPOUND_STRING("Wild POKéMON"),
-        COMPOUND_STRING("The POKéMON in grass, caves, water\nand fishing spots."), RANDOMIZER_OPTION_WILD, sOffOn},
-    [ROW_CONSISTENCY] = {COMPOUND_STRING("Wild consistency"),
-        COMPOUND_STRING("Whole game swaps each POKéMON for\none other. Per route varies by area."), RANDOMIZER_OPTION_WILD_CONSISTENCY, sConsistencyValues},
+        COMPOUND_STRING("The POKéMON in grass, caves, water\nand fishing spots."), RANDOMIZER_OPTION_WILD, sOffRandom},
+    [ROW_CONSISTENCY] = {COMPOUND_STRING("Wild swaps"),
+        COMPOUND_STRING("All catchable keeps every POKéMON\nsomewhere. Per route may leave some out."), RANDOMIZER_OPTION_WILD_CONSISTENCY, sConsistencyValues},
     [ROW_GIFTS] = {COMPOUND_STRING("Gifts and trades"),
-        COMPOUND_STRING("Gift POKéMON, eggs and the POKéMON\ntraders offer and ask for."), RANDOMIZER_OPTION_GIFTS, sOffOn},
+        COMPOUND_STRING("Gift POKéMON, eggs and the POKéMON\ntraders offer and ask for."), RANDOMIZER_OPTION_GIFTS, sOffRandom},
     [ROW_STATICS] = {COMPOUND_STRING("Static POKéMON"),
-        COMPOUND_STRING("POKéMON you walk up to and battle,\nlike SNORLAX and SUDOWOODO."), RANDOMIZER_OPTION_STATICS, sOffOn},
+        COMPOUND_STRING("POKéMON you walk up to and battle,\nlike SNORLAX and SUDOWOODO."), RANDOMIZER_OPTION_STATICS, sOffRandom},
     [ROW_LEGENDARIES] = {COMPOUND_STRING("Legendaries"),
-        COMPOUND_STRING("What legendary encounters become,\nand whether they appear elsewhere."), RANDOMIZER_OPTION_LEGENDARIES, sLegendaryValues},
+        COMPOUND_STRING("Legendaries only swaps them with each\nother. Can be anywhere mixes them in."), RANDOMIZER_OPTION_LEGENDARIES, sLegendaryValues},
     [ROW_STRENGTH] = {COMPOUND_STRING("Strength"),
-        COMPOUND_STRING("Similar keeps replacements about as\nstrong as the POKéMON they replace."), RANDOMIZER_OPTION_STRENGTH, sStrengthValues},
+        COMPOUND_STRING("How strong the random POKéMON are\ncompared with the ones they replace."), RANDOMIZER_OPTION_STRENGTH, sStrengthValues},
     [ROW_GENERATIONS] = {COMPOUND_STRING("Generations"),
         COMPOUND_STRING("Press A to choose which generations\nof POKéMON can appear."), RANDOMIZER_OPTION_GENERATIONS, NULL},
     [ROW_REGULAR_TRAINERS] = {COMPOUND_STRING("Regular trainers"),
-        COMPOUND_STRING("The teams of every trainer who\nisn't a boss."), RANDOMIZER_OPTION_REGULAR_TRAINERS, sOffOn},
+        COMPOUND_STRING("The teams of every trainer who\nisn't a boss."), RANDOMIZER_OPTION_REGULAR_TRAINERS, sOffRandom},
     [ROW_BOSS_TRAINERS] = {COMPOUND_STRING("Boss trainers"),
         COMPOUND_STRING("GYM LEADERS, the ELITE FOUR, rivals\nand the team bosses."), RANDOMIZER_OPTION_BOSS_TRAINERS, sBossValues},
     [ROW_FIELD_ITEMS] = {COMPOUND_STRING("Field items"),
         COMPOUND_STRING("Item balls and hidden items trade\nplaces. Key items and HMs stay."), RANDOMIZER_OPTION_FIELD_ITEMS, sOffShuffled},
     [ROW_ABILITIES] = {COMPOUND_STRING("Abilities"),
         COMPOUND_STRING("Each evolution family gets new\nabilities. Broken ones are banned."), RANDOMIZER_OPTION_ABILITIES, sOffRandom},
-    [ROW_TROLL_ABILITIES] = {COMPOUND_STRING("Troll abilities"),
-        COMPOUND_STRING("Allows abilities like TRUANT and\nSLOW START with random abilities."), RANDOMIZER_OPTION_TROLL_ABILITIES, sNoYes},
+    [ROW_TROLL_ABILITIES] = {COMPOUND_STRING("Harmful abilities"),
+        COMPOUND_STRING("Allows abilities like TRUANT and\nSLOW START with random abilities."), RANDOMIZER_OPTION_TROLL_ABILITIES, sNotAllowedAllowed},
     [ROW_LEVEL_UP_MOVES] = {COMPOUND_STRING("Level-up moves"),
         COMPOUND_STRING("New level-up moves that favor the\nPOKéMON's own types."), RANDOMIZER_OPTION_LEVEL_UP_MOVES, sOffRandom},
     [ROW_TM_COMPATIBILITY] = {COMPOUND_STRING("TM compatibility"),
@@ -510,6 +518,13 @@ static const u8 *GetValueName(u32 row)
     }
 }
 
+static const u8 *GetDescription(u32 row)
+{
+    if (row == ROW_PRESET)
+        return sPresetDescriptions[Randomizer_GetPreset(&sMenu->settings)];
+    return sRows[row].description;
+}
+
 static void DrawRow(u32 index)
 {
     u32 row = CurrentPage()->rows[index];
@@ -547,7 +562,7 @@ static void DrawPage(void)
     }
     else
     {
-        DrawDescription(sRows[CurrentRow()].description);
+        DrawDescription(GetDescription(CurrentRow()));
         DrawControls(sText_ControlsBrowse);
     }
 }
@@ -646,7 +661,7 @@ static void MoveCursor(s32 delta)
     DrawRow(previous);
     DrawRow(sMenu->row);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_GFX);
-    DrawDescription(sRows[CurrentRow()].description);
+    DrawDescription(GetDescription(CurrentRow()));
 }
 
 static u32 NextMonotype(u32 type, s32 delta)

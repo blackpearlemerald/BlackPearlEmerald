@@ -15,20 +15,48 @@
           "body": "After the mode question, Birch offers to randomize your adventure. Pick the Randomlocke, Full or Chaos preset or set each option yourself: starters, wild Pokémon, gifts and trades, static encounters, legendaries, regular and boss trainers, abilities, level-up moves, TMs, field items, and for Chaos even types, evolutions, base stats and the type chart. Generations and Monotype limit which Pokémon appear. The default whole-game swap trades each species for exactly one other, so every Pokémon is still catchable somewhere. Your seed code, shown on your Trainer Card, lets friends play exactly the same game. The choice can't be changed later, and this site's route and trainer pages always show the normal game."
         },
         {
+          "title": "Randomizer presets",
+          "body": "What each preset randomizes. Randomlocke suits a randomized Nuzlocke: the Pokémon you meet are random, but Gym Leaders and other bosses keep their teams. Full also randomizes bosses, abilities, moves, TMs and items. Chaos randomizes everything, including types and the type chart. Changing any option makes the preset Custom.",
+          "table": {
+            "columns": ["Option", "Randomlocke", "Full", "Chaos"],
+            "rows": [
+              ["Starters", "Random, keeps the original's type", "Random, keeps the original's type", "Random, any type"],
+              ["Wild Pokémon", "Random, every Pokémon is still catchable somewhere", "Random, every Pokémon is still catchable somewhere", "Random, some Pokémon may not appear at all"],
+              ["Gifts, eggs, trades and static encounters", "Random", "Random", "Random"],
+              ["Strength of the random Pokémon", "Close to the original", "Close to the original", "Anything, weak or strong"],
+              ["Legendaries", "Random, only other legendaries", "Random, only other legendaries", "Random, can appear anywhere"],
+              ["Regular trainers", "Random", "Random", "Random"],
+              ["Gym Leaders and other bosses", "Not random", "Random, keeps their type", "Random, any type"],
+              ["Abilities", "Not random", "Random, no harmful ones like Truant", "Random, harmful ones included"],
+              ["Level-up moves, TM and tutor compatibility", "Not random", "Random", "Random"],
+              ["TM contents and field items", "Not random", "Random", "Random"],
+              ["Types, evolutions, base stats and type chart", "Not random", "Not random", "Random"]
+            ]
+          }
+        },
+        {
           "title": "Badge level caps",
-          "body": "Nuzlocke mode caps levels by progress: 15 before the first badge, rising by 9 with each badge to 78 before the eighth, 90 until you become Champion, then 100. Pokémon at the cap gain no EXP, and Rare Candies and the Day Care respect it. Standard mode has no level cap unless you switch one on with the Level Limiter, and its trainers rise gradually towards each Gym Leader instead of sitting at the cap, so the climb is smoother."
+          "body": "Nuzlocke mode caps levels by progress: 15 before the first badge, rising by 9 with each badge to 78 before the eighth, 90 until you become Champion, then 100. Pokémon at the cap gain no EXP, and Rare Candies and the Day Care respect it. Standard mode has no level cap unless you switch one on with the Level Limiter, and its trainers rise gradually towards each Gym Leader instead of sitting at the cap, so the climb is smoother. In both modes, traded Pokémon obey you up to the badge cap, so one you train alongside your team never disobeys."
         },
         {
           "title": "Starter kit and Candy Jar",
-          "body": "Mom gives you the Running Shoes, Candy Jar, Taxi Ticket, Pokévial, Pokémon Box Link, Exp. Share, Old Rod, Escape Rope and Pocket Watch, plus the Level Limiter in Standard mode. The Candy Jar never runs out and raises a Pokémon straight to the level your badges allow, in both modes."
+          "body": "You have the Running Shoes from your first step, and you can run indoors. Mom gives you the Candy Jar, Taxi Ticket, Pokévial, Pokémon Box Link, Exp. Share, Old Rod, Escape Rope and Pocket Watch, plus the Level Limiter in Standard mode. The Candy Jar never runs out and raises a Pokémon straight to the level your badges allow, in both modes."
         },
         {
           "title": "Taxi Ticket",
           "body": "Opens the Fly map wherever flying is allowed, without a badge or a Pokémon that knows Fly."
         },
         {
+          "title": "DexNav",
+          "body": "In Standard mode the DexNav comes with the Pokédex. Open it from the Start menu to see the Pokémon that live in the area, then press A to search for one, or R to register it so R starts a search in the field. Hold A to creep towards the rustling spot: running, cycling or taking too long scares the Pokémon off. Every DexNav Pokémon you defeat or catch in a row adds to your chain, which raises its level and the odds of an Egg Move, its Hidden Ability (once you have caught one), a held item, perfect IVs and a shiny. Any other battle, fleeing or leaving the area resets the chain. With the Level Limiter on, DexNav Pokémon never pass your level cap. Nuzlocke games have no DexNav, and it doesn't work in the Safari Zone or the Battle Frontier's Pike and Pyramid."
+        },
+        {
           "title": "HMs work from the Bag",
           "body": "Every HM works while it is in your Bag: a Pokémon doesn't need to know the move, only be able to learn it. The party menu lists an HM for each Pokémon that could learn it wherever it can be used there, such as Cut in front of a tree or Surf facing water, so a Charizard can Fly but not Surf. Badge requirements still apply. With HM05 in your Bag and a Pokémon that could learn Flash in your party, dark caves are lit automatically."
+        },
+        {
+          "title": "Register up to five key items",
+          "body": "Choose Register on up to five key items in the Bag. With one registered, SELECT uses it straight away. With more, SELECT opens a list of them in the field: pick one with A, or close it with B or SELECT."
         },
         {
           "title": "Follower Pokémon and day/night",
@@ -46,7 +74,7 @@
       "items": [
         {
           "title": "Catch them all",
-          "body": "Every regular Pokémon and regional form is obtainable. Remaining special cases are sold in Verdanturf's Bean Shop."
+          "body": "Every Pokémon and every form that can be kept in the PC is obtainable, so a living Pokédex of all forms can be completed. Wild Pokémon with several looks, such as Vivillon, Flabébé, Deerling, Minior, Furfrou and costumed Pikachu, appear in any of them and favour forms you don't have yet. Sweets and Nectars are sold in Verdanturf's Bean Shop, and a Peat Block evolves Ursaring into Ursaluna at night or Bloodmoon Ursaluna at other times."
         },
         {
           "title": "41 PC boxes",
@@ -70,7 +98,7 @@
         },
         {
           "title": "Legendary Lottery Island",
-          "body": "After you become Champion, Mirage Island off Route 130 hosts one random legendary you haven't caught yet, at level 70. Catch it and it leaves the pool."
+          "body": "After you become Champion, Mirage Island off Route 130 hosts one random legendary you haven't caught yet, at level 70, including forms such as Galarian Articuno, Black and White Kyurem and Dada Zarude. Catch one and it leaves the pool. The island holds the Gracidea, Reveal Glass, DNA Splicers and other form-changing key items, and after you become Champion the Bean Shop sells the Plates, Memories, Drives, Masks and Origin items."
         }
       ]
     },

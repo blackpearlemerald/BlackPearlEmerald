@@ -451,12 +451,31 @@ static bool32 IsSpritePalTagBlendImmune(u32 palIndex)
     return (palIndex >= 16 && IS_BLEND_IMMUNE_TAG(GetSpritePaletteTagByPaletteNum(palIndex - 16)));
 }
 
+// BPE: the weather color maps copy the unfaded palettes into the faded buffer
+// and then darken them in place. On a heavy frame (rain, followers, day/night
+// blending) the VBlank interrupt can land in between and send half-done
+// palettes to the screen: a one-frame flash of sprites at full brightness.
+// Hold the palette transfer until they are finished; that VBlank keeps the
+// previous frame's palettes.
+static u32 HoldPaletteTransfer(void)
+{
+    u32 wasHeld = gPaletteFade.bufferTransferDisabled;
+    gPaletteFade.bufferTransferDisabled = TRUE;
+    return wasHeld;
+}
+
+static void ReleasePaletteTransfer(u32 wasHeld)
+{
+    gPaletteFade.bufferTransferDisabled = wasHeld;
+}
+
 static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
 {
     u16 curPalIndex;
     u16 palOffset;
     const u8 *colorMap;
     u32 i;
+    u32 heldTransfer = HoldPaletteTransfer();
 
     if (colorMapIndex > 0)
     {
@@ -551,6 +570,7 @@ static void ApplyColorMap(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex)
             CpuFastCopy(&gPlttBufferUnfaded[PLTT_ID(startPalIndex)], &gPlttBufferFaded[PLTT_ID(startPalIndex)], numPalettes * PLTT_SIZE_4BPP);
         }
     }
+    ReleasePaletteTransfer(heldTransfer);
 }
 
 static void ApplyColorMapWithBlend(u8 startPalIndex, u8 numPalettes, s8 colorMapIndex, u8 blendCoeff, u32 blendColor)
@@ -562,6 +582,7 @@ static void ApplyColorMapWithBlend(u8 startPalIndex, u8 numPalettes, s8 colorMap
     u8 rBlend = color.r;
     u8 gBlend = color.g;
     u8 bBlend = color.b;
+    u32 heldTransfer = HoldPaletteTransfer();
 
     palOffset = PLTT_ID(startPalIndex);
     numPalettes += startPalIndex;
@@ -605,6 +626,7 @@ static void ApplyColorMapWithBlend(u8 startPalIndex, u8 numPalettes, s8 colorMap
 
         curPalIndex++;
     }
+    ReleasePaletteTransfer(heldTransfer);
 }
 
 static void ApplyDroughtColorMapWithBlend(s8 colorMapIndex, u8 blendCoeff, u32 blendColor)
@@ -616,6 +638,7 @@ static void ApplyDroughtColorMapWithBlend(s8 colorMapIndex, u8 blendCoeff, u32 b
     u16 curPalIndex;
     u16 palOffset;
     u16 i;
+    u32 heldTransfer = HoldPaletteTransfer();
 
     colorMapIndex = -colorMapIndex - 1;
     color = *(struct RGBColor *)&blendColor;
@@ -660,6 +683,7 @@ static void ApplyDroughtColorMapWithBlend(s8 colorMapIndex, u8 blendCoeff, u32 b
             }
         }
     }
+    ReleasePaletteTransfer(heldTransfer);
 }
 
 // This is only called during fade-in/fade-out in fog
@@ -668,6 +692,7 @@ static void ApplyFogBlend(u8 blendCoeff, u32 blendColor)
 {
     u32 curPalIndex;
     u16 fogCoeff = min((gTimeOfDay + 1) * 4, 12);
+    u32 heldTransfer = HoldPaletteTransfer();
 
     // First blend all palettes with time
     UpdateAltBgPalettes(PALETTES_BG);
@@ -684,6 +709,7 @@ static void ApplyFogBlend(u8 blendCoeff, u32 blendColor)
     }
     // Finally blend all sprite palettes faded->faded with fadeIn color
     BlendPalettesFine(PALETTES_OBJECTS, gPlttBufferFaded, gPlttBufferFaded, blendCoeff, blendColor);
+    ReleasePaletteTransfer(heldTransfer);
 }
 
 static void MarkFogSpritePalToLighten(u8 paletteIndex)
@@ -855,6 +881,7 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
 {
     u16 paletteIndex = 16 + spritePaletteIndex;
     u16 i;
+    u32 heldTransfer = HoldPaletteTransfer();
 
     switch (gWeatherPtr->palProcessingState)
     {
@@ -904,6 +931,7 @@ void UpdateSpritePaletteWithWeather(u8 spritePaletteIndex, bool8 allowFog)
         }
         break;
     }
+    ReleasePaletteTransfer(heldTransfer);
 }
 
 void ApplyWeatherColorMapToPals(u8 startPalIndex, u8 numPalettes)

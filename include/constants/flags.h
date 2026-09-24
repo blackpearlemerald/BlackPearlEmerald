@@ -1230,26 +1230,26 @@
 #define FLAG_V1PATCH                                                0x495 // USED FOR V0.9.9.3 to v1.0 PATCH!
 #define FLAG_STANDARD_LEVEL_CAPS                                    0x496 // BPE: Standard mode level caps on (Level Limiter)
 #define FLAG_RECEIVED_LEVEL_LIMITER                                 0x497 // BPE: the Level Limiter has been handed out
-#define FLAG_UNUSED_0x498                                           0x498 // Unused Flag
-#define FLAG_UNUSED_0x499                                           0x499 // Unused Flag
-#define FLAG_UNUSED_0x49A                                           0x49A // Unused Flag
-#define FLAG_UNUSED_0x49B                                           0x49B // Unused Flag
-#define FLAG_UNUSED_0x49C                                           0x49C // Unused Flag
-#define FLAG_UNUSED_0x49D                                           0x49D // Unused Flag
-#define FLAG_UNUSED_0x49E                                           0x49E // Unused Flag
-#define FLAG_UNUSED_0x49F                                           0x49F // Unused Flag
-#define FLAG_UNUSED_0x4A0                                           0x4A0 // Unused Flag
-#define FLAG_UNUSED_0x4A1                                           0x4A1 // Unused Flag
-#define FLAG_UNUSED_0x4A2                                           0x4A2 // Unused Flag
-#define FLAG_UNUSED_0x4A3                                           0x4A3 // Unused Flag
-#define FLAG_UNUSED_0x4A4                                           0x4A4 // Unused Flag
-#define FLAG_UNUSED_0x4A5                                           0x4A5 // Unused Flag
-#define FLAG_UNUSED_0x4A6                                           0x4A6 // Unused Flag
-#define FLAG_UNUSED_0x4A7                                           0x4A7 // Unused Flag
-#define FLAG_UNUSED_0x4A8                                           0x4A8 // Unused Flag
-#define FLAG_UNUSED_0x4A9                                           0x4A9 // Unused Flag
-#define FLAG_UNUSED_0x4AA                                           0x4AA // Unused Flag
-#define FLAG_UNUSED_0x4AB                                           0x4AB // Unused Flag
+#define FLAG_ISLAND_CAUGHT_ARTICUNO_GALAR                           0x498 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_ZAPDOS_GALAR                             0x499 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_MOLTRES_GALAR                            0x49A // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_KYUREM                                   0x49B // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_KYUREM_WHITE                             0x49C // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_KYUREM_BLACK                             0x49D // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_NECROZMA                                 0x49E // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_NECROZMA_DUSK_MANE                       0x49F // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_NECROZMA_DAWN_WINGS                      0x4A0 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_CALYREX                                  0x4A1 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_CALYREX_ICE                              0x4A2 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_CALYREX_SHADOW                           0x4A3 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_MAGEARNA                                 0x4A4 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_MAGEARNA_ORIGINAL                        0x4A5 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_ZARUDE                                   0x4A6 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_ZARUDE_DADA                              0x4A7 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_URSHIFU_SINGLE_STRIKE                    0x4A8 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_URSHIFU_RAPID_STRIKE                     0x4A9 // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_FLOETTE_ETERNAL                          0x4AA // BPE: caught on Mirage Island (shares its Pokédex number)
+#define FLAG_ISLAND_CAUGHT_SILVALLY                                 0x4AB // BPE: caught on Mirage Island (shares its Pokédex number)
 #define FLAG_UNUSED_0x4AC                                           0x4AC // Unused Flag
 #define FLAG_UNUSED_0x4AD                                           0x4AD // Unused Flag
 #define FLAG_UNUSED_0x4AE                                           0x4AE // Unused Flag
@@ -1653,7 +1653,8 @@
 #define FLAG_STORING_ITEMS_IN_PYRAMID_BAG       (SPECIAL_FLAGS_START + 0x4)
 #define FLAG_SAFE_FOLLOWER_MOVEMENT             (SPECIAL_FLAGS_START + 0x5) // When set, applymovement does not put the follower inside a pokeball
                                                                             // Also, scripted movements on the player will move follower(s), too
-// FLAG_SPECIAL_FLAG_0x4005 - 0x407F also exist and are unused
+#define FLAG_DEXNAV_SEARCHING                   (SPECIAL_FLAGS_START + 0x6) // BPE: a DexNav search is running. RAM only, so a save never holds a stale search.
+// FLAG_SPECIAL_FLAG_0x4007 - 0x407F also exist and are unused
 #define SPECIAL_FLAGS_END                       (SPECIAL_FLAGS_START + 0x7F)
 #define NUM_SPECIAL_FLAGS                       (SPECIAL_FLAGS_END - SPECIAL_FLAGS_START + 1)
 

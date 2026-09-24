@@ -43,6 +43,7 @@
 #include "naming_screen.h"
 #include "tv.h"
 #include "randomizer.h"
+#include "ui_stat_editor.h"
 
  /*
     9 Starter Selection Birch Case
@@ -64,6 +65,7 @@ struct MenuResources
     u16 selector_y;
     u16 movingSelector;
     u16 species[9]; // BPE: the Pokémon behind each ball, after the randomizer
+    u8 nature;      // BPE: the nature the player picked for the starter
 };
 
 enum WindowIds
@@ -76,6 +78,7 @@ enum TextIds
     CHOOSE_MON,
     CONFIRM_SELECTION,
     RECIEVED_MON,
+    CHOOSE_NATURE, // BPE
 };
 
 enum Colors
@@ -117,7 +120,7 @@ struct MonChoiceData{ // This is the format used to define a mon, everything lef
     u8 level;   // Mon Level 5
     u16 item;   // Held item, just ITEM_POTION
     u8 ball; // this ballid does not change the design of the ball in the case, only in summary/throwing out to battle 
-    u8 nature; // NATURE_JOLLY, NATURE_ETC...
+    u8 nature; // BPE: unused, the player picks the nature after choosing a ball
     u8 abilityNum; // this is either 0/1 in vanilla or 0/1/2 in Expansion, its the ability num your mon uses from its possible abilities, not the ability constant itself
     u8 gender; // MON_MALE, MON_FEMALE, MON_GENDERLESS, or MON_GENDER_RANDOM
     u8 evs[6]; // use format {255, 255, 0, 0, 0, 0}
@@ -470,7 +473,7 @@ static void BirchCase_GiveMon() // Function that calls the GiveMon function pull
     VarSet(VAR_STARTER_SPECIES, species); // BPE: the real starter, for the credits and NPCs
     gSpecialVar_Result = BirchCase_GiveMonParameterized(species, sStarterChoices[sBirchCaseDataPtr->handPosition].level, \
                 sStarterChoices[sBirchCaseDataPtr->handPosition].item, sStarterChoices[sBirchCaseDataPtr->handPosition].ball, \
-                sStarterChoices[sBirchCaseDataPtr->handPosition].nature, sStarterChoices[sBirchCaseDataPtr->handPosition].abilityNum, \
+                sBirchCaseDataPtr->nature, sStarterChoices[sBirchCaseDataPtr->handPosition].abilityNum, \
                 sStarterChoices[sBirchCaseDataPtr->handPosition].gender, evs, ivs, moves, \
                 sStarterChoices[sBirchCaseDataPtr->handPosition].ggMaxFactor, sStarterChoices[sBirchCaseDataPtr->handPosition].teraType,\
                 sStarterChoices[sBirchCaseDataPtr->handPosition].isShinyExpansion);
@@ -612,12 +615,13 @@ static bool8 BirchCaseDoGfxSetup(void)
 
 static void BirchCaseFreeResources(void)
 {
-    try_free(sBirchCaseDataPtr);
-    try_free(sBg1TilemapBuffer);
-    try_free(sBg2TilemapBuffer);
+    // BPE: destroy the sprites before freeing the data that holds their ids
     FreeResourcesAndDestroySprite(&gSprites[sBirchCaseDataPtr->monSpriteId], sBirchCaseDataPtr->monSpriteId);
     DestroyPokeballSprites();
     DestroyHandSprite();
+    try_free(sBirchCaseDataPtr);
+    try_free(sBg1TilemapBuffer);
+    try_free(sBg2TilemapBuffer);
     FreeAllWindowBuffers();
 }
 
@@ -737,6 +741,40 @@ static void BirchCase_InitWindows(void)
 static const u8 sText_ChooseMon[] = _("Release a Pokémon!");
 static const u8 sText_AreYouSure[] = _("Are you sure?    {A_BUTTON} Yes  {B_BUTTON} No");
 //static const u8 sText_RecievedMon[] = _("Give your Pokémon a Nickname?   {A_BUTTON} Yes  {B_BUTTON} No");
+static const u8 sText_ViewStats[] = _("View stats?    {A_BUTTON} Yes  {B_BUTTON} No"); // BPE
+// BPE: the nature picker shown after the player confirms a ball
+static const u8 sText_NatureLine[] = _("Nature: {STR_VAR_1}  {STR_VAR_2}");
+static const u8 sText_NatureNeutral[] = _("(neutral)");
+static const u8 sText_NatureControls[] = _("{DPAD_NONE}Change {A_BUTTON}OK");
+static const u8 *const sNatureStatNames[NUM_STATS] =
+{
+    [STAT_ATK]   = COMPOUND_STRING("Atk"),
+    [STAT_DEF]   = COMPOUND_STRING("Def"),
+    [STAT_SPEED] = COMPOUND_STRING("Spe"),
+    [STAT_SPATK] = COMPOUND_STRING("SpA"),
+    [STAT_SPDEF] = COMPOUND_STRING("SpD"),
+};
+
+static void BufferNatureLine(u8 nature)
+{
+    const struct NatureInfo *info = &gNaturesInfo[nature];
+    u8 *end;
+
+    StringCopy(gStringVar1, info->name);
+    if (info->statUp == info->statDown)
+    {
+        StringCopy(gStringVar2, sText_NatureNeutral);
+    }
+    else
+    {
+        end = StringCopy(gStringVar2, COMPOUND_STRING("+"));
+        end = StringCopy(end, sNatureStatNames[info->statUp]);
+        end = StringCopy(end, COMPOUND_STRING(" -"));
+        StringCopy(end, sNatureStatNames[info->statDown]);
+    }
+    StringExpandPlaceholders(gStringVar4, sText_NatureLine);
+}
+
 static void PrintTextToBottomBar(u8 textId)
 {
     u8 speciesNameArray[16];
@@ -759,9 +797,14 @@ static void PrintTextToBottomBar(u8 textId)
         case 1:
             mainBarAlternatingText = sText_AreYouSure;
             break;
-        //case 2:
-            //mainBarAlternatingText = sText_RecievedMon;
-            //break;
+        case 2:
+            mainBarAlternatingText = sText_ViewStats;
+            break;
+        case 3:
+            BufferNatureLine(sBirchCaseDataPtr->nature);
+            mainBarAlternatingText = gStringVar4;
+            AddTextPrinterParameterized4(WINDOW_BOTTOM_BAR, FONT_NORMAL, 235 - GetStringWidth(FONT_NORMAL, sText_NatureControls, 0), y, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, sText_NatureControls);
+            break;
         default:
             mainBarAlternatingText = sText_ChooseMon;
             break;
@@ -790,7 +833,7 @@ static void PrintTextToBottomBar(u8 textId)
 #endif
     AddTextPrinterParameterized4(WINDOW_BOTTOM_BAR, FONT_NORMAL, x + 40, 1 + 2, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, &speciesNameArray[0]);
 
-    if(textId != 2)
+    if(textId != 2 && textId != 3)
     {
 #ifdef POKEMON_EXPANSION
         speciesCategoryText = GetSpeciesCategory(species);
@@ -840,22 +883,80 @@ static void Task_DelayedSpriteLoad(u8 taskId) // wait 4 frames after changing th
 //    }
 //}
 
+// BPE: show the new starter in the stat editor, then carry on with the script
+static void Task_WaitForFadeAndOpenStatEditor(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        MainCallback callback = sBirchCaseDataPtr->savedCallback;
+        BirchCaseFreeResources();
+        DestroyTask(taskId);
+        gSpecialVar_0x8004 = 0; // BirchCase_GiveMonParameterized puts the starter in party slot 0
+        StatEditor_Init(callback);
+    }
+}
+
 static void Task_BirchCaseRecievedMon(u8 taskId)
 {
-    //if(JOY_NEW(A_BUTTON))
-    //{
-    //    PlaySE(SE_SELECT);
-    //    BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
-    //    gTasks[taskId].func = Task_WaitForFadeAndOpenNamingScreen;
-    //    return;
-    //}
-    //if (JOY_NEW(B_BUTTON))
-    //{
-        //PlaySE(SE_SELECT);
-        //BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
+    if (JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+        gTasks[taskId].func = Task_WaitForFadeAndOpenStatEditor;
+        return;
+    }
+    if (JOY_NEW(B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
         gTasks[taskId].func = Task_BirchCaseTurnOff;
         return;
-    //}
+    }
+}
+
+// BPE: the player picks the starter's nature so they don't have to reset for one.
+// Left/Right step through the natures; Up/Down change the raised stat.
+static void Task_BirchCaseChooseNature(u8 taskId)
+{
+    u8 oldNature = sBirchCaseDataPtr->nature;
+
+    if (JOY_REPEAT(DPAD_RIGHT))
+        sBirchCaseDataPtr->nature = (sBirchCaseDataPtr->nature + 1) % NUM_NATURES;
+    else if (JOY_REPEAT(DPAD_LEFT))
+        sBirchCaseDataPtr->nature = (sBirchCaseDataPtr->nature + NUM_NATURES - 1) % NUM_NATURES;
+    else if (JOY_REPEAT(DPAD_DOWN))
+        sBirchCaseDataPtr->nature = (sBirchCaseDataPtr->nature + 5) % NUM_NATURES;
+    else if (JOY_REPEAT(DPAD_UP))
+        sBirchCaseDataPtr->nature = (sBirchCaseDataPtr->nature + NUM_NATURES - 5) % NUM_NATURES;
+
+    if (sBirchCaseDataPtr->nature != oldNature)
+    {
+        PlaySE(SE_SELECT);
+        PrintTextToBottomBar(CHOOSE_NATURE);
+        return;
+    }
+    if(JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        BirchCase_GiveMon();
+        // BPE: offer the stat editor so the player can check the starter's stats
+        if (gSpecialVar_Result == MON_GIVEN_TO_PARTY)
+        {
+            PrintTextToBottomBar(RECIEVED_MON);
+            gTasks[taskId].func = Task_BirchCaseRecievedMon;
+        }
+        else
+        {
+            gTasks[taskId].func = Task_BirchCaseTurnOff;
+        }
+        return;
+    }
+    if (JOY_NEW(B_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        PrintTextToBottomBar(CHOOSE_MON);
+        gTasks[taskId].func = Task_BirchCaseMain;
+        return;
+    }
 }
 
 static void Task_BirchCaseConfirmSelection(u8 taskId)
@@ -863,9 +964,8 @@ static void Task_BirchCaseConfirmSelection(u8 taskId)
     if(JOY_NEW(A_BUTTON))
     {
         PlaySE(SE_SELECT);
-        PrintTextToBottomBar(RECIEVED_MON);
-        BirchCase_GiveMon();
-        gTasks[taskId].func = Task_BirchCaseRecievedMon;
+        PrintTextToBottomBar(CHOOSE_NATURE); // BPE: ask for the nature next
+        gTasks[taskId].func = Task_BirchCaseChooseNature;
         return;
     }
     if (JOY_NEW(B_BUTTON))

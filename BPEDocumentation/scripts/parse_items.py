@@ -12,6 +12,7 @@ Usage:  py parse_items.py
 import re, json, os
 from pathlib import Path
 import common as C
+import pokemon_sprites
 from PIL import Image
 
 # ── Paths ──────────────────────────────────────────────────────────────────────
@@ -403,9 +404,52 @@ def build_locations(items_dict):
                          # only marked the whole gift.
                          "carePackage": gi.get("carePackage",
                                                gift.get("carePackage", False))}
+                if gift.get("note"):
+                    entry["note"] = gift["note"]
                 locs[key]["gifts"].append(entry)
 
     return locs
+
+
+SPECIES_DIR = DATA_DIR / "species"
+WILD_TYPES = {"land_mons", "water_mons", "rock_smash_mons", "fishing_mons"}
+
+
+def build_wild_holders():
+    """{item_id: [{species, name, icon, forms, pct, boostPct, boostAbilities}, ...]}
+    for every species found in the wild that can hold the item, from
+    parse_pokemon.py's output. Forms that share a name and odds (Pikachu's
+    costumes) are one row. Scripted encounters are left out: most are
+    legendary battles, which never hold an item."""
+    index_path = DATA_DIR / "pokedex_index.json"
+    if not index_path.is_file():
+        print("  ! pokedex_index.json not found — skip wild held items")
+        return {}
+    with open(index_path, "r", encoding="utf-8") as f:
+        index = json.load(f)
+    holders = {}
+    for key in index:
+        with open(SPECIES_DIR / f"{key}.json", "r", encoding="utf-8") as f:
+            sp = json.load(f)
+        if not any(e["type"] in WILD_TYPES for e in sp.get("encounters", [])):
+            continue
+        for held in sp.get("wildHeldItems", []):
+            rows = holders.setdefault(held["item"], [])
+            same = next((r for r in rows if r["name"] == sp["name"]
+                         and r["pct"] == held["pct"] and r["boostPct"] == held["boostPct"]), None)
+            if same:
+                same["forms"] += 1
+                continue
+            # The map's menu icons are transparent; the Pokédex icons are not.
+            map_icon = f"img/pokemon/{pokemon_sprites.norm(key)}.png"
+            rows.append({
+                "species": key, "name": sp["name"],
+                "icon": map_icon if (SITE / map_icon).is_file() else sp.get("icon"),
+                "forms": 1, "pct": held["pct"], "boostPct": held["boostPct"],
+                "boostAbilities": sp.get("heldItemBoostAbilities", [])})
+    for rows in holders.values():
+        rows.sort(key=lambda r: (-r["pct"], r["name"]))
+    return holders
 
 
 # ── Main ───────────────────────────────────────────────────────────────────────
@@ -433,11 +477,17 @@ def main():
     print("  [4] Building location data …")
     index = {item["id"]: item for item in items}
     locations = build_locations(index)
+    wild = build_wild_holders()
     for item in items:
         item["locations"] = locations.get(item["id"],
                                           {"marts": [], "overworld": [], "gifts": []})
+        if item["id"] in wild:
+            item["locations"]["wild"] = wild[item["id"]]
     locs_with_data = sum(1 for i in items
-                         if any(i["locations"][k] for k in ("marts","overworld","gifts")))
+                         if any(i["locations"].get(k) for k in ("marts","overworld","gifts","wild")))
+    unknown = sorted(set(wild) - set(index))
+    if unknown:
+        print(f"  ! wild held items missing from the item list: {', '.join(unknown)}")
     print(f"       -> {locs_with_data}/{len(items)} items have location data")
 
     print("  [5] Writing JSON …")

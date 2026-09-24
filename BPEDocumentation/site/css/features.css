@@ -66,6 +66,38 @@ body.page-features {
 
 .features-card h3 { margin: 0 0 8px; color: #f3f7fb; font-size: 18px; line-height: 1.3; }
 .features-card p { margin: 0; color: #b8c7d5; font-size: 15px; line-height: 1.55; }
+/* min-width: 0 lets a wide table scroll inside the card instead of widening the page. */
+.features-card.is-wide { grid-column: 1 / -1; min-width: 0; }
+
+.features-table-wrap { margin-top: 14px; overflow-x: auto; }
+
+.features-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 14.5px;
+  line-height: 1.4;
+}
+
+.features-table th, .features-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: left;
+  vertical-align: top;
+}
+
+.features-table thead th {
+  color: #63d393;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom-color: rgba(99, 211, 147, 0.35);
+}
+
+.features-table thead .features-table-label { color: #8fa6b9; }
+.features-table tbody th { width: 30%; color: #e8eef5; font-weight: 650; }
+.features-table td { width: 23%; color: #b8c7d5; }
+.features-table tbody tr:nth-child(odd) { background: rgba(255, 255, 255, 0.03); }
 
 .features-legendaries {
   overflow: hidden;

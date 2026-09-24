@@ -68,6 +68,11 @@ s16 AdvanceStorageMonIndex(struct BoxPokemon *boxMons, u8 currIndex, u8 maxIndex
 bool8 CheckFreePokemonStorageSpace(void);
 bool32 CheckBoxMonSanityAt(u32 boxId, u32 boxPosition);
 u32 CountStorageNonEggMons(void);
+
+// BPE: one bit per species the player has right now (party, PC or Day Care).
+#define OWNED_SPECIES_WORDS ((NUM_SPECIES + 31) / 32)
+void GetOwnedSpecies(u32 *owned);
+bool32 IsSpeciesOwned(const u32 *owned, u32 species);
 u32 CountAllStorageMons(void);
 bool32 AnyStorageMonWithMove(enum Move move);
 

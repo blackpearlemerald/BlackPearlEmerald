@@ -1,5 +1,5 @@
-#ifndef GUARD_UI_MENU_H
-#define GUARD_UI_MENU_H
+#ifndef GUARD_UI_BIRCH_CASE_H
+#define GUARD_UI_BIRCH_CASE_H
 
 #include "main.h"
 
@@ -8,4 +8,4 @@ void BirchCase_Init(MainCallback callback);
 u16 BirchCase_GetOriginalSpecies(u32 ball);
 
 
-#endif // GUARD_UI_MENU_H
+#endif // GUARD_UI_BIRCH_CASE_H

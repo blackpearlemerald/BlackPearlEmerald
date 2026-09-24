@@ -17,6 +17,33 @@
     return node;
   }
 
+  // The first column labels each row; the others compare the choices.
+  function renderTable(table) {
+    var wrap = element('div', 'features-table-wrap');
+    var grid = element('table', 'features-table');
+    var headRow = element('tr');
+    table.columns.forEach(function (column, i) {
+      var cell = element('th', '', column);
+      cell.scope = 'col';
+      if (i === 0) cell.className = 'features-table-label';
+      headRow.appendChild(cell);
+    });
+    grid.appendChild(element('thead')).appendChild(headRow);
+    var body = element('tbody');
+    table.rows.forEach(function (row) {
+      var tr = element('tr');
+      row.forEach(function (value, i) {
+        var cell = element(i === 0 ? 'th' : 'td', '', value);
+        if (i === 0) cell.scope = 'row';
+        tr.appendChild(cell);
+      });
+      body.appendChild(tr);
+    });
+    grid.appendChild(body);
+    wrap.appendChild(grid);
+    return wrap;
+  }
+
   function renderSections(sections) {
     var fragment = document.createDocumentFragment();
     sections.forEach(function (section) {
@@ -25,9 +52,10 @@
       block.appendChild(element('h2', '', section.title));
       var grid = element('div', 'features-grid');
       section.items.forEach(function (item) {
-        var card = element('article', 'features-card');
+        var card = element('article', item.table ? 'features-card is-wide' : 'features-card');
         card.appendChild(element('h3', '', item.title));
         card.appendChild(element('p', '', item.body));
+        if (item.table) card.appendChild(renderTable(item.table));
         grid.appendChild(card);
       });
       block.appendChild(grid);

@@ -27,6 +27,28 @@ def _text(value, where, required=True):
     return value
 
 
+def _table(table, where):
+    """Validate an optional comparison table: a header row and rows of the same width."""
+    if not isinstance(table, dict):
+        raise ValueError(f"Features content: {where} table must be an object.")
+    columns = table.get("columns")
+    rows = table.get("rows")
+    if not isinstance(columns, list) or len(columns) < 2 or not isinstance(rows, list) or not rows:
+        raise ValueError(f"Features content: {where} table needs columns and rows.")
+    if any(not isinstance(row, list) or len(row) != len(columns) for row in rows):
+        raise ValueError(f"Features content: {where} table rows must match its columns.")
+    return {"columns": [_text(c, f"{where} table column") for c in columns],
+            "rows": [[_text(cell, f"{where} table cell") for cell in row] for row in rows]}
+
+
+def _item(item, sid):
+    out = {"title": _text(item.get("title"), f"{sid} item title"),
+           "body": _text(item.get("body"), f"{sid} item body")}
+    if "table" in item:
+        out["table"] = _table(item["table"], f"{sid} item {out['title']}")
+    return out
+
+
 def validate_content(content):
     """Return normalised curated content or raise ValueError."""
     if not isinstance(content, dict) or content.get("schemaVersion") != SCHEMA_VERSION:
@@ -49,9 +71,7 @@ def validate_content(content):
         out_sections.append({
             "id": sid,
             "title": _text(section.get("title"), f"section {sid} title"),
-            "items": [{"title": _text(item.get("title"), f"{sid} item title"),
-                       "body": _text(item.get("body"), f"{sid} item body")}
-                      for item in items if isinstance(item, dict)],
+            "items": [_item(item, sid) for item in items if isinstance(item, dict)],
         })
         if len(out_sections[-1]["items"]) != len(items):
             raise ValueError(f"Features content: section {sid} items must be objects.")

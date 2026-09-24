@@ -26,7 +26,8 @@
     var marts = locs.marts || [];
     var overworld = locs.overworld || [];
     var gifts = locs.gifts || [];
-    if (!marts.length && !overworld.length && !gifts.length) return '';
+    var wild = locs.wild || [];
+    if (!marts.length && !overworld.length && !gifts.length && !wild.length) return '';
 
     // Each link deep-links into the map and tells it what to snap to.
     function link(mapId, extra, label, trailing) {
@@ -73,7 +74,28 @@
         var qtyLabel = g.qty > 1 ? ' <span class="where-qty">×' + g.qty + '</span>' : '';
         if (anyPackage && anyGift) qtyLabel += '<span class="where-cond">' + (g.carePackage ? 'Care package' : 'Gift') + '</span>';
         html += link(g.mapId, '&gift=' + encodeURIComponent(itemId), g.mapName, qtyLabel);
+        if (g.note) html += '<div class="where-cond where-note gift-note">' + g.note + '</div>';
       });
+      html += '</div>';
+    }
+
+    if (wild.length) {
+      html += '<div class="where-section"><div class="where-section-label">🌿 Held by Wild Pokémon</div>';
+      var boosters = [];
+      wild.forEach(function(w) {
+        var boosted = w.boostPct !== w.pct && (w.boostAbilities || []).length;
+        if (boosted) boosters = w.boostAbilities;
+        var icon = w.icon ? '<img class="where-mon-icon" src="' + esc(w.icon) + '" alt="" />' : '';
+        html += '<div class="where-row">'
+          + '<a href="pokemon.html?id=' + encodeURIComponent(w.species) + '" class="where-map-link">' + icon + esc(w.name) + '</a>'
+          + (w.forms > 1 ? '<span class="where-cond">' + w.forms + ' forms</span>' : '')
+          + '<span class="where-cond">' + w.pct + '%' + (boosted ? ' (' + w.boostPct + '%*)' : '') + '</span>'
+          + '</div>';
+      });
+      if (boosters.length) {
+        html += '<div class="where-cond where-note">* With '
+          + esc(boosters.map(prettify).join(' or ')) + ' leading the party.</div>';
+      }
       html += '</div>';
     }
 

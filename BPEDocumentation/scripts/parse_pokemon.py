@@ -292,10 +292,89 @@ def load_static_encounters():
         return json.load(f).get("statics") or []
 
 
+def read_wild_form_variants():
+    """[(BASE, chance, [FORM ...]), ...] from src/data/wild_form_variants.h: the
+    forms a wild species can appear in. Releases before the table existed have
+    no file, and no variants."""
+    path = REPO / "src" / "data" / "wild_form_variants.h"
+    if not path.is_file():
+        return []
+    txt = strip_c_comments(path.read_text(encoding="utf-8"))
+    arrays = {name: re.findall(r"SPECIES_(\w+)", body)
+              for name, body in re.findall(r"u16 (s\w+)\[\]\s*=\s*\{(.*?)\};", txt, re.S)}
+    return [(base, int(chance), arrays.get(forms, []))
+            for base, chance, forms in re.findall(r"VARIANTS\(SPECIES_(\w+),\s*(\d+),\s*(s\w+)\)", txt)]
+
+
+def read_wild_held_item_rules():
+    """(normal, boosted, [ABILITY ...]) for wild held items, read from
+    SetWildMonHeldItem() and CanFirstMonBoostHeldItemRarity() in src/pokemon.c.
+
+    `normal` and `boosted` are (common %, rare %). The abilities are the ones
+    that raise the odds when leading the party in this release: 1.0.1 set
+    OW_COMPOUND_EYES and OW_SUPER_LUCK so that neither did."""
+    txt = strip_c_comments(read_file(REPO / "src" / "pokemon.c"))
+
+    def odds(var, boosted, default):
+        m = re.search(rf"{var}\s*=\s*itemHeldBoost\s*\?\s*(\d+)\s*:\s*(\d+)", txt)
+        return int(m.group(1 if boosted else 2)) if m else default
+
+    def split(boosted):
+        no_item = odds("chanceNoItem", boosted, 20 if boosted else 45)
+        not_rare = odds("chanceNotRare", boosted, 80 if boosted else 95)
+        return not_rare - no_item, 100 - not_rare
+
+    config = dict(gen_config())
+    overworld = strip_c_comments(read_file(REPO / "include" / "config" / "overworld.h"))
+    for m in re.finditer(r"#define\s+(OW_\w+)\s+(GEN_\w+)\s*$", overworld, re.M):
+        if m.group(2) in config:
+            config[m.group(1)] = config[m.group(2)]
+
+    abilities = []
+    body = re.search(r"CanFirstMonBoostHeldItemRarity\(void\)\s*\{(.*?)\n\}", txt, re.S)
+    for cond in re.findall(r"if\s*\((.*)\)\s*$", body.group(1) if body else "", re.M):
+        ability = re.search(r"ability\s*==\s*ABILITY_(\w+)", cond)
+        if not ability:
+            continue
+        rest = re.sub(r"&&\s*ability\s*==\s*ABILITY_\w+|ability\s*==\s*ABILITY_\w+\s*(&&)?", "", cond).strip()
+        # An unknown config means the ability can't be shown to boost.
+        if not rest or _eval_config_condition(rest, config):
+            abilities.append(ability.group(1))
+    return split(False), split(True), abilities
+
+
+def wild_held_items(common, rare, rules):
+    """[{"item", "pct", "boostPct"}, ...] for a species' itemCommon/itemRare,
+    following SetWildMonHeldItem(): the same item in both slots is always held."""
+    (norm_c, norm_r), (boost_c, boost_r), boosters = rules
+    if not boosters:
+        boost_c, boost_r = norm_c, norm_r
+    if common and common == rare:
+        return [{"item": common, "pct": 100, "boostPct": 100}]
+    out = []
+    if common:
+        out.append({"item": common, "pct": norm_c, "boostPct": boost_c})
+    if rare:
+        out.append({"item": rare, "pct": norm_r, "boostPct": boost_r})
+    return out
+
+
 def parse_encounters(statics=()):
     path = REPO / "src" / "data" / "wild_encounters.json"
     with open(path, "r", encoding="utf-8") as f:
         raw = json.load(f)
+
+    # Wild tables may name a form family by its alias (SPECIES_FLORGES is
+    # SPECIES_FLORGES_RED); species pages use the form's own name.
+    species_h = REPO / "include" / "constants" / "species.h"
+    aliases = parse_species_aliases() if species_h.is_file() else {}
+
+    def resolve(name):
+        seen = set()
+        while name in aliases and name not in seen:
+            seen.add(name)
+            name = aliases[name]
+        return name
 
     hoenn_maps = parse_hoenn_map_ids()
     enc_types = ["land_mons", "water_mons", "rock_smash_mons", "fishing_mons"]
@@ -312,7 +391,7 @@ def parse_encounters(statics=()):
                 if enc_type not in entry:
                     continue
                 for mon in entry[enc_type].get("mons", []):
-                    sp = mon["species"].replace("SPECIES_", "")
+                    sp = resolve(mon["species"].replace("SPECIES_", ""))
                     if sp not in species_enc:
                         species_enc[sp] = []
                     # Merge same map+type rows
@@ -334,7 +413,7 @@ def parse_encounters(statics=()):
 
     # Static encounters: one row per species and map, linked to that map.
     for st in statics:
-        sp = st["species"].replace("SPECIES_", "")
+        sp = resolve(st["species"].replace("SPECIES_", ""))
         rows = species_enc.setdefault(sp, [])
         if any(e["map"] == st["mapId"] and e["type"] == "static" for e in rows):
             continue
@@ -357,6 +436,27 @@ def parse_encounters(statics=()):
             "maxLevel": mirage_level,
             "type": "mirage",
         })
+
+    # Wild form variants: each form is found wherever its species is, with a
+    # note saying how often.
+    wild_types = set(enc_types)
+    for base, chance, forms in read_wild_form_variants():
+        base = resolve(base)
+        rows = [e for e in species_enc.get(base, []) if e["type"] in wild_types]
+        name = base.split("_")[0].title()
+        forms = [resolve(f) for f in forms]
+        if chance >= 100:
+            note = f"Random form, 1 of {len(forms)}"
+        elif len(forms) > 1:
+            note = f"{chance}% of {name}, 1 of {len(forms)} forms"
+        else:
+            note = f"{chance}% of {name}"
+        for form in forms:
+            for row in rows:
+                if form == base:
+                    row["note"] = note
+                else:
+                    species_enc.setdefault(form, []).append(dict(row, note=note))
 
     return species_enc
 
@@ -445,6 +545,9 @@ def _parse_evolutions(block):
             conds = _parse_conditions(rest)
             if conds:
                 evo["conditions"] = conds
+            tm = re.search(r"\{\s*IF_(NOT_)?TIME\s*,\s*TIME_(\w+)\s*\}", rest)
+            if tm:
+                evo["time"] = ("not " if tm.group(1) else "") + tm.group(2).lower()
 
         evos.append(evo)
     return evos
@@ -468,12 +571,12 @@ def _collect_stat_macros(content):
         macros.setdefault(m[1], int(m[2]))
     return macros
 
-def _eval_config_condition(expression):
+def _eval_config_condition(expression, config=None):
     """Evaluate a simple C config comparison, or return None if it is unknown."""
     m = re.fullmatch(r"\s*\(?\s*(\w+)\s*(>=|>|<=|<|==|!=)\s*(\w+|\d+)\s*\)?\s*", expression)
     if not m:
         return None
-    config = gen_config()
+    config = config or gen_config()
 
     def value(token):
         return int(token) if token.isdigit() else config.get(token)
@@ -698,9 +801,13 @@ def expand_macros(text, macros, _seen=(), _depth=0):
                     # `SPECIES_FLOETTE_FORM`). Normalise that before substituting.
                     ebody = re.sub(r"\s*##\s*", "##", ebody)
                     for p, a in zip(params, args or []):
-                        # token-paste first (foo##p, p##bar), then whole-word
-                        ebody = ebody.replace("##" + p, a).replace(p + "##", a)
-                        ebody = re.sub(r"\b" + re.escape(p) + r"\b", a, ebody)
+                        # token-paste first (foo##p, p##bar), then whole-word.
+                        # Only whole tokens: in `sMinior##Form##FormChangeTable`
+                        # the parameter Form must not eat into FormChangeTable.
+                        ident = re.escape(p)
+                        ebody = re.sub(r"##" + ident + r"(?!\w)", lambda _: a, ebody)
+                        ebody = re.sub(r"(?<!\w)" + ident + r"##", lambda _: a, ebody)
+                        ebody = re.sub(r"\b" + ident + r"\b", lambda _: a, ebody)
                 ebody = ebody.replace("##", "")  # drop any stray paste operators
                 out.append(expand_macros(ebody, macros, _seen + (word,), _depth + 1))
                 i = k if params is not None else j
@@ -796,10 +903,11 @@ def _evo_label(evo):
         return "Friendship (day)"
     if m == "EVO_FRIENDSHIP_NIGHT":
         return "Friendship (night)"
+    when = f" ({evo['time']})" if evo.get("time") else ""
     if "ITEM_HOLD" in m or m == "EVO_TRADE_ITEM":
-        return ("Trade holding " if m == "EVO_TRADE_ITEM" else "Hold ") + (evo.get("item") or "")
+        return ("Trade holding " if m == "EVO_TRADE_ITEM" else "Hold ") + (evo.get("item") or "") + when
     if "ITEM" in m:
-        return evo.get("item") or "Use item"
+        return (evo.get("item") or "Use item") + when
     if m == "EVO_TRADE":
         return "Trade"
     if m == "EVO_MOVE":
@@ -810,7 +918,8 @@ def _evo_label(evo):
         return "Spin w/ Sweet"
     return m.replace("EVO_", "").replace("_", " ").title()
 
-def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters, tms, hms):
+def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters, tms, hms,
+                       held_rules=None):
     tm_set = set(tms)
     hm_set = set(hms)
     all_species = {}
@@ -945,6 +1054,15 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
 
             # Wild encounters
             entry["encounters"] = encounters.get(species_key, [])
+
+            # Items a wild one can hold, with their odds
+            if held_rules:
+                slots = [re.search(rf"\.{f}\s*=\s*ITEM_(\w+)", block) for f in ("itemCommon", "itemRare")]
+                common, rare = [m.group(1) if m and m.group(1) != "NONE" else None for m in slots]
+                held = wild_held_items(common, rare, held_rules)
+                if held:
+                    entry["wildHeldItems"] = held
+                    entry["heldItemBoostAbilities"] = held_rules[2]
 
             # Sprite/icon paths filled in by copy_sprites()
             entry["sprite"] = None
@@ -1399,7 +1517,9 @@ def main():
     print(f"       -> {len(encounters)} species have encounters")
 
     print("  [9] Species info ...")
-    all_species = parse_species_info(dex, learnsets, egg_moves, teachable, encounters, tms, hms)
+    held_rules = read_wild_held_item_rules()
+    all_species = parse_species_info(dex, learnsets, egg_moves, teachable, encounters, tms, hms,
+                                     held_rules)
     print(f"       -> {len(all_species)} species")
 
     print("  [10] Special move sources ...")

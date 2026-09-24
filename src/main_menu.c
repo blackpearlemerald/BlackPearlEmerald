@@ -233,7 +233,7 @@ static void Task_NewGameBirchSpeech_ChooseNuzlocke(u8);
 static void NewGameBirchSpeech_ShowGenderMenu(void);
 static s8 NewGameBirchSpeech_ProcessGenderMenuInput(void);
 static void NewGameBirchSpeech_ClearGenderWindow(u8, u8);
-static void NewGameBirchSpeech_ShowNuzlockeMenu(void);
+static void NewGameBirchSpeech_ShowNuzlockeMenu(u8 initialCursorPos);
 static s8 NewGameBirchSpeech_ProcessNuzlockeMenuInput(void);
 static void NewGameBirchSpeech_ClearNuzlockeWindow(u8, u8);
 static void Task_NewGameBirchSpeech_WhatsYourName(u8);
@@ -1715,7 +1715,7 @@ static void Task_NewGameBirchSpeech_WaitToShowNuzlockeMenu(u8 taskId)
 {
     if (!RunTextPrintersAndIsPrinter0Active())
         {
-            NewGameBirchSpeech_ShowNuzlockeMenu();
+            NewGameBirchSpeech_ShowNuzlockeMenu(0);
             gTasks[taskId].func = Task_NewGameBirchSpeech_ChooseNuzlocke;
         }
 }
@@ -1753,7 +1753,7 @@ static void Task_NewGameBirchSpeech_WaitToShowRandomizerMenu(u8 taskId)
 {
     if (!RunTextPrintersAndIsPrinter0Active())
     {
-        NewGameBirchSpeech_ShowNuzlockeMenu(); // the same Yes/No menu
+        NewGameBirchSpeech_ShowNuzlockeMenu(1); // the same Yes/No menu, No preselected
         gTasks[taskId].func = Task_NewGameBirchSpeech_ChooseRandomizer;
     }
 }
@@ -2390,12 +2390,12 @@ static s8 NewGameBirchSpeech_ProcessGenderMenuInput(void)
     return Menu_ProcessInputNoWrap();
 }
 
-static void NewGameBirchSpeech_ShowNuzlockeMenu(void)
+static void NewGameBirchSpeech_ShowNuzlockeMenu(u8 initialCursorPos)
 {
     DrawMainMenuWindowBorder(&sNewGameBirchSpeechTextWindows[1], 0xF3);
     FillWindowPixelBuffer(1, PIXEL_FILL(1));
     PrintMenuTable(1, ARRAY_COUNT(sMenuActions_Nuzlocke), sMenuActions_Nuzlocke);
-    InitMenuInUpperLeftCornerNormal(1, ARRAY_COUNT(sMenuActions_Nuzlocke), 0);
+    InitMenuInUpperLeftCornerNormal(1, ARRAY_COUNT(sMenuActions_Nuzlocke), initialCursorPos);
     PutWindowTilemap(1);
     CopyWindowToVram(1, COPYWIN_FULL);
 }
@@ -2557,12 +2557,10 @@ static void NewGameBirchSpeech_ClearNuzlockeWindow(u8 windowId, bool8 copyToVram
 static void NewGameBirchSpeech_ClearWindow(u8 windowId)
 {
     u8 bgColor = GetFontAttribute(FONT_NORMAL, FONTATTR_COLOR_BACKGROUND);
-    u8 maxCharWidth = GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_WIDTH);
-    u8 maxCharHeight = GetFontAttribute(FONT_NORMAL, FONTATTR_MAX_LETTER_HEIGHT);
-    u8 winWidth = GetWindowAttribute(windowId, WINDOW_WIDTH);
-    u8 winHeight = GetWindowAttribute(windowId, WINDOW_HEIGHT);
 
-    FillWindowPixelRect(windowId, bgColor, 0, 0, maxCharWidth * winWidth, maxCharHeight * winHeight);
+    // BPE: vanilla cleared maxLetterWidth * width pixels (162 of 216), which
+    // left the end of long lines behind under the next message.
+    FillWindowPixelBuffer(windowId, PIXEL_FILL(bgColor));
     CopyWindowToVram(windowId, COPYWIN_GFX);
 }
 

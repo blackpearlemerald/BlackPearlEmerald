@@ -1,7 +1,10 @@
 #include "global.h"
 #include "battle_main.h"
+#include "battle_pike.h"
+#include "battle_pyramid.h"
 #include "battle_setup.h"
 #include "bg.h"
+#include "caps.h"
 #include "data.h"
 #include "daycare.h"
 #include "decompress.h"
@@ -37,6 +40,7 @@
 #include "random.h"
 #include "region_map.h"
 #include "rtc.h"
+#include "safari_zone.h"
 #include "scanline_effect.h"
 #include "script.h"
 #include "script_pokemon_util.h"
@@ -354,24 +358,29 @@ static const struct SpriteTemplate sSelectionCursorSpriteTemplate =
 };
 
 // search window sprite templates
+// BPE: the search window's sprites share the held item palette, loaded by tag.
+// Writing it straight into OBJ palette 13 recoloured whichever overworld
+// sprite owned that slot, and the colours stayed wrong after the search.
+static const struct SpritePalette sHeldItemSpritePalette = {gHeldItemPalette, HELD_ITEM_TAG};
+
 static const struct SpriteTemplate sHeldItemTemplate =
 {
     .tileTag = HELD_ITEM_TAG,
-    .paletteTag = 0xFFFF,
+    .paletteTag = HELD_ITEM_TAG,
     .oam = &sHeldItemOam,
 };
 
 static const struct SpriteTemplate sPotentialStarTemplate =
 {
     .tileTag = LIT_STAR_TILE_TAG,
-    .paletteTag = 0xFFFF,   //held item pal
+    .paletteTag = HELD_ITEM_TAG,
     .oam = &sHeldItemOam,
 };
 
 static const struct SpriteTemplate sSearchIconSpriteTemplate =
 {
     .tileTag = HIDDEN_SEARCH_TAG,
-    .paletteTag = 0xFFFF,   //held item pal
+    .paletteTag = HELD_ITEM_TAG,
     .oam = &sSearchIconOam,
     .anims =  gDummySpriteAnimTable,
 };
@@ -379,7 +388,7 @@ static const struct SpriteTemplate sSearchIconSpriteTemplate =
 static const struct SpriteTemplate sOwnedIconTemplate =
 {
     .tileTag = OWNED_ICON_TAG,
-    .paletteTag = 0xFFFF,   //held item pal
+    .paletteTag = HELD_ITEM_TAG,
     .oam = &sHeldItemOam,
     .anims =  gDummySpriteAnimTable,
 };
@@ -387,7 +396,7 @@ static const struct SpriteTemplate sOwnedIconTemplate =
 static const struct SpriteTemplate sHiddenMonIconTemplate =
 {
     .tileTag = HIDDEN_MON_ICON_TAG,
-    .paletteTag = 0xFFFF,   //held item pal
+    .paletteTag = HELD_ITEM_TAG,
     .oam = &sHeldItemOam,
     .anims =  gDummySpriteAnimTable,
 };
@@ -571,125 +580,71 @@ static void DexNavProximityUpdate(void)
     sDexNavSearchDataPtr->proximity = GetPlayerDistance(sDexNavSearchDataPtr->tileX, sDexNavSearchDataPtr->tileY);
 }
 
-//Pick a specific tile based on environment
+// Pick a random tile near the player where the Pokémon can hide.
+// BPE: every suitable tile is equally likely. The upstream odds overflowed a u8
+// in caves and on water (a zero divisor was possible), so searches there often
+// found nothing; it also read the player's elevation through a sprite id.
 static bool8 DexNavPickTile(enum EncounterType environment, u8 areaX, u8 areaY, bool8 smallScan)
 {
     // area of map to cover starting from camera position {-7, -7}
-    s16 topX = gSaveBlock1Ptr->pos.x - SCANSTART_X + (smallScan * 5);
-    s16 topY = gSaveBlock1Ptr->pos.y - SCANSTART_Y + (smallScan * 5);
-    s16 botX = topX + areaX;
-    s16 botY = topY + areaY;
-    u8 i;
-    bool8 nextIter;
-    u8 scale = 0;
-    u8 weight = 0;
+    s16 startX = gSaveBlock1Ptr->pos.x - SCANSTART_X + (smallScan * 5);
+    s16 startY = gSaveBlock1Ptr->pos.y - SCANSTART_Y + (smallScan * 5);
+    u32 playerElevation = gObjectEvents[gPlayerAvatar.objectEventId].currentElevation;
     enum MapType currMapType = GetCurrentMapType();
-    u8 tileBehaviour;
-    u8 tileBuffer = 2;
-    u8 *xPos = AllocZeroed((botX - topX) * (botY - topY) * sizeof(u8));
-    u8 *yPos = AllocZeroed((botX - topX) * (botY - topY) * sizeof(u8));
-    u32 iter = 0;
-    bool32 ret = FALSE;
+    u32 tileBuffer = 2;
+    u32 i, count = 0;
+    s16 x, y;
 
-    // loop through every tile in area and evaluate
-    while (topY < botY)
+    if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_BIKE))
+        tileBuffer = SNEAKING_PROXIMITY + 3;
+    else if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH))
+        tileBuffer = SNEAKING_PROXIMITY + 1;
+
+    for (y = startY; y < startY + areaY; y++)
     {
-        while (topX < botX)
+        for (x = startX; x < startX + areaX; x++)
         {
-            tileBehaviour = MapGridGetMetatileBehaviorAt(topX, topY);
-            //Check for objects
-            nextIter = FALSE;
-            if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_BIKE))
-                tileBuffer = SNEAKING_PROXIMITY + 3;
-            else if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH))
-                tileBuffer = SNEAKING_PROXIMITY + 1;
+            u32 tileBehaviour = MapGridGetMetatileBehaviorAt(x, y);
+            bool32 suitable = FALSE;
 
-            if (GetPlayerDistance(topX, topY) <= tileBuffer)
-            {
-                // tile too close to player
-                topX++;
+            // not too close to the player, and not on a wall
+            if (GetPlayerDistance(x, y) <= tileBuffer || MapGridGetCollisionAt(x, y))
                 continue;
-            }
 
+            // cannot be on a tile where an object exists
             for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
             {
-                if (gObjectEvents[i].currentCoords.x == topX && gObjectEvents[i].currentCoords.y == topY)
-                {
-                    // cannot be on a tile where an object exists
-                    nextIter = TRUE;
+                if (gObjectEvents[i].active && gObjectEvents[i].currentCoords.x == x && gObjectEvents[i].currentCoords.y == y)
                     break;
-                }
             }
-
-            if (nextIter)
-            {
-                topX++;
+            if (i < OBJECT_EVENTS_COUNT)
                 continue;
-            }
 
-            weight = 0; // initiliaze weight
             switch (environment)
             {
             case ENCOUNTER_TYPE_LAND:
-                if (MetatileBehavior_IsLandWildEncounter(tileBehaviour))
-                {
-                    if (currMapType == MAP_TYPE_UNDERGROUND)
-                    {
-                        // inside (cave)
-                        if (IsElevationMismatchAt(gObjectEvents[gPlayerAvatar.spriteId].currentElevation, topX, topY))
-                            break; //occurs at same z coord
-
-                        scale = 440 - (smallScan * 200) - (GetPlayerDistance(topX, topY) / 2)  - (2 * (topX + topY));
-                        weight = ((Random() % scale) < 1) && !MapGridGetCollisionAt(topX, topY);
-                    }
-                    else
-                    {
-                        // outdoors: grass
-                        scale = 100 - (GetPlayerDistance(topX, topY) * 2);
-                        weight = (Random() % scale <= 5) && !MapGridGetCollisionAt(topX, topY);
-                    }
-                }
+                // in caves the Pokémon hides on the player's level
+                suitable = MetatileBehavior_IsLandWildEncounter(tileBehaviour)
+                        && (currMapType != MAP_TYPE_UNDERGROUND || !IsElevationMismatchAt(playerElevation, x, y));
                 break;
             case ENCOUNTER_TYPE_WATER:
-                if (MetatileBehavior_IsSurfableWaterOrUnderwater(tileBehaviour))
-                {
-                    u8 scale = 320 - (smallScan * 200) - (GetPlayerDistance(topX, topY) / 2);
-                    if (IsElevationMismatchAt(gObjectEvents[gPlayerAvatar.spriteId].currentElevation, topX, topY))
-                        break;
-
-                    weight = (Random() % scale <= 1) && !MapGridGetCollisionAt(topX, topY);
-                }
+                suitable = MetatileBehavior_IsWaterWildEncounter(tileBehaviour)
+                        && !IsElevationMismatchAt(playerElevation, x, y);
                 break;
             default:
                 break;
             }
 
-            if (weight > 0)
+            // the n-th suitable tile replaces the choice with chance 1/n
+            if (suitable && Random() % ++count == 0)
             {
-                xPos[iter] = topX;
-                yPos[iter] = topY;
-                iter++;
+                sDexNavSearchDataPtr->tileX = x;
+                sDexNavSearchDataPtr->tileY = y;
             }
-
-            topX++;
         }
-
-        topY++;
-        topX = gSaveBlock1Ptr->pos.x - SCANSTART_X + (smallScan * 5);
     }
 
-    if (iter > 0)
-    {
-        i = Random() % iter;
-        sDexNavSearchDataPtr->tileX = xPos[i];
-        sDexNavSearchDataPtr->tileY = yPos[i];
-        ret = TRUE;
-    }
-
-    Free(xPos);
-    Free(yPos);
-
-    return ret;
+    return (count != 0);
 }
 
 
@@ -730,8 +685,8 @@ static bool8 TryStartHiddenMonFieldEffect(enum EncounterType environment, u8 xSi
                     fldEffId = FLDEFF_SAND_HOLE;
                 else if (MetatileBehavior_IsMountain(metatileBehaviour)) //Rough Terrain
                     fldEffId = FLDEFF_CAVE_DUST;
-                else
-                    fldEffId = FLDEFF_BERRY_TREE_GROWTH_SPARKLE; //default
+                else // BPE: ash grass and the rest. The berry sparkle ended by itself, and stopping it later destroyed whichever sprite had reused its slot
+                    fldEffId = FLDEFF_SHAKING_GRASS;
             }
             break;
         case ENCOUNTER_TYPE_WATER:
@@ -749,7 +704,10 @@ static bool8 TryStartHiddenMonFieldEffect(enum EncounterType environment, u8 xSi
             gFieldEffectArguments[3] = 2;   //priority
             sDexNavSearchDataPtr->fldEffSpriteId = FieldEffectStart(fldEffId);
             if (sDexNavSearchDataPtr->fldEffSpriteId == MAX_SPRITES)
+            {
+                FieldEffectActiveListRemove(fldEffId);
                 return FALSE;
+            }
 
             sDexNavSearchDataPtr->fldEffId = fldEffId;
             return TRUE;
@@ -770,7 +728,7 @@ static void LoadSearchIconData(void)
 {
     // palettes clash with mon icon, so must load manually
     LoadSpriteSheet(&gSpriteSheet_HeldItem);
-    LoadPalette(gHeldItemPalette, OBJ_PLTT_ID(sHeldItemOam.paletteNum), PLTT_SIZE_4BPP);
+    LoadSpritePalette(&sHeldItemSpritePalette);
     LoadCompressedSpriteSheetUsingHeap(&sPotentialStarSpriteSheet);
     //LoadCompressedSpriteSheetUsingHeap(&sSightSpriteSheet);   //eye replaced with arrow
     LoadCompressedSpriteSheetUsingHeap(&sOwnedIconSpriteSheet);
@@ -783,7 +741,10 @@ static u8 GetSearchLevel(enum Species species)
 #if USE_DEXNAV_SEARCH_LEVELS == TRUE
     searchLevel = gSaveBlock3Ptr->dexNavSearchLevels[species];
 #else
-    searchLevel = 0;
+    // BPE: the save has no room for a level per species, so the current chain
+    // stands in for it. Chaining raises the odds of an Egg Move, the Hidden
+    // Ability, a held item and perfect IVs; breaking the chain resets them.
+    searchLevel = gSaveBlock3Ptr->dexNavChain;
 #endif
     return searchLevel;
 }
@@ -822,7 +783,6 @@ static void SetUpDexNavSearch(void)
     }
 
     gPlayerAvatar.creeping = TRUE;  //initialize as true in case mon appears beside you
-    sDexNavSearchDataPtr->proximity = gSprites[gPlayerAvatar.spriteId].x;
     sDexNavSearchDataPtr->startingTime = gMain.vblankCounter1;
     IncrementGameStat(GAME_STAT_DEXNAV_SCANNED);
 }
@@ -863,6 +823,8 @@ static bool8 InitDexNavSearch(enum Species species, u32 environment)
         return TRUE;
     }
 
+    // BPE: choose the form now, so the search window shows the Pokémon the battle uses
+    sDexNavSearchDataPtr->species = GetWildFormVariant(species);
     sDexNavSearchDataPtr->hiddenSearch = FALSE;
     SetUpDexNavSearch();
     return FALSE;
@@ -945,11 +907,28 @@ static void RevealHiddenSearch(void)
     RevealHiddenMon();
 }
 
+// BPE: DexNav is a Standard mode tool. It comes with the Pokédex, and a Nuzlocke
+// game never has it: choosing the encounter would sidestep the first-encounter rule.
+bool32 IsDexNavUnlocked(void)
+{
+    return DEXNAV_ENABLED && FlagGet(DN_FLAG_DEXNAV_GET) && !FlagGet(FLAG_NUZLOCKE);
+}
+
+// BPE: the Safari Zone, Battle Pike and Battle Pyramid have their own wild battle
+// rules, which a DexNav battle would skip.
+bool32 IsDexNavUsableHere(void)
+{
+    return !GetSafariZoneFlag() && !InBattlePike() && !InBattlePyramid_();
+}
+
 bool32 TryStartDexNavSearch(void)
 {
     u16 val = VarGet(DN_VAR_SPECIES);
 
-    if (FlagGet(DN_FLAG_SEARCHING) && sDexNavSearchDataPtr->hiddenSearch)
+    if (!IsDexNavUnlocked())
+        return FALSE;
+
+    if (FlagGet(DN_FLAG_SEARCHING) && sDexNavSearchDataPtr != NULL && sDexNavSearchDataPtr->hiddenSearch)
     {
         RevealHiddenSearch();
         return FALSE;
@@ -957,6 +936,12 @@ bool32 TryStartDexNavSearch(void)
 
     if (FlagGet(DN_FLAG_SEARCHING) || (val & DEXNAV_MASK_SPECIES) == SPECIES_NONE)
         return FALSE;
+
+    if (!IsDexNavUsableHere())
+    {
+        ScriptContext_SetupScript(EventScript_DexNavCantUseHere);
+        return TRUE;
+    }
 
     HideMapNamePopUpWindow();
     ChangeBgY_ScreenOff(0, 0, 0);
@@ -966,11 +951,12 @@ bool32 TryStartDexNavSearch(void)
 
 void EndDexNavSearch(void)
 {
-    if (!FlagGet(DN_FLAG_SEARCHING) || sDexNavSearchDataPtr == NULL)
-        return;
-    RemoveDexNavWindowAndGfx();
-    FieldEffectStop(&gSprites[sDexNavSearchDataPtr->fldEffSpriteId], sDexNavSearchDataPtr->fldEffId);
-    FREE_AND_SET_NULL(sDexNavSearchDataPtr);
+    if (FlagGet(DN_FLAG_SEARCHING) && sDexNavSearchDataPtr != NULL)
+    {
+        RemoveDexNavWindowAndGfx();
+        FieldEffectStop(&gSprites[sDexNavSearchDataPtr->fldEffSpriteId], sDexNavSearchDataPtr->fldEffId);
+        FREE_AND_SET_NULL(sDexNavSearchDataPtr);
+    }
     FlagClear(DN_FLAG_SEARCHING);
 }
 
@@ -1181,7 +1167,7 @@ static void CreateDexNavWildMon(enum Species species, u8 potential, u8 level, u8
 {
     struct Pokemon *mon = &gParties[B_TRAINER_OPPONENT_A][0];
 
-    CreateWildMon(species, level);  // shiny rate bonus handled in CreateBoxMon
+    CreateWildMonForm(species, level);  // shiny rate bonus handled in CreateBoxMon
     SetBoxMonPerfectIVs(&mon->box, min(3, potential)); // Will not exceed 3 Perfect IVs
 
     //Set ability
@@ -1204,6 +1190,7 @@ static u8 DexNavTryGenerateMonLevel(enum Species species, enum EncounterType env
 {
     u8 levelBase = GetEncounterLevelFromMapData(species, environment);
     u8 levelBonus = gSaveBlock3Ptr->dexNavChain / 5;
+    u32 levelCap = min(GetCurrentLevelCap(), MAX_LEVEL);
 
     if (levelBase == MON_LEVEL_NONEXISTENT)
         return MON_LEVEL_NONEXISTENT;   //species not found in the area
@@ -1211,8 +1198,11 @@ static u8 DexNavTryGenerateMonLevel(enum Species species, enum EncounterType env
     if (Random() % 100 < 4)
         levelBonus += 10; //4% chance of having a +10 level
 
-    if (levelBase + levelBonus > MAX_LEVEL)
-        return MAX_LEVEL;
+    // BPE: with the Level Limiter on, the bonus stops at the level cap
+    if (levelBase >= levelCap)
+        return levelBase;
+    if (levelBase + levelBonus > levelCap)
+        return levelCap;
     else
         return levelBase + levelBonus;
 }
@@ -1222,7 +1212,6 @@ static void DexNavGenerateMoveset(enum Species species, u8 searchLevel, u8 encou
     bool8 genMove = FALSE;
     u16 randVal = Random() % 100;
     u16 i;
-    u16 eggMoveBuffer[EGG_MOVES_ARRAY_COUNT];
 
     // see if first move slot should be an egg move
     if (searchLevel < 5)
@@ -1257,46 +1246,64 @@ static void DexNavGenerateMoveset(enum Species species, u8 searchLevel, u8 encou
     }
 
     // Generate a wild mon just to get the initial moveset (later overwritten by CreateDexNavWildMon)
-    CreateWildMon(species, encounterLevel);
+    CreateWildMonForm(species, encounterLevel);
 
     // Store generated mon moves into Dex Nav Struct
     for (i = 0; i < MAX_MON_MOVES; i++)
         moveDst[i] = GetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_MOVE1 + i);
 
     // set first move slot to a random egg move if search level is good enough
+    // BPE: only an Egg Move it doesn't know already, and the move it replaces
+    // goes to an empty slot if there is one
     if (genMove)
     {
-        u8 numEggMoves = GetEggMoves(&gParties[B_TRAINER_OPPONENT_A][0], eggMoveBuffer);
-        if (numEggMoves != 0)
-            moveDst[0] = eggMoveBuffer[Random() % numEggMoves];
+        const u16 *eggMoves = GetSpeciesEggMoves(species);
+        u16 eggMove = MOVE_NONE;
+        u32 j, count = 0;
+
+        for (i = 0; eggMoves[i] != MOVE_UNAVAILABLE; i++)
+        {
+            for (j = 0; j < MAX_MON_MOVES && moveDst[j] != eggMoves[i]; j++)
+                ;
+            if (j == MAX_MON_MOVES && Random() % ++count == 0)
+                eggMove = eggMoves[i];
+        }
+
+        if (eggMove != MOVE_NONE)
+        {
+            for (j = 1; j < MAX_MON_MOVES && moveDst[j] != MOVE_NONE; j++)
+                ;
+            if (j < MAX_MON_MOVES)
+                moveDst[j] = moveDst[0];
+            moveDst[0] = eggMove;
+        }
     }
 }
 
+// BPE: the upstream odds gave the rare item more often than the common one from
+// search level 10. Both chances now start at the usual wild odds (50% common,
+// 5% rare) and grow with the search level to 70% and 30% at level 100.
 static u16 DexNavGenerateHeldItem(enum Species species, u8 searchLevel)
 {
     u16 randVal = Random() % 100;
-    u8 searchLevelInfluence = searchLevel >> 1;
-    enum Item item1 = gSpeciesInfo[species].itemCommon;
-    enum Item item2 = gSpeciesInfo[species].itemRare;
+    u32 level = min(searchLevel, 100);
+    u32 commonChance = 50 + level / 5;
+    u32 rareChance = 5 + level / 4;
+    enum Item item1 = gSpeciesInfo[SanitizeSpeciesId(species)].itemCommon;
+    enum Item item2 = gSpeciesInfo[SanitizeSpeciesId(species)].itemRare;
 
-    // if both are the same, 100% to hold
+    // if both are the same, 100% to hold (or no items can be held)
     if (item1 == item2)
         return item1;
 
-    // if no items can be held, then yeah...no items
-    if (item2 == ITEM_NONE && item1 == ITEM_NONE)
-        return ITEM_NONE;
+    // if only one entry, the common chance
+    if (item2 == ITEM_NONE)
+        return (randVal < commonChance) ? item1 : ITEM_NONE;
 
-    // if only one entry, 50% chance
-    if (item2 == ITEM_NONE && item1 != ITEM_NONE)
-        return (randVal < 50) ? item1 : ITEM_NONE;
-
-    // if both are distinct item1 = 50% + srclvl/2; item2 = 5% + srchlvl/2
-    if (randVal < (50 + searchLevelInfluence + 5 + searchLevel))
-        return (randVal > 5 + searchLevelInfluence) ? item1 : item2;
-    else
-        return ITEM_NONE;
-
+    if (randVal < rareChance)
+        return item2;
+    if (randVal < rareChance + commonChance)
+        return item1;
     return ITEM_NONE;
 }
 
@@ -1461,6 +1468,8 @@ static u8 DexNavGeneratePotential(u8 searchLevel)
     return 0;   // No potential
 }
 
+// BPE: the wild tables hold the unrandomized species; each slot is compared
+// through GetWildEncounterSpecies, which gives the one this game uses.
 static u8 GetEncounterLevelFromMapData(enum Species species, enum EncounterType environment)
 {
     u32 headerId = GetCurrentMapWildMonHeaderId();
@@ -1483,7 +1492,7 @@ static u8 GetEncounterLevelFromMapData(enum Species species, enum EncounterType 
 
         for (i = 0; i < LAND_WILD_COUNT; i++)
         {
-            if (landMonsInfo->wildPokemon[i].species == species)
+            if (GetWildEncounterSpecies(landMonsInfo->wildPokemon[i].species, WILD_AREA_LAND) == species)
             {
                 min = (min < landMonsInfo->wildPokemon[i].minLevel) ? min : landMonsInfo->wildPokemon[i].minLevel;
                 max = (max > landMonsInfo->wildPokemon[i].maxLevel) ? max : landMonsInfo->wildPokemon[i].maxLevel;
@@ -1499,7 +1508,7 @@ static u8 GetEncounterLevelFromMapData(enum Species species, enum EncounterType 
 
         for (i = 0; i < WATER_WILD_COUNT; i++)
         {
-            if (waterMonsInfo->wildPokemon[i].species == species)
+            if (GetWildEncounterSpecies(waterMonsInfo->wildPokemon[i].species, WILD_AREA_WATER) == species)
             {
                 min = (min < waterMonsInfo->wildPokemon[i].minLevel) ? min : waterMonsInfo->wildPokemon[i].minLevel;
                 max = (max > waterMonsInfo->wildPokemon[i].maxLevel) ? max : waterMonsInfo->wildPokemon[i].maxLevel;
@@ -1515,7 +1524,7 @@ static u8 GetEncounterLevelFromMapData(enum Species species, enum EncounterType 
 
         for (i = 0; i < HIDDEN_WILD_COUNT; i++)
         {
-            if (hiddenMonsInfo->wildPokemon[i].species == species)
+            if (GetWildEncounterSpecies(hiddenMonsInfo->wildPokemon[i].species, WILD_AREA_HIDDEN) == species)
             {
                 min = (min < hiddenMonsInfo->wildPokemon[i].minLevel) ? min : hiddenMonsInfo->wildPokemon[i].minLevel;
                 max = (max > hiddenMonsInfo->wildPokemon[i].maxLevel) ? max : hiddenMonsInfo->wildPokemon[i].maxLevel;
@@ -1694,7 +1703,7 @@ static bool8 CapturedAllLandMons(u32 headerId)
     {
         for (i = 0; i < LAND_WILD_COUNT; ++i)
         {
-            species = landMonsInfo->wildPokemon[i].species;
+            species = GetWildEncounterSpecies(landMonsInfo->wildPokemon[i].species, WILD_AREA_LAND);
             if (species != SPECIES_NONE)
             {
                 if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
@@ -1729,7 +1738,7 @@ static bool8 CapturedAllWaterMons(u32 headerId)
     {
         for (i = 0; i < WATER_WILD_COUNT; ++i)
         {
-            species = waterMonsInfo->wildPokemon[i].species;
+            species = GetWildEncounterSpecies(waterMonsInfo->wildPokemon[i].species, WILD_AREA_WATER);
             if (species != SPECIES_NONE)
             {
                 count++;
@@ -1762,7 +1771,7 @@ static bool8 CapturedAllHiddenMons(u32 headerId)
     {
         for (i = 0; i < HIDDEN_WILD_COUNT; ++i)
         {
-            species = hiddenMonsInfo->wildPokemon[i].species;
+            species = GetWildEncounterSpecies(hiddenMonsInfo->wildPokemon[i].species, WILD_AREA_HIDDEN);
             if (species != SPECIES_NONE)
             {
                 count++;
@@ -1831,9 +1840,16 @@ static void CB1_DexNavSearchCallback(void)
 
 static void Task_DexNavExitAndSearch(u8 taskId)
 {
+    // BPE: wait for the fade to black first, as Task_DexNavFadeAndExit does.
+    // Leaving mid-fade made the overworld's own fade-in fail to start, so the
+    // day/night and weather tint reached some sprites a frame late (a flash).
+    if (gPaletteFade.active)
+        return;
+
     DespawnAllOverworldWildEncounters(OWE_GENERATED, 0);
     DexNavGuiFreeResources();
     DestroyTask(taskId);
+    gFieldCallback = FieldCB_ReturnToFieldNoScript; // a menu closing, not a warp arriving
     SetMainCallback1(CB1_DexNavSearchCallback);
     SetMainCallback2(CB2_ReturnToField);
 }
@@ -1892,6 +1908,7 @@ static bool8 SpeciesInArray(enum Species species, u8 section)
 }
 
 // get unique wild encounters on current map
+// BPE: as the randomizer made them (GetWildEncounterSpecies)
 static void DexNavLoadEncounterData(void)
 {
     u8 grassIndex = 0;
@@ -1922,9 +1939,9 @@ static void DexNavLoadEncounterData(void)
     {
         for (i = 0; i < LAND_WILD_COUNT; i++)
         {
-            species = landMonsInfo->wildPokemon[i].species;
+            species = GetWildEncounterSpecies(landMonsInfo->wildPokemon[i].species, WILD_AREA_LAND);
             if (species != SPECIES_NONE && !SpeciesInArray(species, 0))
-                sDexNavUiDataPtr->landSpecies[grassIndex++] = landMonsInfo->wildPokemon[i].species;
+                sDexNavUiDataPtr->landSpecies[grassIndex++] = species;
         }
     }
 
@@ -1933,9 +1950,9 @@ static void DexNavLoadEncounterData(void)
     {
         for (i = 0; i < WATER_WILD_COUNT; i++)
         {
-            species = waterMonsInfo->wildPokemon[i].species;
+            species = GetWildEncounterSpecies(waterMonsInfo->wildPokemon[i].species, WILD_AREA_WATER);
             if (species != SPECIES_NONE && !SpeciesInArray(species, 1))
-                sDexNavUiDataPtr->waterSpecies[waterIndex++] = waterMonsInfo->wildPokemon[i].species;
+                sDexNavUiDataPtr->waterSpecies[waterIndex++] = species;
         }
     }
 
@@ -1944,9 +1961,9 @@ static void DexNavLoadEncounterData(void)
     {
         for (i = 0; i < HIDDEN_WILD_COUNT; i++)
         {
-            species = hiddenMonsInfo->wildPokemon[i].species;
+            species = GetWildEncounterSpecies(hiddenMonsInfo->wildPokemon[i].species, WILD_AREA_HIDDEN);
             if (species != SPECIES_NONE && !SpeciesInArray(species, 2))
-                sDexNavUiDataPtr->hiddenSpecies[hiddenIndex++] = hiddenMonsInfo->wildPokemon[i].species;
+                sDexNavUiDataPtr->hiddenSpecies[hiddenIndex++] = species;
         }
     }
 }
@@ -2469,8 +2486,10 @@ bool32 TryFindHiddenPokemon(void)
 {
     u16 *stepPtr = GetVarPointer(DN_VAR_STEP_COUNTER);
 
-    if (DEXNAV_ENABLED == 0
-            || sDexNavSearchDataPtr == NULL
+    // BPE: upstream bailed out when no search was running, so hidden Pokémon never appeared
+    if (!IsDexNavUnlocked()
+            || !IsDexNavUsableHere()
+            || sDexNavSearchDataPtr != NULL
             || !FlagGet(DN_FLAG_DETECTOR_MODE)
             || FlagGet(DN_FLAG_SEARCHING)
             || GetFlashLevel() > 0)
@@ -2513,13 +2532,16 @@ bool32 TryFindHiddenPokemon(void)
                 index = ChooseHiddenMonIndex();
                 if (index == 0xFF)
                     return FALSE;//no hidden info
-                species = hiddenMonsInfo->wildPokemon[index].species;
+                species = GetWildEncounterSpecies(hiddenMonsInfo->wildPokemon[index].species, WILD_AREA_HIDDEN);
                 isHiddenMon = TRUE;
                 environment = ENCOUNTER_TYPE_HIDDEN;
             }
             else
             {
-                species = gWildMonHeaders[headerId].encounterTypes[timeOfDay].landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species;
+                const struct WildPokemonInfo *landMonsInfo = gWildMonHeaders[headerId].encounterTypes[GetTimeOfDayForEncounters(headerId, WILD_AREA_LAND)].landMonsInfo;
+                if (landMonsInfo == NULL)
+                    return FALSE;
+                species = GetWildEncounterSpecies(landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species, WILD_AREA_LAND);
                 environment = ENCOUNTER_TYPE_LAND;
             }
             break;
@@ -2531,13 +2553,16 @@ bool32 TryFindHiddenPokemon(void)
                     index = ChooseHiddenMonIndex();
                     if (index == 0xFF)
                         return FALSE;//no hidden info
-                    species = hiddenMonsInfo->wildPokemon[index].species;
+                    species = GetWildEncounterSpecies(hiddenMonsInfo->wildPokemon[index].species, WILD_AREA_HIDDEN);
                     isHiddenMon = TRUE;
                     environment = ENCOUNTER_TYPE_HIDDEN;
                 }
                 else
                 {
-                    species = gWildMonHeaders[headerId].encounterTypes[timeOfDay].waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species;
+                    const struct WildPokemonInfo *waterMonsInfo = gWildMonHeaders[headerId].encounterTypes[GetTimeOfDayForEncounters(headerId, WILD_AREA_WATER)].waterMonsInfo;
+                    if (waterMonsInfo == NULL)
+                        return FALSE;
+                    species = GetWildEncounterSpecies(waterMonsInfo->wildPokemon[ChooseWildMonIndex_Water()].species, WILD_AREA_WATER);
                     environment = ENCOUNTER_TYPE_WATER;
 
                 }
@@ -2556,6 +2581,8 @@ bool32 TryFindHiddenPokemon(void)
             return FALSE;
 
         sDexNavSearchDataPtr = AllocZeroed(sizeof(struct DexNavSearch));
+        if (sDexNavSearchDataPtr == NULL)
+            return FALSE;
         FlagSet(DN_FLAG_SEARCHING);
         // init search data
         sDexNavSearchDataPtr->isHiddenMon = isHiddenMon;
@@ -2577,6 +2604,7 @@ bool32 TryFindHiddenPokemon(void)
             FlagClear(DN_FLAG_SEARCHING);
             return FALSE;
         }
+        sDexNavSearchDataPtr->species = GetWildFormVariant(species);
 
         // exclamation mark over player
         gFieldEffectArguments[0] = gSaveBlock1Ptr->pos.x;
@@ -2669,3 +2697,39 @@ void IncrementDexNavChain(void)
     if (gSaveBlock3Ptr->dexNavChain < DEXNAV_CHAIN_MAX)
         gSaveBlock3Ptr->dexNavChain++;
 }
+
+#if TESTING
+// For test/dexnav.c.
+u8 DexNav_Test_GetSearchLevel(enum Species species)
+{
+    return GetSearchLevel(species);
+}
+
+u16 DexNav_Test_GenerateHeldItem(enum Species species, u8 searchLevel)
+{
+    return DexNavGenerateHeldItem(species, searchLevel);
+}
+
+void DexNav_Test_GenerateMoveset(enum Species species, u8 searchLevel, u8 level, u16 *moves)
+{
+    DexNavGenerateMoveset(species, searchLevel, level, moves);
+}
+
+u8 DexNav_Test_GenerateMonLevel(enum Species species, enum EncounterType environment)
+{
+    return DexNavTryGenerateMonLevel(species, environment);
+}
+
+// The land Pokémon the DexNav screen lists on the current map.
+u32 DexNav_Test_GetListedLandSpecies(enum Species *dst)
+{
+    u32 i, count = 0;
+
+    sDexNavUiDataPtr = AllocZeroed(sizeof(struct DexNavGUI));
+    DexNavLoadEncounterData();
+    for (i = 0; i < LAND_WILD_COUNT && sDexNavUiDataPtr->landSpecies[i] != SPECIES_NONE; i++)
+        dst[count++] = sDexNavUiDataPtr->landSpecies[i];
+    FREE_AND_SET_NULL(sDexNavUiDataPtr);
+    return count;
+}
+#endif // TESTING

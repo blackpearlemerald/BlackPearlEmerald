@@ -902,10 +902,18 @@ body.page-search {
   font-weight: 500;
 }
 .where-map-link:hover { text-decoration: underline; }
+.where-mon-icon {
+  width: 32px;
+  height: 32px;
+  margin: -8px 2px -8px -4px;
+  vertical-align: middle;
+  image-rendering: pixelated;
+}
 .where-cond {
   font-size: 11px;
   color: #9fb3c8;
 }
+.where-note { margin-top: 4px; }
 .where-hidden {
   font-size: 11px;
   color: #9fb3c8;

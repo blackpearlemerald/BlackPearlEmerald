@@ -1190,6 +1190,12 @@ def assemble(maps):
 _guides_path = C.src("BPEDocumentation", "content", "guides.json")
 GUIDE_NOTES = C.load_json(_guides_path) if os.path.isfile(_guides_path) else []
 
+# How to unlock a gift NPC who is hidden until some story condition is met,
+# keyed by the NPC's script. Shown in the gift popup and on the item page.
+_gift_notes_path = C.src("BPEDocumentation", "content", "gift_notes.json")
+GIFT_NOTES = ({n["script"]: n["note"] for n in C.load_json(_gift_notes_path)}
+              if os.path.isfile(_gift_notes_path) else {})
+
 
 def build_guides(placed):
     """Pin each curated note to world pixel coordinates."""
@@ -1259,14 +1265,17 @@ def build():
                               "gy": oy + it["y"] * TILE + TILE // 2,
                               "item": it["item"], "hidden": it["hidden"]})
         for g in m.get("gifts", []):
-            out_gifts.append({"mapId": mid,
-                              "gx": ox + g["x"] * TILE + TILE // 2,
-                              "gy": oy + g["y"] * TILE + TILE // 2,
-                              "gfx": g.get("gfx"),
-                              "dir": g.get("dir", "down"),
-                              "script": g.get("script", ""),
-                              "carePackage": g.get("carePackage", False),
-                              "items": g["items"]})
+            gift = {"mapId": mid,
+                    "gx": ox + g["x"] * TILE + TILE // 2,
+                    "gy": oy + g["y"] * TILE + TILE // 2,
+                    "gfx": g.get("gfx"),
+                    "dir": g.get("dir", "down"),
+                    "script": g.get("script", ""),
+                    "carePackage": g.get("carePackage", False),
+                    "items": g["items"]}
+            if gift["script"] in GIFT_NOTES:
+                gift["note"] = GIFT_NOTES[gift["script"]]
+            out_gifts.append(gift)
 
         for st in m.get("statics", []):
             entry = {"mapId": mid, "place": st["place"],
@@ -1307,6 +1316,8 @@ def build():
         [{"enc": {"land": {"mons": out_statics}}}])
 
     guides = build_guides(placed)
+    for script in set(GIFT_NOTES) - {g["script"] for g in out_gifts}:
+        print(f"  ! gift note '{script}' matches no gift NPC - skipped")
 
     # render overworld sprites for trainers + gift NPCs + guides + item ball
     gfx_ids = {t["gfx"] for t in out_trainers if t.get("gfx")}

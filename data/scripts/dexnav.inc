@@ -28,13 +28,18 @@ EventScript_TooDark::
 	msgbox sText_TooDark, MSGBOX_SIGN
 	end
 
+@ BPE: the Safari Zone, Battle Pike and Battle Pyramid keep their own wild battle rules
+EventScript_DexNavCantUseHere::
+	msgbox sText_DexNavCantUseHere, MSGBOX_SIGN
+	end
+
 sText_NotFoundNearby:
 	.string "It couldn't be found nearby.\n"
 	.string "Try looking in a different area!$"
 
 sText_TryMovingSlower:
 	.string "The Pokémon got away!\n"
-	.string "Try moving more slowly.$"
+	.string "Hold A to creep up on it.$"
 
 sText_PokemonGotAway:
 	.string "The Pokémon got away!$"
@@ -45,3 +50,6 @@ sText_LostSignal:
 
 sText_TooDark:
 	.string "It's too dark to search\nfor a Pokémon!$"
+
+sText_DexNavCantUseHere:
+	.string "The DexNav can't be used here.$"

@@ -586,6 +586,34 @@
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
+.enc-note { margin-top: 3px; font-size: 0.75rem; color: #8a9bb0; }
+.held-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+.held-items-label {
+  color: #4a6070;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.held-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #4db87a;
+  font-weight: 600;
+  text-decoration: none;
+}
+.held-item:hover .held-item-name { text-decoration: underline; }
+.held-item-icon { width: 24px; height: 24px; image-rendering: pixelated; }
+.held-item-pct { color: #c8d8e8; font-weight: 400; }
+.held-items-note { margin: -4px 0 10px; font-size: 0.75rem; color: #8a9bb0; }
 .enc-type-badge.land       { background: rgba(78,184,122,0.2); color: #4db87a; }
 .enc-type-badge.water_mons { background: rgba(58,104,200,0.2); color: #6890F0; }
 .enc-type-badge.rock_smash_mons { background: rgba(184,160,56,0.2); color: #c8a820; }

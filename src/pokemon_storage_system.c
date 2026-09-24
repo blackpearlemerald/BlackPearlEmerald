@@ -9878,6 +9878,38 @@ u32 CountStorageNonEggMons(void)
     return count;
 }
 
+static void MarkSpeciesOwned(u32 *owned, u32 species)
+{
+    // SPECIES_EGG is NUM_SPECIES, so eggs fall outside the range.
+    if (species != SPECIES_NONE && species < NUM_SPECIES)
+        owned[species / 32] |= 1u << (species % 32);
+}
+
+// BPE: which species the player has right now, for the wild form variants,
+// which favour forms a living dex still lacks. A Pokémon inside a fusion does
+// not count. Reading the species of a packed PC record needs no unpacking, so the whole PC
+// is cheap enough to scan at the start of an encounter.
+void GetOwnedSpecies(u32 *owned)
+{
+    u32 i, j;
+
+    memset(owned, 0, OWNED_SPECIES_WORDS * sizeof(u32));
+    for (i = 0; i < PARTY_SIZE; i++)
+        MarkSpeciesOwned(owned, GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_SPECIES_OR_EGG));
+    for (i = 0; i < TOTAL_BOXES_COUNT; i++)
+    {
+        for (j = 0; j < IN_BOX_COUNT; j++)
+            MarkSpeciesOwned(owned, GetBoxMonDataAt(i, j, MON_DATA_SPECIES_OR_EGG));
+    }
+    for (i = 0; i < DAYCARE_MON_COUNT; i++)
+        MarkSpeciesOwned(owned, GetBoxMonData(&gSaveBlock1Ptr->daycare.mons[i].mon, MON_DATA_SPECIES_OR_EGG));
+}
+
+bool32 IsSpeciesOwned(const u32 *owned, u32 species)
+{
+    return species < NUM_SPECIES && (owned[species / 32] & (1u << (species % 32)));
+}
+
 u32 CountAllStorageMons(void)
 {
     s32 i, j;

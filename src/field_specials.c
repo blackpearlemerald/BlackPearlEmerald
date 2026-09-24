@@ -5815,9 +5815,10 @@ bool8 CheckAddCoins(void)
 // placed statics - Rayquaza, Kyogre, Groudon, the Regis, Latios/Latias, the
 // roaming beasts, etc. - are deliberately excluded). Each map entry the island
 // rolls a random pool member the player hasn't caught yet, manifests it as its
-// follower overworld sprite, and lets the player battle it at Level 70.
-// "Uncaught" is read straight from the Pokedex caught flags, so no per-legendary
-// bookkeeping flags are needed - catch it and it drops out of the pool forever.
+// follower overworld sprite, and lets the player battle it at Level 70. Catch
+// it and it drops out of the pool for good, whatever the player does with it
+// afterwards. "Caught" comes from the Pokedex, except for the pool members that
+// share a Pokedex number with another form (see sIslandCatchFlags).
 // ---------------------------------------------------------------------------
 #define ISLAND_LEGENDARY_LEVEL 70
 
@@ -5851,13 +5852,108 @@ static const u16 sIslandLegendaryPool[] =
     // non-breedable audit filter skipped them) but that have no other in-game
     // home - they belong on the island too.
     SPECIES_ARCEUS_NORMAL, SPECIES_GENESECT, SPECIES_OGERPON_TEAL,
+    // Alternate forms that can't be made by switching a form. Forms that a held
+    // item, the Meteorite, the Reveal Glass, the Gracidea, the Prison Bottle,
+    // the Zygarde Cube or Secret Sword switch back and forth are not here: one
+    // Arceus or Deoxys is all a player gets, and the Bean Shop sells the held
+    // items after the Champion. Kyurem's fusions are here because both share
+    // one fusion storage slot, so the DNA Splicers could never give both at
+    // once, and a fusion uses up a second legendary. Silvally is here because
+    // the static Type: Null is the only other one.
+    SPECIES_ARTICUNO_GALAR, SPECIES_ZAPDOS_GALAR, SPECIES_MOLTRES_GALAR,
+    SPECIES_KYUREM_WHITE, SPECIES_KYUREM_BLACK, SPECIES_FLOETTE_ETERNAL, SPECIES_SILVALLY_NORMAL,
+    SPECIES_NECROZMA_DUSK_MANE, SPECIES_NECROZMA_DAWN_WINGS, SPECIES_MAGEARNA_ORIGINAL,
+    SPECIES_URSHIFU_RAPID_STRIKE, SPECIES_ZARUDE_DADA, SPECIES_CALYREX_ICE, SPECIES_CALYREX_SHADOW,
 };
 
-// Picks a random pool legendary the player has not caught yet. On success sets
-// VAR_ISLAND_LEGENDARY to the species and points the island object's dynamic
-// graphics slot (VAR_OBJ_GFX_ID_0) at that species' follower sprite. Returns
-// SPECIES_NONE if every pool member is caught, so callers can hide the object.
-//
+// Pool members that share a Pokedex number with another pool member or with a
+// Pokemon found elsewhere. Catching one form would mark the others as caught,
+// so each has its own flag, set when it is caught here.
+struct IslandCatchFlag
+{
+    u16 species;
+    u16 flag;
+    bool8 inFirstPool; // in the pool before these flags existed (see IsIslandLegendaryCaught)
+};
+
+static const struct IslandCatchFlag sIslandCatchFlags[] =
+{
+    { SPECIES_ARTICUNO_GALAR,        FLAG_ISLAND_CAUGHT_ARTICUNO_GALAR,        FALSE },
+    { SPECIES_ZAPDOS_GALAR,          FLAG_ISLAND_CAUGHT_ZAPDOS_GALAR,          FALSE },
+    { SPECIES_MOLTRES_GALAR,         FLAG_ISLAND_CAUGHT_MOLTRES_GALAR,         FALSE },
+    { SPECIES_KYUREM,                FLAG_ISLAND_CAUGHT_KYUREM,                TRUE },
+    { SPECIES_KYUREM_WHITE,          FLAG_ISLAND_CAUGHT_KYUREM_WHITE,          FALSE },
+    { SPECIES_KYUREM_BLACK,          FLAG_ISLAND_CAUGHT_KYUREM_BLACK,          FALSE },
+    { SPECIES_NECROZMA,              FLAG_ISLAND_CAUGHT_NECROZMA,              TRUE },
+    { SPECIES_NECROZMA_DUSK_MANE,    FLAG_ISLAND_CAUGHT_NECROZMA_DUSK_MANE,    FALSE },
+    { SPECIES_NECROZMA_DAWN_WINGS,   FLAG_ISLAND_CAUGHT_NECROZMA_DAWN_WINGS,   FALSE },
+    { SPECIES_CALYREX,               FLAG_ISLAND_CAUGHT_CALYREX,               TRUE },
+    { SPECIES_CALYREX_ICE,           FLAG_ISLAND_CAUGHT_CALYREX_ICE,           FALSE },
+    { SPECIES_CALYREX_SHADOW,        FLAG_ISLAND_CAUGHT_CALYREX_SHADOW,        FALSE },
+    { SPECIES_MAGEARNA,              FLAG_ISLAND_CAUGHT_MAGEARNA,              TRUE },
+    { SPECIES_MAGEARNA_ORIGINAL,     FLAG_ISLAND_CAUGHT_MAGEARNA_ORIGINAL,     FALSE },
+    { SPECIES_ZARUDE,                FLAG_ISLAND_CAUGHT_ZARUDE,                TRUE },
+    { SPECIES_ZARUDE_DADA,           FLAG_ISLAND_CAUGHT_ZARUDE_DADA,           FALSE },
+    { SPECIES_URSHIFU_SINGLE_STRIKE, FLAG_ISLAND_CAUGHT_URSHIFU_SINGLE_STRIKE, TRUE },
+    { SPECIES_URSHIFU_RAPID_STRIKE,  FLAG_ISLAND_CAUGHT_URSHIFU_RAPID_STRIKE,  FALSE },
+    { SPECIES_FLOETTE_ETERNAL,       FLAG_ISLAND_CAUGHT_FLOETTE_ETERNAL,       FALSE },
+    { SPECIES_SILVALLY_NORMAL,       FLAG_ISLAND_CAUGHT_SILVALLY,              FALSE },
+};
+
+static const struct IslandCatchFlag *GetIslandCatchFlag(u16 species)
+{
+    u32 i;
+
+    for (i = 0; i < ARRAY_COUNT(sIslandCatchFlags); i++)
+    {
+        if (sIslandCatchFlags[i].species == species)
+            return &sIslandCatchFlags[i];
+    }
+    return NULL;
+}
+
+static bool32 IsIslandLegendaryCaught(u16 species)
+{
+    const struct IslandCatchFlag *catchFlag = GetIslandCatchFlag(species);
+    u32 dexNum = SpeciesToNationalPokedexNum(species);
+    u32 i;
+
+    if (catchFlag == NULL)
+        return GetSetPokedexFlag(dexNum, FLAG_GET_CAUGHT);
+    if (FlagGet(catchFlag->flag))
+        return TRUE;
+    if (!catchFlag->inFirstPool || !GetSetPokedexFlag(dexNum, FLAG_GET_CAUGHT))
+        return FALSE;
+    // Before the flags existed, a Kyurem the Pokedex shows as caught was caught
+    // here. Now it could be one of Kyurem's other forms instead.
+    for (i = 0; i < ARRAY_COUNT(sIslandCatchFlags); i++)
+    {
+        if (sIslandCatchFlags[i].species != species
+         && SpeciesToNationalPokedexNum(sIslandCatchFlags[i].species) == dexNum
+         && FlagGet(sIslandCatchFlags[i].flag))
+            return FALSE;
+    }
+    return TRUE;
+}
+
+// Mega Floette needs the Eternal Flower form, so that form brings the stone
+// no field item holds.
+static enum Item GetIslandLegendaryHeldItem(u16 species)
+{
+    if (species == SPECIES_FLOETTE_ETERNAL)
+        return ITEM_FLOETTITE;
+    return ITEM_NONE;
+}
+
+// Forms without an overworld sprite of their own (Zarude's Dada form) appear
+// as their base form.
+static u16 GetIslandLegendaryGraphicsSpecies(u16 species)
+{
+    if (gSpeciesInfo[species].overworldData.tileTag == 0)
+        return GET_BASE_SPECIES_ID(species);
+    return species;
+}
+
 // Points the island legendary's spawn template at a random tall-grass tile.
 //
 // Reads the raw layout instead of MapGridGetMetatileBehaviorAt because ON_TRANSITION
@@ -5924,6 +6020,11 @@ static void PlaceIslandLegendaryInGrass(void)
         SetObjEventTemplateCoords(LOCALID_ROUTE130_ISLAND_LEGENDARY, pickX, pickY);
 }
 
+// Picks a random pool legendary the player has not caught yet. On success sets
+// VAR_ISLAND_LEGENDARY to the species and points the island object's dynamic
+// graphics slot (VAR_OBJ_GFX_ID_0) at that species' follower sprite. Returns
+// SPECIES_NONE if every pool member is caught, so callers can hide the object.
+//
 // Kept separate from the ChooseIslandLegendary special because the respawn hook
 // below runs from the per-frame overworld callback, where writing gSpecialVar_Result
 // would clobber VAR_RESULT behind the back of whatever script is mid-run.
@@ -5935,7 +6036,7 @@ static u16 RollIslandLegendary(void)
     for (i = 0; i < ARRAY_COUNT(sIslandLegendaryPool); i++)
     {
         u16 species = sIslandLegendaryPool[i];
-        if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+        if (!IsIslandLegendaryCaught(species))
             uncaught[count++] = species;
     }
 
@@ -5948,7 +6049,7 @@ static u16 RollIslandLegendary(void)
     {
         u16 species = uncaught[Random() % count];
         VarSet(VAR_ISLAND_LEGENDARY, species);
-        VarSet(VAR_OBJ_GFX_ID_0, species + OBJ_EVENT_MON);
+        VarSet(VAR_OBJ_GFX_ID_0, GetIslandLegendaryGraphicsSpecies(species) + OBJ_EVENT_MON);
         // Must precede the caller's FlagClear(FLAG_TEMP_12): the spawner reads the
         // template, so the tile has to be chosen before the object is allowed to appear.
         PlaceIslandLegendaryInGrass();
@@ -5967,7 +6068,19 @@ void ChooseIslandLegendary(void)
 // caller follows this with the standard BattleSetup_StartLegendaryBattle.
 void SetupIslandLegendaryBattle(void)
 {
-    CreateScriptedWildMon(VarGet(VAR_ISLAND_LEGENDARY), ISLAND_LEGENDARY_LEVEL, ITEM_NONE);
+    u16 species = VarGet(VAR_ISLAND_LEGENDARY);
+
+    CreateScriptedWildMon(species, ISLAND_LEGENDARY_LEVEL, GetIslandLegendaryHeldItem(species));
+}
+
+// Called by Route130_EventScript_IslandLegendaryCaught. The Pokedex records the
+// catch for everything else.
+void RecordIslandLegendaryCatch(void)
+{
+    const struct IslandCatchFlag *catchFlag = GetIslandCatchFlag(VarGet(VAR_ISLAND_LEGENDARY));
+
+    if (catchFlag != NULL)
+        FlagSet(catchFlag->flag);
 }
 
 // BPE: Mirage Island is part of the Route 130 map, so the engine never renames the

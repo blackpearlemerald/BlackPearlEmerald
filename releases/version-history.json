@@ -1,6 +1,30 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.5-beta": {
+      "channel": "beta",
+      "changes": [
+        "Added the DexNav in Standard mode. It comes with the Pokédex and lets you search for the Pokémon in an area. Chaining raises the odds of Egg Moves, Hidden Abilities, perfect IVs and shinies.",
+        "Every Pokémon and every form can now be caught, so you can complete a living dex of all forms.",
+        "Wild Pokémon with several looks, like Vivillon, Flabébé and Minior, now appear in any of them, favouring forms you don't have yet.",
+        "Mirage Island now has legendary forms like Galarian Articuno, Black and White Kyurem and Dada Zarude. Each can be caught once.",
+        "Mirage Island now holds the Gracidea, Reveal Glass, DNA Splicers and other form-changing key items.",
+        "The Bean Shop now sells every Sweet and Nectar. After you become Champion it also sells the Plates, Memories, Drives, Masks and Origin items.",
+        "A Peat Block evolves Ursaring into Ursaluna at night and into Bloodmoon Ursaluna at any other time.",
+        "Pick your starter's nature in the Birch Case, then check its stats before you leave.",
+        "SELECT can now hold up to five key items. With more than one registered, it opens a quick list.",
+        "You have the Running Shoes from your very first step.",
+        "Fishing always gets a bite, and a hooked Pokémon never gets away.",
+        "Traded Pokémon always obey you up to your level cap.",
+        "The randomizer options have clearer names, and each preset describes what it changes. Birch's randomizer question now starts on No.",
+        "Fixed a freeze in Victory Road when a trainer spotted you after a battle.",
+        "Fixed sprites flashing bright for a frame during fades in the rain.",
+        "Characters in the overworld only show a shadow while jumping, as in the original Emerald. This leaves more room for sprites in busy areas.",
+        "Fixed text from earlier lines of Birch's intro showing under later ones.",
+        "Fixed the Picnic Basket message still calling it the Poké Vial.",
+        "The map on this website remembers where you were when you come back to it. Pokémon and item pages now show the items wild Pokémon hold."
+      ]
+    },
     "2.1.4-beta": {
       "channel": "beta",
       "changes": [

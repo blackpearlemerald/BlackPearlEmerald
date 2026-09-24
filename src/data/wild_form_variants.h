@@ -1,0 +1,100 @@
+// BPE: wild Pokémon that come in more than one form. A wild table lists the
+// species on the left; each encounter with it becomes one of the forms on the
+// right, `chance` percent of the time. Forms the player doesn't have yet (with
+// their evolutions) are picked first, so a living dex needs no luck, only
+// encounters. Included only by src/wild_encounter.c. The documentation's
+// Pokédex reads this table (BPEDocumentation/scripts/parse_pokemon.py), and
+// BPETools/audit_living_dex.py counts these forms as obtainable.
+
+static const u16 sScatterbugForms[] =
+{
+    SPECIES_SCATTERBUG_ICY_SNOW, SPECIES_SCATTERBUG_POLAR, SPECIES_SCATTERBUG_TUNDRA,
+    SPECIES_SCATTERBUG_CONTINENTAL, SPECIES_SCATTERBUG_GARDEN, SPECIES_SCATTERBUG_ELEGANT,
+    SPECIES_SCATTERBUG_MEADOW, SPECIES_SCATTERBUG_MODERN, SPECIES_SCATTERBUG_MARINE,
+    SPECIES_SCATTERBUG_ARCHIPELAGO, SPECIES_SCATTERBUG_HIGH_PLAINS, SPECIES_SCATTERBUG_SANDSTORM,
+    SPECIES_SCATTERBUG_RIVER, SPECIES_SCATTERBUG_MONSOON, SPECIES_SCATTERBUG_SAVANNA,
+    SPECIES_SCATTERBUG_SUN, SPECIES_SCATTERBUG_OCEAN, SPECIES_SCATTERBUG_JUNGLE,
+    SPECIES_SCATTERBUG_FANCY, SPECIES_SCATTERBUG_POKEBALL,
+};
+
+static const u16 sFlorgesForms[] =
+{
+    SPECIES_FLORGES_RED, SPECIES_FLORGES_YELLOW, SPECIES_FLORGES_ORANGE, SPECIES_FLORGES_BLUE,
+    SPECIES_FLORGES_WHITE,
+};
+
+static const u16 sDeerlingForms[] =
+{
+    SPECIES_DEERLING_SPRING, SPECIES_DEERLING_SUMMER, SPECIES_DEERLING_AUTUMN, SPECIES_DEERLING_WINTER,
+};
+
+static const u16 sShellosForms[] = {SPECIES_SHELLOS_WEST, SPECIES_SHELLOS_EAST};
+
+static const u16 sPumpkabooForms[] =
+{
+    SPECIES_PUMPKABOO_AVERAGE, SPECIES_PUMPKABOO_SMALL, SPECIES_PUMPKABOO_LARGE, SPECIES_PUMPKABOO_SUPER,
+};
+
+static const u16 sMiniorForms[] =
+{
+    SPECIES_MINIOR_METEOR_RED, SPECIES_MINIOR_METEOR_ORANGE, SPECIES_MINIOR_METEOR_YELLOW,
+    SPECIES_MINIOR_METEOR_GREEN, SPECIES_MINIOR_METEOR_BLUE, SPECIES_MINIOR_METEOR_INDIGO,
+    SPECIES_MINIOR_METEOR_VIOLET,
+};
+
+// A trimmed Furfrou keeps its trim in the PC, and grows back to Natural Form
+// after a few days in the party.
+static const u16 sFurfrouForms[] =
+{
+    SPECIES_FURFROU_NATURAL, SPECIES_FURFROU_HEART, SPECIES_FURFROU_STAR, SPECIES_FURFROU_DIAMOND,
+    SPECIES_FURFROU_DEBUTANTE, SPECIES_FURFROU_MATRON, SPECIES_FURFROU_DANDY,
+    SPECIES_FURFROU_LA_REINE, SPECIES_FURFROU_KABUKI, SPECIES_FURFROU_PHARAOH,
+};
+
+static const u16 sGimmighoulForms[] = {SPECIES_GIMMIGHOUL_CHEST, SPECIES_GIMMIGHOUL_ROAMING};
+
+static const u16 sPikachuForms[] =
+{
+    SPECIES_PIKACHU_COSPLAY, SPECIES_PIKACHU_ROCK_STAR, SPECIES_PIKACHU_BELLE, SPECIES_PIKACHU_POP_STAR,
+    SPECIES_PIKACHU_PHD, SPECIES_PIKACHU_LIBRE, SPECIES_PIKACHU_ORIGINAL, SPECIES_PIKACHU_HOENN,
+    SPECIES_PIKACHU_SINNOH, SPECIES_PIKACHU_UNOVA, SPECIES_PIKACHU_KALOS, SPECIES_PIKACHU_ALOLA,
+    SPECIES_PIKACHU_PARTNER, SPECIES_PIKACHU_WORLD, SPECIES_PIKACHU_STARTER,
+};
+
+static const u16 sEeveeForms[] = {SPECIES_EEVEE_STARTER};
+static const u16 sGreninjaForms[] = {SPECIES_GRENINJA_BOND};
+static const u16 sRockruffForms[] = {SPECIES_ROCKRUFF_OWN_TEMPO};
+static const u16 sIndeedeeForms[] = {SPECIES_INDEEDEE_F};
+static const u16 sSinisteaForms[] = {SPECIES_SINISTEA_ANTIQUE};
+static const u16 sPoltchageistForms[] = {SPECIES_POLTCHAGEIST_ARTISAN};
+
+struct WildFormVariants
+{
+    u16 species;
+    u8 chance;
+    u8 count;
+    const u16 *forms;
+};
+
+#define VARIANTS(species, chance, forms) {species, chance, ARRAY_COUNT(forms), forms}
+
+static const struct WildFormVariants sWildFormVariants[] =
+{
+    VARIANTS(SPECIES_SCATTERBUG_ICY_SNOW, 100, sScatterbugForms),
+    VARIANTS(SPECIES_FLORGES_RED, 100, sFlorgesForms),
+    VARIANTS(SPECIES_DEERLING_SPRING, 100, sDeerlingForms),
+    VARIANTS(SPECIES_SHELLOS_WEST, 100, sShellosForms),
+    VARIANTS(SPECIES_PUMPKABOO_AVERAGE, 100, sPumpkabooForms),
+    VARIANTS(SPECIES_MINIOR_METEOR_RED, 100, sMiniorForms),
+    VARIANTS(SPECIES_FURFROU_NATURAL, 100, sFurfrouForms),
+    VARIANTS(SPECIES_GIMMIGHOUL_CHEST, 100, sGimmighoulForms),
+    VARIANTS(SPECIES_PIKACHU, 50, sPikachuForms),
+    VARIANTS(SPECIES_INDEEDEE_M, 50, sIndeedeeForms),
+    VARIANTS(SPECIES_GRENINJA, 25, sGreninjaForms),
+    VARIANTS(SPECIES_EEVEE, 20, sEeveeForms),
+    VARIANTS(SPECIES_ROCKRUFF, 10, sRockruffForms),
+    VARIANTS(SPECIES_SINISTEA_PHONY, 10, sSinisteaForms),
+    VARIANTS(SPECIES_POLTCHAGEIST_COUNTERFEIT, 10, sPoltchageistForms),
+};
+
+#undef VARIANTS

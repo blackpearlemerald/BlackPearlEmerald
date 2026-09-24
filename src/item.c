@@ -508,16 +508,143 @@ void CompactPCItems(void)
     BagPocket_CompactItems(&dummyPocket);
 }
 
+// BPE: SELECT can hold several items. The first is the vanilla save block
+// field, so saves from older releases keep theirs; the rest are variables
+// that no release used before, so the save layout did not change.
+static const u16 sRegisteredItemVars[MAX_REGISTERED_ITEMS - 1] =
+{
+    VAR_REGISTERED_ITEM_2,
+    VAR_REGISTERED_ITEM_3,
+    VAR_REGISTERED_ITEM_4,
+    VAR_REGISTERED_ITEM_5,
+};
+
+enum Item GetRegisteredItem(u32 slot)
+{
+    if (slot == 0)
+        return gSaveBlock1Ptr->registeredItem;
+    if (slot < MAX_REGISTERED_ITEMS)
+        return VarGet(sRegisteredItemVars[slot - 1]);
+    return ITEM_NONE;
+}
+
+static void SetRegisteredItem(u32 slot, enum Item itemId)
+{
+    if (slot == 0)
+        gSaveBlock1Ptr->registeredItem = itemId;
+    else if (slot < MAX_REGISTERED_ITEMS)
+        VarSet(sRegisteredItemVars[slot - 1], itemId);
+}
+
+// Moves the registered items to the front, keeping the order they were
+// registered in, and drops duplicates.
+static void CompactRegisteredItems(void)
+{
+    u32 i, j, count = 0;
+
+    for (i = 0; i < MAX_REGISTERED_ITEMS; i++)
+    {
+        enum Item itemId = GetRegisteredItem(i);
+
+        if (itemId == ITEM_NONE)
+            continue;
+        for (j = 0; j < count; j++)
+        {
+            if (GetRegisteredItem(j) == itemId)
+                break;
+        }
+        if (j == count)
+            SetRegisteredItem(count++, itemId);
+    }
+    for (i = count; i < MAX_REGISTERED_ITEMS; i++)
+        SetRegisteredItem(i, ITEM_NONE);
+}
+
+u32 CountRegisteredItems(void)
+{
+    u32 i, count = 0;
+
+    for (i = 0; i < MAX_REGISTERED_ITEMS; i++)
+    {
+        if (GetRegisteredItem(i) != ITEM_NONE)
+            count++;
+    }
+    return count;
+}
+
+bool32 IsItemRegistered(enum Item itemId)
+{
+    u32 i;
+
+    if (itemId == ITEM_NONE)
+        return FALSE;
+    for (i = 0; i < MAX_REGISTERED_ITEMS; i++)
+    {
+        if (GetRegisteredItem(i) == itemId)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+// Returns FALSE when every slot is taken.
+bool32 RegisterItem(enum Item itemId)
+{
+    u32 count;
+
+    if (IsItemRegistered(itemId))
+        return TRUE;
+    CompactRegisteredItems();
+    count = CountRegisteredItems();
+    if (count >= MAX_REGISTERED_ITEMS)
+        return FALSE;
+    SetRegisteredItem(count, itemId);
+    return TRUE;
+}
+
+void UnregisterItem(enum Item itemId)
+{
+    u32 i;
+
+    for (i = 0; i < MAX_REGISTERED_ITEMS; i++)
+    {
+        if (GetRegisteredItem(i) == itemId)
+            SetRegisteredItem(i, ITEM_NONE);
+    }
+    CompactRegisteredItems();
+}
+
+// Forgets registered items the player no longer carries.
+void UnregisterMissingItems(void)
+{
+    u32 i;
+
+    for (i = 0; i < MAX_REGISTERED_ITEMS; i++)
+    {
+        enum Item itemId = GetRegisteredItem(i);
+
+        if (itemId != ITEM_NONE && !CheckBagHasItem(itemId, 1))
+            SetRegisteredItem(i, ITEM_NONE);
+    }
+    CompactRegisteredItems();
+}
+
 void SwapRegisteredBike(void)
 {
-    switch (gSaveBlock1Ptr->registeredItem)
+    u32 i;
+
+    for (i = 0; i < MAX_REGISTERED_ITEMS; i++)
     {
-    case ITEM_MACH_BIKE:
-        gSaveBlock1Ptr->registeredItem = ITEM_ACRO_BIKE;
-        break;
-    case ITEM_ACRO_BIKE:
-        gSaveBlock1Ptr->registeredItem = ITEM_MACH_BIKE;
-        break;
+        switch (GetRegisteredItem(i))
+        {
+        case ITEM_MACH_BIKE:
+            SetRegisteredItem(i, ITEM_ACRO_BIKE);
+            break;
+        case ITEM_ACRO_BIKE:
+            SetRegisteredItem(i, ITEM_MACH_BIKE);
+            break;
+        default:
+            break;
+        }
     }
 }
 

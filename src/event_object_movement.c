@@ -1425,17 +1425,19 @@ void ResetObjectEvents(void)
 
 static void CreateReflectionEffectSprites(void)
 {
-    u8 spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_REFLECTION_DISTORTION], 0, 0, 31);
-    gSprites[spriteId].oam.affineMode = ST_OAM_AFFINE_NORMAL;
-    InitSpriteAffineAnim(&gSprites[spriteId]);
-    StartSpriteAffineAnim(&gSprites[spriteId], 0);
-    gSprites[spriteId].invisible = TRUE;
+    u32 i;
 
-    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_REFLECTION_DISTORTION], 0, 0, 31);
-    gSprites[spriteId].oam.affineMode = ST_OAM_AFFINE_NORMAL;
-    InitSpriteAffineAnim(&gSprites[spriteId]);
-    StartSpriteAffineAnim(&gSprites[spriteId], 1);
-    gSprites[spriteId].invisible = TRUE;
+    for (i = 0; i < 2; i++)
+    {
+        // BPE: cosmetic, so skipped when every sprite slot is in use.
+        u32 spriteId = CreateSpriteAtEndUnchecked(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_REFLECTION_DISTORTION], 0, 0, 31);
+        if (spriteId == MAX_SPRITES)
+            return;
+        gSprites[spriteId].oam.affineMode = ST_OAM_AFFINE_NORMAL;
+        InitSpriteAffineAnim(&gSprites[spriteId]);
+        StartSpriteAffineAnim(&gSprites[spriteId], i);
+        gSprites[spriteId].invisible = TRUE;
+    }
 }
 
 u8 GetFirstInactiveObjectEventId(void)
@@ -1701,6 +1703,19 @@ static u32 GetAvailableObjectEventId(u16 localId, u8 mapNum, u8 mapGroup)
     return availableId;
 }
 
+// BPE: whether the object's sprite id still points at its own sprite. It points
+// at another sprite if the object's sprite could not be made again after a
+// battle (see SpawnObjectEventOnReturnToField) and that slot was reused.
+bool32 ObjectEventHasOwnSprite(struct ObjectEvent *objectEvent)
+{
+    const struct Sprite *sprite;
+
+    if (objectEvent->spriteId >= MAX_SPRITES)
+        return FALSE;
+    sprite = &gSprites[objectEvent->spriteId];
+    return sprite->inUse && sprite->sObjEventId == objectEvent - gObjectEvents;
+}
+
 void RemoveObjectEvent(struct ObjectEvent *objectEvent)
 {
     OnOverworldWildEncounterDespawn(objectEvent);
@@ -1723,6 +1738,12 @@ void RemoveObjectEventByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup)
 static void RemoveObjectEventInternal(struct ObjectEvent *objectEvent)
 {
     struct SpriteFrameImage image;
+
+    // BPE: never change or destroy a sprite that belongs to something else. That
+    // left another object active without a sprite of its own: invisible, and if
+    // a trainer, spotting the player and never walking over.
+    if (gSprites[objectEvent->spriteId].inUse && !ObjectEventHasOwnSprite(objectEvent))
+        return;
     image.size = GetObjectEventGraphicsInfo(objectEvent->graphicsId)->size;
     gSprites[objectEvent->spriteId].images = &image;
     // It's possible that this function is called while the sprite pointed to `== sDummySprite`, i.e during map resume;
@@ -3067,7 +3088,20 @@ static void SpawnObjectEventOnReturnToField(u8 objectEventId, s16 x, s16 y)
     }
 
     i = CreateSpriteUnchecked(&spriteTemplate, 0, 0, 0);
-    if (i != MAX_SPRITES)
+    if (i == MAX_SPRITES)
+    {
+        // BPE: no free sprite or sprite tiles (a busy floor like Victory Road B1F).
+        // The object must not stay active with the sprite id it had before the
+        // battle, which now belongs to another sprite: a trainer left like that
+        // is invisible, puts its "!" over that other sprite, and never finishes
+        // walking to the player, which freezes the game. Deactivated, it is
+        // spawned again from its template once there is room, as
+        // TrySetupObjectEventSprite does.
+        if (objectEvent->movementType != MOVEMENT_TYPE_PLAYER)
+            objectEvent->active = FALSE;
+        return;
+    }
+    else
     {
         sprite = &gSprites[i];
         // Use palette from species palette table

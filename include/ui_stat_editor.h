@@ -1,5 +1,5 @@
-#ifndef GUARD_UI_MENU_H
-#define GUARD_UI_MENU_H
+#ifndef GUARD_UI_STAT_EDITOR_H
+#define GUARD_UI_STAT_EDITOR_H
 
 #include "main.h"
 
@@ -10,4 +10,4 @@ extern const u8 gAbilityNames[][ABILITY_NAME_LENGTH + 1];
 extern const struct SpeciesInfo gSpeciesInfo[];
 
 
-#endif // GUARD_UI_MENU_H
+#endif // GUARD_UI_STAT_EDITOR_H
