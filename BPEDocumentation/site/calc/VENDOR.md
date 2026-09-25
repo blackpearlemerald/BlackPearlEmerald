@@ -57,13 +57,18 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
 
 ## Changes inside the vendored code
 
-Four, each a one-liner with a `BPE:` comment, and all worth sending upstream:
+Each is a one-liner with a `BPE:` comment (`grep -rn "BPE:" js calc`), and all
+are worth sending upstream:
 
 - `js/shared_controls.js` — three guards for a generation whose sets load after
   the page (`getFirstValidSetOption()` can return nothing), and a species or set
   with no listed ability (`altForme.abilities[0]` and `chosenSet.abilities[0]`).
 - `js/shared_controls.js` — a set of four moves keeps the order the game gives
   them; only a longer list is a pool to pick from.
+- `calc/mechanics/gen789.js` — Super Fang and Ruination take half the target's
+  HP, as Nature's Madness already did; upstream gives them no damage at all.
+  Re-apply after rebuilding `dist/`, since this file is compiled from
+  `calc/src/mechanics/gen789.ts`.
 
 ## Regenerating data
 

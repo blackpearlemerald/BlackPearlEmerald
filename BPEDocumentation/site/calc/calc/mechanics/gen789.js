@@ -389,7 +389,8 @@ function calculateSMSSSV(gen, attacker, defender, move, field) {
         result.damage = zLostHP;
         return result;
     }
-    if (move.named('Nature\'s Madness')) {
+    // BPE: Super Fang and Ruination take half the target's HP too; they read 0.
+    if (move.named('Nature\'s Madness', 'Super Fang', 'Ruination')) {
         var lostHP = field.defenderSide.isProtected ? 0 : Math.floor(defender.curHP() / 2);
         result.damage = lostHP;
         return result;
