@@ -673,6 +673,44 @@ TEST("A saved game loads back exactly")
     }
 }
 
+// A save from before 2.1.7 ends where keyItemsExtra begins, so those slots load
+// as raw zeros while the save's encryption key is not zero. Loading must turn
+// them into empty slots; otherwise the bag "holds" ITEM_NONE and the
+// last-used-ball button throws a ball the player does not own.
+TEST("Extra bag slots from a save before they existed load empty")
+{
+    const u32 key = 0xCFC2;
+    u32 i;
+    enum Pocket pockets[] = {POCKET_ITEMS, POCKET_KEY_ITEMS};
+
+    StartTestGame();
+    ClearBag();
+    EXPECT(AddBagItem(ITEM_POTION, 3));
+    EXPECT(AddBagItem(ITEM_MACH_BIKE, 1));
+    ApplyNewEncryptionKeyToBagItems(key);
+    gSaveBlock2Ptr->encryptionKey = key;
+    memset(gSaveBlock1Ptr->keyItemsExtra, 0, sizeof(gSaveBlock1Ptr->keyItemsExtra));
+    memset(gSaveBlock1Ptr->itemsExtra, 0, sizeof(gSaveBlock1Ptr->itemsExtra));
+    EXPECT_EQ(GetBagItemQuantity(POCKET_ITEMS, BAG_ITEMS_COUNT), key);
+    EXPECT(!CheckBagHasItem(ITEM_NONE, 1));
+
+    EXPECT_EQ(TrySavingData(SAVE_NORMAL), SAVE_STATUS_OK);
+    EXPECT_EQ(Reboot(), SAVE_STATUS_OK);
+
+    for (i = 0; i < ARRAY_COUNT(pockets); i++)
+    {
+        u32 slot;
+        for (slot = 0; slot < gBagPockets[pockets[i]].capacity; slot++)
+        {
+            if (GetBagItemId(pockets[i], slot) == ITEM_NONE)
+                EXPECT_EQ(GetBagItemQuantity(pockets[i], slot), 0);
+        }
+    }
+    EXPECT_EQ(CountTotalItemQuantityInBag(ITEM_POTION), 3);
+    EXPECT(CheckBagHasItem(ITEM_MACH_BIKE, 1));
+    EXPECT_EQ(CountTotalItemQuantityInBag(ITEM_NONE), 0);
+}
+
 TEST("A full PC saves and loads")
 {
     struct SaveDigest saved, loaded;

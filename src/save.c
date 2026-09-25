@@ -7,6 +7,7 @@
 #include "task.h"
 #include "decompress.h"
 #include "event_data.h"
+#include "item.h"
 #include "load_save.h"
 #include "overworld.h"
 #include "hall_of_fame.h"
@@ -462,7 +463,11 @@ u8 LoadGameSave(u8 saveType)
         if (status == SAVE_STATUS_OK && (SaveEngine_GetLoadFlags() & SAVE_LOAD_FLAG_BOX_LOST))
             status = SAVE_STATUS_ERROR;
         if (status == SAVE_STATUS_OK || status == SAVE_STATUS_ERROR)
+        {
             CopyPartyAndObjectsFromSave();
+            // Saves from before 2.1.7 have no extra bag slots yet.
+            RepairEmptyBagSlots();
+        }
         // BPE gives the National Pokédex with the regular Pokédex. Upgrade
         // saves created before this behavior was introduced.
         if (status == SAVE_STATUS_OK

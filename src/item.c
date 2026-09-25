@@ -157,6 +157,28 @@ void ApplyNewEncryptionKeyToBagItems(u32 newKey)
     }
 }
 
+// An empty slot's quantity is stored encrypted like any other, so it only
+// reads back as zero if it was written with the save's key. Slots a save never
+// wrote hold raw zeros instead and read back as a quantity equal to the key:
+// the extra Items and Key Items slots of a save from before they existed are
+// such slots. The bag then held "ITEM_NONE", and the last-used-ball button
+// threw a ball the player did not own. Loading a save stores them as empty.
+void RepairEmptyBagSlots(void)
+{
+    enum Pocket pocketId;
+    u32 i;
+
+    for (pocketId = 0; pocketId < POCKETS_COUNT; pocketId++)
+    {
+        for (i = 0; i < gBagPockets[pocketId].capacity; i++)
+        {
+            struct ItemSlot slot = BagPocket_GetSlotData(&gBagPockets[pocketId], i);
+            if (slot.itemId == ITEM_NONE && slot.quantity != 0)
+                BagPocket_SetSlotData(&gBagPockets[pocketId], i, (struct ItemSlot) {ITEM_NONE, 0});
+        }
+    }
+}
+
 void SetBagItemsPointers(void)
 {
     gBagPockets[POCKET_ITEMS].itemSlots = gSaveBlock1Ptr->bag.items;
@@ -233,6 +255,9 @@ static bool32 NONNULL BagPocket_CheckHasItem(struct BagPocket *pocket, enum Item
 
 bool32 CheckBagHasItem(enum Item itemId, u16 count)
 {
+    // BPE: empty slots are ITEM_NONE, but the bag never holds "nothing".
+    if (itemId == ITEM_NONE)
+        return FALSE;
     if (GetItemPocket(itemId) >= POCKETS_COUNT)
         return FALSE;
     if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || FlagGet(FLAG_STORING_ITEMS_IN_PYRAMID_BAG) == TRUE)

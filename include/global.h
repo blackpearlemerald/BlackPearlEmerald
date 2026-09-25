@@ -1211,8 +1211,9 @@ struct SaveBlock1
 #endif
     // Key Items pocket slots BAG_KEYITEMS_COUNT and up. They are kept here, at
     // the very end, so that enlarging the pocket did not move anything a save
-    // from before it already holds; in those saves these bytes read back as
-    // zero, which is an empty slot.
+    // from before it already holds. In those saves these bytes read back as
+    // zero, which is not an empty slot: quantities are encrypted, so
+    // RepairEmptyBagSlots() rewrites them when the save is loaded.
     struct ItemSlot keyItemsExtra[BAG_KEYITEMS_EXTRA_COUNT];
     struct ItemSlot itemsExtra[BAG_ITEMS_EXTRA_COUNT];
     // sizeof: 0x3???
