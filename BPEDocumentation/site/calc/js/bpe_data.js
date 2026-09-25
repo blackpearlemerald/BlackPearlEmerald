@@ -85,6 +85,56 @@
     }
   }
 
+  // ── The engine's own tables ───────────────────────────────────────────────
+  // The menus read calc.SPECIES and calc.MOVES, but the damage engine looks
+  // Pokémon and moves up in tables of its own, built from those when the page
+  // loaded. The two panels hand stats, types and move power over as overrides,
+  // so they were right; anything else was not. A species the calculator never
+  // had (the game's "Aegislash" is its Shield Forme) reached the engine with no
+  // weight, so Low Kick did nothing to it, and the box match-ups, which build
+  // their Pokémon and moves from names alone, used Smogon's stats and moves.
+  // Generation 9 lookups therefore answer from the game's data.
+  var engineSpecies = {}, engineMoves = {};
+  var upstreamSpecies = calc.Species.prototype.get;
+  var upstreamMoves = calc.Moves.prototype.get;
+
+  calc.Species.prototype.get = function (id) {
+    return (this.gen === GEN && engineSpecies[id]) || upstreamSpecies.call(this, id);
+  };
+  calc.Moves.prototype.get = function (id) {
+    return (this.gen === GEN && engineMoves[id]) || upstreamMoves.call(this, id);
+  };
+
+  function copy(from, to) {
+    for (var key in from) if (Object.prototype.hasOwnProperty.call(from, key)) to[key] = from[key];
+    return to;
+  }
+
+  function loadEngineSpecies(names) {
+    var table = { gen: GEN };
+    names.forEach(function (name) {
+      var id = calc.toID(name), entry = calc.SPECIES[GEN][name];
+      var specie = copy(upstreamSpecies.call(table, id) || {}, { kind: "Species", id: id, name: name });
+      for (var key in entry) if (key !== "bs") specie[key] = entry[key];
+      specie.baseStats = { hp: entry.bs.hp, atk: entry.bs.at, def: entry.bs.df,
+        spa: entry.bs.sa, spd: entry.bs.sd, spe: entry.bs.sp };
+      engineSpecies[id] = specie;
+    });
+  }
+
+  function loadEngineMoves(names) {
+    var table = { gen: GEN };
+    names.forEach(function (name) {
+      var id = calc.toID(name), entry = calc.MOVES[GEN][name];
+      var move = copy(upstreamMoves.call(table, id) || { flags: {}, category: "Status" },
+        { kind: "Move", id: id, name: name });
+      move.basePower = entry.bp;
+      if (entry.type) move.type = entry.type;
+      if (entry.category) move.category = entry.category;
+      engineMoves[id] = move;
+    });
+  }
+
   // ── Ability and item menus ────────────────────────────────────────────────
   // The menus are lists of names. A name the calculator does not know still
   // belongs in them: the set is what the player faces in game, and a missing
@@ -153,6 +203,8 @@
   function apply(data) {
     loadSpecies(data.poks);
     loadMoves(data.moves);
+    loadEngineSpecies(Object.keys(data.poks));
+    loadEngineMoves(Object.keys(data.moves));
     loadMegaStones(data.mega_stones);
     var names = collectNames(data);
     addNames(calc.ABILITIES[GEN], names.abilities);

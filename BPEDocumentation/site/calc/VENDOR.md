@@ -28,7 +28,13 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
   tables: the game's Pokémon, moves, ability and item names, Mega Stones, and
   every trainer's team as this generation's sets. A base power of 1 means the
   game works the power out during the battle (Low Kick, Gyro Ball, Return, ...),
-  so the calculator's own handling is left alone.
+  so the calculator's own handling is left alone. The damage engine keeps its
+  own species and move tables, built when the page loads, so `bpe_data.js` also
+  answers the engine's generation 9 lookups (`calc.Species.prototype.get`,
+  `calc.Moves.prototype.get`) from the game's data. Without that, species the
+  calculator never had (the game's `Aegislash`, `Toxtricity-Amped`) had no
+  weight or abilities in the engine, and the box match-ups used Smogon's stats
+  and move powers.
 - `js/bpe_trainers.js` — the opposing trainer's whole team under their Pokémon,
   in party order, with the one that is loaded marked. Clicking loads a team
   member.
