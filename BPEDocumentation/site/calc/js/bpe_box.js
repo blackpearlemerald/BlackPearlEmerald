@@ -82,24 +82,72 @@
     return (selected && selected.id) || selector.val() || "";
   }
 
+  // Everything a search can find a Pokémon by: species, nickname, types,
+  // ability, item, nature and moves.
+  function searchText(member) {
+    var set = member.set;
+    var types = typeof pokedex !== "undefined" && pokedex[member.species] ?
+      pokedex[member.species].types || [] : [];
+    return [member.species, set.nickname, types.join(" "), set.ability, set.item, set.nature]
+      .concat(set.moves || []).filter(Boolean).join(" ").toLowerCase();
+  }
+
   function tile(member, current) {
     var id = setId(member.species, member.setName);
     var name = member.set.nickname || member.species;
     return '<div class="bpe-team-mon' + (id === current ? " is-current" : "") +
-      '" data-set-id="' + escapeHtml(id) + '" title="' + escapeHtml(member.species) + '">' +
+      '" data-set-id="' + escapeHtml(id) + '" data-search="' + escapeHtml(searchText(member)) + '"' +
+      ' title="' + escapeHtml(member.species) + '">' +
       '<img class="bpe-team-sprite" src="./img/newhd/' + encodeURIComponent(spriteName(member.species)) + '.png"' +
       ' alt="' + escapeHtml(member.species) + '" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
       '<div class="bpe-team-name">' + escapeHtml(name) + "</div>" +
       '<div class="bpe-team-level">Lv ' + (member.set.level || "?") + "</div></div>";
   }
 
-  function fill(container, label, members, current) {
+  function fill(container, label, members, current, tools) {
     if (!container) return;
     if (!members.length) { container.innerHTML = ""; container.hidden = true; return; }
-    container.innerHTML = '<div class="bpe-team-label">' + label + "</div>" +
+    container.innerHTML = '<div class="bpe-team-label">' + label + "</div>" + (tools || "") +
       '<div class="bpe-team-list">' +
       members.map(function (member) { return tile(member, current); }).join("") + "</div>";
     container.hidden = false;
+  }
+
+  // ── Search ────────────────────────────────────────────────────────────────
+  // A whole save can put a thousand Pokémon in the box, so it can be searched
+  // and narrowed to the ones that KO the trainer's Pokémon or survive it. Tiles
+  // are hidden rather than redrawn, so their match-ups stay.
+  var filter = { text: "", ko: false, safe: false };
+
+  function boxTools() {
+    return '<div class="bpe-box-tools">' +
+      '<input type="search" class="bpe-box-search" placeholder="Search name, type, move, ability, item…"' +
+      ' aria-label="Search your box" value="' + escapeHtml(filter.text) + '">' +
+      '<label title="Can KO the trainer\'s Pokémon from full HP"><input type="checkbox" class="bpe-box-ko"' +
+      (filter.ko ? " checked" : "") + "> Can KO</label>" +
+      '<label title="Is not KO\'d by the trainer\'s Pokémon from full HP"><input type="checkbox" class="bpe-box-safe"' +
+      (filter.safe ? " checked" : "") + "> Survives</label>" +
+      "</div>" + '<p class="bpe-box-none" hidden>No Pokémon in your box match.</p>';
+  }
+
+  function applyFilter() {
+    var container = document.getElementById("bpe-box");
+    if (!container || container.hidden) return;
+    var terms = filter.text.toLowerCase().split(/\s+/).filter(Boolean);
+    var tiles = container.querySelectorAll(".bpe-team-mon");
+    var shown = 0;
+    Array.prototype.forEach.call(tiles, function (tile) {
+      var text = tile.getAttribute("data-search") || "";
+      var match = terms.every(function (term) { return text.indexOf(term) >= 0; }) &&
+        (!filter.ko || tile.classList.contains("can-ko")) &&
+        (!filter.safe || !tile.classList.contains("can-be-koed"));
+      tile.hidden = !match;
+      if (match) shown++;
+    });
+    var count = container.querySelector(".bpe-team-count");
+    if (count) count.textContent = "(" + (shown === tiles.length ? tiles.length : shown + " of " + tiles.length) + ")";
+    var none = container.querySelector(".bpe-box-none");
+    if (none) none.hidden = shown > 0;
   }
 
   // The party in party order, then the rest. Clear sits on the first row shown
@@ -115,7 +163,8 @@
     fill(document.getElementById("bpe-party"), "Your party" + clear, inParty, current);
     fill(document.getElementById("bpe-box"),
       (inParty.length ? "Your box" : "Your Pokémon" + clear) +
-      ' <span class="bpe-team-count">(' + inBox.length + ")</span>", inBox, current);
+      ' <span class="bpe-team-count">(' + inBox.length + ")</span>", inBox, current, boxTools());
+    applyFilter();
     scheduleMatchups();
   }
 
@@ -195,6 +244,7 @@
         (faster ? ", and moves first" : "");
       tile.appendChild(line);
     });
+    applyFilter();
   }
 
   var matchupTimer = null;
@@ -240,6 +290,14 @@
     $([partyRow, boxRow]).on("click", ".bpe-box-clear", function (event) {
       event.stopPropagation();
       box.clear();
+    });
+    $(boxRow).on("input", ".bpe-box-search", function () {
+      filter.text = this.value;
+      applyFilter();
+    });
+    $(boxRow).on("change", ".bpe-box-ko, .bpe-box-safe", function () {
+      filter[this.classList.contains("bpe-box-ko") ? "ko" : "safe"] = this.checked;
+      applyFilter();
     });
     $("#p1 .set-selector").on("change", render);
     // The opposing side, and any field or spread change, moves every match-up.

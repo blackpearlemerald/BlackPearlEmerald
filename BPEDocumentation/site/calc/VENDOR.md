@@ -52,7 +52,9 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
   which is what happens in battle.
 - `js/bpe_box.js` — the player's imported Pokémon inside Pokémon 1's panel:
   the party in party order between its HP and its moves, opposite the
-  trainer's team and outlined, and everything else under its moves. Sets live in the calculator's own imported-set store
+  trainer's team and outlined, and everything else under its moves. The box
+  has a search (name, nickname, type, move, ability, item, nature) and Can KO /
+  Survives filters over its match-ups; tiles are hidden, not redrawn. Sets live in the calculator's own imported-set store
   (`localStorage.customsets`), the party order beside it in
   `localStorage.bpeBoxParty`. Each tile shows its match-up against the
   trainer's Pokémon; sets spell stats `at`/`df`/`sa`/`sd`/`sp`, so they are

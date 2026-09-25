@@ -759,6 +759,50 @@ body {
     cursor: pointer;
 }
 
+/* Search and the KO filters above the box's tiles. */
+.bpe-box-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    margin: 2px 4px 10px;
+    font-size: 14px;
+}
+
+.poke-info .bpe-box-tools input[type="search"] {
+    flex: 1 1 14em;
+    min-width: 0;
+    width: auto;
+    padding: 5px 8px;
+    font-size: 14px;
+    border-radius: 6px;
+}
+
+.poke-info .bpe-box-tools label {
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.poke-info .bpe-box-tools input[type="checkbox"] {
+    margin: 0;
+    accent-color: var(--bpe-calc-accent);
+}
+
+.bpe-team-mon[hidden] {
+    display: none;
+}
+
+.bpe-box-none {
+    margin: 4px 0 8px;
+    text-align: center;
+    font-size: 14px;
+    opacity: 0.75;
+}
+
 /* The box can hold a whole save; it scrolls rather than growing without end. */
 #bpe-box .bpe-team-list {
     max-height: 560px;
