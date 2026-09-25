@@ -10,20 +10,12 @@
     <link type="text/css" rel="stylesheet" href="./css/main.css?4175d731" />
     <link type="text/css" rel="stylesheet" href="./css/vendor/bootstrap.css" />
     <link type="text/css" rel="stylesheet" href="./css/dark-theme.css?9d48c3de" id="dark-theme-styles">
-    <link type="text/css" rel="stylesheet" href="./css/bpe.css?1" />
+    <link type="text/css" rel="stylesheet" href="./css/bpe.css?2" />
     <link rel="stylesheet" href="../css/header.css" />
+    <link type="text/css" rel="stylesheet" href="./css/bpe-layout.css?4" />
     <script src="../js/release-context.js"></script>
     <!-- BPE: no analytics. Upstream calls gtag() on a generation change. -->
     <script>function gtag() {}</script>
-    <!-- Immediately loads the dark theme in order to reduce FOIT -->
-    <script>
-        // localStorage will only store strings
-        // This means that if it has the value 'false',
-        // It will be truthy.
-        if ((localStorage.getItem('darkTheme') || '' + window.matchMedia('(prefers-color-scheme: dark)').matches) === 'false') {
-            document.getElementById('dark-theme-styles').disabled = true;
-        }
-    </script>
 </head>
 
 <body class="dark-theme page-calc">
@@ -38,7 +30,7 @@
         <span class="genSelection" hidden>
             <input class="gen visually-hidden" type="radio" name="gen" value="9" id="gen9" checked="checked" />
         </span>
-        <span class="notationSelection" aria-labelledby="selectNotationInstruction" role="radiogroup" title="Select the output notation.">
+        <span class="notationSelection" hidden aria-labelledby="selectNotationInstruction" role="radiogroup" title="Select the output notation.">
             <span class="visually-hidden" id="selectNotationInstruction">Select the output notation.</span>
             <input class="notation visually-hidden" type="radio" name="notation" id="pixels" value="px" /><label class="btn btn-small btn-left" for="pixels">48th</label>
             <input class="notation visually-hidden" type="radio" name="notation" id="percentage" value="%" /><label class="btn btn-small btn-right" for="percentage">100%</label>
@@ -70,28 +62,28 @@
                 <span id="resultDamageL4">??? - ???%</span>
             </div>
         </div>
-        <div aria-labelledby="resultHeaderR" class="move-result-subgroup" role="radiogroup">
+        <div aria-labelledby="resultHeaderR" class="move-result-subgroup results-right" role="radiogroup">
             <div class="result-move-header"><span id="resultHeaderR">Pok&eacute;mon 2's Moves (select one to show detailed results)</span>
             </div>
             <div>
+                <span id="resultDamageR1">??? - ???%</span>
                 <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR1" aria-describedby="resultDamageR1" />
                 <label class="btn btn-xxxwide btn-top" for="resultMoveR1">Loading...</label>
-                <span id="resultDamageR1">??? - ???%</span>
             </div>
             <div>
+                <span id="resultDamageR2">??? - ???%</span>
                 <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR2" aria-describedby="resultDamageR2" />
                 <label class="btn btn-xxxwide btn-mid" for="resultMoveR2">Loading...</label>
-                <span id="resultDamageR2">??? - ???%</span>
             </div>
             <div>
+                <span id="resultDamageR3">??? - ???%</span>
                 <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR3" aria-describedby="resultDamageR3" />
                 <label class="btn btn-xxxwide btn-mid" for="resultMoveR3">Loading...</label>
-                <span id="resultDamageR3">??? - ???%</span>
             </div>
             <div>
+                <span id="resultDamageR4">??? - ???%</span>
                 <input class="result-move visually-hidden" type="radio" name="resultMove" id="resultMoveR4" aria-describedby="resultDamageR4" />
                 <label class="btn btn-xxxwide btn-bottom" for="resultMoveR4">Loading...</label>
-                <span id="resultDamageR4">??? - ???%</span>
             </div>
         </div>
     </div>
@@ -108,7 +100,8 @@
         </div>
     </div>
 
-    <div aria-label="Pok&eacute;mon 1" class="panel" role="region">
+    <div class="panel-wrapper">
+    <div aria-label="Pok&eacute;mon 1" class="panel panel-side" role="region">
         <fieldset class="poke-info" id="p1">
             <legend align="center">Pok&eacute;mon 1</legend>
             <input type="text" class="set-selector calc-trigger" />
@@ -153,7 +146,8 @@
                     <input class="weight calc-trigger" id="weightL1" value="10.0" />
                 </div>
             </div>
-            <div class="info-group">
+            <img class="poke-sprite" alt="" hidden />
+            <div class="info-group stats">
                 <table>
                     <thead>
                         <tr>
@@ -502,7 +496,7 @@
                     </select>
                 </div>
             </div>
-            <div class="info-group">
+            <div class="info-group hp-cntrl">
                 <label for="currentHpL1">Current HP</label>
                 <input class="current-hp calc-trigger" id="currentHpL1" value="341" inputmode="decimal" />/<span class="max-hp">341</span> (
                 <input class="percent-hp calc-trigger" value="100" inputmode="decimal" />%)
@@ -681,7 +675,7 @@
         </fieldset>
     </div>
 
-    <div class="panel">
+    <div class="panel panel-mid">
         <div aria-label="Field information" role="region">
             <fieldset class="field-info">
                 <legend align="center">Field</legend>
@@ -1104,7 +1098,7 @@
             </fieldset>
         </div>
     </div>
-    <div aria-label="Pok&eacute;mon 2" role="region" class="panel">
+    <div aria-label="Pok&eacute;mon 2" role="region" class="panel panel-side">
         <fieldset class="poke-info" id="p2">
             <legend align="center">Pok&eacute;mon 2</legend>
             <input type="text" class="set-selector calc-trigger" />
@@ -1145,7 +1139,8 @@
                     <input class="weight calc-trigger" id="weightR1" value="10.0" />
                 </div>
             </div>
-            <div class="info-group">
+            <img class="poke-sprite" alt="" hidden />
+            <div class="info-group stats">
                 <table>
                     <thead>
                         <tr>
@@ -1494,7 +1489,7 @@
                     </select>
                 </div>
             </div>
-            <div class="info-group">
+            <div class="info-group hp-cntrl">
                 <label for="currentHpR1">Current HP</label>
                 <input class="current-hp calc-trigger" id="currentHpR1" value="341" inputmode="decimal" />/<span class="max-hp">341</span> (
                 <input class="percent-hp calc-trigger" value="100" inputmode="decimal" />%)
@@ -1670,6 +1665,7 @@
             </div>
         </fieldset>
     </div>
+    </div>
     <script type="text/javascript" src="./js/vendor/jquery-1.9.1.min.js"></script>
     <script type="text/javascript" src="./js/vendor/select2/select2.min.js"></script>
     <script type="text/javascript" src="./js/vendor/url-search-params-0.1.2.min.js"></script>
@@ -1707,27 +1703,16 @@
     <script type="text/javascript" src="./js/shared_controls.js?9b639731"></script>
     <script type="text/javascript" src="./js/index_randoms_controls.js?7e11582b"></script>
     <script type="text/javascript" src="./js/moveset_import.js?931ab14d"></script>
-    <script type="text/javascript" src="./js/bpe_data.js?2"></script>
-    <script type="text/javascript" src="./js/bpe_box.js?4"></script>
-    <script type="text/javascript" src="./js/bpe_trainers.js?1"></script>
+    <script type="text/javascript" src="./js/bpe_data.js?3"></script>
+    <script type="text/javascript" src="./js/bpe_box.js?5"></script>
+    <script type="text/javascript" src="./js/bpe_trainers.js?2"></script>
     <script type="text/javascript" src="./js/bpe_formes.js?1"></script>
     <script type="text/javascript" src="../js/save-converter.js?1"></script>
     <script type="text/javascript" src="../js/calc_save_import.js?1"></script>
     <script type="text/javascript" src="./js/bpe_deeplink.js?1"></script>
+    <script type="text/javascript" src="./js/bpe_layout.js?2"></script>
 </div>
 <!-- END WRAPPER -->
-
-<div class="credits">Black Pearl Emerald build of the Pokémon Showdown damage calculator. Created by Honko; maintained by Austin, Kris, <a href="https://github.com/smogon/damage-calc/contributors" class="links-lighten" target="_blank">and others</a>.
-    <ul><li><a href="https://www.smogon.com/forums/threads/pok%C3%A9mon-showdown-damage-calculator.3593546/" class="links-lighten" target="_blank">Bug Reports</a></li>
-    <li><a href="https://github.com/smogon/damage-calc" class="links-lighten" target="_blank">GitHub repository</a></li></ul>
-
-    <select id="dark-theme-toggle">
-        <option value="">Auto dark theme</option>
-        <option value="false">Light theme</option>
-        <option value="true">Dark theme</option>
-    </select>
-    <script type="text/javascript" src="./js/dark-theme-toggle.js?9ba5ca95"></script>
-</div>
 
 </body>
 

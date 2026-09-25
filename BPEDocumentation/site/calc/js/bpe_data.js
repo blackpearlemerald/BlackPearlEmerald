@@ -21,17 +21,13 @@
 
   BPE.gen = GEN;
 
-  // Both BPE rows live in one strip under the calculator, so neither has to
-  // fit inside the calculator's own floated panels.
-  BPE.strip = function () {
-    var strip = document.getElementById("bpe-strip");
-    if (!strip) {
-      strip = document.createElement("div");
-      strip.id = "bpe-strip";
-      var wrapper = document.querySelector(".wrapper") || document.body;
-      wrapper.appendChild(strip);
-    }
-    return strip;
+  // A BPE row goes inside a side's panel: the player's box under Pokémon 1's
+  // moves, the trainer's team between Pokémon 2's HP and moves.
+  BPE.mountRow = function (element, panel, before) {
+    var fieldset = document.querySelector(panel);
+    var anchor = fieldset && before ? fieldset.querySelector(before) : null;
+    if (anchor) anchor.parentNode.insertBefore(element, anchor);
+    else (fieldset || document.querySelector(".wrapper") || document.body).appendChild(element);
   };
   BPE.data = null;
   // Run `callback` once the game data is in the calculator's tables.

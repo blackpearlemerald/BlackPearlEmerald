@@ -1,0 +1,714 @@
+/* Black Pearl Emerald — the calculator's page layout.
+ *
+ * The layout of BPE's earlier calculator, over Smogon's markup: Pokémon 1, the
+ * field and Pokémon 2 as three columns across the whole page, Pokémon 1's
+ * results on the left and Pokémon 2's on the right above them, large text,
+ * and each side with its sprite, its stats beside its nature, ability, item
+ * and status, and its row of Pokémon (the player's box, the trainer's team).
+ * Loaded after every other stylesheet; the site header keeps its own.
+ */
+
+:root {
+    --bpe-calc-bg: #181818;
+    --bpe-calc-text: #f8f8f2;
+    --bpe-calc-panel: rgba(255, 255, 255, 0.1);
+    --bpe-calc-control: rgba(24, 24, 24, 0.8);
+    --bpe-calc-border: rgb(118, 118, 118);
+    --bpe-calc-accent: #bb86fc;
+    --bpe-calc-accent-soft: rgba(187, 134, 252, 0.2);
+    --bpe-calc-teal: #1abc9c;
+}
+
+html, body {
+    min-width: 0;
+    background-color: var(--bpe-calc-bg);
+    color: var(--bpe-calc-text);
+    font: 10pt Verdana, sans-serif;
+}
+
+body {
+    background-image: none;
+}
+
+/* Smogon's stylesheet gives every <header> a fixed 60px height; the site
+   header measures itself to push the page down, so it must keep its own. */
+#site-header {
+    height: auto;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+/* ── Page ───────────────────────────────────────────────────────────────── */
+
+.wrapper {
+    box-sizing: border-box;
+    width: calc(100vw - 40px);
+    max-width: 1720px;
+    min-width: 1300px;
+    margin: 20px auto 0;
+    padding: 0;
+    position: relative;
+}
+
+.wrapper *, .wrapper *::before, .wrapper *::after {
+    box-sizing: border-box;
+}
+
+.main-title-text {
+    display: block;
+    font-size: 30px;
+    line-height: 40px;
+    text-align: center;
+    font-weight: normal;
+}
+
+/* The generation and notation pickers stay in the page for the calculator's
+   own code, hidden: BPE is one generation, and damage reads as percentages. */
+.wrapper > [aria-label="Settings"] {
+    display: none;
+}
+
+.wrapper hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    margin: 8px 0 16px;
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────── */
+
+.wrapper .btn {
+    text-transform: none;
+    background: rgba(18, 18, 18, 0.5);
+    color: #f1f1f1;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 8px;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.wrapper .btn:hover,
+.wrapper .visually-hidden:focus + .btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #999;
+    color: #fff;
+}
+
+.wrapper .visually-hidden:checked + .btn,
+.wrapper .visually-hidden:checked + .btn:hover {
+    background: var(--bpe-calc-accent-soft);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    font-weight: bold;
+    color: #fff;
+}
+
+.wrapper .btn-left { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.wrapper .btn-right { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.wrapper .btn-top { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.wrapper .btn-bottom { border-top-left-radius: 0; border-top-right-radius: 0; }
+.wrapper .btn-mid { border-radius: 0; }
+
+.wrapper .locked-move:checked + .btn,
+.wrapper .locked-weather:checked + .btn {
+    background: #00867b;
+}
+
+/* ── Results ────────────────────────────────────────────────────────────── */
+
+.move-result-group {
+    display: flex;
+    justify-content: space-between;
+    min-width: 0;
+    margin: 0 0 4px;
+}
+
+.move-result-subgroup {
+    float: none;
+    width: 50%;
+    font-size: 16px;
+}
+
+.move-result-subgroup > div:not(.result-move-header) {
+    display: flex;
+    align-items: center;
+    height: 39px;
+}
+
+.result-move-header {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 6px;
+}
+
+.move-result-group .btn.btn-xxxwide {
+    width: 210px;
+    height: 39px;
+    line-height: 30px;
+    font-size: 20px;
+    margin: 0 1em 0 0;
+    background: var(--bpe-calc-bg);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.results-right .result-move-header {
+    text-align: right;
+}
+
+.results-right > div:not(.result-move-header) {
+    justify-content: flex-end;
+}
+
+.results-right > div > span {
+    margin-right: 2em;
+}
+
+.results-right .btn.btn-xxxwide {
+    margin-right: 0;
+}
+
+.main-result-group {
+    margin: 16px 0 20px;
+}
+
+.main-result-group .big-text {
+    font-size: 15px;
+    margin: 0 0 4px;
+}
+
+#damageValues, .main-result-group .small-text {
+    font-size: 13px;
+}
+
+/* ── Three columns ──────────────────────────────────────────────────────── */
+
+.panel-wrapper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(390px, 27vw, 450px) minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+}
+
+.panel-wrapper > .panel {
+    float: none;
+    display: block;
+    min-width: 0;
+    max-width: none;
+    font-size: 16px;
+}
+
+.panel-wrapper fieldset {
+    float: none;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 10px;
+    border: none;
+    border-radius: 10px;
+    background: var(--bpe-calc-panel);
+}
+
+.panel-wrapper legend {
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    padding: 0 8px;
+}
+
+/* ── One side ───────────────────────────────────────────────────────────── */
+
+.panel-wrapper .poke-info {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 14px;
+    align-items: start;
+    padding: 4px 12px 14px;
+}
+
+.poke-info > * {
+    grid-column: 1 / -1;
+}
+
+.poke-info > .info-group.top,
+.poke-info > .info-group.stats {
+    grid-column: 1;
+}
+
+.poke-info > .poke-sprite,
+.poke-info > .info-selectors {
+    grid-column: 2;
+}
+
+.poke-info .info-group {
+    margin: 10px 0 0;
+    padding: 0;
+}
+
+.poke-info label,
+.poke-info .top label,
+.poke-info .info-selectors label {
+    width: 6em;
+    text-align: left;
+    color: var(--bpe-calc-text);
+}
+
+.poke-info .top > div {
+    margin-bottom: 3px;
+    white-space: nowrap;
+}
+
+/* Smogon's competitive analyses do not describe BPE's Pokémon. */
+.poke-info .top small.right {
+    display: none;
+}
+
+.poke-info input,
+.poke-info select,
+.poke-import textarea,
+.poke-import input {
+    background: var(--bpe-calc-control);
+    color: var(--bpe-calc-text);
+    border: 1px solid var(--bpe-calc-border);
+    border-radius: 3px;
+    box-shadow: none;
+    background-image: none;
+    font-size: 15px;
+    padding: 2px 3px;
+    margin: 1px 0;
+}
+
+.poke-info select option,
+.poke-info select optgroup {
+    background: #222;
+    color: var(--bpe-calc-text);
+}
+
+.poke-info input:not([type]),
+.poke-info input[type="text"] {
+    width: 3em;
+}
+
+.poke-info .stats input:not([type]) {
+    width: 2.6em;
+}
+
+.poke-info input[type="number"] {
+    width: 3.6em;
+}
+
+.poke-info input[type="checkbox"] {
+    width: auto;
+    vertical-align: middle;
+}
+
+.poke-info .top select {
+    width: 7.5em;
+}
+
+.poke-info .top .level {
+    width: 3.5em;
+}
+
+/* The Pokémon's sprite, top right of its side; Pokémon 1 faces the opponent. */
+.poke-info > .poke-sprite {
+    justify-self: center;
+    align-self: center;
+    width: 128px;
+    max-width: 100%;
+    height: 128px;
+    margin-top: 6px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+#p1 > .poke-sprite {
+    transform: scaleX(-1);
+}
+
+.poke-info > .poke-sprite[hidden] {
+    display: block;
+    visibility: hidden;
+}
+
+/* Stats on the left, nature/ability/item/status beside them. */
+.poke-info .stats table {
+    border-collapse: collapse;
+}
+
+.poke-info .stats th {
+    font-size: 12px;
+    padding: 0 4px 0 0;
+    text-align: left;
+}
+
+.poke-info .stats thead th {
+    text-align: center;
+}
+
+.poke-info .stats th label {
+    width: auto;
+    font-weight: bold;
+}
+
+.poke-info .stats td {
+    padding: 1px 2px;
+    white-space: nowrap;
+}
+
+.poke-info .stats .boost {
+    width: 3.2em;
+}
+
+.poke-info .stats .total,
+.poke-info .stats .totalMod {
+    display: inline-block;
+    min-width: 2.2em;
+}
+
+.poke-info > .info-selectors {
+    margin-top: 28px;
+}
+
+.poke-info .info-selectors > div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+/* As before, the menus speak for themselves (Quirky, Snow Warning, Healthy);
+   their labels stay for screen readers. */
+.poke-info .info-selectors label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.poke-info .info-selectors select {
+    flex: 1 1 100%;
+    min-width: 0;
+    width: 100%;
+}
+
+.poke-info .info-selectors select.toxic-counter,
+.poke-info .info-selectors select[hidden] + select,
+.poke-info .info-selectors select.alliesFainted,
+.poke-info .info-selectors select.boostedStat {
+    flex-basis: 100%;
+}
+
+.poke-info .info-selectors [hidden],
+.poke-info .info-selectors .hide {
+    display: none;
+}
+
+/* Current HP and the health bar. */
+.poke-info .hp-cntrl {
+    margin-top: 12px;
+    font-size: 15px;
+}
+
+.poke-info .hp-cntrl label {
+    width: auto;
+    margin-right: 6px;
+}
+
+.poke-info .hp-cntrl br {
+    display: none;
+}
+
+.poke-info .hp-cntrl .hpbar {
+    margin-top: 6px;
+}
+
+/* Moves: one row each. */
+.poke-info .move1 { margin-top: 12px; }
+
+.poke-info .move1, .poke-info .move2, .poke-info .move3, .poke-info .move4 {
+    font-size: 14px;
+}
+
+.poke-info .move1 select, .poke-info .move2 select,
+.poke-info .move3 select, .poke-info .move4 select,
+.poke-info .move1 input, .poke-info .move2 input,
+.poke-info .move3 input, .poke-info .move4 input {
+    font-size: 14px;
+}
+
+.poke-info .move1, .poke-info .move2, .poke-info .move3, .poke-info .move4 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 0;
+}
+
+.poke-info .move-selector {
+    flex: 1 1 9em;
+    min-width: 8em;
+    width: auto;
+    font-size: 14px;
+}
+
+.poke-info .move-selector.select2-container .select2-choice {
+    height: 28px;
+    line-height: 26px;
+}
+
+.poke-info input.move-bp {
+    width: 3em;
+}
+
+.poke-info select.move-type {
+    width: 6em;
+}
+
+.poke-info select.move-cat {
+    width: 5.9em;
+}
+
+.poke-info select.move-hits,
+.poke-info select.move-times,
+.poke-info select.metronome {
+    width: 5.2em;
+}
+
+.poke-info .move-selector ~ .hide,
+.poke-info .move-selector ~ [style*="display: none"] {
+    display: none;
+}
+
+.poke-info .crit-btn,
+.poke-info .z-btn,
+.poke-info .stellar-btn,
+.poke-info .max-btn {
+    height: auto;
+    width: auto;
+    min-width: 2.6em;
+    padding: 3px 6px;
+    margin: 0;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid var(--bpe-calc-border);
+}
+
+/* The big set selector at the top of each side. */
+.poke-info > .select2-container.set-selector {
+    width: 100%;
+    margin: 4px 0 6px;
+}
+
+.poke-info > .select2-container.set-selector .select2-choice {
+    height: 40px;
+    line-height: 38px;
+    font-size: 20px;
+    padding-left: 12px;
+    border: 1px solid var(--bpe-calc-accent);
+    border-radius: 8px;
+    background: var(--bpe-calc-control);
+    box-shadow: none;
+    color: #f1f1f1;
+}
+
+.poke-info > .select2-container.set-selector .select2-choice .select2-arrow {
+    top: 6px;
+    right: 6px;
+}
+
+#importedSetsOptions {
+    font-size: 13px;
+}
+
+.select2-drop {
+    background: var(--bpe-calc-bg);
+    color: #f1f1f1;
+    border: 1px solid var(--bpe-calc-border);
+    font-size: 16px;
+}
+
+.select2-results .select2-highlighted {
+    background: var(--bpe-calc-accent-soft);
+    color: #fff;
+}
+
+.select2-results .select2-result-label {
+    padding: 4px 8px;
+}
+
+/* ── Field, Import / Export ─────────────────────────────────────────────── */
+
+.panel-mid fieldset {
+    text-align: center;
+    padding: 10px;
+}
+
+.panel-mid .field-info .btn {
+    font-size: 13px;
+    margin-top: 2px;
+}
+
+.panel-mid .field-info .btn.btn-xsmall {
+    width: 1.7em;
+}
+
+.panel-mid .field-info.sun { background-color: rgba(168, 71, 0, 0.15); }
+.panel-mid .field-info.rain { background-color: rgba(26, 88, 174, 0.15); }
+.panel-mid .field-info.sand { background-color: rgba(120, 102, 0, 0.15); }
+.panel-mid .field-info.snow,
+.panel-mid .field-info.hail { background-color: rgba(92, 153, 153, 0.15); }
+
+.panel-mid hr {
+    margin: 8px 0;
+}
+
+.panel-mid table.field {
+    width: 100%;
+}
+
+.poke-import .import-name-text {
+    width: 100%;
+    font-size: 14px;
+}
+
+.poke-import textarea.import-team-text {
+    display: block;
+    width: 100%;
+    min-height: 140px;
+    margin: 8px 0;
+    font-family: Consolas, monospace;
+    font-size: 13px;
+}
+
+.poke-import button,
+.poke-import .bs-btn,
+#bpe-read-save {
+    display: inline-block;
+    color: var(--bpe-calc-accent);
+    background: none;
+    border: 1px solid var(--bpe-calc-accent);
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 6px 14px;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.poke-import button:hover,
+.poke-import .bs-btn:hover,
+#bpe-read-save:hover {
+    background: var(--bpe-calc-accent-soft) !important;
+    color: #fff;
+}
+
+/* The file input stays hidden behind its label, so a long file name cannot
+   widen the middle column. */
+#bpe-save-upload {
+    display: none;
+}
+
+#bpe-save-status {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* ── The player's box and the trainer's team, inside each side ─────────── */
+
+.poke-info > .bpe-team {
+    margin: 14px 0 0;
+    padding: 10px 8px;
+    border: none;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+#p2 > .bpe-team {
+    margin: 12px 0 2px;
+}
+
+.poke-info .bpe-team-label {
+    font-size: 15px;
+}
+
+.poke-info .bpe-team-mon {
+    width: 96px;
+    font-size: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px solid transparent;
+}
+
+.poke-info .bpe-team-mon:hover,
+.poke-info .bpe-team-mon.is-current {
+    border-color: var(--bpe-calc-teal);
+}
+
+.poke-info .bpe-team-mon.can-ko {
+    border-color: rgba(80, 250, 123, 0.8);
+    background: rgba(80, 250, 123, 0.14);
+}
+
+.poke-info .bpe-team-mon.can-be-koed {
+    border-color: rgba(255, 85, 85, 0.8);
+    background: rgba(255, 85, 85, 0.14);
+}
+
+.poke-info .bpe-team-mon.can-ko.can-be-koed {
+    border-color: rgba(255, 85, 85, 0.8);
+    background: linear-gradient(to right, rgba(80, 250, 123, 0.2) 50%, rgba(255, 85, 85, 0.2) 50%);
+}
+
+.poke-info .bpe-team-mon.is-current {
+    background: rgba(26, 188, 156, 0.18);
+}
+
+.poke-info .bpe-team span {
+    display: block;
+    width: auto;
+}
+
+.poke-info .bpe-team-sprite {
+    width: 64px;
+    height: 64px;
+}
+
+.bpe-box-clear {
+    margin-left: 6px;
+    font-size: 12px;
+    color: var(--bpe-calc-accent);
+    background: none;
+    border: 1px solid var(--bpe-calc-accent);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* The box can hold a whole save; it scrolls rather than growing without end. */
+#bpe-box .bpe-team-list {
+    max-height: 560px;
+    overflow-y: auto;
+}
+
+/* ── Narrower screens ───────────────────────────────────────────────────── */
+
+/* Below this a side is too narrow for the menus beside the stats, so they go
+   under them, two to a row. */
+@media (max-width: 1499px) {
+    .poke-info > .info-group.stats,
+    .poke-info > .info-selectors {
+        grid-column: 1 / -1;
+    }
+
+    .poke-info > .info-selectors {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: 10px;
+        margin-top: 8px;
+    }
+
+    .poke-info .info-selectors > div {
+        margin-bottom: 2px;
+    }
+}

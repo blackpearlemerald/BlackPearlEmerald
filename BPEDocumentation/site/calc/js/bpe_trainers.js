@@ -107,7 +107,7 @@
     container.id = "bpe-team";
     container.className = "bpe-team";
     container.hidden = true;
-    BPE.strip().appendChild(container);
+    BPE.mountRow(container, "#p2", ".move1");
 
     // Clicking a team member loads that exact set on the opposing side.
     $(container).on("click", ".bpe-team-mon", function () {

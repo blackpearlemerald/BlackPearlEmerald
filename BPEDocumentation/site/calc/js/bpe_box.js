@@ -214,7 +214,7 @@
     container.id = "bpe-box";
     container.className = "bpe-team bpe-box";
     container.hidden = true;
-    BPE.strip().appendChild(container);
+    BPE.mountRow(container, "#p1");
 
     $(container).on("click", ".bpe-team-mon", function () {
       var id = this.getAttribute("data-set-id");

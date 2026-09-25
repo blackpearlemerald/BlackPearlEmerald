@@ -35,13 +35,13 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
   calculator never had (the game's `Aegislash`, `Toxtricity-Amped`) had no
   weight or abilities in the engine, and the box match-ups used Smogon's stats
   and move powers.
-- `js/bpe_trainers.js` — the opposing trainer's whole team under their Pokémon,
-  in party order, with the one that is loaded marked. Clicking loads a team
+- `js/bpe_trainers.js` — the opposing trainer's whole team inside Pokémon 2's
+  panel, between its HP and its moves, in party order, with the one that is loaded marked. Clicking loads a team
   member.
 - `js/bpe_formes.js` — a trainer's Pokémon holding its Mega Stone Mega Evolves,
   which is what happens in battle.
-- `js/bpe_box.js` — the player's imported Pokémon as a row under their side,
-  party first. Sets live in the calculator's own imported-set store
+- `js/bpe_box.js` — the player's imported Pokémon inside Pokémon 1's panel,
+  under its moves, party first. Sets live in the calculator's own imported-set store
   (`localStorage.customsets`), the party order beside it in
   `localStorage.bpeBoxParty`. Each tile shows its match-up against the
   trainer's Pokémon; sets spell stats `at`/`df`/`sa`/`sd`/`sp`, so they are
@@ -50,10 +50,18 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
 - `../js/calc_save_import.js`, `../js/save-converter.js` — Import .sav, shared
   with the rest of the site (`BPETools/tests/test_calc_save_import.py` covers
   the reading half).
+- `css/bpe-layout.css` and `js/bpe_layout.js` — the page layout of BPE's
+  earlier calculator: Pokémon 1, the field and Pokémon 2 as three columns
+  across the page (`.panel-wrapper` in `index.html`), Pokémon 2's results on
+  the right, and a sprite on each side (`.poke-sprite`) that follows the set
+  and forme. The stylesheet loads last and also undoes Smogon's fixed 60px
+  `header` height, which hid the top of the page under the site header.
 - `css/bpe.css`, plus the site header, version selector and nav in `index.html`.
 - `index.html` also drops Google Analytics, the Pokémon Showdown site header,
-  the generation and mode pickers (BPE is one game on one generation), and
-  Smogon's set files.
+  the generation and mode pickers (BPE is one game on one generation),
+  Smogon's set files, the light-theme switch (the site is dark only) and
+  Smogon's credits footer, whose links pointed players at Smogon's bug
+  reports.
 
 ## Changes inside the vendored code
 

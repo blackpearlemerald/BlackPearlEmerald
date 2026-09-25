@@ -1,14 +1,5 @@
 /* Black Pearl Emerald additions to the damage calculator. */
 
-#bpe-strip {
-    clear: both;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 4px 0 16px;
-}
-
 .bpe-team {
     flex: 1 1 380px;
     box-sizing: border-box;
