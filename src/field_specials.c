@@ -3544,11 +3544,13 @@ void CreateAbnormalWeatherEvent(void)
     u16 randomValue = Random();
     VarSet(VAR_ABNORMAL_WEATHER_STEP_COUNTER, 0);
 
-    if (FlagGet(FLAG_DEFEATED_KYOGRE) == TRUE)
+    // BPE: the catch flags, not the defeat flags - a Kyogre the player knocked out
+    // has to be able to come back, so its cave must stay in the rotation.
+    if (FlagGet(FLAG_CAUGHT_KYOGRE) == TRUE)
     {
         VarSet(VAR_ABNORMAL_WEATHER_LOCATION, (randomValue % TERRA_CAVE_LOCATIONS) + TERRA_CAVE_LOCATIONS_START);
     }
-    else if (FlagGet(FLAG_DEFEATED_GROUDON) == TRUE)
+    else if (FlagGet(FLAG_CAUGHT_GROUDON) == TRUE)
     {
         VarSet(VAR_ABNORMAL_WEATHER_LOCATION, (randomValue % MARINE_CAVE_LOCATIONS) + MARINE_CAVE_LOCATIONS_START);
     }
@@ -5811,68 +5813,90 @@ bool8 CheckAddCoins(void)
 // ---------------------------------------------------------------------------
 // Legendary Lottery Island (Route 130 / Mirage Island, post-Elite Four).
 //
-// The pool is every legendary/mythical that has no other home in the hack (the
-// placed statics - Rayquaza, Kyogre, Groudon, the Regis, Latios/Latias, the
-// roaming beasts, etc. - are deliberately excluded). Each map entry the island
-// rolls a random pool member the player hasn't caught yet, manifests it as its
-// follower overworld sprite, and lets the player battle it at Level 70. Catch
-// it and it drops out of the pool for good, whatever the player does with it
-// afterwards. Each pool member is caught once: a legendary with several fixed
-// forms or evolutions can be caught once per pool entry, and evolving or
-// hatching one never uses up another. "Caught" comes from the Pokedex, except
-// for the pool members the Pokedex can't tell apart from a form or an
-// evolution (see sIslandCatchFlags).
+// Every legendary has exactly one home. The placed statics - Rayquaza, Kyogre,
+// Groudon, the Regis, Latios/Latias, the roaming beasts, the Kanto birds, Mew,
+// Lugia, Ho-Oh, Deoxys - live on their own maps and come back until they are
+// caught, so they are not in this pool. The pool is everything left over, one
+// entry per Pokemon the player cannot already have: nothing here can be made
+// from something else in it.
+//
+// So a legendary that another one evolves, hatches or fuses into is only listed
+// when the player has no way to make it:
+//
+//   not listed  Cosmoem, Naganadel, the two Urshifu, Silvally and Phione - a
+//               second Cosmog, Poipole, Kubfu or Type: Null from the Mirage
+//               Altar becomes any of them, and Phione hatches from the Manaphy
+//               the player keeps. Listing them made the same Pokemon turn up
+//               over and over, which is what the altar exists to fix.
+//   listed      Solgaleo, Lunala, Melmetal and the Necrozma fusions - reaching
+//               them costs a legendary the player would then be missing, and
+//               Meltan has no evolution at all.
+//   listed      Kyurem White/Black and Calyrex Ice/Shadow - their two fusions
+//               share one fusion storage slot (MAX_FUSION_STORAGE), so the
+//               DNA Splicers and the Reins of Unity could never give both at
+//               once. Caught already fused, they sidestep that limit.
+//   listed      the Galarian birds, Zarude Dada, Magearna Original, Floette
+//               Eternal - no switch, item or evolution reaches these at all.
+//
+// Each map entry the island rolls a random pool member the player hasn't caught
+// yet, manifests it as its follower overworld sprite, and lets the player battle
+// it at Level 70. Catch it and it drops out of the pool for good, whatever the
+// player does with it afterwards. "Caught" comes from the Pokedex, except for
+// the pool members the Pokedex can't tell apart from a form or an evolution
+// (see sIslandCatchFlags).
 // ---------------------------------------------------------------------------
 #define ISLAND_LEGENDARY_LEVEL 70
 
 static const u16 sIslandLegendaryPool[] =
 {
-    SPECIES_ARTICUNO, SPECIES_ZAPDOS, SPECIES_MOLTRES, SPECIES_MEWTWO,
-    SPECIES_MEW, SPECIES_LUGIA, SPECIES_HO_OH, SPECIES_DEOXYS_NORMAL,
+    SPECIES_MEWTWO,
+    // Gen 4
     SPECIES_UXIE, SPECIES_MESPRIT, SPECIES_AZELF, SPECIES_DIALGA,
     SPECIES_PALKIA, SPECIES_HEATRAN, SPECIES_REGIGIGAS, SPECIES_GIRATINA_ALTERED,
-    SPECIES_CRESSELIA, SPECIES_PHIONE, SPECIES_MANAPHY, SPECIES_DARKRAI,
-    SPECIES_SHAYMIN_LAND, SPECIES_VICTINI, SPECIES_COBALION, SPECIES_TERRAKION,
-    SPECIES_VIRIZION, SPECIES_TORNADUS_INCARNATE, SPECIES_THUNDURUS_INCARNATE, SPECIES_RESHIRAM,
-    SPECIES_ZEKROM, SPECIES_LANDORUS_INCARNATE, SPECIES_KYUREM, SPECIES_KELDEO_ORDINARY,
-    SPECIES_MELOETTA_ARIA, SPECIES_XERNEAS_NEUTRAL, SPECIES_YVELTAL, SPECIES_ZYGARDE_50,
-    SPECIES_DIANCIE, SPECIES_HOOPA_CONFINED, SPECIES_VOLCANION, SPECIES_TAPU_KOKO,
-    SPECIES_TAPU_LELE, SPECIES_TAPU_BULU, SPECIES_TAPU_FINI, SPECIES_COSMOG,
-    SPECIES_COSMOEM, SPECIES_SOLGALEO, SPECIES_LUNALA, SPECIES_NIHILEGO,
+    SPECIES_CRESSELIA, SPECIES_MANAPHY, SPECIES_DARKRAI, SPECIES_SHAYMIN_LAND,
+    SPECIES_ARCEUS_NORMAL,
+    // Gen 5
+    SPECIES_VICTINI, SPECIES_COBALION, SPECIES_TERRAKION, SPECIES_VIRIZION,
+    SPECIES_TORNADUS_INCARNATE, SPECIES_THUNDURUS_INCARNATE, SPECIES_RESHIRAM, SPECIES_ZEKROM,
+    SPECIES_LANDORUS_INCARNATE, SPECIES_KYUREM, SPECIES_KELDEO_ORDINARY, SPECIES_MELOETTA_ARIA,
+    SPECIES_GENESECT,
+    // Gen 6
+    SPECIES_XERNEAS_NEUTRAL, SPECIES_YVELTAL, SPECIES_ZYGARDE_50, SPECIES_DIANCIE,
+    SPECIES_HOOPA_CONFINED, SPECIES_VOLCANION,
+    // Gen 7
+    SPECIES_TAPU_KOKO, SPECIES_TAPU_LELE, SPECIES_TAPU_BULU, SPECIES_TAPU_FINI,
+    SPECIES_COSMOG, SPECIES_SOLGALEO, SPECIES_LUNALA, SPECIES_NIHILEGO,
     SPECIES_BUZZWOLE, SPECIES_PHEROMOSA, SPECIES_XURKITREE, SPECIES_CELESTEELA,
     SPECIES_KARTANA, SPECIES_GUZZLORD, SPECIES_NECROZMA, SPECIES_MAGEARNA,
-    SPECIES_MARSHADOW, SPECIES_POIPOLE, SPECIES_NAGANADEL, SPECIES_STAKATAKA,
-    SPECIES_BLACEPHALON, SPECIES_ZERAORA, SPECIES_MELTAN, SPECIES_MELMETAL,
+    SPECIES_MARSHADOW, SPECIES_POIPOLE, SPECIES_STAKATAKA, SPECIES_BLACEPHALON,
+    SPECIES_ZERAORA, SPECIES_MELTAN, SPECIES_MELMETAL,
+    // Gen 8
     SPECIES_DRACOZOLT, SPECIES_ARCTOZOLT, SPECIES_ZACIAN_HERO, SPECIES_ZAMAZENTA_HERO,
-    SPECIES_ETERNATUS, SPECIES_KUBFU, SPECIES_URSHIFU_SINGLE_STRIKE, SPECIES_ZARUDE,
-    SPECIES_REGIELEKI, SPECIES_REGIDRAGO, SPECIES_GLASTRIER, SPECIES_SPECTRIER,
-    SPECIES_CALYREX, SPECIES_ENAMORUS_INCARNATE, SPECIES_WO_CHIEN, SPECIES_CHIEN_PAO,
-    SPECIES_TING_LU, SPECIES_CHI_YU, SPECIES_KORAIDON, SPECIES_MIRAIDON,
-    SPECIES_WALKING_WAKE, SPECIES_IRON_LEAVES, SPECIES_OKIDOGI, SPECIES_MUNKIDORI,
-    SPECIES_FEZANDIPITI, SPECIES_GOUGING_FIRE, SPECIES_RAGING_BOLT, SPECIES_IRON_BOULDER,
-    SPECIES_IRON_CROWN, SPECIES_TERAPAGOS_NORMAL, SPECIES_PECHARUNT,
-    // Mythicals/legendaries that BPE's data marks as breedable (so the initial
-    // non-breedable audit filter skipped them) but that have no other in-game
-    // home - they belong on the island too.
-    SPECIES_ARCEUS_NORMAL, SPECIES_GENESECT, SPECIES_OGERPON_TEAL,
-    // Alternate forms that can't be made by switching a form. Forms that a held
-    // item, the Meteorite, the Reveal Glass, the Gracidea, the Prison Bottle,
-    // the Zygarde Cube or Secret Sword switch back and forth are not here: one
-    // Arceus or Deoxys is all a player gets, and the Bean Shop sells the held
-    // items after the Champion. Kyurem's fusions are here because both share
-    // one fusion storage slot, so the DNA Splicers could never give both at
-    // once, and a fusion uses up a second legendary. Silvally is here because
-    // the static Type: Null is the only other one.
+    SPECIES_ETERNATUS, SPECIES_KUBFU, SPECIES_ZARUDE, SPECIES_REGIELEKI,
+    SPECIES_REGIDRAGO, SPECIES_GLASTRIER, SPECIES_SPECTRIER, SPECIES_CALYREX,
+    SPECIES_ENAMORUS_INCARNATE,
+    // Gen 9
+    SPECIES_WO_CHIEN, SPECIES_CHIEN_PAO, SPECIES_TING_LU, SPECIES_CHI_YU,
+    SPECIES_KORAIDON, SPECIES_MIRAIDON, SPECIES_WALKING_WAKE, SPECIES_IRON_LEAVES,
+    SPECIES_OKIDOGI, SPECIES_MUNKIDORI, SPECIES_FEZANDIPITI, SPECIES_OGERPON_TEAL,
+    SPECIES_GOUGING_FIRE, SPECIES_RAGING_BOLT, SPECIES_IRON_BOULDER, SPECIES_IRON_CROWN,
+    SPECIES_TERAPAGOS_NORMAL, SPECIES_PECHARUNT,
+    // Forms nothing else in the game can reach (see the note above).
     SPECIES_ARTICUNO_GALAR, SPECIES_ZAPDOS_GALAR, SPECIES_MOLTRES_GALAR,
-    SPECIES_KYUREM_WHITE, SPECIES_KYUREM_BLACK, SPECIES_FLOETTE_ETERNAL, SPECIES_SILVALLY_NORMAL,
-    SPECIES_NECROZMA_DUSK_MANE, SPECIES_NECROZMA_DAWN_WINGS, SPECIES_MAGEARNA_ORIGINAL,
-    SPECIES_URSHIFU_RAPID_STRIKE, SPECIES_ZARUDE_DADA, SPECIES_CALYREX_ICE, SPECIES_CALYREX_SHADOW,
+    SPECIES_KYUREM_WHITE, SPECIES_KYUREM_BLACK,
+    SPECIES_NECROZMA_DUSK_MANE, SPECIES_NECROZMA_DAWN_WINGS,
+    SPECIES_MAGEARNA_ORIGINAL, SPECIES_ZARUDE_DADA, SPECIES_FLOETTE_ETERNAL,
+    SPECIES_CALYREX_ICE, SPECIES_CALYREX_SHADOW,
 };
 
 // Pool members the Pokedex would show as caught without a catch here: they
 // share a Pokedex number with another pool member or with a Pokemon found
 // elsewhere, or the player can also get them by evolving or hatching another
 // Pokemon. Each has its own flag, set when it is caught here.
+//
+// Entries for species the pool no longer lists (Cosmoem, Naganadel, Phione, the
+// two Urshifu, Silvally) are never read now, but they are kept: they are still
+// correct, and saves made while those species were in the pool hold their flags.
 struct IslandCatchFlag
 {
     u16 species;
@@ -5969,6 +5993,46 @@ static u16 GetIslandLegendaryGraphicsSpecies(u16 species)
     if (gSpeciesInfo[species].overworldData.tileTag == 0)
         return GET_BASE_SPECIES_ID(species);
     return species;
+}
+
+// An alternate form carries its base form's .speciesName, so the battle - and
+// the Pokedex, and the PC - calls Galarian Articuno "ARTICUNO", exactly what the
+// player already caught in Shoal Cave. The island says which one it is before
+// the battle starts. Only forms are listed: a pool member that is already the
+// only thing wearing its name needs no announcement.
+static const u8 *GetIslandLegendaryFormLabel(u16 species)
+{
+    switch (species)
+    {
+    case SPECIES_ARTICUNO_GALAR:     return COMPOUND_STRING("Galarian ARTICUNO");
+    case SPECIES_ZAPDOS_GALAR:       return COMPOUND_STRING("Galarian ZAPDOS");
+    case SPECIES_MOLTRES_GALAR:      return COMPOUND_STRING("Galarian MOLTRES");
+    case SPECIES_KYUREM_WHITE:       return COMPOUND_STRING("White KYUREM");
+    case SPECIES_KYUREM_BLACK:       return COMPOUND_STRING("Black KYUREM");
+    case SPECIES_NECROZMA_DUSK_MANE: return COMPOUND_STRING("Dusk Mane NECROZMA");
+    case SPECIES_NECROZMA_DAWN_WINGS:return COMPOUND_STRING("Dawn Wings NECROZMA");
+    case SPECIES_MAGEARNA_ORIGINAL:  return COMPOUND_STRING("Original Color MAGEARNA");
+    case SPECIES_ZARUDE_DADA:        return COMPOUND_STRING("Dada ZARUDE");
+    case SPECIES_FLOETTE_ETERNAL:    return COMPOUND_STRING("Eternal Flower FLOETTE");
+    case SPECIES_CALYREX_ICE:        return COMPOUND_STRING("Ice Rider CALYREX");
+    case SPECIES_CALYREX_SHADOW:     return COMPOUND_STRING("Shadow Rider CALYREX");
+    default:                         return NULL;
+    }
+}
+
+// Route130_EventScript_IslandLegendary: TRUE with the form's name in gStringVar1
+// when this visit's legendary is one of the forms above, FALSE otherwise.
+void BufferIslandLegendaryFormName(void)
+{
+    const u8 *label = GetIslandLegendaryFormLabel(VarGet(VAR_ISLAND_LEGENDARY));
+
+    if (label == NULL)
+    {
+        gSpecialVar_Result = FALSE;
+        return;
+    }
+    StringCopy(gStringVar1, label);
+    gSpecialVar_Result = TRUE;
 }
 
 // Points the island legendary's spawn template at a random tall-grass tile.
@@ -6098,6 +6162,38 @@ void RecordIslandLegendaryCatch(void)
 
     if (catchFlag != NULL)
         FlagSet(catchFlag->flag);
+}
+
+// ---------------------------------------------------------------------------
+// The Mirage Altar (Route 130, post-Elite Four).
+//
+// Cosmoem, Naganadel, the two Urshifu and Silvally are all made by evolving a
+// second copy of something the player has already caught, and one catch is all
+// the island gives. Putting them in the lottery pool solved that, but it meant
+// meeting Cosmog's line four separate times, which reads as the same Pokemon
+// turning up again rather than as a new find. The altar replaces those entries:
+// it calls back a legendary the player has already registered so they can catch
+// another one, at the same Level 70 the island uses.
+//
+// Only the four that lead somewhere are offered, so the list is short and says
+// exactly what it is for. The Pokedex is the whole gate - each of the four has
+// a Pokedex number no other Pokemon shares, so nothing new has to be recorded
+// and the altar costs no flags or vars.
+// ---------------------------------------------------------------------------
+
+// gSpecialVar_0x8004 = species -> gSpecialVar_Result = has it been caught.
+void CheckAltarSpeciesCaught(void)
+{
+    gSpecialVar_Result = GetSetPokedexFlag(SpeciesToNationalPokedexNum(gSpecialVar_0x8004), FLAG_GET_CAUGHT);
+}
+
+// gSpecialVar_0x8004 = the species the player picked. Mirrors
+// SetupIslandLegendaryBattle; the caller follows it with
+// BattleSetup_StartLegendaryBattle. Nothing is recorded afterwards - the altar
+// only ever summons something already in the Pokedex.
+void SetupMirageAltarBattle(void)
+{
+    CreateScriptedWildMon(gSpecialVar_0x8004, ISLAND_LEGENDARY_LEVEL, ITEM_NONE);
 }
 
 // BPE: Mirage Island is part of the Route 130 map, so the engine never renames the

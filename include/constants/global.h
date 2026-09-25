@@ -110,8 +110,19 @@ enum Language
 #define ROAMER_COUNT 1 // Number of maximum concurrent active roamers
 
 // Bag constants
+// The Items pocket holds BAG_ITEMS_TOTAL slots, split the same way as the Key
+// Items pocket below. This uses most of what is left at the end of SaveBlock1;
+// about ten percent of the free space is deliberately held back as a buffer.
 #define BAG_ITEMS_COUNT 150
+#define BAG_ITEMS_EXTRA_COUNT 15
+#define BAG_ITEMS_TOTAL (BAG_ITEMS_COUNT + BAG_ITEMS_EXTRA_COUNT)
+// The Key Items pocket holds BAG_KEYITEMS_TOTAL slots. The first
+// BAG_KEYITEMS_COUNT of them are the ones struct Bag has always had; the rest
+// are appended to the end of SaveBlock1, so growing the pocket did not move
+// anything an existing save already holds. See "Save format (2.1)" in AGENTS.md.
 #define BAG_KEYITEMS_COUNT 30
+#define BAG_KEYITEMS_EXTRA_COUNT 70
+#define BAG_KEYITEMS_TOTAL (BAG_KEYITEMS_COUNT + BAG_KEYITEMS_EXTRA_COUNT)
 #define BAG_POKEBALLS_COUNT 16
 #define BAG_TMHM_COUNT 250
 #define BAG_BERRIES_COUNT 46

@@ -13,7 +13,7 @@ NavelRock_Bottom_EventScript_HideLugia::
 	return
 
 NavelRock_Bottom_EventScript_TryShowLugia::
-	goto_if_set FLAG_DEFEATED_LUGIA, Common_EventScript_NopReturn
+@ BPE: no FLAG_DEFEATED_LUGIA check - Lugia returns until it is caught.
 	clearflag FLAG_HIDE_LUGIA
 	return
 

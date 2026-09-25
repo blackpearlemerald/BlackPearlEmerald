@@ -93,8 +93,26 @@ def load_species():
                                for meth, par, t, conds in parse_evolution_entries(block)
                                if canonical(t)],
                 "heldItems": re.findall(r"\.item(?:Common|Rare)\s*=\s*(ITEM_\w+)", block),
+                "learnsets": [m.group(1) for m in re.finditer(
+                    r"\.(?:levelUpLearnset|teachableLearnset|eggMoveLearnset)\s*=\s*s(\w+?)(?:LevelUp|Teachable|EggMove)Learnset", block)],
             }
     return info
+
+
+def load_learnable_moves(species):
+    """Species -> the moves it can ever know (level-up, TM/tutor, egg)."""
+    pools = (parse_pokemon.parse_level_up_learnsets(),
+             parse_pokemon.parse_egg_moves(),
+             parse_pokemon.parse_teachable_learnsets())
+    out = {}
+    for name, info in species.items():
+        moves = set()
+        for stem in info["learnsets"]:
+            for pool in pools:
+                for entry in pool.get(stem, ()):
+                    moves.add(entry["move"] if isinstance(entry, dict) else entry)
+        out[name] = moves
+    return out
 
 
 def load_form_tables():
@@ -148,6 +166,21 @@ def load_items():
     return items
 
 
+def load_event_mon_statics():
+    """Placed legendaries whose scripts build the battle with seteventmon instead
+    of setwildbattle: Mew on Faraway Island, Lugia and Ho-Oh on Navel Rock, and
+    Deoxys on Birth Island. generate_randomizer_data only looks for setwildbattle,
+    because those four are not randomized."""
+    names = set()
+    for path in grd.script_files():
+        text = strip(grd.read_abs(path))
+        for species in re.findall(r"^\s*seteventmon\s+(SPECIES_\w+)", text, re.M):
+            name = canonical(species)
+            if name:
+                names.add(name)
+    return names
+
+
 def load_mirage_pool():
     text = strip(read("src/field_specials.c"))
     body = re.search(r"sIslandLegendaryPool\[\]\s*=\s*\{(.*?)\};", text, re.S).group(1)
@@ -199,7 +232,9 @@ class Audit:
         self.tables, self.fusions = load_form_tables()
         self.items = load_items()
         self.mirage = load_mirage_pool()
+        self.event_statics = load_event_mon_statics()
         self.variants = load_wild_variants()
+        self.moves = load_learnable_moves(self.species)
         self.scatterbug_egg = scatterbug_breed_form()
         self.order = sorted(self.species, key=lambda n: grd.SPECIES_IDS[n])
         self.how = {}
@@ -269,6 +304,8 @@ class Audit:
         sources = grd.parse_sources()
         for name in sources:
             self.add(name, "wild/gift/static")
+        for name in self.event_statics:
+            self.add(name, "wild/gift/static")
         for name in self.mirage:
             self.add(name, "Mirage Island")
         for base, forms in self.variants.items():
@@ -329,6 +366,11 @@ class Audit:
             if item and not self.item_ok(item):
                 self.blocked[target].append(f"{method} {item} unobtainable (from {name[8:]})")
                 continue
+            if method == "FORM_CHANGE_MOVE" and "WHEN_LEARNED" in args:
+                move = next((a for a in args if a.startswith("MOVE_")), None)
+                if move and move[5:] not in self.moves.get(name, ()):
+                    self.blocked[target].append(f"{method} {move} not learnable (from {name[8:]})")
+                    continue
             changed |= self.add(target, f"form change from {name[8:]} ({method} {item or ''})".strip())
         return changed
 
@@ -344,6 +386,41 @@ class Audit:
             incoming += ["EVOLUTION" for _, _, target, _ in oinfo["evolutions"] if target == name]
         incoming += ["FUSION" for _, _, _, result in self.fusions if result == name]
         return not incoming or any(m in RESTING_METHODS for m in incoming)
+
+
+# Every Mirage Island entry is meant to be a Pokemon the player cannot already
+# make from something else, so the lottery never offers what feels like a repeat.
+# These are the deliberate exceptions, each with the reason it earns its slot.
+POOL_DUPES_ALLOWED = {
+    "SPECIES_SOLGALEO":            "reaching it costs a Cosmog the player would then be missing",
+    "SPECIES_LUNALA":              "reaching it costs a Cosmog the player would then be missing",
+    "SPECIES_NECROZMA_DUSK_MANE":  "fusing costs the Solgaleo the player would then be missing",
+    "SPECIES_NECROZMA_DAWN_WINGS": "fusing costs the Lunala the player would then be missing",
+    "SPECIES_KYUREM_WHITE":        "both Kyurem fusions share one fusion storage slot",
+    "SPECIES_KYUREM_BLACK":        "both Kyurem fusions share one fusion storage slot",
+    "SPECIES_CALYREX_ICE":         "both Calyrex fusions share one fusion storage slot",
+    "SPECIES_CALYREX_SHADOW":      "both Calyrex fusions share one fusion storage slot",
+}
+
+
+def pool_overlap(audit):
+    """Pool entries that another obtainable Pokemon also turns into."""
+    pool = set(audit.mirage)
+    out = {}
+    for name, info in audit.species.items():
+        if name not in audit.how:
+            continue
+        for _, _, target, _ in info["evolutions"]:
+            if target in pool and target != name:
+                out.setdefault(target, "evolves from " + name[8:])
+        if info["eggGroups"] and "NO_EGGS_DISCOVERED" not in info["eggGroups"]:
+            egg = audit.egg_species(name)
+            if egg in pool and egg != name:
+                out.setdefault(egg, "bred from " + name[8:])
+    for _, a, b, result in audit.fusions:
+        if result in pool and a in audit.how and b in audit.how:
+            out.setdefault(result, "fused from " + a[8:] + " and " + b[8:])
+    return {k: v for k, v in out.items() if k not in POOL_DUPES_ALLOWED}
 
 
 def main():
@@ -376,11 +453,19 @@ def main():
         print()
         for name in found:
             print(f"  {name[8:]:34} {audit.how[name]}")
+    overlap = pool_overlap(audit)
+    if overlap:
+        print()
+        print(str(len(overlap)) + " Mirage Island entries the player can already make:")
+        for name, how in sorted(overlap.items()):
+            print("  " + name[8:].ljust(34) + " " + how)
+        print("  Give each one a home the lottery does not duplicate, or record why it")
+        print("  has to stay in POOL_DUPES_ALLOWED.")
     if args.json:
         with open(args.json, "w", encoding="utf-8") as f:
-            json.dump({"missing": missing, "how": audit.how,
+            json.dump({"missing": missing, "how": audit.how, "poolOverlap": overlap,
                        "blocked": {k: sorted(set(v)) for k, v in audit.blocked.items()}}, f, indent=1)
-    return 1 if missing else 0
+    return 1 if missing or overlap else 0
 
 
 if __name__ == "__main__":

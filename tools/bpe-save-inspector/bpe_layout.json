@@ -4,11 +4,11 @@
     "SaveBlock1": "0x1846a",
     "SaveBlock2": "0xdb5b",
     "SaveBlock3": "0xcc3e",
-    "PokemonStorage": "0x18b21",
-    "SaveSector": "0x18f37",
+    "PokemonStorage": "0x18b5f",
+    "SaveSector": "0x18f75",
     "Pokemon": "0x158ab",
     "BoxPokemon": "0x1576b",
-    "PackedBoxMon": "0x18acf"
+    "PackedBoxMon": "0x18b0d"
   },
   "types": {
     "0xd3": {
@@ -124,7 +124,7 @@
       "name": "u8",
       "target": "0xb96"
     },
-    "0x1894e": {
+    "0x1896c": {
       "kind": "array_type",
       "target": "0xccb",
       "dimensions": [
@@ -3414,14 +3414,14 @@
         }
       ]
     },
-    "0x1895e": {
+    "0x1897c": {
       "kind": "array_type",
       "target": "0x17327",
       "dimensions": [
         40
       ]
     },
-    "0x1896e": {
+    "0x1898c": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -3442,7 +3442,7 @@
         2
       ]
     },
-    "0x1897e": {
+    "0x1899c": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -3992,21 +3992,21 @@
         }
       ]
     },
-    "0x1898e": {
+    "0x189ac": {
       "kind": "array_type",
       "target": "0xe216",
       "dimensions": [
         64
       ]
     },
-    "0x1899f": {
+    "0x189bd": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         300
       ]
     },
-    "0x189b0": {
+    "0x189ce": {
       "kind": "array_type",
       "target": "0xce1",
       "dimensions": [
@@ -4125,7 +4125,7 @@
         }
       ]
     },
-    "0x189c0": {
+    "0x189de": {
       "kind": "array_type",
       "target": "0xf25b",
       "dimensions": [
@@ -5989,7 +5989,7 @@
         }
       ]
     },
-    "0x189d0": {
+    "0x189ee": {
       "kind": "array_type",
       "target": "0xdde6",
       "dimensions": [
@@ -6003,7 +6003,7 @@
         12
       ]
     },
-    "0x189e0": {
+    "0x189fe": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -8096,7 +8096,7 @@
       "name": "TVShow",
       "target": "0x1067b"
     },
-    "0x189f0": {
+    "0x18a0e": {
       "kind": "array_type",
       "target": "0x1082e",
       "dimensions": [
@@ -8129,7 +8129,7 @@
       "name": "PokeNews",
       "target": "0x1083b"
     },
-    "0x18a00": {
+    "0x18a1e": {
       "kind": "array_type",
       "target": "0x10870",
       "dimensions": [
@@ -8296,7 +8296,7 @@
         }
       ]
     },
-    "0x18a10": {
+    "0x18a2e": {
       "kind": "array_type",
       "target": "0x179c1",
       "dimensions": [
@@ -8611,7 +8611,7 @@
         }
       ]
     },
-    "0x18a20": {
+    "0x18a3e": {
       "kind": "array_type",
       "target": "0x1750b",
       "dimensions": [
@@ -8669,7 +8669,7 @@
         }
       ]
     },
-    "0x18a30": {
+    "0x18a4e": {
       "kind": "array_type",
       "target": "0x1793c",
       "dimensions": [
@@ -9095,7 +9095,7 @@
         }
       ]
     },
-    "0x18a40": {
+    "0x18a5e": {
       "kind": "array_type",
       "target": "0x17398",
       "dimensions": [
@@ -9288,7 +9288,7 @@
         }
       ]
     },
-    "0x18a50": {
+    "0x18a6e": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -9622,14 +9622,14 @@
         }
       ]
     },
-    "0x18a60": {
+    "0x18a7e": {
       "kind": "array_type",
       "target": "0x17d73",
       "dimensions": [
         20
       ]
     },
-    "0x18a71": {
+    "0x18a8f": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -9745,10 +9745,24 @@
         }
       ]
     },
+    "0x18aa5": {
+      "kind": "array_type",
+      "target": "0x172fc",
+      "dimensions": [
+        70
+      ]
+    },
+    "0x18ab5": {
+      "kind": "array_type",
+      "target": "0x172fc",
+      "dimensions": [
+        15
+      ]
+    },
     "0x1846a": {
       "kind": "structure_type",
       "name": "SaveBlock1",
-      "size": 15836,
+      "size": 16176,
       "members": [
         {
           "name": "pos",
@@ -9807,7 +9821,7 @@
         },
         {
           "name": "mapView",
-          "type": "0x1894e",
+          "type": "0x1896c",
           "offset": 52
         },
         {
@@ -9847,12 +9861,12 @@
         },
         {
           "name": "pokeblocks",
-          "type": "0x1895e",
+          "type": "0x1897c",
           "offset": 3264
         },
         {
           "name": "filler1",
-          "type": "0x1896e",
+          "type": "0x1898c",
           "offset": 3584
         },
         {
@@ -9877,7 +9891,7 @@
         },
         {
           "name": "trainerRematches",
-          "type": "0x1897e",
+          "type": "0x1899c",
           "offset": 3650
         },
         {
@@ -9887,32 +9901,32 @@
         },
         {
           "name": "objectEventTemplates",
-          "type": "0x1898e",
+          "type": "0x189ac",
           "offset": 4328
         },
         {
           "name": "flags",
-          "type": "0x1899f",
+          "type": "0x189bd",
           "offset": 5864
         },
         {
           "name": "vars",
-          "type": "0x1894e",
+          "type": "0x1896c",
           "offset": 6164
         },
         {
           "name": "gameStats",
-          "type": "0x189b0",
+          "type": "0x189ce",
           "offset": 6676
         },
         {
           "name": "berryTrees",
-          "type": "0x189c0",
+          "type": "0x189de",
           "offset": 6932
         },
         {
           "name": "secretBases",
-          "type": "0x189d0",
+          "type": "0x189ee",
           "offset": 7956
         },
         {
@@ -9942,12 +9956,12 @@
         },
         {
           "name": "decorationOrnaments",
-          "type": "0x189e0",
+          "type": "0x189fe",
           "offset": 11210
         },
         {
           "name": "decorationMats",
-          "type": "0x189e0",
+          "type": "0x189fe",
           "offset": 11240
         },
         {
@@ -9967,12 +9981,12 @@
         },
         {
           "name": "tvShows",
-          "type": "0x189f0",
+          "type": "0x18a0e",
           "offset": 11332
         },
         {
           "name": "pokeNews",
-          "type": "0x18a00",
+          "type": "0x18a1e",
           "offset": 12232
         },
         {
@@ -10052,7 +10066,7 @@
         },
         {
           "name": "mail",
-          "type": "0x18a10",
+          "type": "0x18a2e",
           "offset": 12376
         },
         {
@@ -10067,12 +10081,12 @@
         },
         {
           "name": "dewfordTrends",
-          "type": "0x18a20",
+          "type": "0x18a3e",
           "offset": 13024
         },
         {
           "name": "contestWinners",
-          "type": "0x18a30",
+          "type": "0x18a4e",
           "offset": 13064
         },
         {
@@ -10107,7 +10121,7 @@
         },
         {
           "name": "roamer",
-          "type": "0x18a40",
+          "type": "0x18a5e",
           "offset": 13908
         },
         {
@@ -10117,12 +10131,12 @@
         },
         {
           "name": "dexSeen",
-          "type": "0x18a50",
+          "type": "0x18a6e",
           "offset": 13988
         },
         {
           "name": "dexCaught",
-          "type": "0x18a50",
+          "type": "0x18a6e",
           "offset": 14117
         },
         {
@@ -10147,12 +10161,12 @@
         },
         {
           "name": "trainerNameRecords",
-          "type": "0x18a60",
+          "type": "0x18a7e",
           "offset": 15348
         },
         {
           "name": "registeredTexts",
-          "type": "0x18a71",
+          "type": "0x18a8f",
           "offset": 15588
         },
         {
@@ -10164,6 +10178,16 @@
           "name": "waldaPhrase",
           "type": "0x17d1e",
           "offset": 15812
+        },
+        {
+          "name": "keyItemsExtra",
+          "type": "0x18aa5",
+          "offset": 15836
+        },
+        {
+          "name": "itemsExtra",
+          "type": "0x18ab5",
+          "offset": 16116
         }
       ]
     },
@@ -11680,7 +11704,7 @@
         }
       ]
     },
-    "0x18b76": {
+    "0x18bb4": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
@@ -11688,48 +11712,48 @@
         9
       ]
     },
-    "0x18b8c": {
+    "0x18bca": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         41
       ]
     },
-    "0x18b9c": {
+    "0x18bda": {
       "kind": "array_type",
       "target": "0x158ab",
       "dimensions": [
         4
       ]
     },
-    "0x18aea": {
+    "0x18b28": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         60
       ]
     },
-    "0x18acf": {
+    "0x18b0d": {
       "kind": "structure_type",
       "name": "PackedBoxMon",
       "size": 60,
       "members": [
         {
           "name": "data",
-          "type": "0x18aea",
+          "type": "0x18b28",
           "offset": 0
         }
       ]
     },
-    "0x18bac": {
+    "0x18bea": {
       "kind": "array_type",
-      "target": "0x18acf",
+      "target": "0x18b0d",
       "dimensions": [
         41,
         30
       ]
     },
-    "0x18b21": {
+    "0x18b5f": {
       "kind": "structure_type",
       "name": "PokemonStorage",
       "size": 74612,
@@ -11741,53 +11765,53 @@
         },
         {
           "name": "boxNames",
-          "type": "0x18b76",
+          "type": "0x18bb4",
           "offset": 1
         },
         {
           "name": "boxWallpapers",
-          "type": "0x18b8c",
+          "type": "0x18bca",
           "offset": 370
         },
         {
           "name": "fusions",
-          "type": "0x18b9c",
+          "type": "0x18bda",
           "offset": 412
         },
         {
           "name": "boxes",
-          "type": "0x18bac",
+          "type": "0x18bea",
           "offset": 812
         }
       ]
     },
-    "0x18f98": {
+    "0x18fd6": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         3968
       ]
     },
-    "0x18fa9": {
+    "0x18fe7": {
       "kind": "array_type",
       "target": "0xcb6",
       "dimensions": [
         116
       ]
     },
-    "0x18f37": {
+    "0x18f75": {
       "kind": "structure_type",
       "name": "SaveSector",
       "size": 4096,
       "members": [
         {
           "name": "data",
-          "type": "0x18f98",
+          "type": "0x18fd6",
           "offset": 0
         },
         {
           "name": "saveBlock3Chunk",
-          "type": "0x18fa9",
+          "type": "0x18fe7",
           "offset": 3968
         },
         {
@@ -11814,7 +11838,7 @@
     }
   },
   "source": {
-    "git_commit": "0e22268292e2f849cd895ad974535e514655e8b6",
+    "git_commit": "7830ac5a2aaa724e0f8ad33f62b6be948967f66d",
     "game_version": "EMERALD",
     "release_build": true
   }

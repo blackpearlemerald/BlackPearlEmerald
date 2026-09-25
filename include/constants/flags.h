@@ -59,9 +59,9 @@
 #define FLAG_ITEM_GRANITE_CAVE_B1F_PROTECTIVE_PADS 0x25 // BPE: formerly unused
 #define FLAG_ITEM_GRANITE_CAVE_B1F_PUNCHING_GLOVE  0x26 // BPE: formerly unused
 #define FLAG_ITEM_GRANITE_CAVE_B2F_LOADED_DICE     0x27 // BPE: formerly unused
-#define FLAG_UNUSED_0x028    0x28 // Unused Flag
-#define FLAG_UNUSED_0x029    0x29 // Unused Flag
-#define FLAG_UNUSED_0x02A    0x2A // Unused Flag
+#define FLAG_POCKET_WATCH_SET       0x28 // BPE: formerly unused. The Pocket Watch time holds until the player picks Real Time.
+#define FLAG_POCKET_WATCH_TIME_LO   0x29 // BPE: formerly unused. With _HI, the time of day the Pocket Watch shows.
+#define FLAG_POCKET_WATCH_TIME_HI   0x2A // BPE: formerly unused
 #define FLAG_UNUSED_0x02B    0x2B // Unused Flag
 #define FLAG_UNUSED_0x02C    0x2C // Unused Flag
 #define FLAG_UNUSED_0x02D    0x2D // Unused Flag
@@ -85,9 +85,14 @@
 #define FLAG_CAUGHT_PREE4_REGICE     0x3E
 #define FLAG_CAUGHT_PREE4_REGISTEEL  0x3F
 #define FLAG_PREE4_LEGENDARY_CATCHES_MIGRATED 0x40 // BPE: older saves were checked once for earlier catches
-#define FLAG_UNUSED_0x041    0x41 // Unused Flag
-#define FLAG_UNUSED_0x042    0x42 // Unused Flag
-#define FLAG_UNUSED_0x043    0x43 // Unused Flag
+// BPE: set when the story legendary is caught. Their maps show them again while the
+// matching flag is clear, so one that is knocked out or fled from is never lost for
+// good. Lugia, Ho-Oh and Deoxys already had a catch flag of their own
+// (FLAG_CAUGHT_LUGIA, FLAG_CAUGHT_HO_OH, FLAG_BATTLED_DEOXYS), so only these three
+// needed a new one.
+#define FLAG_CAUGHT_RAYQUAZA 0x41
+#define FLAG_CAUGHT_KYOGRE   0x42
+#define FLAG_CAUGHT_GROUDON  0x43
 #define FLAG_UNUSED_0x044    0x44 // Unused Flag
 #define FLAG_UNUSED_0x045    0x45 // Unused Flag
 #define FLAG_UNUSED_0x046    0x46 // Unused Flag

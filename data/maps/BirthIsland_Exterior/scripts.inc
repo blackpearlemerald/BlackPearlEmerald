@@ -23,7 +23,8 @@ BirthIsland_Exterior_EventScript_HideDeoxysAndPuzzle::
 	return
 
 BirthIsland_Exterior_EventScript_TryShowDeoxysPuzzle::
-	goto_if_set FLAG_DEFEATED_DEOXYS, Common_EventScript_NopReturn
+@ BPE: no FLAG_DEFEATED_DEOXYS check - the puzzle and Deoxys return until it is
+@ caught. FLAG_BATTLED_DEOXYS, tested by the caller, is only set on a catch.
 	clearflag FLAG_HIDE_BIRTH_ISLAND_DEOXYS_TRIANGLE
 	clearflag FLAG_DEOXYS_ROCK_COMPLETE
 	return

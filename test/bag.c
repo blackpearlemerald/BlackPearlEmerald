@@ -101,6 +101,7 @@ TEST("Items are correctly sorted and compacted in the bag")
 {
     struct BagPocket *pocket = &gBagPockets[POCKET_ITEMS];
     memset(pocket->itemSlots, 0, sizeof(gSaveBlock1Ptr->bag.items));
+    memset(gSaveBlock1Ptr->itemsExtra, 0, sizeof(gSaveBlock1Ptr->itemsExtra));
 
     ASSUME(GetItemPocket(ITEM_NUGGET) == POCKET_ITEMS);
     ASSUME(GetItemPocket(ITEM_BIG_NUGGET) == POCKET_ITEMS);

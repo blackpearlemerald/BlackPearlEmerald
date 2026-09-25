@@ -41,6 +41,10 @@
   var IN_BOX_COUNT = 30;
   var BOX_NAME_SIZE = 9;
   var FUSIONS_SIZE = 400;
+  // SaveBlock1 as it was before the Key Items pocket grew. The game's
+  // SaveBlock1 is longer now, but the extra slots were appended past this
+  // point, so writing only these bytes is still right: the zero tail reads
+  // back as an empty Key Items slot. Pre-2.1 saves are this size for good.
   var SAVEBLOCK1_SIZE = 15836;
   var SAVEBLOCK2_SIZE = 2852;
   var SAVEBLOCK3_SIZE = 4;

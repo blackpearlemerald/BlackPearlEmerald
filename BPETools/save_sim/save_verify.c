@@ -18,6 +18,9 @@
 #define SB2_SIZE    2852
 #define HEADER_SIZE 812
 #define SB3_SIZE    4
+// Must equal SAVEBLOCK1_SIZE in BPETools/bpe_save_format.py, not the game's
+// current sizeof(struct SaveBlock1): this tool streams the blocks back to
+// test_bpe_save_format.py, which slices them at the Python sizes.
 #define SB1_SIZE    15836
 #define MON_COUNT   (41 * 30)
 

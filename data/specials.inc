@@ -650,3 +650,6 @@ gSpecials::
 	def_special IsReadyForJohtoStarter
 	def_special BufferStarterTypeInfo
 	def_special RecordIslandLegendaryCatch
+	def_special BufferIslandLegendaryFormName
+	def_special CheckAltarSpeciesCaught
+	def_special SetupMirageAltarBattle

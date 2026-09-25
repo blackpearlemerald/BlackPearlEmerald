@@ -14,8 +14,7 @@ NavelRock_Top_EventScript_HideHoOh::
 	return
 
 NavelRock_Top_EventScript_TryShowHoOh::
-	setvar VAR_TEMP_1, 1
-	goto_if_set FLAG_DEFEATED_HO_OH, Common_EventScript_NopReturn
+@ BPE: no FLAG_DEFEATED_HO_OH check - Ho-Oh returns until it is caught.
 	setvar VAR_TEMP_1, 0
 	clearflag FLAG_HIDE_HO_OH
 	return

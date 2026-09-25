@@ -12,6 +12,7 @@ static const struct MenuAction MultichoiceList_PocketWatch[] =
     {COMPOUND_STRING("DAY")},
     {COMPOUND_STRING("EVENING")},
     {COMPOUND_STRING("NIGHT")},
+    {COMPOUND_STRING("REAL TIME")},
     {gText_Exit},
 };
 
@@ -118,109 +119,112 @@ static const struct MenuAction MultichoiceList_LevelMode[] =
     {gText_Exit},
 };
 
+// BPE: the Trick House quiz answers. The correct choice for each question
+// is the case number in data/maps/Route110_TrickHousePuzzle5/scripts.inc.
+
 static const struct MenuAction MultichoiceList_Mechadoll1_Q1[] =
 {
-    {COMPOUND_STRING("ODDISH")},
-    {COMPOUND_STRING("POOCHYENA")},
-    {COMPOUND_STRING("TAILLOW")},
+    {COMPOUND_STRING("THUNDERBOLT")},
+    {COMPOUND_STRING("HYDRO PUMP")},
+    {COMPOUND_STRING("SUCKER PUNCH")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll1_Q2[] =
 {
-    {COMPOUND_STRING("AZURILL")},
-    {COMPOUND_STRING("LOTAD")},
-    {COMPOUND_STRING("WINGULL")},
+    {COMPOUND_STRING("PRESSURE")},
+    {COMPOUND_STRING("TERAVOLT")},
+    {COMPOUND_STRING("TURBOBLAZE")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll1_Q3[] =
 {
-    {COMPOUND_STRING("DUSTOX")},
-    {COMPOUND_STRING("ZUBAT")},
-    {COMPOUND_STRING("NINCADA")},
+    {COMPOUND_STRING("30")},
+    {COMPOUND_STRING("35")},
+    {COMPOUND_STRING("25")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll2_Q1[] =
 {
-    {COMPOUND_STRING("RALTS")},
-    {COMPOUND_STRING("ZIGZAGOON")},
-    {COMPOUND_STRING("SLAKOTH")},
+    {COMPOUND_STRING("1")},
+    {COMPOUND_STRING("2")},
+    {COMPOUND_STRING("0")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll2_Q2[] =
 {
-    {COMPOUND_STRING("POOCHYENA")},
-    {COMPOUND_STRING("SHROOMISH")},
-    {COMPOUND_STRING("ZIGZAGOON")},
+    {COMPOUND_STRING("1")},
+    {COMPOUND_STRING("3")},
+    {COMPOUND_STRING("2")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll2_Q3[] =
 {
-    {COMPOUND_STRING("POOCHYENA")},
-    {COMPOUND_STRING("ZUBAT")},
-    {COMPOUND_STRING("CARVANHA")},
+    {COMPOUND_STRING("INSTRUCT")},
+    {COMPOUND_STRING("TORMENT")},
+    {COMPOUND_STRING("TAUNT")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll3_Q1[] =
 {
-    {COMPOUND_STRING("BURN HEAL")},
-    {COMPOUND_STRING("HARBOR MAIL")},
-    {COMPOUND_STRING("Same price")},
+    {COMPOUND_STRING("MAGNEZONE")},
+    {COMPOUND_STRING("JIGGLYPUFF")},
+    {COMPOUND_STRING("DELIBIRD")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll3_Q2[] =
 {
-    {COMPOUND_STRING("¥60")},
-    {COMPOUND_STRING("¥55")},
-    {COMPOUND_STRING("Nothing")},
+    {COMPOUND_STRING("MT. CORONET")},
+    {COMPOUND_STRING("IRON ISLAND")},
+    {COMPOUND_STRING("WAYWARD CAVE")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll3_Q3[] =
 {
-    {COMPOUND_STRING("They will cost more.")},
-    {COMPOUND_STRING("They will cost less.")},
-    {COMPOUND_STRING("Same price")},
+    {COMPOUND_STRING("UNIQUE")},
+    {COMPOUND_STRING("ANTIQUE")},
+    {COMPOUND_STRING("PERFECT")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll4_Q1[] =
 {
-    {COMPOUND_STRING("Male")},
-    {COMPOUND_STRING("Female")},
-    {COMPOUND_STRING("Neither")},
+    {COMPOUND_STRING("SLOW START")},
+    {COMPOUND_STRING("SPEED BOOST")},
+    {COMPOUND_STRING("STEAM ENGINE")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll4_Q2[] =
 {
-    {COMPOUND_STRING("Elderly men")},
-    {COMPOUND_STRING("Elderly ladies")},
-    {COMPOUND_STRING("Same number")},
+    {COMPOUND_STRING("DUDUNSPARCE")},
+    {COMPOUND_STRING("DUNUNDSPARCE")},
+    {COMPOUND_STRING("DONDUNSPARCE")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll4_Q3[] =
 {
-    {COMPOUND_STRING("None")},
-    {COMPOUND_STRING("1")},
-    {COMPOUND_STRING("2")},
+    {COMPOUND_STRING("250")},
+    {COMPOUND_STRING("255")},
+    {COMPOUND_STRING("245")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll5_Q1[] =
 {
-    {COMPOUND_STRING("2")},
-    {COMPOUND_STRING("3")},
-    {COMPOUND_STRING("4")},
+    {COMPOUND_STRING("CELL BATTERY")},
+    {COMPOUND_STRING("SHOCK DRIVE")},
+    {COMPOUND_STRING("ZAP DISK")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll5_Q2[] =
 {
-    {COMPOUND_STRING("6")},
-    {COMPOUND_STRING("7")},
-    {COMPOUND_STRING("8")},
+    {COMPOUND_STRING("NIMBASA")},
+    {COMPOUND_STRING("DRIFTVEIL")},
+    {COMPOUND_STRING("NACRENE")},
 };
 
 static const struct MenuAction MultichoiceList_Mechadoll5_Q3[] =
 {
-    {COMPOUND_STRING("6")},
-    {COMPOUND_STRING("7")},
-    {COMPOUND_STRING("8")},
+    {COMPOUND_STRING("NINJASK")},
+    {COMPOUND_STRING("DEOXYS")},
+    {COMPOUND_STRING("REGIELEKI")},
 };
 
 static const struct MenuAction MultichoiceList_VendingMachine[] =

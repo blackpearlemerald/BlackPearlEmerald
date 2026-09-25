@@ -58,6 +58,10 @@ IN_BOX_COUNT = 30
 BOX_NAME_LENGTH = 8
 MAX_FUSION_STORAGE = 4
 POKEMON_SIZE = 100
+# SaveBlock1 as it was before the Key Items pocket grew. The game's SaveBlock1
+# is longer now, but the extra slots were appended past this point, so the
+# converter still reads and writes exactly these bytes: the tail it leaves zero
+# is an empty Key Items slot. Pre-2.1 saves are this size for good.
 SAVEBLOCK1_SIZE = 15836
 SAVEBLOCK2_SIZE = 2852
 SAVEBLOCK3_SIZE = 4
