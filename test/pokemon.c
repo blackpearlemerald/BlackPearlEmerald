@@ -1,5 +1,6 @@
 #include "global.h"
 #include "battle.h"
+#include "battle_setup.h"
 #include "caps.h"
 #include "data.h"
 #include "egg_hatch.h"
@@ -832,6 +833,31 @@ TEST("Nuzlocke mode keeps dead Pokemon fainted through the PC")
     EXPECT_EQ(GetMonData(&withdrawn, MON_DATA_HP), GetMonData(&withdrawn, MON_DATA_MAX_HP));
 
     ZeroBoxMonAt(0, 0);
+}
+
+// BPE Nuzlocke: Mirage Tower has its own encounter. It used to share Route 111's.
+TEST("Nuzlocke mode gives Mirage Tower its own encounter")
+{
+    u32 dexIndex = SpeciesToNationalPokedexNum(SPECIES_WOBBUFFET) - 1;
+
+    FlagSet(FLAG_NUZLOCKE);
+    FlagSet(FLAG_SYS_POKEDEX_GET);
+    for (u32 var = VAR_WILD_PKMN_ROUTE_SEEN_0; var <= VAR_WILD_PKMN_ROUTE_SEEN_5; var++)
+        VarSet(var, 0);
+    gSaveBlock1Ptr->dexCaught[dexIndex / 8] &= ~(1 << (dexIndex % 8));
+    CreateMon(&gParties[B_TRAINER_OPPONENT_A][0], SPECIES_WOBBUFFET, 30, 0, OTID_STRUCT_PRESET(0));
+
+    // Route 111 and the Desert Ruins still share one encounter.
+    EXPECT_EQ(HasWildPokmnOnThisRouteBeenSeen(MAPSEC_ROUTE_111, TRUE), 0);
+    EXPECT_EQ(HasWildPokmnOnThisRouteBeenSeen(MAPSEC_DESERT_RUINS, FALSE), 1);
+
+    // Mirage Tower's is still free, and is used up by its own first battle.
+    EXPECT_EQ(HasWildPokmnOnThisRouteBeenSeen(MAPSEC_MIRAGE_TOWER, TRUE), 0);
+    EXPECT_EQ(HasWildPokmnOnThisRouteBeenSeen(MAPSEC_MIRAGE_TOWER, FALSE), 1);
+
+    FlagClear(FLAG_NUZLOCKE);
+    for (u32 var = VAR_WILD_PKMN_ROUTE_SEEN_0; var <= VAR_WILD_PKMN_ROUTE_SEEN_5; var++)
+        VarSet(var, 0);
 }
 
 TEST("BoxPokemon encryption works")

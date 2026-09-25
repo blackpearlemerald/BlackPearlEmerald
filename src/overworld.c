@@ -1708,12 +1708,58 @@ const struct BlendSettings gTimeOfDayBlend[] =
 
 #define MORNING_HOUR_MIDDLE (MORNING_HOUR_BEGIN + ((MORNING_HOUR_END - MORNING_HOUR_BEGIN) / 2))
 
+// BPE: the Pocket Watch time is kept in save flags rather than sHoursOverride,
+// which every warp clears, so it lasts through map changes and saves until the
+// player picks Real Time. The choices follow enum TimeOfDay.
+static const u8 sPocketWatchHours[TIMES_OF_DAY_COUNT] =
+{
+    [TIME_MORNING] = 8,
+    [TIME_DAY]     = 13,
+    [TIME_EVENING] = 19,
+    [TIME_NIGHT]   = 22,
+};
+
+void SetPocketWatchTime(u32 timeOfDay)
+{
+    if (timeOfDay < TIMES_OF_DAY_COUNT)
+    {
+        FlagSet(FLAG_POCKET_WATCH_SET);
+        if (timeOfDay & 1)
+            FlagSet(FLAG_POCKET_WATCH_TIME_LO);
+        else
+            FlagClear(FLAG_POCKET_WATCH_TIME_LO);
+        if (timeOfDay & 2)
+            FlagSet(FLAG_POCKET_WATCH_TIME_HI);
+        else
+            FlagClear(FLAG_POCKET_WATCH_TIME_HI);
+    }
+    else
+    {
+        FlagClear(FLAG_POCKET_WATCH_SET);
+        FlagClear(FLAG_POCKET_WATCH_TIME_LO);
+        FlagClear(FLAG_POCKET_WATCH_TIME_HI);
+    }
+    gTimeUpdateCounter = 0;
+}
+
+static u32 GetPocketWatchHours(void)
+{
+    if (!FlagGet(FLAG_POCKET_WATCH_SET))
+        return 0;
+    return sPocketWatchHours[FlagGet(FLAG_POCKET_WATCH_TIME_LO) | (FlagGet(FLAG_POCKET_WATCH_TIME_HI) << 1)];
+}
+
 void UpdateTimeOfDay(bool32 updateBlend)
 {
     s32 hours, minutes;
     RtcCalcLocalTime();
-    hours = sHoursOverride ? sHoursOverride : gLocalTime.hours;
-    minutes = sHoursOverride ? 0 : gLocalTime.minutes;
+    hours = sHoursOverride ? sHoursOverride : GetPocketWatchHours();
+    minutes = 0;
+    if (hours == 0)
+    {
+        hours = gLocalTime.hours;
+        minutes = gLocalTime.minutes;
+    }
 
     if (IsBetweenHours(hours, MORNING_HOUR_BEGIN, MORNING_HOUR_MIDDLE)) // night->morning
     {

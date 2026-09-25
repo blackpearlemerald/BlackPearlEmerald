@@ -25,7 +25,7 @@
 #define SB2_SIZE        2852
 #define HEADER_SIZE     812
 #define SB3_SIZE        4
-#define SB1_SIZE        15836
+#define SB1_SIZE        16176
 #define BOXES           41
 #define IN_BOX          30
 #define MON_COUNT       (BOXES * IN_BOX)

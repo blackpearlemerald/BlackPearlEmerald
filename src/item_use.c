@@ -1689,13 +1689,9 @@ void ItemUseOutOfBattle_PokeVial(u8 taskId)
 
 void SetTimeOfDayFromPocketWatch(void)
 {
-    // Representative hour for each time-of-day bucket (Morning, Day, Evening, Night),
-    // matching the order of MultichoiceList_PocketWatch. Uses SetTimeOfDay's override
-    // instead of the real hardware RTC so it works consistently across emulators.
-    static const u8 sPocketWatchHours[] = {8, 13, 19, 22};
-
-    if (gSpecialVar_Result < ARRAY_COUNT(sPocketWatchHours))
-        SetTimeOfDay(sPocketWatchHours[gSpecialVar_Result]);
+    // MultichoiceList_PocketWatch lists Morning, Day, Evening and Night in the
+    // order of enum TimeOfDay, then Real Time, which goes back to the clock.
+    SetPocketWatchTime(gSpecialVar_Result);
 }
 
 static void ItemUseOnFieldCB_PocketWatch(u8 taskId)

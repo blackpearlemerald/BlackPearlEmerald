@@ -359,6 +359,8 @@ VerdanturfTown_Mart_Pokemart_Postgame:
 	.2byte ITEM_ADAMANT_CRYSTAL
 	.2byte ITEM_LUSTROUS_GLOBE
 	.2byte ITEM_GRISEOUS_CORE
+	.2byte ITEM_RUSTED_SWORD
+	.2byte ITEM_RUSTED_SHIELD
 	pokemartlistend
 
 VerdanturfTown_Mart_EventScript_Boy::

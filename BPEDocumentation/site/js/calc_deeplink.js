@@ -24,35 +24,53 @@
     return String(x == null ? "" : x).toLowerCase().replace(/[^a-z0-9]/g, "");
   }
 
+  // The species the mon can live under in SETDEX_BW, best first. The map names
+  // the species the game shows ("Toxtricity"), while the calculator enters a
+  // form under its own name ("Toxtricity-Amped"), so a base name with no entry
+  // of its own falls back to the forms whose name starts with it.
+  function speciesCandidates(d, DEX) {
+    var want = norm(d.s);
+    var exact = DEX[d.s] ? d.s
+      : Object.keys(DEX).find(function (k) { return norm(k) === want; });
+    var forms = Object.keys(DEX).filter(function (k) {
+      return k !== exact && norm(k).indexOf(want) === 0;
+    });
+    return exact ? [exact].concat(forms) : forms;
+  }
+
   // Resolve the trainer mon to a `"<Species> (<setName>)"` value present in
   // SETDEX_BW. The set name is "Lvl <level> <class> <name> ", but duplicate
   // trainer labels get a counter, so fall back to matching on moves + level.
   function resolveSet(d, DEX) {
-    var sp = DEX[d.s] ? d.s
-      : Object.keys(DEX).find(function (k) { return norm(k) === norm(d.s); });
-    if (!sp) return null;
-    var sets = DEX[sp];
     var label = ((d.c || "") + " " + (d.tn || "")).trim();
     var lvl = d.l;
     var wantMoves = JSON.stringify((d.m || []).map(norm).filter(Boolean).sort());
-
     var exact = "Lvl " + lvl + " " + label + " ";
-    if (sets[exact]) return sp + " (" + exact + ")";
-
-    var labelMoves = null, levelMoves = null, labelOnly = null;
     var prefix = "Lvl " + lvl + " " + label;
-    for (var sn in sets) {
-      if (!Object.prototype.hasOwnProperty.call(sets, sn)) continue;
-      var sd = sets[sn];
-      var movesEq =
-        JSON.stringify((sd.moves || []).map(norm).filter(Boolean).sort()) === wantMoves;
-      var labelPre = sn.indexOf(prefix) === 0;
-      if (labelPre && movesEq) { labelMoves = sn; break; }
-      if (sd.level === lvl && movesEq && !levelMoves) levelMoves = sn;
-      if (labelPre && !labelOnly) labelOnly = sn;
+    var fallback = null;  // a weaker match, kept while a better species is tried
+
+    var candidates = speciesCandidates(d, DEX);
+    for (var i = 0; i < candidates.length; i++) {
+      var sp = candidates[i];
+      var sets = DEX[sp];
+      if (sets[exact]) return sp + " (" + exact + ")";
+
+      var labelMoves = null, levelMoves = null, labelOnly = null;
+      for (var sn in sets) {
+        if (!Object.prototype.hasOwnProperty.call(sets, sn)) continue;
+        var sd = sets[sn];
+        var movesEq =
+          JSON.stringify((sd.moves || []).map(norm).filter(Boolean).sort()) === wantMoves;
+        var labelPre = sn.indexOf(prefix) === 0;
+        if (labelPre && movesEq) { labelMoves = sn; break; }
+        if (sd.level === lvl && movesEq && !levelMoves) levelMoves = sn;
+        if (labelPre && !labelOnly) labelOnly = sn;
+      }
+      if (labelMoves) return sp + " (" + labelMoves + ")";
+      var pick = levelMoves || labelOnly;
+      if (pick && !fallback) fallback = sp + " (" + pick + ")";
     }
-    var pick = labelMoves || levelMoves || labelOnly;
-    return pick ? sp + " (" + pick + ")" : null;
+    return fallback;
   }
 
   // Has the defender (#p2) ended up with this mon's moves?

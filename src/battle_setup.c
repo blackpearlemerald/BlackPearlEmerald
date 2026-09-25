@@ -2525,6 +2525,11 @@ u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc) {
         varToCheck = 5;
         bitToCheck = 6;
         break;
+    // BPE: Mirage Tower used to share Route 111's encounter.
+    case MAPSEC_MIRAGE_TOWER:
+        varToCheck = 5;
+        bitToCheck = 7;
+        break;
     default:
         return 0;
     }
@@ -2584,7 +2589,6 @@ u8 currLocConvertForNuzlocke(u8 currLocation) {
         return MAPSEC_ROUTE_105;
     case MAPSEC_ROUTE_111:
     case MAPSEC_DESERT_RUINS:
-    case MAPSEC_MIRAGE_TOWER:
         return MAPSEC_ROUTE_111;
     case MAPSEC_ROUTE_124:
     case MAPSEC_UNDERWATER_124:

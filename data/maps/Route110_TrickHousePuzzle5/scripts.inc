@@ -971,8 +971,8 @@ Route110_TrickHousePuzzle5_Text_Mechadoll1Intro:
 
 Route110_TrickHousePuzzle5_Text_Mechadoll1Quiz1:
 	.string "MECHADOLL 1 QUIZ.\p"
-	.string "Which of these moves can Tyranitar\n"
-	.string "not learn?$"
+	.string "Which of these moves can\n"
+	.string "Tyranitar not learn?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll1Quiz2:
 	.string "MECHADOLL 1 QUIZ.\p"
@@ -1018,22 +1018,22 @@ Route110_TrickHousePuzzle5_Text_Mechadoll2Quiz3:
 Route110_TrickHousePuzzle5_Text_Mechadoll3Intro:
 	.string "CLICKETY-CLACK…\n"
 	.string "MECHADOLL 3 AM I!\p"
-	.string "MATTERS OF MONEY ARE MY SOLE FOCUS.$"
+	.string "OTHER REGIONS ARE MY SOLE FOCUS.$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll3Quiz1:
 	.string "MECHADOLL 3 QUIZ.\p"
-	.string "Which Pokemon did not receive a\n"
-	.string "paradox form?$"
+	.string "Which of these Pokémon has no\n"
+	.string "Paradox form?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll3Quiz2:
 	.string "MECHADOLL 3 QUIZ.\p"
-	.string "What is the name of the cave where you\n"
-	.string "catch Gible in Pokemon Platinum?$"
+	.string "In Pokémon Platinum, which cave\n"
+	.string "is home to wild Gible?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll3Quiz3:
 	.string "MECHADOLL 3 QUIZ.\p"
-	.string "What is the name of Polteageist’s\n"
-	.string "alternate form?$"
+	.string "What is the name of Polteageist's\n"
+	.string "rare alternate form?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll4Intro:
 	.string "CLICKETY-CLACK…\n"
@@ -1042,16 +1042,16 @@ Route110_TrickHousePuzzle5_Text_Mechadoll4Intro:
 
 Route110_TrickHousePuzzle5_Text_Mechadoll4Quiz1:
 	.string "MECHADOLL 4 QUIZ.\p"
-	.string "What is Varoom’s hidden ability$"
+	.string "What is Varoom's Hidden Ability?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll4Quiz2:
 	.string "MECHADOLL 4 QUIZ.\p"
-	.string "What is the name of Dunsparce’s\n"
+	.string "What is the name of Dunsparce's\n"
 	.string "evolution?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll4Quiz3:
 	.string "MECHADOLL 4 QUIZ.\p"
-	.string "What is Blissey’s base HP?$"
+	.string "What is Blissey's base HP?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll5Intro:
 	.string "CLICKETY-CLACK…\n"
@@ -1061,14 +1061,14 @@ Route110_TrickHousePuzzle5_Text_Mechadoll5Intro:
 
 Route110_TrickHousePuzzle5_Text_Mechadoll5Quiz1:
 	.string "MECHADOLL 5 QUIZ.\p"
-	.string "Which item turns Genesect Technoblast\n"
-	.string "into an electric type attack?$"
+	.string "Which item makes Genesect's Techno\n"
+	.string "Blast an Electric-type move?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll5Quiz2:
 	.string "MECHADOLL 5 QUIZ.\p"
-	.string "Which city features a farris wheel?$"
+	.string "Which Unova city has a Ferris wheel?$"
 
 Route110_TrickHousePuzzle5_Text_Mechadoll5Quiz3:
 	.string "MECHADOLL 5 QUIZ.\p"
-	.string "Which shiny Pokemon is not\n"
-	.string "obtainable?$"
+	.string "Which of these Pokémon has the\n"
+	.string "highest base Speed?$"

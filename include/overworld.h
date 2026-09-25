@@ -190,6 +190,7 @@ bool32 Overworld_SendKeysToLinkIsRunning(void);
 bool32 IsSendingKeysOverCable(void);
 void ClearLinkPlayerObjectEvents(void);
 bool16 SetTimeOfDay(u16 hours);
+void SetPocketWatchTime(u32 timeOfDay);
 bool8 MetatileBehavior_IsSurfableInSeafoamIslands(u16 metatileBehavior);
 
 // Item Description Headers

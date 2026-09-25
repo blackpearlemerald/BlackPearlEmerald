@@ -14,7 +14,7 @@ TerraCave_End_EventScript_TryRemoveGroudon::
 	return
 
 TerraCave_End_OnTransition:
-	call_if_unset FLAG_DEFEATED_GROUDON, TerraCave_End_EventScript_ShowGroudon
+	call_if_unset FLAG_CAUGHT_GROUDON, TerraCave_End_EventScript_ShowGroudon
 	end
 
 TerraCave_End_EventScript_ShowGroudon::
@@ -44,6 +44,7 @@ TerraCave_End_EventScript_Groudon::
 	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, TerraCave_End_EventScript_RanFromGroudon
 	setvar VAR_SHOULD_END_ABNORMAL_WEATHER, 1
 	setflag FLAG_DEFEATED_GROUDON
+	setflag FLAG_CAUGHT_GROUDON
 	releaseall
 	end
 

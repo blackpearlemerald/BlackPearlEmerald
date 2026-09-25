@@ -1,6 +1,26 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.7-beta": {
+      "channel": "beta",
+      "changes": [
+        "Rayquaza, Kyogre, Groudon, Lugia, Ho-Oh and Deoxys now come back until you catch them. Knocking one out no longer loses it for good.",
+        "The Weather Institute keeps finding Kyogre's or Groudon's cave until you have caught both.",
+        "Mirage Island now only offers legendaries you can't find anywhere else, so it no longer repeats Pokémon that live elsewhere in Hoenn.",
+        "Mirage Island names alternate forms such as Galarian Articuno or Ice Rider Calyrex before the battle, instead of announcing a second \"Articuno\".",
+        "Added the Mirage Altar at the top of Mirage Island. It calls back a Cosmog, Poipole, Kubfu or Type: Null you've caught, so you can get the second one needed for Cosmoem, Naganadel, both Urshifu and Silvally.",
+        "After you become Champion, the Bean Shop also sells the Rusted Sword and Rusted Shield.",
+        "The Items pocket now holds 165 items and the Key Items pocket 100, up from 150 and 30.",
+        "The time you set with the Pocket Watch now lasts through doors and saves until you pick its new Real Time option. Berries and daily events still follow the real clock.",
+        "Garchompite Z is now in Ever Grande City instead of on Route 113.",
+        "Nuzlocke mode: Mirage Tower now counts as its own area for first encounters, separate from Route 111.",
+        "Fixed the Trick House quiz: every question now has matching answers, and the question text is corrected.",
+        "Fixed the colours of the Gym Leader and Elite Four sprites in the overworld.",
+        "Website: the map shows the Lavaridge Gym B1F trainers and the Lavaridge Town Egg gift.",
+        "Website: the damage calculator has its own entry for every Pokémon form and now lists Garchompite Z and the other new Mega Stones.",
+        "Website: a trainer's Pokémon opened from the map shows their whole team in the calculator, and trainer moves, abilities and items use their in-game names."
+      ]
+    },
     "2.1.6-beta": {
       "channel": "beta",
       "changes": [

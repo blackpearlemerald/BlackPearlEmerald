@@ -98,7 +98,11 @@
         },
         {
           "title": "Legendary Lottery Island",
-          "body": "After you become Champion, Mirage Island off Route 130 hosts one random legendary you haven't caught yet, at level 70, including forms such as Galarian Articuno, Black and White Kyurem and Dada Zarude. Catch one and it leaves the pool. The island holds the Gracidea, Reveal Glass, DNA Splicers and other form-changing key items, and after you become Champion the Bean Shop sells the Plates, Memories, Drives, Masks and Origin items."
+          "body": "After you become Champion, Mirage Island off Route 130 hosts one random legendary you haven't caught yet, at level 70. Every legendary that has a home somewhere else is left out, so the island only ever offers something new — including the forms you cannot reach any other way, such as Galarian Articuno, Black and White Kyurem, Ice Rider Calyrex and Dada Zarude. An alternate form shares its ordinary form's name, so the island tells you which one it is before the battle starts. Catch one and it leaves the pool. The island also holds the Gracidea, Reveal Glass, DNA Splicers and the other form-changing key items, and after you become Champion the Bean Shop sells the Plates, Memories, Drives, Masks, Origin items and the Rusted Sword and Shield."
+        },
+        {
+          "title": "The Mirage Altar",
+          "body": "A few Pokémon are made by evolving a second copy of a legendary you already have: Cosmoem, Naganadel, both Urshifu and Silvally. The stone altar at the top of Mirage Island calls back a Cosmog, Poipole, Kubfu or Type: Null you have already caught so you can battle and catch another one at level 70. It only lists the ones you have registered, so it doubles as a reminder of what is still ahead of you."
         }
       ]
     },
@@ -130,7 +134,8 @@
     "rules": [
       "Before you become Champion you can catch only one of the pre-Elite Four legendaries. Once you catch one, the others disappear until you become Champion.",
       "Knocking out a legendary or running away doesn't use up your pick. It disappears until you leave the area and returns when you come back.",
-      "After you become Champion, every legendary you haven't caught returns and stays until you catch it."
+      "After you become Champion, every legendary you haven't caught returns and stays until you catch it.",
+      "The story legendaries are never lost either: Rayquaza on the Sky Pillar, Kyogre and Groudon in the cave the Weather Institute locates, and Lugia, Ho-Oh and Deoxys on the ticket islands all come back until you have actually caught them. None of them uses up your one pre-Elite Four pick."
     ],
     "preE4": {
       "SPECIES_ARTICUNO": null,

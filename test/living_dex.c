@@ -4,6 +4,7 @@
 #include "pokedex.h"
 #include "pokemon.h"
 #include "pokemon_storage_system.h"
+#include "string_util.h"
 #include "test/test.h"
 #include "constants/items.h"
 
@@ -146,4 +147,58 @@ TEST("Island catches from before the catch flags still count")
     EXPECT(!IsIslandLegendaryCaught(SPECIES_URSHIFU_RAPID_STRIKE));
     EXPECT(!IsIslandLegendaryCaught(SPECIES_LUNALA));
     ClearIslandCatches();
+}
+
+// BPE: the Mirage Altar hands back a legendary the player has already caught,
+// so Cosmoem, Naganadel, the two Urshifu and Silvally do not need pool entries
+// of their own. See src/field_specials.c.
+TEST("The Mirage Altar only offers a legendary the player has caught")
+{
+    ClearIslandCatches();
+    gSpecialVar_0x8004 = SPECIES_KUBFU;
+    CheckAltarSpeciesCaught();
+    EXPECT(!gSpecialVar_Result);
+
+    AddToPokedex(SPECIES_KUBFU);
+    CheckAltarSpeciesCaught();
+    EXPECT(gSpecialVar_Result);
+
+    // Its evolutions are not what the altar hands back - Kubfu is.
+    gSpecialVar_0x8004 = SPECIES_URSHIFU_SINGLE_STRIKE;
+    CheckAltarSpeciesCaught();
+    EXPECT(!gSpecialVar_Result);
+    ClearIslandCatches();
+}
+
+TEST("The Mirage Altar summons the species it was asked for")
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_OPPONENT_A][0];
+
+    gSpecialVar_0x8004 = SPECIES_COSMOG;
+    SetupMirageAltarBattle();
+    EXPECT_EQ(GetMonData(mon, MON_DATA_SPECIES), SPECIES_COSMOG);
+    EXPECT_EQ(GetMonData(mon, MON_DATA_LEVEL), 70);
+
+    gSpecialVar_0x8004 = SPECIES_TYPE_NULL;
+    SetupMirageAltarBattle();
+    EXPECT_EQ(GetMonData(mon, MON_DATA_SPECIES), SPECIES_TYPE_NULL);
+    ZeroEnemyPartyMons();
+}
+
+TEST("The island names an alternate form, which shares its base form's name")
+{
+    VarSet(VAR_ISLAND_LEGENDARY, SPECIES_ARTICUNO_GALAR);
+    BufferIslandLegendaryFormName();
+    EXPECT(gSpecialVar_Result);
+    EXPECT(StringCompare(gStringVar1, COMPOUND_STRING("Galarian ARTICUNO")) == 0);
+
+    VarSet(VAR_ISLAND_LEGENDARY, SPECIES_CALYREX_SHADOW);
+    BufferIslandLegendaryFormName();
+    EXPECT(gSpecialVar_Result);
+
+    // A pool member that is the only thing wearing its name says nothing extra.
+    VarSet(VAR_ISLAND_LEGENDARY, SPECIES_MEWTWO);
+    BufferIslandLegendaryFormName();
+    EXPECT(!gSpecialVar_Result);
+    VarSet(VAR_ISLAND_LEGENDARY, SPECIES_NONE);
 }

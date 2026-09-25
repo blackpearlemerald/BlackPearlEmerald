@@ -175,6 +175,100 @@ def _level_up_learnsets():
     return by_species, move_names
 
 
+def _normalize(name):
+    """trainerproc's name match: letters and digits only, lowercased."""
+    return re.sub(r"[^A-Za-z0-9]", "", name).lower()
+
+
+def _name_index(names, aliases):
+    """{_normalize(spelling): display name} for one kind of thing.
+
+    `names` is {CONSTANT: display name}; `aliases` is {CONSTANT: CONSTANT}.
+    Both the display name and the constant are accepted spellings, so a
+    pre-Gen VI alias such as MOVE_FAINT_ATTACK resolves to "Feint Attack".
+    """
+    index = {}
+    for key, name in names.items():
+        index.setdefault(_normalize(name), name)
+        index.setdefault(_normalize(key), name)
+    for alias, target in aliases.items():
+        seen = {alias}
+        while target in aliases and target not in seen:
+            seen.add(target)
+            target = aliases[target]
+        if target in names:
+            index.setdefault(_normalize(alias), names[target])
+    return index
+
+
+def _constant_aliases(text, prefix):
+    """{NAME: NAME} for the enum and #define aliases, without the prefix.
+
+    Pre-Gen VI names are an enum member in the current source and a #define in
+    the 1.0.1 source, and both spellings reach trainers.party.
+    """
+    aliases = dict(re.findall(
+        r"^\s*%s(\w+)\s*=\s*%s(\w+)\s*,?\s*(?://.*)?$" % (prefix, prefix), text, re.M))
+    aliases.update(re.findall(
+        r"^#define\s+%s(\w+)\s+%s(\w+)\s*(?://.*)?$" % (prefix, prefix), text, re.M))
+    return aliases
+
+
+def canonical_names():
+    """Display names for the moves, abilities and items trainers.party names.
+
+    The party format spells names the way trainerproc accepts them, which drops
+    punctuation ("Will O Wisp", "Kings Rock") and allows old constant aliases
+    ("Faint Attack"). The site and the damage calculator need the name the game
+    itself shows, so every authored name goes through these indexes.
+    """
+    import parse_pokemon as P
+    moves = P.parse_moves()
+    move_h = P.read_file(P.REPO / "include" / "constants" / "moves.h")
+    abilities = P.parse_abilities()
+    items_h = P.strip_c_comments(P.read_file(P.REPO / "src" / "data" / "items.h"))
+    items = {key: name for key, name in re.findall(
+        r"\[ITEM_(\w+)\]\s*=\s*\{.*?\.name\s*=\s*(?:ITEM_NAME|_)\(\s*\"([^\"]+)\"",
+        items_h, re.DOTALL)}
+    return {
+        "moves": _name_index({k: m["name"] for k, m in moves.items()},
+                             _constant_aliases(move_h, "MOVE_")),
+        "ability": _name_index({k: a["name"] for k, a in abilities.items()}, {}),
+        "item": _name_index(items, {}),
+    }
+
+
+def canonicalize_names(trainers, indexes=None):
+    """Rewrite every authored move, ability and item to its in-game name.
+
+    An older source that keeps one of these tables somewhere else parses as an
+    empty index; its names are then left exactly as the source spells them.
+    """
+    indexes = indexes or canonical_names()
+    unknown = set()
+
+    def fix(kind, name):
+        if not indexes[kind]:
+            return name
+        known = indexes[kind].get(_normalize(name))
+        if known is None:
+            unknown.add("%s %r" % (kind, name))
+            return name
+        return known
+
+    for trainer in trainers.values():
+        for mon in trainer["party"]:
+            for key in ("moves", "standardMoves"):
+                if mon.get(key):
+                    mon[key] = [fix("moves", move) for move in mon[key]]
+            for key in ("ability", "item"):
+                if mon.get(key):
+                    mon[key] = fix(key, mon[key])
+    if unknown:
+        raise ValueError("Trainer party names the game does not define: "
+                         + ", ".join(sorted(unknown)))
+
+
 def initial_moveset(learnset, level):
     """GiveBoxMonInitialMoveset: the last four distinct moves learned by `level`."""
     moves = []
@@ -220,11 +314,13 @@ def fill_default_moves(trainers, move_name=None):
 
 def build():
     out = {}
-    if not os.path.isfile(C.src("src", "data", "trainers.party")):
-        return build_legacy()
-    parse_file(C.src("src", "data", "trainers.party"), out)
-    parse_file(C.src("src", "data", "trainers_frlg.party"), out)
-    fill_default_moves(out)
+    if os.path.isfile(C.src("src", "data", "trainers.party")):
+        parse_file(C.src("src", "data", "trainers.party"), out)
+        parse_file(C.src("src", "data", "trainers_frlg.party"), out)
+        fill_default_moves(out)
+    else:
+        out = build_legacy()
+    canonicalize_names(out)
     return out
 
 

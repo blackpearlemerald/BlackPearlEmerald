@@ -50,6 +50,14 @@ void UpdateMirageIslandNamePopup(void);
 bool32 IsIslandLegendaryCaught(u16 species);
 void RecordIslandLegendaryCatch(void);
 
+// BPE: TRUE with the form's name in gStringVar1 when the island's legendary is
+// an alternate form, which shares its base form's species name.
+void BufferIslandLegendaryFormName(void);
+
+// BPE: the Mirage Altar. gSpecialVar_0x8004 holds the species.
+void CheckAltarSpeciesCaught(void);
+void SetupMirageAltarBattle(void);
+
 // BPE: sets the pre-Elite Four legendaries' hide flags from their catch state.
 // Runs on every map load, before the map's ON_TRANSITION script.
 void UpdatePreE4Legendaries(void);

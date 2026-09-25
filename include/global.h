@@ -1209,6 +1209,12 @@ struct SaveBlock1
     u8 rivalName[PLAYER_NAME_LENGTH + 1];
     struct DaycareMon route5DayCareMon;
 #endif
+    // Key Items pocket slots BAG_KEYITEMS_COUNT and up. They are kept here, at
+    // the very end, so that enlarging the pocket did not move anything a save
+    // from before it already holds; in those saves these bytes read back as
+    // zero, which is an empty slot.
+    struct ItemSlot keyItemsExtra[BAG_KEYITEMS_EXTRA_COUNT];
+    struct ItemSlot itemsExtra[BAG_ITEMS_EXTRA_COUNT];
     // sizeof: 0x3???
 };
 

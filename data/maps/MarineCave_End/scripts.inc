@@ -14,7 +14,7 @@ MarineCave_End_EventScript_TryRemoveKyogre::
 	return
 
 MarineCave_End_OnTransition:
-	call_if_unset FLAG_DEFEATED_KYOGRE, MarineCave_End_EventScript_ShowKyogre
+	call_if_unset FLAG_CAUGHT_KYOGRE, MarineCave_End_EventScript_ShowKyogre
 	end
 
 MarineCave_End_EventScript_ShowKyogre::
@@ -44,6 +44,7 @@ MarineCave_End_EventScript_Kyogre::
 	goto_if_eq VAR_RESULT, B_OUTCOME_PLAYER_TELEPORTED, MarineCave_End_EventScript_RanFromKyogre
 	setvar VAR_SHOULD_END_ABNORMAL_WEATHER, 1
 	setflag FLAG_DEFEATED_KYOGRE
+	setflag FLAG_CAUGHT_KYOGRE
 	releaseall
 	end
 

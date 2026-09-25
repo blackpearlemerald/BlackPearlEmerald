@@ -2,6 +2,7 @@
 #include "agb_flash.h"
 #include "event_data.h"
 #include "gba/flash_internal.h"
+#include "item.h"
 #include "load_save.h"
 #include "malloc.h"
 #include "packed_box_mon.h"
@@ -25,7 +26,11 @@
 
 // Update these when a save block changes. The save converter and the save
 // inspector must be updated with them.
-#define T_SAVEBLOCK1_SIZE 15836
+// The Items and Key Items pockets grew by appending slots to the end of
+// SaveBlock1, so this is the only size that moved.
+#define T_SAVEBLOCK1_OLD_SIZE 15836
+#define T_SAVEBLOCK1_EXTRA_SLOTS (BAG_KEYITEMS_EXTRA_COUNT + BAG_ITEMS_EXTRA_COUNT)
+#define T_SAVEBLOCK1_SIZE (T_SAVEBLOCK1_OLD_SIZE + sizeof(struct ItemSlot) * T_SAVEBLOCK1_EXTRA_SLOTS)
 #define T_SAVEBLOCK2_SIZE 2852
 #define T_SAVEBLOCK3_SIZE 4
 #define T_STORAGE_HEADER_SIZE (((1 + TOTAL_BOXES_COUNT * (BOX_NAME_LENGTH + 2) + 3) & ~3) + MAX_FUSION_STORAGE * sizeof(struct Pokemon))
@@ -33,6 +38,17 @@
 TEST("SaveBlock1 is backwards compatible")
 {
     EXPECT_EQ(sizeof(struct SaveBlock1), T_SAVEBLOCK1_SIZE);
+}
+
+TEST("The extra bag slots are appended after everything older saves hold")
+{
+    EXPECT_EQ(offsetof(struct SaveBlock1, keyItemsExtra), T_SAVEBLOCK1_OLD_SIZE);
+    EXPECT_EQ(offsetof(struct SaveBlock1, itemsExtra),
+              T_SAVEBLOCK1_OLD_SIZE + sizeof(struct ItemSlot) * BAG_KEYITEMS_EXTRA_COUNT);
+    EXPECT_EQ((u32)gBagPockets[POCKET_KEY_ITEMS].capacity, BAG_KEYITEMS_TOTAL);
+    EXPECT_EQ((u32)gBagPockets[POCKET_ITEMS].capacity, BAG_ITEMS_TOTAL);
+    // Anything more needs a new save format: SaveBlock1 gets progress parts 1-4.
+    EXPECT_LE(sizeof(struct SaveBlock1), SAVE_SECTOR_PAYLOAD_SIZE * (SAVE_PROGRESS_PARTS - 1));
 }
 
 TEST("SaveBlock2 is backwards compatible")

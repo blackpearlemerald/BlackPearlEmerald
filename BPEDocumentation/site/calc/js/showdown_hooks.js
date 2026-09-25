@@ -772,6 +772,28 @@ function removeEvs(sets) {
     }
 }
 
+// BPE: the vendored item list stops at Sword/Shield, so Mega Stones added
+// since (Garchompite Z, Clefablite, ...) come from the data source instead.
+function addMegaStones(stones) {
+    var added = false
+    for (var name in stones) {
+        calc.MEGA_STONES[name] = stones[name]
+        for (var g = 6; g < calc.ITEMS.length; g++) {
+            if (calc.ITEMS[g].indexOf(name) == -1) {
+                calc.ITEMS[g].push(name)
+                added = true
+            }
+            ITEMS_BY_ID[g][calc.toID(name)] = {kind: "Item", id: calc.toID(name), name: name, megaEvolves: stones[name]}
+        }
+    }
+    if (!added || typeof items === "undefined") return
+    var itemOptions = "<option value=\"\">(none)</option>" + getSelectOptions(items, true)
+    $("select.item").each(function () {
+        var value = $(this).val()
+        $(this).find("option").remove().end().append(itemOptions).val(value)
+    })
+}
+
 function loadDataSource(data) {
     
     if (evsOn == '0') {
@@ -984,9 +1006,11 @@ function loadDataSource(data) {
                 SPECIES_BY_ID[gen][pok_id] = jsonPoks[pok]
                 pokedex[pok] = jsonPoks[pok]
             }
-            
+
         }
     }
+
+    if (data.mega_stones) addMegaStones(data.mega_stones)
 
     if (TITLE.includes("Sterling")) {
         delete moves.Barrage["multihit"]

@@ -199,6 +199,9 @@ Starting with 2.1.0 the PC has 41 boxes and the save uses a new flash layout. Th
 - `src/save_engine.c` owns the layout and the crash-safety rules and has no game dependencies; `src/save.c` connects it to the save blocks and the flash chip. Two progress copies (SaveBlock2, the PC box header, SaveBlock3, SaveBlock1) alternate; the 19 box sectors are stored once, with a backup sector; the Hall of Fame is in sectors 30–31. Recorded battles and e-Reader Trainer Hill data are no longer saved.
 - PC Pokémon are 60-byte records in `gPokemonStoragePtr->boxes`. Read and write them only through the accessors in `src/pokemon_storage_system.c` (`GetBoxMonDataAt`, `SetBoxMonAt`, `GetBoxedMonPtr`, …). `GetBoxedMonPtr` returns a pointer into an unpacked cache of one box, which stays valid only until another box is accessed. Packing drops HP, status, PP, contest stats and every ribbon except the Champion Ribbon, so deposited Pokémon are healed (`OW_PC_HEAL` is `GEN_7`).
 - Saving is refused while only a pre-2.1 save exists (`SAVE_STATUS_OUTDATED`); players convert it on the website Save Converter (`BPEDocumentation/site/save-converter.html`) or clear it. Every release before 2.1 shares one save layout: 1.0.1 and 2.0.0-beta through 2.0.7-beta have byte-identical save blocks, PC storage and Pokémon records, and their species, item, move, flag and variable numbering agrees, so one converter path handles them all. The only known 1.0.1 differences are cosmetic: Partner Pikachu and the internal Egg placeholder have different species numbers, and two Route 111 Gabby & Ty visibility flags are swapped.
+- SaveBlock1 can still grow **at its very end** without a converter path. The engine zero-fills each sector before writing, so the bytes past an older save's SaveBlock1 read back as zero, and every offset that save already holds stays put. That is how the Items and Key Items pockets grew: `BAG_ITEMS_COUNT` and `BAG_KEYITEMS_COUNT` slots stay in `struct Bag`, and `BAG_ITEMS_EXTRA_COUNT` / `BAG_KEYITEMS_EXTRA_COUNT` more live in `SaveBlock1.itemsExtra` and `keyItemsExtra` at the end, which `BagPocket_GetSlotPtr` in `src/item.c` splices in. Use `BAG_*_TOTAL` for the capacity. A pocket may not exceed 1023 slots (`BagPocket.capacity` is a 10-bit bitfield). Growing a pocket in place instead, or adding anything before the end, moves flags, vars and the Day Care and does need a new `SAVE_FORMAT_VERSION`.
+- **EWRAM, not flash, is what limits this now.** SaveBlock1 gets progress parts 1-4, so 16320 bytes, and 144 of them are still free. But every extra slot costs EWRAM twice, in SaveBlock1 and in the `gLoadedSaveData` link backup, and the **test** build (which carries the test runner on top of the game) has only 20 bytes left: `arm-none-eabi-nm -S pokeemerald-test.elf`, highest `0x020…` symbol end against `0x02040000`. `make` reports the game build's EWRAM but not the test build's, and the test build overflows first, so check it before adding any EWRAM data. Freeing room means trimming `HEAP_SIZE` (read the peak from the debug menu first) or dropping the `gLoadedSaveData` bag mirror, which also halves the per-slot cost.
+- A pocket that reaches into one of those arrays must be handled anywhere the code touches `bag.<pocket>` directly rather than through `BagPocket_GetSlotData`/`SetSlotData`: today that is `ClearBag`, `LoadPlayerBag`/`SavePlayerBag` and the Wally/Old Man tutorial bag in `src/item_menu.c`. `SavePlayerBag` re-keys the whole pocket, so a slot it does not also restore would be corrupted.
 - RAM is nearly full: 41 boxes needed a smaller `HEAP_SIZE` and `MAX_MAP_DATA_SIZE`, and contest data at the top of the heap was moved down. `BPETools/tests/test_ram_budget.py` checks the map and heap limits. Debug builds show the heap peak under Debug menu (SELECT + START) > ROM Info… > Save Block space, on the last of its five message boxes.
 - If a save block, the box header, `struct BoxPokemon` or the packed layout changes, update together: the sizes in `test/save.c`, `BPETools/bpe_save_format.py`, `BPEDocumentation/site/js/save-converter.js`, the save inspector, and (for the packed layout) the vectors with `python BPETools/save_format_vectors.py`. A changed layout also needs a new `SAVE_FORMAT_VERSION` and a converter path for existing 2.1 saves.
 - The damage calculator's **Import .sav** button (`BPEDocumentation/site/js/calc_save_import.js`) reads saves of both formats through `readSaveFile` in `save-converter.js`, including the party, flags, variables and Day Care at the SaveBlock1 offsets that `test/save.c` pins. `build_calc_data.py` exports each release's species, move and item numbering for it as `save_data` in `bpe_calc_data.json`.
@@ -327,6 +330,19 @@ list and rules are in `BPEDocumentation/RANDOMIZER_PLAN.md`.
   0-2. Use `GetPlayerStarterSpecies()` for the starter the player really picked.
 - Tests: `make check TESTS=test/randomizer.c`.
 
+### Pocket Watch
+
+The Pocket Watch fixes the time of day at Morning (8:00), Day (13:00), Evening
+(19:00) or Night (22:00) until the player picks Real Time. `SetPocketWatchTime()`
+in `src/overworld.c` keeps the choice in `FLAG_POCKET_WATCH_SET` and
+`FLAG_POCKET_WATCH_TIME_LO/HI`, flags no release used before, so it lasts through
+warps and saves without a save layout change. `UpdateTimeOfDay()` reads it after
+the script override (`settimeofday`, cleared on every warp) and before the real
+clock. It changes `GetTimeOfDay()` (tint, evolutions, wild encounters), not the
+clock itself, so berries, daily events and the clock displays keep the real time.
+Tests: `make check TESTS=test/time_evolutions.c`, which also checks every
+time-of-day evolution.
+
 ### Registered items
 
 SELECT holds up to `MAX_REGISTERED_ITEMS` (5) key items. With one registered it
@@ -355,20 +371,52 @@ the Mirage pool. Battle-only forms and Totem Pokémon are not required.
   forms (Vivillon patterns, Flabébé colours, Minior, Furfrou trims, costumed
   Pikachu, ...). `CreateWildMon` picks a form, preferring ones the player
   doesn't own. The documentation's Pokédex reads the same table.
-- Each Mirage Island legendary (`sIslandLegendaryPool` in `src/field_specials.c`)
-  can be caught once. Forms the player can switch freely (Arceus, Deoxys,
-  Therians, Origin forms, ...) are not separate pool entries: one of each
-  legendary is all a player gets. Their key items are item balls on the island
-  and their held items are in the postgame Bean Shop. Forms no switch can reach
-  (Galarian birds, Kyurem's fusions, which share one fusion slot, Dada Zarude,
-  ...) are pool entries. Those that share a Pokédex number with another form
-  record their catch in `FLAG_ISLAND_CAUGHT_*` (`sIslandCatchFlags`), since the
-  Pokédex can't tell the forms apart. So do pool members the player can also
-  get by evolving or hatching another (Cosmoem, Solgaleo, Lunala, Naganadel,
-  Urshifu, Phione): evolving or breeding one never uses up another pool entry.
-  Their `comesFrom` field lets saves from before the flag keep their catches.
 - A Peat Block evolves Ursaring into Ursaluna at night and into Bloodmoon
   Ursaluna at any other time.
+
+**Every legendary has exactly one home.** Players complained that the island
+kept offering the same Pokémon, so the three systems no longer overlap:
+
+- **Placed legendaries** live on their maps and come back until they are
+  *caught*. `sPreE4Legendaries` does this for the seventeen that share the one
+  pre-Elite Four pick; Rayquaza, Kyogre, Groudon, Lugia, Ho-Oh and Deoxys are
+  outside that rule but follow the same principle through `FLAG_CAUGHT_RAYQUAZA`,
+  `FLAG_CAUGHT_KYOGRE`, `FLAG_CAUGHT_GROUDON`, `FLAG_CAUGHT_LUGIA`,
+  `FLAG_CAUGHT_HO_OH` and `FLAG_BATTLED_DEOXYS`. Their maps must gate on the
+  catch flag, never on `FLAG_DEFEATED_*`: knocking a legendary out has to be
+  recoverable. `CreateAbnormalWeatherEvent` and the Weather Institute scientist
+  read the catch flags for the same reason.
+- **The Mirage Island pool** (`sIslandLegendaryPool` in `src/field_specials.c`)
+  holds only what has no other home, one entry each, so the lottery never offers
+  something the player could already have. Nothing in the pool can be made from
+  anything else in it, with the exceptions listed in `POOL_DUPES_ALLOWED` in
+  `audit_living_dex.py`, which the audit enforces. Forms the player switches with
+  an item (Arceus, Deoxys, Therians, Origin forms, ...) are never entries; forms
+  no switch reaches (Galarian birds, Dada Zarude, Magearna Original, Eternal
+  Flower Floette) always are. Kyurem's and Calyrex's fusions are entries because
+  each pair shares one `MAX_FUSION_STORAGE` slot, so the DNA Splicers and the
+  Reins of Unity could never produce both at once. Alternate forms carry their
+  base form's `.speciesName`, so `GetIslandLegendaryFormLabel` names the form
+  before the battle instead of announcing a second "ARTICUNO".
+- **The Mirage Altar** (`Route130_EventScript_MirageAltar`) calls back a Cosmog,
+  Poipole, Kubfu or Type: Null the player has already caught, which is what
+  Cosmoem, Naganadel, both Urshifu and Silvally are evolved from. It gates on the
+  Pokédex alone and costs no flags or vars. Add to it rather than adding a pool
+  entry whenever a form only needs a second copy of something.
+
+Pool members that share a Pokédex number with another form, or that the player
+can also reach by evolving or hatching, record their catch in
+`FLAG_ISLAND_CAUGHT_*` (`sIslandCatchFlags`). `comesFrom` lets saves from before
+those flags keep their catches. Entries there for species the pool no longer
+lists are kept deliberately; they are inert but still correct.
+
+Key items for form changes are item balls on Mirage Island; held items, Plates,
+Memories, Drives, Masks and the Rusted Sword and Shield are in the postgame
+Verdanturf mart. Adding an item ball changes `sRandomizerFieldItems`, which
+shifts every existing randomizer seed and needs a `RANDOMIZER_ALGORITHM_VERSION`
+bump - put new form items in the mart instead unless the ball is the point.
+
+Tests: `make check TESTS=test/living_dex.c`, plus the audit above.
 
 ### Cumulative API changes by expansion version
 

@@ -849,19 +849,26 @@ EventScript_PocketWatch::
 	lockall
 	message PocketWatch_Text_SetTimeQuestion
 	waitmessage
-	multichoicedefault 21, 6, MULTI_POCKET_WATCH, 4, FALSE
+	multichoicedefault 21, 4, MULTI_POCKET_WATCH, 5, FALSE
 	switch VAR_RESULT
 	case 0, EventScript_PocketWatch_ApplyChoice
 	case 1, EventScript_PocketWatch_ApplyChoice
 	case 2, EventScript_PocketWatch_ApplyChoice
 	case 3, EventScript_PocketWatch_ApplyChoice
-	case 4, EventScript_PocketWatch_Cancel
+	case 4, EventScript_PocketWatch_RealTime
+	case 5, EventScript_PocketWatch_Cancel
 	case MULTI_B_PRESSED, EventScript_PocketWatch_Cancel
 	end
 
 EventScript_PocketWatch_ApplyChoice::
 	callnative SetTimeOfDayFromPocketWatch
 	msgbox PocketWatch_Text_TimeHasBeenSet, MSGBOX_DEFAULT
+	releaseall
+	end
+
+EventScript_PocketWatch_RealTime::
+	callnative SetTimeOfDayFromPocketWatch
+	msgbox PocketWatch_Text_RealTime, MSGBOX_DEFAULT
 	releaseall
 	end
 
@@ -873,7 +880,11 @@ PocketWatch_Text_SetTimeQuestion:
 	.string "What time should the watch show?$"
 
 PocketWatch_Text_TimeHasBeenSet:
-	.string "The time has been set!$"
+	.string "The time has been set! It stays\n"
+	.string "until you choose REAL TIME.$"
+
+PocketWatch_Text_RealTime:
+	.string "The watch follows the clock again!$"
 
 Common_EventScript_PlayBrineysBoatMusic::
 	setflag FLAG_DONT_TRANSITION_MUSIC
