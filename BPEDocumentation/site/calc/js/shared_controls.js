@@ -1856,15 +1856,22 @@ function loadDefaultLists() {
 			var pageSize = 30;
 			var results = [];
 			var options = getSetOptions();
+			var heading = null, headingShown = false;
 			for (var i = 0; i < options.length; i++) {
 				var option = options[i];
 				var pokeName = option.pokemon.toUpperCase();
+				// BPE: a set's name finds it too, so a trainer ("REA", "Leader REA") lists their Pokemon.
+				var setName = option.set ? option.set.toUpperCase() : "";
+				if (!option.set) { heading = option; headingShown = false; }
 				if (!query.term || query.term.toUpperCase().split(" ").every(function (term) {
-					return pokeName.indexOf(term) === 0 || pokeName.indexOf("-" + term) >= 0 || pokeName.indexOf(" " + term) >= 0;
+					return pokeName.indexOf(term) === 0 || pokeName.indexOf("-" + term) >= 0 || pokeName.indexOf(" " + term) >= 0 || setName.indexOf(term) === 0 || setName.indexOf(" " + term) >= 0;
 				})) {
 					if ($("#randoms").prop("checked")) {
 						if (option.id) results.push(option);
 					} else {
+						// BPE: a set found by its trainer keeps its Pokemon's heading above it.
+						if (option.set && heading && !headingShown) results.push(heading);
+						headingShown = true;
 						results.push(option);
 					}
 				}

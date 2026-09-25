@@ -73,6 +73,9 @@ are worth sending upstream:
   with no listed ability (`altForme.abilities[0]` and `chosenSet.abilities[0]`).
 - `js/shared_controls.js` — a set of four moves keeps the order the game gives
   them; only a longer list is a pool to pick from.
+- `js/shared_controls.js` — the set search also matches a set's name, so a
+  trainer ("REA", "Leader REA") lists their Pokémon, each under its Pokémon's
+  heading. Upstream matches the Pokémon's name only.
 - `calc/mechanics/gen789.js` — Super Fang and Ruination take half the target's
   HP, as Nature's Madness already did; upstream gives them no damage at all.
   Re-apply after rebuilding `dist/`, since this file is compiled from
