@@ -14,7 +14,9 @@
   "use strict";
 
   var GEN = 9;                       // BPE plays by the newest mechanics
-  var DATA_URL = "./data/bpe_calc_data.json";
+  // The query changes whenever the data gains fields this code needs, so a
+  // browser does not pair new code with a cached older file.
+  var DATA_URL = "./data/bpe_calc_data.json?2";
 
   var BPE = root.BPE = root.BPE || {};
   var waiting = [];
@@ -186,15 +188,137 @@
     if (typeof SETDEX !== "undefined") SETDEX[index] = root[name];
   });
 
-  // formatted_sets is already "<Species> -> <set name> -> set", which is the
-  // calculator's own set format, so the trainers become this generation's sets.
-  function loadSets(sets) {
-    var target = root.SETDEX_SV;
-    for (var species in sets) {
+  // ── Game mode and rematches ───────────────────────────────────────────────
+  // Nuzlocke and Standard games level the trainers' teams differently, and a
+  // Pokémon with no written moveset then knows different moves; the data holds
+  // the Nuzlocke team with the Standard values beside it. Rematches are the
+  // later fights of a rematchable trainer. Both choices are the player's and
+  // stay in this browser; Nuzlocke and no rematches are the defaults.
+  var OPTIONS_KEY = "bpeCalcOptions";
+  var DEFAULT_OPTIONS = { mode: "nuzlocke", rematches: false };
+
+  function readOptions() {
+    var options = $.extend({}, DEFAULT_OPTIONS);
+    try {
+      var saved = JSON.parse(localStorage.getItem(OPTIONS_KEY) || "{}");
+      if (saved.mode === "standard") options.mode = "standard";
+      if (saved.rematches === true) options.rematches = true;
+    } catch (error) { /* private mode or a damaged value: the defaults */ }
+    return options;
+  }
+
+  function saveOptions() {
+    try { localStorage.setItem(OPTIONS_KEY, JSON.stringify(BPE.options)); } catch (error) { /* private mode */ }
+  }
+
+  BPE.options = readOptions();
+  BPE.sets = {};                 // the trainer sets on offer: species -> name -> set
+  var shownId = {};              // data's "<Species> (<set>)" -> the id it has now
+  var dataId = {};               // and back
+
+  function setId(species, setName) { return species + " (" + setName + ")"; }
+
+  // A set's name starts with its level ("Lvl 45 Leader REA "), so a Standard
+  // team's set is named with the Standard level.
+  function trainerSets(all, options) {
+    var standard = options.mode === "standard";
+    var out = {};
+    shownId = {};
+    dataId = {};
+    for (var species in all) {
+      for (var setName in all[species]) {
+        var set = all[species][setName];
+        if (set.rematch && !options.rematches) continue;
+        var shown = set, name = setName;
+        if (standard && (set.standard_level || set.standard_moves)) {
+          shown = $.extend({}, set);
+          if (set.standard_level) shown.level = set.standard_level;
+          if (set.standard_moves) shown.moves = set.standard_moves;
+          name = setName.replace(/^Lvl \d+ /, "Lvl " + shown.level + " ");
+        }
+        var sets = out[species] = out[species] || {};
+        var unique = name;
+        for (var n = 2; sets[unique]; n++) unique = name.replace(/ $/, "") + " (" + n + ") ";
+        sets[unique] = shown;
+        shownId[setId(species, setName)] = setId(species, unique);
+        dataId[setId(species, unique)] = setId(species, setName);
+      }
+    }
+    return out;
+  }
+
+  // The id a set of the data goes by now, or null while it is not on offer.
+  BPE.shownId = function (id) { return shownId[id] || null; };
+
+  // The trainers become this generation's sets, beside the player's own
+  // imported ones, which stay.
+  function loadSets() {
+    var target = root.SETDEX_SV, species, setName;
+    for (species in target) {
+      for (setName in target[species]) {
+        if (target[species][setName].tr_id != null) delete target[species][setName];
+      }
+    }
+    BPE.sets = trainerSets(BPE.data.formatted_sets, BPE.options);
+    for (species in BPE.sets) {
       target[species] = target[species] || {};
-      for (var setName in sets[species]) target[species][setName] = sets[species][setName];
+      for (setName in BPE.sets[species]) target[species][setName] = BPE.sets[species][setName];
     }
   }
+
+  function selectedId(side) {
+    var selector = $(side + " .set-selector");
+    var selected = selector.data("select2") ? selector.select2("data") : null;
+    return (selected && selected.id) || selector.val() || "";
+  }
+
+  // Load a set on one side. The selector is a select2 input over the
+  // calculator's own option objects, so the selection goes in as one of those
+  // or the box keeps showing the previous Pokémon's name.
+  BPE.loadSet = function (side, id) {
+    var selector = $(side + " .set-selector");
+    var split = id.indexOf(" (");
+    var option = {
+      id: id,
+      text: id,
+      pokemon: split > 0 ? id.slice(0, split) : id,
+      set: split > 0 ? id.slice(split + 2, id.lastIndexOf(")")) : ""
+    };
+    if (selector.data("select2")) selector.select2("data", option, true);
+    else selector.val(id).change();
+  };
+
+  // Change the mode or the rematches. A trainer's Pokémon already on either
+  // side is loaded again as the new choice has it; one that is no longer on
+  // offer (a rematch being hidden) gives way to the calculator's first set.
+  BPE.setOptions = function (changes) {
+    var before = ["#p1", "#p2"].map(function (side) { return dataId[selectedId(side)] || null; });
+    $.extend(BPE.options, changes);
+    saveOptions();
+    loadSets();
+    showOptions();
+    $(document).trigger("bpe:sets");
+    ["#p1", "#p2"].forEach(function (side, index) {
+      if (!before[index]) return;
+      var now = BPE.shownId(before[index]);
+      if (now) BPE.loadSet(side, now);
+      else if (typeof getFirstValidSetOption === "function" && getFirstValidSetOption()) {
+        BPE.loadSet(side, getFirstValidSetOption().id);
+      }
+    });
+  };
+
+  function showOptions() {
+    $("#bpe-mode-" + BPE.options.mode).prop("checked", true);
+    $("#bpe-show-rematches").prop("checked", BPE.options.rematches);
+  }
+
+  $(document).on("change", ".bpe-mode", function () {
+    if (this.checked) BPE.setOptions({ mode: this.value });
+  });
+  $(document).on("change", "#bpe-show-rematches", function () {
+    BPE.setOptions({ rematches: this.checked });
+  });
 
   function apply(data) {
     loadSpecies(data.poks);
@@ -205,9 +329,9 @@
     var names = collectNames(data);
     addNames(calc.ABILITIES[GEN], names.abilities);
     addNames(calc.ITEMS[GEN], names.items);
-    loadSets(data.formatted_sets);
-
     BPE.data = data;
+    loadSets();
+    showOptions();
 
     // Re-run the calculator's generation setup so every menu is rebuilt from
     // the game's data, then let it pick its first set as usual.

@@ -79,11 +79,15 @@
   BPE.ready(function (data) {
     var mon = requested;
     if (!mon || !mon.s) return;
+    // Links name the Nuzlocke level, so they are matched against the data as
+    // written, then loaded as the chosen mode has that set. A link to a
+    // rematch asks for it, so rematches are shown.
     var id = resolveSet(mon, data.formatted_sets);
     if (!id) {
       console.warn("[bpe] no matching set for", mon);
       return;
     }
-    BPE.loadOpposingSet(id);
+    if (!BPE.shownId(id)) BPE.setOptions({ rematches: true });
+    if (BPE.shownId(id)) BPE.loadOpposingSet(BPE.shownId(id));
   });
 }(typeof window !== "undefined" ? window : globalThis));

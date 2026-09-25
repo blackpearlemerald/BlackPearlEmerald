@@ -69,6 +69,44 @@ body {
     display: none;
 }
 
+/* Game mode and rematches, under the title. */
+.bpe-options {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 22px;
+    margin: 6px 0 2px;
+    font-size: 15px;
+}
+
+.bpe-option-label {
+    opacity: 0.85;
+    margin-right: -12px;
+}
+
+.bpe-mode-group .btn {
+    width: auto;
+    min-width: 7.5em;
+    padding: 5px 12px;
+    font-size: 15px;
+}
+
+.bpe-option-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    color: var(--bpe-calc-text);
+}
+
+.bpe-option-check input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--bpe-calc-accent);
+}
+
 .wrapper hr {
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.25);

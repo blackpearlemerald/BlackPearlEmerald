@@ -12,7 +12,7 @@
     <link type="text/css" rel="stylesheet" href="./css/dark-theme.css?9d48c3de" id="dark-theme-styles">
     <link type="text/css" rel="stylesheet" href="./css/bpe.css?2" />
     <link rel="stylesheet" href="../css/header.css" />
-    <link type="text/css" rel="stylesheet" href="./css/bpe-layout.css?4" />
+    <link type="text/css" rel="stylesheet" href="./css/bpe-layout.css?5" />
     <script src="../js/release-context.js"></script>
     <!-- BPE: no analytics. Upstream calls gtag() on a generation change. -->
     <script>function gtag() {}</script>
@@ -26,6 +26,15 @@
 <div class="wrapper">
 
     <span class="title-text main-title-text">Black Pearl Emerald Damage Calculator</span>
+    <!-- BPE: the game mode sets the trainers' levels; rematches are the later fights. -->
+    <div class="bpe-options" aria-label="Trainer teams" role="region">
+        <span class="bpe-option-label" id="bpe-mode-label">Game mode</span>
+        <span class="bpe-mode-group" role="radiogroup" aria-labelledby="bpe-mode-label">
+            <input class="bpe-mode visually-hidden" type="radio" name="bpe-mode" value="nuzlocke" id="bpe-mode-nuzlocke" checked="checked" /><label class="btn btn-left" for="bpe-mode-nuzlocke">Nuzlocke</label>
+            <input class="bpe-mode visually-hidden" type="radio" name="bpe-mode" value="standard" id="bpe-mode-standard" /><label class="btn btn-right" for="bpe-mode-standard">Standard</label>
+        </span>
+        <label class="bpe-option-check" for="bpe-show-rematches"><input type="checkbox" id="bpe-show-rematches" /> Show rematch teams</label>
+    </div>
     <div aria-label="Settings" role="region">
         <span class="genSelection" hidden>
             <input class="gen visually-hidden" type="radio" name="gen" value="9" id="gen9" checked="checked" />
@@ -1703,13 +1712,13 @@
     <script type="text/javascript" src="./js/shared_controls.js?9b639731-bpe1"></script>
     <script type="text/javascript" src="./js/index_randoms_controls.js?7e11582b"></script>
     <script type="text/javascript" src="./js/moveset_import.js?931ab14d"></script>
-    <script type="text/javascript" src="./js/bpe_data.js?3"></script>
+    <script type="text/javascript" src="./js/bpe_data.js?5"></script>
     <script type="text/javascript" src="./js/bpe_box.js?5"></script>
-    <script type="text/javascript" src="./js/bpe_trainers.js?2"></script>
-    <script type="text/javascript" src="./js/bpe_formes.js?1"></script>
+    <script type="text/javascript" src="./js/bpe_trainers.js?3"></script>
+    <script type="text/javascript" src="./js/bpe_formes.js?2"></script>
     <script type="text/javascript" src="../js/save-converter.js?1"></script>
     <script type="text/javascript" src="../js/calc_save_import.js?1"></script>
-    <script type="text/javascript" src="./js/bpe_deeplink.js?1"></script>
+    <script type="text/javascript" src="./js/bpe_deeplink.js?2"></script>
     <script type="text/javascript" src="./js/bpe_layout.js?2"></script>
 </div>
 <!-- END WRAPPER -->

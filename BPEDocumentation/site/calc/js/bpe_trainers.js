@@ -24,10 +24,11 @@
   }
 
 
-  function index(data) {
+  // The sets on offer (BPE.sets): the chosen mode's levels, rematches only
+  // when they are shown.
+  function index(sets) {
     teams = {};
     teamOf = {};
-    var sets = data.formatted_sets;
     for (var species in sets) {
       for (var setName in sets[species]) {
         var set = sets[species][setName];
@@ -119,28 +120,18 @@
 
   BPE.renderTeam = function () { render(currentSetId()); };
 
-  // Load a set on the opposing side. The selector is a select2 input over the
-  // calculator's own option objects, so the selection goes in as one of those
-  // or the box keeps showing the previous Pokémon's name.
-  BPE.loadOpposingSet = function (id) {
-    var selector = $("#p2 .set-selector");
-    var split = id.indexOf(" (");
-    var option = {
-      id: id,
-      text: id,
-      pokemon: split > 0 ? id.slice(0, split) : id,
-      set: split > 0 ? id.slice(split + 2, id.lastIndexOf(")")) : ""
-    };
-    if (selector.data("select2")) selector.select2("data", option, true);
-    else selector.val(id).change();
-  };
+  BPE.loadOpposingSet = function (id) { BPE.loadSet("#p2", id); };
 
-  BPE.ready(function (data) {
-    index(data);
+  BPE.ready(function () {
+    index(BPE.sets);
     mount();
     render(currentSetId());
     // The set selector is a select2 input; its change event is what the
     // calculator itself listens to.
     $("#p2 .set-selector").on("change", function () { render(currentSetId()); });
+    $(document).on("bpe:sets", function () {
+      index(BPE.sets);
+      render(currentSetId());
+    });
   });
 }(typeof window !== "undefined" ? window : globalThis));

@@ -11,12 +11,12 @@
   var BPE = root.BPE = root.BPE || {};
 
   function setFor(id) {
-    if (!BPE.data || !id) return null;
+    if (!BPE.sets || !id) return null;
     var split = id.indexOf(" (");
     if (split < 0) return null;
     var species = id.slice(0, split);
     var setName = id.slice(split + 2, id.lastIndexOf(")"));
-    var sets = BPE.data.formatted_sets[species];
+    var sets = BPE.sets[species];
     return (sets && sets[setName]) || null;
   }
 

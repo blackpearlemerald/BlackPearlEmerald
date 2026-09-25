@@ -35,6 +35,16 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
   calculator never had (the game's `Aegislash`, `Toxtricity-Amped`) had no
   weight or abilities in the engine, and the box match-ups used Smogon's stats
   and move powers.
+- Game mode and rematches (`js/bpe_data.js`, the bar under the title in
+  `index.html`): trainer sets carry the Nuzlocke team with `standard_level`
+  and `standard_moves` beside it, and `rematch` on a rematchable trainer's
+  later fights (`gRematchTable`). The calculator's set list holds the chosen
+  mode's team, named with its level, and the rematches only when shown.
+  Nuzlocke and hidden rematches are the defaults; the choice is kept in
+  `localStorage.bpeCalcOptions`. Map and Trainers page links name the Nuzlocke
+  level, so they match the data as written (`BPE.shownId`), and a link to a
+  rematch shows the rematches. The data file's URL carries a version query;
+  raise it when the data gains fields the code needs.
 - `js/bpe_trainers.js` — the opposing trainer's whole team inside Pokémon 2's
   panel, between its HP and its moves, in party order, with the one that is loaded marked. Clicking loads a team
   member.

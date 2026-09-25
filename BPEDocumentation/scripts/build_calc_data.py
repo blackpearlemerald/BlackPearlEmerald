@@ -13,8 +13,13 @@ Schema (read by site/calc/js/bpe_data.js):
   moves[Move Name]             = {type, category, basePower}
   formatted_sets[Species][key] = {tr_id, sub_index, level, moves, item, ability,
                                   nature, evs, ivs, sprite, battle_type, mega,
+                                  standard_level, standard_moves, rematch,
                                   ...}  (mega: the form its held Mega Stone
-                                  turns it into, when it has one)
+                                  turns it into, when it has one; level and
+                                  moves are the Nuzlocke team's, standard_*
+                                  the Standard team's where they differ;
+                                  rematch: a later fight of a rematchable
+                                  trainer)
   mega_stones[Item Name]       = the species it Mega Evolves; the calculator
                                   learns any its own item list lacks
   save_data                   = this source's species/move/item numbering and
@@ -141,6 +146,25 @@ def calc_name_index(filename):
         if name and normalize(name):
             names.setdefault(normalize(name), name)
     return names
+
+
+def rematch_trainers():
+    """The trainers that are a rematchable trainer's later fights.
+
+    Each gRematchTable entry lists the first fight, up to four rematches and the
+    map; the first fight is an ordinary trainer.
+    """
+    try:
+        with open(common.src("src", "battle_setup.c"), encoding="utf-8") as f:
+            text = f.read()
+    except OSError:
+        return set()
+    table = re.search(r"gRematchTable\[[^\]]*\]\s*=\s*\{(.*?)\n\};", text, re.S)
+    later = set()
+    for args in re.findall(r"REMATCH\(([^)]*)\)", table.group(1) if table else ""):
+        ids = [arg.strip() for arg in args.split(",")]
+        later.update(t for t in ids[1:] if t.startswith("TRAINER_") and t != ids[0])
+    return later
 
 
 def calc_spelling(index, name, keep=()):
@@ -540,6 +564,7 @@ def main():
     calc_abilities = calc_name_index("abilities.js")
 
     formatted_sets = {}
+    rematches = rematch_trainers()
     unmatched = set()
     tr_id = 0
     label_counts = {}
@@ -587,6 +612,15 @@ def main():
                 "battle_type": "Singles",
                 "reward_item": "None",
             }
+            # Standard games level the teams differently (and a Pokemon with no
+            # written moveset then knows different moves); Nuzlocke is the default.
+            if mon.get("standardLevel") and mon["standardLevel"] != set_data["level"]:
+                set_data["standard_level"] = mon["standardLevel"]
+            if mon.get("standardMoves"):
+                set_data["standard_moves"] = [calc_spelling(calc_moves, m, out_moves)
+                                              for m in mon["standardMoves"] if m] or ["-"]
+            if internal_tid in rematches:
+                set_data["rematch"] = True
             if mon.get("ability"):
                 set_data["ability"] = calc_spelling(calc_abilities, mon["ability"])
             if mon.get("item"):
@@ -644,7 +678,7 @@ def main():
     print("Wrote %s" % OUT_JSON)
     print("  poks:           %d" % len(poks))
     print("  moves:          %d" % len(out_moves))
-    print("  trainers:       %d" % tr_id)
+    print("  trainers:       %d (%d rematches)" % (tr_id, len(rematches & set(trainers))))
     print("  set species:    %d" % len(formatted_sets))
     print("  save numbering: %d species, %d moves, %d items" % tuple(
         sum(1 for entry in save_data[key] if entry) for key in ("species", "moves", "items")))
