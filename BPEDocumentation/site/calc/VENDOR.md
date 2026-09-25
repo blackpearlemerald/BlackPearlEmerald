@@ -41,7 +41,11 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
 - `js/bpe_formes.js` — a trainer's Pokémon holding its Mega Stone Mega Evolves,
   which is what happens in battle.
 - `js/bpe_box.js` — the player's imported Pokémon as a row under their side,
-  party first. Sets live in the calculator's own imported-set store.
+  party first. Sets live in the calculator's own imported-set store
+  (`localStorage.customsets`), the party order beside it in
+  `localStorage.bpeBoxParty`. Each tile shows its match-up against the
+  trainer's Pokémon; sets spell stats `at`/`df`/`sa`/`sd`/`sp`, so they are
+  renamed for the engine, which reads a missing stat as 31 IVs and 0 EVs.
 - `js/bpe_deeplink.js` — `calc.html#mon=...` from the map and the Trainers page.
 - `../js/calc_save_import.js`, `../js/save-converter.js` — Import .sav, shared
   with the rest of the site (`BPETools/tests/test_calc_save_import.py` covers

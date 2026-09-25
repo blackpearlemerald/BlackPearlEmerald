@@ -12,7 +12,27 @@
   var BPE = root.BPE = root.BPE || {};
   var box = BPE.box = {};
 
-  var party = [];   // set ids, in party order
+  // Set ids, in party order. The sets outlive the page in the calculator's
+  // localStorage.customsets, so the party is kept beside them; otherwise a
+  // returning visitor's box would lose its party marks and order.
+  var PARTY_KEY = "bpeBoxParty";
+  var party = loadParty();
+
+  function loadParty() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(PARTY_KEY) || "[]");
+      return Array.isArray(saved) ? saved : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveParty() {
+    try {
+      if (party.length) localStorage.setItem(PARTY_KEY, JSON.stringify(party));
+      else localStorage.removeItem(PARTY_KEY);
+    } catch (error) { /* private mode */ }
+  }
 
   function setId(species, setName) { return species + " (" + setName + ")"; }
 
@@ -92,10 +112,20 @@
   // What each Pokémon in the box does to the trainer's Pokémon that is loaded,
   // and what it takes back. This is the question a Nuzlocke run asks of every
   // box Pokémon at once, so it is answered on the tiles.
+  // Sets spell stats the way the panels do (at, df, sa, sd, sp); the engine
+  // wants its own names and reads any it is not given as 31 IVs and 0 EVs.
+  var STAT_NAMES = { hp: "hp", at: "atk", df: "def", sa: "spa", sd: "spd", sp: "spe" };
+
+  function engineStats(stats) {
+    var out = {};
+    for (var key in stats || {}) out[STAT_NAMES[key] || key] = stats[key];
+    return out;
+  }
+
   function monFromSet(gen, species, set) {
     return new calc.Pokemon(gen, species, {
       level: set.level, nature: set.nature, ability: set.ability, item: set.item,
-      evs: set.evs, ivs: set.ivs, moves: set.moves, teraType: set.teraType
+      evs: engineStats(set.evs), ivs: engineStats(set.ivs), moves: set.moves, teraType: set.teraType
     });
   }
 
@@ -205,6 +235,7 @@
     box.clear(true);
     updateDex(built.sets);            // the calculator's own imported-set store
     party = built.party.slice();
+    saveParty();
     $(allPokemon("#importedSetsOptions")).css("display", "inline");
     render();
     if (party.length) loadPlayerSet(party[0]);
@@ -212,6 +243,10 @@
 
   box.clear = function (keepUI) {
     var sets = storedSets();
+    var current = currentSetId();
+    var split = current.indexOf(" (");
+    var showingCleared = split > 0 && sets[current.slice(0, split)] &&
+      sets[current.slice(0, split)][current.slice(split + 2, current.lastIndexOf(")"))];
     for (var species in sets) {
       for (var setName in sets[species]) {
         for (var gen = 0; gen < SETDEX.length; gen++) {
@@ -221,8 +256,12 @@
     }
     try { localStorage.removeItem("customsets"); } catch (error) { /* private mode */ }
     party = [];
+    saveParty();
     if (!keepUI) {
       render();
+      // A cleared Pokémon must not stay on the left as if it still existed.
+      var first = showingCleared ? getFirstValidSetOption() : null;
+      if (first) loadPlayerSet(first.id);
       $(".set-selector").change();
     }
   };
@@ -238,5 +277,14 @@
   });
 
   // "Clear Imported Sets" is the calculator's own button for the same store.
-  $(document).on("click", "#clearSets", function () { setTimeout(render, 0); });
+  // It asks first, so the party goes only if the sets did.
+  $(document).on("click", "#clearSets", function () {
+    setTimeout(function () {
+      if (!Object.keys(storedSets()).length) {
+        party = [];
+        saveParty();
+      }
+      render();
+    }, 0);
+  });
 }(typeof window !== "undefined" ? window : globalThis));
