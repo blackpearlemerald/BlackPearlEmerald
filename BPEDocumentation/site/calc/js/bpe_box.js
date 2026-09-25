@@ -16,6 +16,15 @@
 
   function setId(species, setName) { return species + " (" + setName + ")"; }
 
+  // Names reach this from the game's data and from a player's own save, so
+  // they are escaped rather than trusted as markup.
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+
   function spriteName(species) {
     return species.toLowerCase()
       .replace(" ", "-").replace(".", "").replace("’", "").replace(":", "-");
@@ -68,10 +77,10 @@
       var inParty = party.indexOf(id) >= 0 ? " is-party" : "";
       var name = member.set.nickname || member.species;
       html += '<div class="bpe-team-mon' + (id === current ? " is-current" : "") + inParty +
-        '" data-set-id="' + id.replace(/"/g, "&quot;") + '" title="' + member.species + '">' +
-        '<img class="bpe-team-sprite" src="./img/newhd/' + spriteName(member.species) + '.png"' +
-        ' alt="' + member.species + '" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
-        '<div class="bpe-team-name">' + name + "</div>" +
+        '" data-set-id="' + escapeHtml(id) + '" title="' + escapeHtml(member.species) + '">' +
+        '<img class="bpe-team-sprite" src="./img/newhd/' + encodeURIComponent(spriteName(member.species)) + '.png"' +
+        ' alt="' + escapeHtml(member.species) + '" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
+        '<div class="bpe-team-name">' + escapeHtml(name) + "</div>" +
         '<div class="bpe-team-level">Lv ' + (member.set.level || "?") + "</div></div>";
     });
     container.innerHTML = html + "</div>";

@@ -15,6 +15,15 @@
 
   function setId(species, setName) { return species + " (" + setName + ")"; }
 
+  // Names reach this from the game's data and from a player's own save, so
+  // they are escaped rather than trusted as markup.
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+
   function index(data) {
     teams = {};
     teamOf = {};
@@ -62,7 +71,7 @@
 
     var team = teams[trId] || [];
     var label = trainerLabel(team.length ? team[0].setName : "");
-    var html = '<div class="bpe-team-label">' + label + "</div>" +
+    var html = '<div class="bpe-team-label">' + escapeHtml(label) + "</div>" +
       '<div class="bpe-team-list">';
     team.forEach(function (member) {
       var id = setId(member.species, member.setName);
@@ -76,7 +85,7 @@
         '<div class="bpe-team-level">' + level + '</div>' +
         '<div class="bpe-team-moves">' +
         moveList(member.set).map(function (move) {
-          return '<span class="bpe-team-move">' + move + "</span>";
+          return '<span class="bpe-team-move">' + escapeHtml(move) + "</span>";
         }).join("") +
         "</div></div>";
     });
