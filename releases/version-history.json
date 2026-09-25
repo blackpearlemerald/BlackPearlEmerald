@@ -1,6 +1,13 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.8-beta": {
+      "channel": "beta",
+      "changes": [
+        "Fixed the R button in wild battles letting you throw a Poké Ball you didn't have, which happened when continuing a save from before 2.1.7 without any Poké Balls.",
+        "Website: the damage calculator is rebuilt on Smogon's calculator with Gen 9 battle rules, and shows how each Pokémon imported from your save matches up against the trainer's."
+      ]
+    },
     "2.1.7-beta": {
       "channel": "beta",
       "changes": [
