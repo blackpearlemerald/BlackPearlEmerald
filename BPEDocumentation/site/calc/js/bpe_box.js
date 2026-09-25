@@ -85,7 +85,84 @@
     });
     container.innerHTML = html + "</div>";
     container.hidden = false;
+    scheduleMatchups();
   }
+
+  // ── Match-ups ─────────────────────────────────────────────────────────────
+  // What each Pokémon in the box does to the trainer's Pokémon that is loaded,
+  // and what it takes back. This is the question a Nuzlocke run asks of every
+  // box Pokémon at once, so it is answered on the tiles.
+  function monFromSet(gen, species, set) {
+    return new calc.Pokemon(gen, species, {
+      level: set.level, nature: set.nature, ability: set.ability, item: set.item,
+      evs: set.evs, ivs: set.ivs, moves: set.moves, teraType: set.teraType
+    });
+  }
+
+  function worstCase(gen, attacker, defender, field) {
+    var worst = 0;
+    (attacker.moves || []).forEach(function (move) {
+      var name = move && move.name ? move.name : move;
+      if (!name || name === "(No Move)" || name === "-") return;
+      try {
+        var result = calc.calculate(gen, attacker, defender, new calc.Move(gen, name), field);
+        var range = result.range();
+        worst = Math.max(worst, range[1] / defender.maxHP() * 100);
+      } catch (error) { /* a move the calculator cannot place */ }
+    });
+    return worst;
+  }
+
+  function matchups() {
+    var container = document.getElementById("bpe-box");
+    if (!container || container.hidden || !BPE.data) return;
+    var tiles = container.querySelectorAll(".bpe-team-mon");
+    if (!tiles.length) return;
+
+    var gen = calc.Generations.get(BPE.gen);
+    var opponent, field, back;
+    try {
+      opponent = createPokemon($("#p2"));
+      field = createField();
+      back = field.clone().swap();
+    } catch (error) { return; }
+
+    var sets = storedSets();
+    Array.prototype.forEach.call(tiles, function (tile) {
+      var id = tile.getAttribute("data-set-id");
+      var split = id.indexOf(" (");
+      var species = id.slice(0, split);
+      var setName = id.slice(split + 2, id.lastIndexOf(")"));
+      var set = sets[species] && sets[species][setName];
+      tile.classList.remove("can-ko", "can-be-koed");
+      var note = tile.querySelector(".bpe-team-matchup");
+      if (note) note.remove();
+      if (!set) return;
+
+      var mon;
+      try { mon = monFromSet(gen, species, set); } catch (error) { return; }
+      var dealt = worstCase(gen, mon, opponent, field);
+      var taken = worstCase(gen, opponent, mon, back);
+      var faster = mon.stats.spe > opponent.stats.spe;
+
+      if (dealt >= 100) tile.classList.add("can-ko");
+      if (taken >= 100) tile.classList.add("can-be-koed");
+      var line = document.createElement("div");
+      line.className = "bpe-team-matchup";
+      line.textContent = (dealt >= 100 ? "KO" : Math.round(dealt) + "%") + " / " +
+        (taken >= 100 ? "KO'd" : Math.round(taken) + "%") + (faster ? " »" : "");
+      line.title = "Deals up to " + Math.round(dealt) + "% and takes up to " + Math.round(taken) + "%" +
+        (faster ? ", and moves first" : "");
+      tile.appendChild(line);
+    });
+  }
+
+  var matchupTimer = null;
+  function scheduleMatchups() {
+    clearTimeout(matchupTimer);
+    matchupTimer = setTimeout(matchups, 150);
+  }
+  box.matchups = scheduleMatchups;
 
   // Load one of the player's Pokémon on the left side.
   function loadPlayerSet(id) {
@@ -118,6 +195,9 @@
       box.clear();
     });
     $("#p1 .set-selector").on("change", render);
+    // The opposing side, and any field or spread change, moves every match-up.
+    $("#p2 .set-selector").on("change", scheduleMatchups);
+    $(document).on("change keyup", ".calc-trigger", scheduleMatchups);
   }
 
   // Replace the box with a freshly imported save.

@@ -104,3 +104,30 @@
     text-align: center;
     color: #c0392b;
 }
+
+/* Box match-ups against the trainer's Pokemon that is loaded. */
+.bpe-team-matchup {
+    margin-top: 2px;
+    font-size: 10px;
+    opacity: 0.85;
+}
+
+.bpe-team-mon.can-ko {
+    border-color: #1e8449;
+    background: rgba(30, 132, 73, 0.14);
+}
+
+.bpe-team-mon.can-be-koed {
+    border-color: #c0392b;
+    background: rgba(192, 57, 43, 0.14);
+}
+
+.bpe-team-mon.can-ko.can-be-koed {
+    border-color: #c0392b;
+    background: linear-gradient(135deg, rgba(30, 132, 73, 0.18) 50%, rgba(192, 57, 43, 0.18) 50%);
+}
+
+.bpe-team-mon.is-current {
+    border-color: #1abc9c;
+    background: rgba(26, 188, 156, 0.18);
+}
