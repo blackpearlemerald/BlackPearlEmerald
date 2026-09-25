@@ -116,7 +116,7 @@
     box.clear(true);
     updateDex(built.sets);            // the calculator's own imported-set store
     party = built.party.slice();
-    $(root.allPokemon ? allPokemon("#importedSetsOptions") : "#importedSetsOptions").css("display", "inline");
+    $(allPokemon("#importedSetsOptions")).css("display", "inline");
     render();
     if (party.length) loadPlayerSet(party[0]);
   };
