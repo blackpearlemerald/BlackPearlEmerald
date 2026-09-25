@@ -176,8 +176,6 @@
 
   if (typeof document === "undefined") return;
 
-  var SETDEX_NAMES = ["SETDEX_SS", "SETDEX_SM", "SETDEX_XY", "SETDEX_BW", "SETDEX_DPP", "SETDEX_ADV", "SETDEX_GSC", "SETDEX_RBY"];
-
   function setStatus(state, message) {
     var status = document.getElementById("bpe-save-status");
     status.className = "is-" + state;
@@ -185,52 +183,18 @@
     status.hidden = !message;
   }
 
-  function removeImportedSets() {
-    var old = BPEStorage.customsets ? JSON.parse(BPEStorage.customsets) : {};
-    Object.keys(old).forEach(function (species) {
-      Object.keys(old[species]).forEach(function (setName) {
-        SETDEX_NAMES.forEach(function (dex) {
-          if (root[dex] && root[dex][species]) delete root[dex][species][setName];
-        });
-      });
-    });
-    BPEStorage.removeItem("customsets");
-  }
-
-  // The same steps as the calculator's own text import (addSets in
-  // moveset_import.js), with the save's party shown as the current party.
-  function showImportedSets(built) {
-    removeImportedSets();
-    updateDex(built.sets);
-    root.customSets = built.sets;
-    $("#clear-party").click();
-    root.currentParty = built.party;
-    get_box();
-    displayParty();
-    importEncounters();
-    $(allPokemon("#importedSetsOptions")).css("display", "inline");
-    if (typeof splitData !== "undefined" && splitData[TITLE]) $("#fragsheet-howto").show();
-    $(".trainer-pok.left-side").attr("draggable", "true");
-    $(".player-poks").addClass("shake");
-    setTimeout(function () { $(".player-poks").removeClass("shake"); }, 500);
-    // Show the lead Pokémon, as if it had been picked from the box.
-    $(".player-poks .trainer-pok").filter(function () {
-      return this.getAttribute("data-id") === built.party[0];
-    }).first().click();
-  }
-
   async function importSave(file) {
     setStatus("working", "Reading " + file.name + "…");
     try {
       var bytes = new Uint8Array(await file.arrayBuffer());
       var save = BPESaveConverter.readSaveFile(bytes);
-      var built = buildSets(save, npoint_data, BPESaveConverter, calc.ITEMS[8]);
+      var built = buildSets(save, BPE.data, BPESaveConverter, calc.ITEMS[BPE.gen]);
       var imported = built.counts.party + built.counts.box + built.counts.daycare;
       if (!imported) {
         setStatus("error", "This save has no Pokémon to import yet.");
         return;
       }
-      var previous = BPEStorage.customsets ? JSON.parse(BPEStorage.customsets) : {};
+      var previous = localStorage.customsets ? JSON.parse(localStorage.customsets) : {};
       var previousCount = Object.keys(previous).reduce(function (total, species) {
         return total + Object.keys(previous[species]).length;
       }, 0);
@@ -239,7 +203,7 @@
         setStatus("ready", "");
         return;
       }
-      showImportedSets(built);
+      BPE.box.show(built);
       setStatus("success", summary(save, built));
     } catch (error) {
       console.error(error);
@@ -260,7 +224,7 @@
     if (clear) clear.addEventListener("click", function () { setStatus("ready", ""); });
     // The calculator loads its data after the page; only BPE data can read saves.
     (function waitForData(attempt) {
-      if (typeof npoint_data !== "undefined" && npoint_data && npoint_data.save_data) {
+      if (root.BPE && BPE.data && BPE.data.save_data) {
         button.style.display = "";
       } else if (attempt < 300) {
         setTimeout(function () { waitForData(attempt + 1); }, 100);

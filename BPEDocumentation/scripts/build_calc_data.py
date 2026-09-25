@@ -1,22 +1,22 @@
-"""Build the Dynamic-Calc data source for BPE Emerald.
+"""Build the damage-calculator data source for BPE Emerald.
 
 Reads the already-parsed BPE documentation data (species/*.json, moves.json,
 abilities.json, trainers.json, world.json) and writes:
 
-  site/calc/data/bpe_calc_data.json   -- the npoint-schema blob the calc loads
+  site/calc/data/bpe_calc_data.json   -- the game data the calculator loads
   site/calc/img/newhd/<name>.png      -- Pokemon sprites named to the calc's
                                          JS sprite-name convention (copied from
                                          BPE's own img/pokemon sprites)
 
-Schema mirrors the working Dynamic-Calc npoint example (Blaze Black):
+Schema (read by site/calc/js/bpe_data.js):
   poks[ShowdownName]            = {bs, types, abilities, weightkg, learnset_info}
   moves[Move Name]             = {type, category, basePower}
   formatted_sets[Species][key] = {tr_id, sub_index, level, moves, item, ability,
                                   nature, evs, ivs, sprite, battle_type, mega,
                                   ...}  (mega: the form its held Mega Stone
                                   turns it into, when it has one)
-  mega_stones[Item Name]       = the species it Mega Evolves; the calc adds
-                                  the ones its item list lacks (Garchompite Z)
+  mega_stones[Item Name]       = the species it Mega Evolves; the calculator
+                                  learns any its own item list lacks
   save_data                   = this source's species/move/item numbering and
                                   the rules js/calc_save_import.js needs to read
                                   a player's .sav into the calculator
@@ -431,13 +431,15 @@ def main():
     records = {fn[:-5]: common.load_json(os.path.join(SPECIES_DIR, fn)) for fn in species_files}
     species_numbers = c_constants(common.src("include", "constants", "species.h"), "SPECIES_")
     names = form_names(records, species_numbers)
+    calc_abilities = calc_name_index("abilities.js")
     # The first form of a name supplies its calculator entry: the regular one.
     for sid in sorted(records, key=lambda sid: (species_numbers.get("SPECIES_" + sid, 1 << 16), sid)):
         d = records[sid]
         name = names[sid]
         save_species[sid] = (
             name, d.get("growthRate", "Medium Fast"),
-            [abil_data.get(ab, {}).get("name") if ab else None for ab in d.get("abilities", [])])
+            [calc_spelling(calc_abilities, abil_data.get(ab, {}).get("name")) if ab else None
+             for ab in d.get("abilities", [])])
         if name in poks:
             # keep first; alt/totem dupes fall through to the base entry
             norm_index.setdefault(normalize(sid), name)
@@ -447,7 +449,7 @@ def main():
         slot_keys = ["0", "1", "H"]
         for i, ab in enumerate(d.get("abilities", [])):
             if ab:
-                an = abil_data.get(ab, {}).get("name")
+                an = calc_spelling(calc_abilities, abil_data.get(ab, {}).get("name"))
                 if an:
                     abilities[slot_keys[i] if i < 3 else str(i)] = an
 

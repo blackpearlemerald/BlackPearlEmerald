@@ -10,7 +10,8 @@ var BW = GSC;
 var XY = GSC;
 var SM = GSC;
 var SS = GSC;
-exports.STATS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS];
+var SV = GSC;
+exports.STATS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
 var HP_TYPES = [
     'Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel',
     'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark',
@@ -86,6 +87,12 @@ exports.Stats = new ((function () {
     class_1.prototype.DVToIV = function (dv) {
         return dv * 2;
     };
+    class_1.prototype.EVToStatEXP = function (ev) {
+        return (ev - 1) * (ev - 1) + 1;
+    };
+    class_1.prototype.StatEXPToEv = function (statexp) {
+        return Math.floor((Math.sqrt(statexp - 1) + 1) / 4) * 4;
+    };
     class_1.prototype.DVsToIVs = function (dvs) {
         var ivs = {};
         var dv;
@@ -94,15 +101,36 @@ exports.Stats = new ((function () {
         }
         return ivs;
     };
-    class_1.prototype.calcStat = function (gen, stat, base, iv, ev, level, nature, manual=null) {
-        if (gen.num < 1 || gen.num > 8)
+    class_1.prototype.calcStat = function (gen, stat, base, iv, ev, level, nature) {
+        if (gen.num < 0 || gen.num > 9)
             throw new Error("Invalid generation ".concat(gen.num));
+        if (gen.num === 0)
+            return this.calcStatChampions(gen.natures, stat, base, ev, nature);
         if (gen.num < 3)
-            return this.calcStatRBY(stat, base, iv, level);
-        return this.calcStatADV(gen.natures, stat, base, iv, ev, level, nature, manual);
+            return this.calcStatRBY(stat, base, iv, ev, level);
+        return this.calcStatADV(gen.natures, stat, base, iv, ev, level, nature);
     };
-    class_1.prototype.calcStatADV = function (natures, stat, base, iv, ev, level, nature, manual=null) {
-
+    class_1.prototype.calcStatChampions = function (natures, stat, base, sp, nature) {
+        if (stat === 'hp') {
+            return base === 1
+                ? base
+                : base + sp + 75;
+        }
+        var mods = [undefined, undefined];
+        if (nature) {
+            var nat = natures.get((0, util_1.toID)(nature));
+            mods = [nat === null || nat === void 0 ? void 0 : nat.plus, nat === null || nat === void 0 ? void 0 : nat.minus];
+        }
+        var n = mods[0] === stat && mods[1] === stat
+            ? 1
+            : mods[0] === stat
+                ? 1.1
+                : mods[1] === stat
+                    ? 0.9
+                    : 1;
+        return Math.floor(n * (base + sp + 20));
+    };
+    class_1.prototype.calcStatADV = function (natures, stat, base, iv, ev, level, nature) {
         if (stat === 'hp') {
             return base === 1
                 ? base
@@ -111,15 +139,9 @@ exports.Stats = new ((function () {
         else {
             var mods = [undefined, undefined];
             if (nature) {
-                
-                
-
                 var nat = natures.get((0, util_1.toID)(nature));
-
-
                 mods = [nat === null || nat === void 0 ? void 0 : nat.plus, nat === null || nat === void 0 ? void 0 : nat.minus];
-            } 
-
+            }
             var n = mods[0] === stat && mods[1] === stat
                 ? 1
                 : mods[0] === stat
@@ -130,15 +152,17 @@ exports.Stats = new ((function () {
             return Math.floor((Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + 5) * n);
         }
     };
-    class_1.prototype.calcStatRBY = function (stat, base, iv, level) {
-        return this.calcStatRBYFromDV(stat, base, this.IVToDV(iv), level);
+    class_1.prototype.calcStatRBY = function (stat, base, iv, ev, level) {
+        return this.calcStatRBYFromDV(stat, base, this.IVToDV(iv), this.EVToStatEXP(ev), level);
     };
-    class_1.prototype.calcStatRBYFromDV = function (stat, base, dv, level) {
+    class_1.prototype.calcStatRBYFromDV = function (stat, base, dv, statexp, level) {
         if (stat === 'hp') {
-            return Math.floor((((base + dv) * 2 + 63) * level) / 100) + level + 10;
+            return Math.floor((((base + dv) * 2 + Math.floor((Math.sqrt(statexp - 1) + 1) / 4)) *
+                level) / 100) + level + 10;
         }
         else {
-            return Math.floor((((base + dv) * 2 + 63) * level) / 100) + 5;
+            return Math.floor((((base + dv) * 2 + Math.floor((Math.sqrt(statexp - 1) + 1) / 4)) *
+                level) / 100) + 5;
         }
     };
     class_1.prototype.getHiddenPowerIVs = function (gen, hpType) {
@@ -147,7 +171,7 @@ exports.Stats = new ((function () {
             return undefined;
         return gen.num === 2 ? exports.Stats.DVsToIVs(hp.dvs) : hp.ivs;
     };
-    class_1.prototype.getHiddenPower = function (gen, ivs, trueBP=false) {
+    class_1.prototype.getHiddenPower = function (gen, ivs) {
         var tr = function (num, bits) {
             if (bits === void 0) { bits = 0; }
             if (bits)
@@ -180,7 +204,7 @@ exports.Stats = new ((function () {
             }
             return {
                 type: HP_TYPES[tr(hpTypeX * 15 / 63)],
-                power: (gen.num && gen.num < 6) ? tr(hpPowerX * 40 / 63) + 30 : (trueBP ? (tr(hpPowerX * 40 / 63) + 30) : 60)
+                power: (gen.num && gen.num < 6) ? tr(hpPowerX * 40 / 63) + 30 : 60
             };
         }
     };

@@ -5,7 +5,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -79,7 +79,6 @@ var GSC = [
     'Charcoal',
     'Dragon Fang',
     'Dragon Scale',
-    'Energy Powder',
     'Fast Ball',
     'Fire Stone',
     'Focus Band',
@@ -132,8 +131,6 @@ var GSC = [
     'Ultra Ball',
     'Up-Grade',
     'Water Stone',
-    'Megite X',
-    'Megite Y'
 ];
 var GSC_ONLY = [
     'Berry',
@@ -149,7 +146,6 @@ var GSC_ONLY = [
     'Pink Bow',
     'Polkadot Bow',
     'PSN Cure Berry',
-    'Enigma Berry',
 ];
 var ADV = GSC.filter(function (i) { return !GSC_ONLY.includes(i); }).concat([
     'Aguav Berry',
@@ -321,6 +317,7 @@ var DPP = ADV.concat([
 var BW = DPP.concat([
     'Absorb Bulb',
     'Air Balloon',
+    'Big Nugget',
     'Binding Band',
     'Bug Gem',
     'Burn Drive',
@@ -345,6 +342,7 @@ var BW = DPP.concat([
     'Normal Gem',
     'Plume Fossil',
     'Poison Gem',
+    'Pretty Feather',
     'Prism Scale',
     'Psychic Gem',
     'Red Card',
@@ -354,66 +352,58 @@ var BW = DPP.concat([
     'Shock Drive',
     'Steel Gem',
     'Water Gem',
-    'Fairy Gem',
-    'Fairy Dust',
-    "Colress Prototype",
-    "Colress's Invention",
-    "Mysterious Device",
-    "Lucky Charm"
-
-
 ]);
-exports.MEGA_STONES = {
-    Absolite: 'Absol',
-    Abomasite: 'Abomasnow',
-    Aerodactylite: 'Aerodactyl',
-    Aggronite: 'Aggron',
-    Alakazite: 'Alakazam',
-    Altarianite: 'Altaria',
-    Ampharosite: 'Ampharos',
-    Audinite: 'Audino',
-    Banettite: 'Banette',
-    Beedrillite: 'Beedrill',
-    Blastoisinite: 'Blastoise',
-    Blazikenite: 'Blaziken',
-    Cameruptite: 'Camerupt',
-    'Charizardite X': 'Charizard',
-    'Charizardite Y': 'Charizard',
-    Crucibellite: 'Crucibelle',
-    Diancite: 'Diancie',
-    Galladite: 'Gallade',
-    Garchompite: 'Garchomp',
-    Gardevoirite: 'Gardevoir',
-    Gengarite: 'Gengar',
-    Glalitite: 'Glalie',
-    Gyaradosite: 'Gyarados',
-    Heracronite: 'Heracross',
-    Houndoominite: 'Houndoom',
-    Kangaskhanite: 'Kangaskhan',
-    Latiasite: 'Latias',
-    Latiosite: 'Latios',
-    Lopunnite: 'Lopunny',
-    Lucarionite: 'Lucario',
-    Manectite: 'Manectric',
-    Mawilite: 'Mawile',
-    Medichamite: 'Medicham',
-    Metagrossite: 'Metagross',
-    'Mewtwonite X': 'Mewtwo',
-    'Mewtwonite Y': 'Mewtwo',
-    Pidgeotite: 'Pidgeot',
-    Pinsirite: 'Pinsir',
-    Sablenite: 'Sableye',
-    Salamencite: 'Salamence',
-    Sceptilite: 'Sceptile',
-    Scizorite: 'Scizor',
-    Sharpedonite: 'Sharpedo',
-    Slowbronite: 'Slowbro',
-    Steelixite: 'Steelix',
-    Swampertite: 'Swampert',
-    Tyranitarite: 'Tyranitar',
-    Venusaurite: 'Venusaur'
+var GEN_6_MEGA_STONES = {
+    Abomasite: { Abomasnow: 'Abomasnow-Mega' },
+    Absolite: { Absol: 'Absol-Mega' },
+    Aerodactylite: { Aerodactyl: 'Aerodactyl-Mega' },
+    Aggronite: { Aggron: 'Aggron-Mega' },
+    Alakazite: { Alakazam: 'Alakazam-Mega' },
+    Altarianite: { Altaria: 'Altaria-Mega' },
+    Ampharosite: { Ampharos: 'Ampharos-Mega' },
+    Audinite: { Audino: 'Audino-Mega' },
+    Banettite: { Banette: 'Banette-Mega' },
+    Beedrillite: { Beedrill: 'Beedrill-Mega' },
+    Blastoisinite: { Blastoise: 'Blastoise-Mega' },
+    Blazikenite: { Blaziken: 'Blaziken-Mega' },
+    Cameruptite: { Camerupt: 'Camerupt-Mega' },
+    'Charizardite X': { Charizard: 'Charizard-Mega-X' },
+    'Charizardite Y': { Charizard: 'Charizard-Mega-Y' },
+    Crucibellite: { Crucibelle: 'Crucibelle-Mega' },
+    Diancite: { Diancie: 'Diancie-Mega' },
+    Galladite: { Gallade: 'Gallade-Mega' },
+    Garchompite: { Garchomp: 'Garchomp-Mega' },
+    Gardevoirite: { Gardevoir: 'Gardevoir-Mega' },
+    Gengarite: { Gengar: 'Gengar-Mega' },
+    Glalitite: { Glalie: 'Glalie-Mega' },
+    Gyaradosite: { Gyarados: 'Gyarados-Mega' },
+    Heracronite: { Heracross: 'Heracross-Mega' },
+    Houndoominite: { Houndoom: 'Houndoom-Mega' },
+    Kangaskhanite: { Kangaskhan: 'Kangaskhan-Mega' },
+    Latiasite: { Latias: 'Latias-Mega' },
+    Latiosite: { Latios: 'Latios-Mega' },
+    Lopunnite: { Lopunny: 'Lopunny-Mega' },
+    Lucarionite: { Lucario: 'Lucario-Mega' },
+    Manectite: { Manectric: 'Manectric-Mega' },
+    Mawilite: { Mawile: 'Mawile-Mega' },
+    Medichamite: { Medicham: 'Medicham-Mega' },
+    Metagrossite: { Metagross: 'Metagross-Mega' },
+    'Mewtwonite X': { Mewtwo: 'Mewtwo-Mega-X' },
+    'Mewtwonite Y': { Mewtwo: 'Mewtwo-Mega-Y' },
+    Pidgeotite: { Pidgeot: 'Pidgeot-Mega' },
+    Pinsirite: { Pinsir: 'Pinsir-Mega' },
+    Sablenite: { Sableye: 'Sableye-Mega' },
+    Salamencite: { Salamence: 'Salamence-Mega' },
+    Sceptilite: { Sceptile: 'Sceptile-Mega' },
+    Scizorite: { Scizor: 'Scizor-Mega' },
+    Sharpedonite: { Sharpedo: 'Sharpedo-Mega' },
+    Slowbronite: { Slowbro: 'Slowbro-Mega' },
+    Steelixite: { Steelix: 'Steelix-Mega' },
+    Swampertite: { Swampert: 'Swampert-Mega' },
+    Tyranitarite: { Tyranitar: 'Tyranitar-Mega' },
+    Venusaurite: { Venusaur: 'Venusaur-Mega' }
 };
-var XY = BW.concat(__spreadArray(__spreadArray([], __read(Object.keys(exports.MEGA_STONES)), false), [
+var XY = BW.concat(__spreadArray(__spreadArray([], __read(Object.keys(GEN_6_MEGA_STONES)), false), [
     'Assault Vest',
     'Blue Orb',
     'Fairy Gem',
@@ -528,6 +518,248 @@ for (var i = 0; i < 100; i++) {
 }
 SS.push('Utility Umbrella', 'Vile Vial');
 SS.push.apply(SS, __spreadArray(__spreadArray([], __read(GSC_ONLY), false), ['Old Amber'], false));
+var ZA_MEGA_STONES = {
+    'Absolite Z': { Absol: 'Absol-Mega-Z' },
+    Barbaracite: { Barbaracle: 'Barbaracle-Mega' },
+    Baxcalibrite: { Baxcalibur: 'Baxcalibur-Mega' },
+    Chandelurite: { Chandelure: 'Chandelure-Mega' },
+    Chesnaughtite: { Chesnaught: 'Chesnaught-Mega' },
+    Chimechite: { Chimecho: 'Chimecho-Mega' },
+    Clefablite: { Clefable: 'Clefable-Mega' },
+    Crabominite: { Crabominable: 'Crabominable-Mega' },
+    Darkranite: { Darkrai: 'Darkrai-Mega' },
+    Delphoxite: { Delphox: 'Delphox-Mega' },
+    Dragalgite: { Dragalge: 'Dragalge-Mega' },
+    Dragoninite: { Dragonite: 'Dragonite-Mega' },
+    Drampanite: { Drampa: 'Drampa-Mega' },
+    Eelektrossite: { Eelektross: 'Eelektross-Mega' },
+    Emboarite: { Emboar: 'Emboar-Mega' },
+    Excadrite: { Excadrill: 'Excadrill-Mega' },
+    Falinksite: { Falinks: 'Falinks-Mega' },
+    Feraligite: { Feraligatr: 'Feraligatr-Mega' },
+    Floettite: { 'Floette-Eternal': 'Floette-Mega' },
+    Froslassite: { Froslass: 'Froslass-Mega' },
+    'Garchompite Z': { Garchomp: 'Garchomp-Mega-Z' },
+    Glimmoranite: { Glimmora: 'Glimmora-Mega' },
+    Golisopite: { Golisopod: 'Golisopod-Mega' },
+    Golurkite: { Golurk: 'Golurk-Mega' },
+    Greninjite: { Greninja: 'Greninja-Mega' },
+    Hawluchanite: { Hawlucha: 'Hawlucha-Mega' },
+    Heatranite: { Heatran: 'Heatran-Mega' },
+    'Lucarionite Z': { Lucario: 'Lucario-Mega-Z' },
+    Magearnite: { Magearna: 'Magearna-Mega', 'Magearna-Original': 'Magearna-Original-Mega' },
+    Malamarite: { Malamar: 'Malamar-Mega' },
+    Meganiumite: { Meganium: 'Meganium-Mega' },
+    Meowsticite: { Meowstic: 'Meowstic-M-Mega', 'Meowstic-F': 'Meowstic-F-Mega' },
+    Pyroarite: { Pyroar: 'Pyroar-Mega' },
+    'Raichunite X': { Raichu: 'Raichu-Mega-X' },
+    'Raichunite Y': { Raichu: 'Raichu-Mega-Y' },
+    Scolipite: { Scolipede: 'Scolipede-Mega' },
+    Scovillainite: { Scovillain: 'Scovillain-Mega' },
+    Scraftinite: { Scrafty: 'Scrafty-Mega' },
+    Skarmorite: { Skarmory: 'Skarmory-Mega' },
+    Staraptite: { Staraptor: 'Staraptor-Mega' },
+    Starminite: { Starmie: 'Starmie-Mega' },
+    Tatsugirinite: {
+        Tatsugiri: 'Tatsugiri-Curly-Mega',
+        'Tatsugiri-Droopy': 'Tatsugiri-Droopy-Mega',
+        'Tatsugiri-Stretchy': 'Tatsugiri-Stretchy-Mega'
+    },
+    Victreebelite: { Victreebel: 'Victreebel-Mega' },
+    Zeraorite: { Zeraora: 'Zeraora-Mega' },
+    Zygardite: { 'Zygarde-Complete': 'Zygarde-Mega' }
+};
+var SV = SS.concat(__spreadArray(__spreadArray([], __read(Object.keys(ZA_MEGA_STONES)), false), [
+    'Adamant Crystal',
+    'Auspicious Armor',
+    'Ability Shield',
+    'Booster Energy',
+    'Clear Amulet',
+    'Cornerstone Mask',
+    'Covert Cloak',
+    'Fairy Feather',
+    'Hearthflame Mask',
+    'Loaded Dice',
+    'Malicious Armor',
+    'Masterpiece Teacup',
+    'Metal Alloy',
+    'Mirror Herb',
+    'Punching Glove',
+    'Lustrous Globe',
+    'Griseous Core',
+    'Strange Ball',
+    'Syrupy Apple',
+    'Unremarkable Teacup',
+    'Wellspring Mask',
+], false).sort());
+var CHAMPIONS = [
+    'Abomasite',
+    'Absolite',
+    'Absolite Z',
+    'Aerodactylite',
+    'Aggronite',
+    'Alakazite',
+    'Altarianite',
+    'Ampharosite',
+    'Audinite',
+    'Banettite',
+    'Barbaracite',
+    'Baxcalibrite',
+    'Beedrillite',
+    'Blastoisinite',
+    'Blazikenite',
+    'Cameruptite',
+    'Chandelurite',
+    'Charizardite X',
+    'Charizardite Y',
+    'Chesnaughtite',
+    'Chimechite',
+    'Clefablite',
+    'Crabominite',
+    'Delphoxite',
+    'Dragalgite',
+    'Dragoninite',
+    'Drampanite',
+    'Eelektrossite',
+    'Emboarite',
+    'Excadrite',
+    'Falinksite',
+    'Feraligite',
+    'Floettite',
+    'Froslassite',
+    'Galladite',
+    'Garchompite',
+    'Garchompite Z',
+    'Gardevoirite',
+    'Gengarite',
+    'Glalitite',
+    'Glimmoranite',
+    'Golisopite',
+    'Golurkite',
+    'Greninjite',
+    'Gyaradosite',
+    'Hawluchanite',
+    'Heracronite',
+    'Houndoominite',
+    'Kangaskhanite',
+    'Lopunnite',
+    'Lucarionite',
+    'Lucarionite Z',
+    'Malamarite',
+    'Manectite',
+    'Mawilite',
+    'Medichamite',
+    'Meganiumite',
+    'Meowsticite',
+    'Metagrossite',
+    'Pidgeotite',
+    'Pinsirite',
+    'Pyroarite',
+    'Raichunite X',
+    'Raichunite Y',
+    'Sablenite',
+    'Salamencite',
+    'Sceptilite',
+    'Scizorite',
+    'Scolipite',
+    'Scovillainite',
+    'Scraftinite',
+    'Sharpedonite',
+    'Skarmorite',
+    'Slowbronite',
+    'Spell Tag',
+    'Staraptite',
+    'Starminite',
+    'Steelixite',
+    'Swampertite',
+    'Tyranitarite',
+    'Venusaurite',
+    'Victreebelite',
+    'Air Balloon',
+    'Aspear Berry',
+    'Babiri Berry',
+    'Big Root',
+    'Binding Band',
+    'Black Belt',
+    'Black Glasses',
+    'Bright Powder',
+    'Charcoal',
+    'Charti Berry',
+    'Cheri Berry',
+    'Chesto Berry',
+    'Chilan Berry',
+    'Choice Scarf',
+    'Chople Berry',
+    'Coba Berry',
+    'Colbur Berry',
+    'Damp Rock',
+    'Dragon Fang',
+    'Electric Seed',
+    'Eject Button',
+    'Expert Belt',
+    'Fairy Feather',
+    'Focus Band',
+    'Focus Sash',
+    'Grassy Seed',
+    'Haban Berry',
+    'Hard Stone',
+    'Heat Rock',
+    'Icy Rock',
+    'Iron Ball',
+    'Kasib Berry',
+    'Kebia Berry',
+    'King\'s Rock',
+    'Leek',
+    'Leftovers',
+    'Leppa Berry',
+    'Life Orb',
+    'Light Ball',
+    'Light Clay',
+    'Lum Berry',
+    'Magnet',
+    'Mental Herb',
+    'Metal Coat',
+    'Metronome',
+    'Miracle Seed',
+    'Misty Seed',
+    'Muscle Band',
+    'Mystic Water',
+    'Never-Melt Ice',
+    'Normal Gem',
+    'Occa Berry',
+    'Oran Berry',
+    'Passho Berry',
+    'Payapa Berry',
+    'Pecha Berry',
+    'Persim Berry',
+    'Poison Barb',
+    'Psychic Seed',
+    'Quick Claw',
+    'Rawst Berry',
+    'Red Card',
+    'Rindo Berry',
+    'Rocky Helmet',
+    'Roseli Berry',
+    'Scope Lens',
+    'Sharp Beak',
+    'Shed Shell',
+    'Shell Bell',
+    'Shuca Berry',
+    'Silk Scarf',
+    'Silver Powder',
+    'Sitrus Berry',
+    'Smooth Rock',
+    'Soft Sand',
+    'Tanga Berry',
+    'Terrain Extender',
+    'Twisted Spoon',
+    'Wacan Berry',
+    'White Herb',
+    'Wide Lens',
+    'Wise Glasses',
+    'Yache Berry',
+    'Zoom Lens',
+].sort();
 var BERRIES = {
     'Aguav Berry': { t: 'Dragon', p: 80 },
     'Apicot Berry': { t: 'Ground', p: 100 },
@@ -607,7 +839,8 @@ var BERRIES = {
     'Wiki Berry': { t: 'Rock', p: 80 },
     'Yache Berry': { t: 'Ice', p: 80 }
 };
-exports.ITEMS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS];
+exports.MEGA_STONES = Object.assign({}, GEN_6_MEGA_STONES, ZA_MEGA_STONES);
+exports.ITEMS = [CHAMPIONS, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
 var Items = (function () {
     function Items(gen) {
         this.gen = gen;
@@ -616,22 +849,25 @@ var Items = (function () {
         return ITEMS_BY_ID[this.gen][id];
     };
     Items.prototype[Symbol.iterator] = function () {
-        var _a, _b, _i, id;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var _a, _b, _c, _i, id;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
-                    _a = [];
-                    for (_b in ITEMS_BY_ID[this.gen])
-                        _a.push(_b);
+                    _a = ITEMS_BY_ID[this.gen];
+                    _b = [];
+                    for (_c in _a)
+                        _b.push(_c);
                     _i = 0;
-                    _c.label = 1;
+                    _d.label = 1;
                 case 1:
-                    if (!(_i < _a.length)) return [3, 4];
-                    id = _a[_i];
+                    if (!(_i < _b.length)) return [3, 4];
+                    _c = _b[_i];
+                    if (!(_c in _a)) return [3, 3];
+                    id = _c;
                     return [4, this.get(id)];
                 case 2:
-                    _c.sent();
-                    _c.label = 3;
+                    _d.sent();
+                    _d.label = 3;
                 case 3:
                     _i++;
                     return [3, 1];
@@ -647,7 +883,7 @@ var Item = (function () {
         this.kind = 'Item';
         this.id = (0, util_1.toID)(name);
         this.name = name;
-        this.megaEvolves = exports.MEGA_STONES[name];
+        this.megaStone = exports.MEGA_STONES[name];
         var berry = BERRIES[name];
         if (berry) {
             this.isBerry = true;

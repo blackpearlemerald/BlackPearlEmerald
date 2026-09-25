@@ -27,9 +27,12 @@ var Field = (function () {
         this.isWonderRoom = !!field.isWonderRoom;
         this.isGravity = !!field.isGravity;
         this.isAuraBreak = field.isAuraBreak || false;
-        this.isInverseBattle = !!field.isInverseBattle;
         this.isFairyAura = field.isFairyAura || false;
         this.isDarkAura = field.isDarkAura || false;
+        this.isBeadsOfRuin = field.isBeadsOfRuin || false;
+        this.isSwordOfRuin = field.isSwordOfRuin || false;
+        this.isTabletsOfRuin = field.isTabletsOfRuin || false;
+        this.isVesselOfRuin = field.isVesselOfRuin || false;
         this.attackerSide = new Side(field.attackerSide || {});
         this.defenderSide = new Side(field.defenderSide || {});
     }
@@ -59,13 +62,16 @@ var Field = (function () {
             terrain: this.terrain,
             isMagicRoom: this.isMagicRoom,
             isWonderRoom: this.isWonderRoom,
-            isInverseBattle: this.isInverseBattle,
             isGravity: this.isGravity,
             attackerSide: this.attackerSide,
             defenderSide: this.defenderSide,
             isAuraBreak: this.isAuraBreak,
             isDarkAura: this.isDarkAura,
-            isFairyAura: this.isFairyAura
+            isFairyAura: this.isFairyAura,
+            isBeadsOfRuin: this.isBeadsOfRuin,
+            isSwordOfRuin: this.isSwordOfRuin,
+            isTabletsOfRuin: this.isTabletsOfRuin,
+            isVesselOfRuin: this.isVesselOfRuin
         });
     };
     return Field;
@@ -85,25 +91,20 @@ var Side = (function () {
         this.isLightScreen = !!side.isLightScreen;
         this.isProtected = !!side.isProtected;
         this.isSeeded = !!side.isSeeded;
+        this.isNightmared = !!side.isNightmared;
+        this.isSaltCured = !!side.isSaltCured;
         this.isForesight = !!side.isForesight;
+        this.isCharge = !!side.isCharge;
         this.isTailwind = !!side.isTailwind;
         this.isHelpingHand = !!side.isHelpingHand;
-        this.isBadgeAtk = !!side.isBadgeAtk;
-        this.isBadgeDef = !!side.isBadgeDef;
-        this.isBadgeSpeed = !!side.isBadgeSpeed;
-        this.isBadgeSpec = !!side.isBadgeSpec;
         this.isFlowerGift = !!side.isFlowerGift;
+        this.isPowerTrick = !!side.isPowerTrick;
         this.isFriendGuard = !!side.isFriendGuard;
         this.isAuroraVeil = !!side.isAuroraVeil;
         this.isBattery = !!side.isBattery;
         this.isPowerSpot = !!side.isPowerSpot;
+        this.isSteelySpirit = !!side.isSteelySpirit;
         this.isSwitching = side.isSwitching;
-        this.is10Buff = !!side.is10Buff
-        this.is15Buff = !!side.is15Buff
-        this.is20Buff = !!side.is20Buff
-        this.is25Buff = !!side.is25Buff
-        this.is30Buff = !!side.is30Buff
-        this.is50Buff = !!side.is50Buff
     }
     Side.prototype.clone = function () {
         return new Side(this);

@@ -16,7 +16,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -342,22 +342,22 @@ var RBY = {
     }
 };
 var GSC = (0, util_1.extend)(true, {}, RBY, {
-    '???': { Dark: 1, Steel: 1, Fairy: 1 },
-    Normal: { Dark: 1, Steel: 0.5, Fairy: 1 },
-    Grass: { Dark: 1, Steel: 0.5, Fairy: 1 },
-    Fire: { Dark: 1, Steel: 2, Fairy: 1 },
-    Water: { Dark: 1, Steel: 1, Fairy: 1 },
-    Electric: { Dark: 1, Steel: 1, Fairy: 1 },
-    Ice: { Fire: 0.5, Dark: 1, Steel: 0.5, Fairy: 1 },
-    Flying: { Dark: 1, Steel: 0.5, Fairy: 1 },
-    Bug: { Poison: 0.5, Dark: 2, Steel: 0.5, Fairy: 0.5 },
-    Poison: { Bug: 1, Dark: 1, Steel: 0, Fairy: 2 },
-    Ground: { Dark: 1, Steel: 2, Fairy: 1 },
-    Rock: { Dark: 1, Steel: 0.5, Fairy: 1 },
-    Fighting: { Dark: 2, Steel: 2, Fairy: 0.5 },
-    Psychic: { Dark: 0, Steel: 0.5, Fairy: 1 },
-    Ghost: { Psychic: 2, Dark: 0.5, Steel: 0.5, Fairy: 1 },
-    Dragon: { Dark: 1, Steel: 0.5, Fairy: 0 },
+    '???': { Dark: 1, Steel: 1 },
+    Normal: { Dark: 1, Steel: 0.5 },
+    Grass: { Dark: 1, Steel: 0.5 },
+    Fire: { Dark: 1, Steel: 2 },
+    Water: { Dark: 1, Steel: 1 },
+    Electric: { Dark: 1, Steel: 1 },
+    Ice: { Fire: 0.5, Dark: 1, Steel: 0.5 },
+    Flying: { Dark: 1, Steel: 0.5 },
+    Bug: { Poison: 0.5, Dark: 2, Steel: 0.5 },
+    Poison: { Bug: 1, Dark: 1, Steel: 0 },
+    Ground: { Dark: 1, Steel: 2 },
+    Rock: { Dark: 1, Steel: 0.5 },
+    Fighting: { Dark: 2, Steel: 2 },
+    Psychic: { Dark: 0, Steel: 0.5 },
+    Ghost: { Psychic: 2, Dark: 0.5, Steel: 0.5 },
+    Dragon: { Dark: 1, Steel: 0.5 },
     Dark: {
         '???': 1,
         Normal: 1,
@@ -376,8 +376,7 @@ var GSC = (0, util_1.extend)(true, {}, RBY, {
         Ghost: 2,
         Dragon: 1,
         Dark: 0.5,
-        Steel: 0.5,
-        Fairy: 0.5
+        Steel: 0.5
     },
     Steel: {
         '???': 1,
@@ -397,37 +396,12 @@ var GSC = (0, util_1.extend)(true, {}, RBY, {
         Ghost: 1,
         Dragon: 1,
         Dark: 1,
-        Steel: 0.5,
-        Fairy: 2
-    },
-    Fairy: {
-        '???': 1,
-        Normal: 1,
-        Grass: 1,
-        Fire: 0.5,
-        Water: 1,
-        Electric: 1,
-        Ice: 1,
-        Flying: 1,
-        Bug: 1,
-        Poison: 0.5,
-        Ground: 1,
-        Rock: 1,
-        Fighting: 2,
-        Psychic: 1,
-        Ghost: 1,
-        Dragon: 2,
-        Dark: 2,
-        Steel: 0.5,
-        Fairy: 1
+        Steel: 0.5
     }
 });
 var ADV = GSC;
 var DPP = GSC;
 var BW = GSC;
-
-
-
 var XY = (0, util_1.extend)(true, {}, GSC, {
     '???': { Fairy: 1 },
     Normal: { Fairy: 1 },
@@ -469,139 +443,61 @@ var XY = (0, util_1.extend)(true, {}, GSC, {
         Fairy: 1
     }
 });
-
-var platRedux = (0, util_1.extend)(true, {}, GSC, {
-    '???': { Fairy: 1 },
-    Normal: { Fairy: 1, Dark: 2},
-    Grass: { Fairy: 1, Steel: 1},
-    Fire: { Fairy: 1 },
-    Water: { Fairy: 1 },
-    Electric: { Fairy: 1 },
-    Ice: { Fairy: 1 },
-    Flying: { Fairy: 1 },
-    Bug: { Fairy: 0.5, Ghost: 1},
-    Poison: { Fairy: 2, Dragon: 2 },
-    Ground: { Fairy: 1 },
-    Rock: { Fairy: 1 },
-    Fighting: { Fairy: 0.5 },
-    Psychic: { Fairy: 1, Steel: 1 },
-    Ghost: { Steel: 1, Fairy: 1 },
-    Dragon: { Fairy: 0, Ice: 0.5, Normal: 2 },
-    Dark: { Steel: 1, Fairy: 0.5, Normal: 0.5},
-    Steel: { Fairy: 2 },
-    Fairy: {
-        '???': 1,
-        Normal: 1,
-        Grass: 1,
-        Fire: 0.5,
-        Water: 1,
-        Electric: 1,
-        Ice: 1,
-        Flying: 1,
-        Bug: 1,
-        Poison: 0.5,
-        Ground: 1,
-        Rock: 1,
-        Fighting: 2,
-        Psychic: 1,
-        Ghost: 1,
-        Dragon: 2,
-        Dark: 2,
-        Steel: 0.5,
-        Fairy: 1
-    }
-});
-
-var parallelEm = (0, util_1.extend)(true, {}, GSC, {
-    '???': { Fairy: 1 },
-    Normal: { Fairy: 1, Dark: 2},
-    Grass: { Fairy: 1, Steel: 1},
-    Fire: { Fairy: 1 },
-    Water: { Fairy: 1, Ice: 0.5 },
-    Electric: { Fairy: 1 },
-    Ice: { Fairy: 1 },
-    Flying: { Fairy: 1 },
-    Bug: { Fairy: 1, Ghost: 1},
-    Poison: { Fairy: 2, Dragon: 2, Ghost: 1 },
-    Ground: { Fairy: 1 },
-    Rock: { Fairy: 1 },
-    Fighting: { Fairy: 0.5 },
-    Psychic: { Fairy: 1, Steel: 1 },
-    Ghost: { Steel: 1, Fairy: 1 },
-    Dragon: { Fairy: 0, Ice: 0.5, Normal: 2 },
-    Dark: { Steel: 1, Fairy: 0.5, Normal: 0.5},
-    Steel: { Fairy: 2 },
-    Fairy: {
-        '???': 1,
-        Normal: 1,
-        Grass: 1,
-        Fire: 0.5,
-        Water: 1,
-        Electric: 1,
-        Ice: 1,
-        Flying: 1,
-        Bug: 0.5,
-        Poison: 0.5,
-        Ground: 1,
-        Rock: 1,
-        Fighting: 2,
-        Psychic: 1,
-        Ghost: 1,
-        Dragon: 2,
-        Dark: 2,
-        Steel: 0.5,
-        Fairy: 1
-    }
-});
-
-
-
 var SM = XY;
 var SS = SM;
-
-if (type_mod == "plat_redux") {
-    DPP = platRedux
-}
-
-if (type_mod == "par_em") {
-    SS = parallelEm
-}
-
-
-if (type_chart >= 6) {
-    BW = XY
-    DPP = XY
-    ADV = XY
-}
-
-exports.TYPE_CHART = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, platRedux, parallelEm];
+var SV = (0, util_1.extend)(true, {}, SS, {
+    '???': { Stellar: 1 },
+    Normal: { Stellar: 1 },
+    Grass: { Stellar: 1 },
+    Fire: { Stellar: 1 },
+    Water: { Stellar: 1 },
+    Electric: { Stellar: 1 },
+    Ice: { Stellar: 1 },
+    Flying: { Stellar: 1 },
+    Bug: { Stellar: 1 },
+    Poison: { Stellar: 1 },
+    Ground: { Stellar: 1 },
+    Rock: { Stellar: 1 },
+    Fighting: { Stellar: 1 },
+    Psychic: { Stellar: 1 },
+    Ghost: { Stellar: 1 },
+    Dragon: { Stellar: 1 },
+    Dark: { Stellar: 1 },
+    Steel: { Stellar: 1 },
+    Fairy: { Stellar: 1 },
+    Stellar: {
+        '???': 1
+    }
+});
+var CHAMPIONS = SS;
+exports.TYPE_CHART = [CHAMPIONS, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
 var Types = (function () {
     function Types(gen) {
         this.gen = gen;
-        if (this.gen == 12) {
-            this.gen = 3
-        }
     }
     Types.prototype.get = function (id) {
         return TYPES_BY_ID[this.gen][id];
     };
     Types.prototype[Symbol.iterator] = function () {
-        var _a, _b, _i, id;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var _a, _b, _c, _i, id;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
-                    _a = [];
-                    for (_b in TYPES_BY_ID[this.gen])
-                        _a.push(_b);
+                    _a = TYPES_BY_ID[this.gen];
+                    _b = [];
+                    for (_c in _a)
+                        _b.push(_c);
                     _i = 0;
-                    _c.label = 1;
+                    _d.label = 1;
                 case 1:
-                    if (!(_i < _a.length)) return [3, 4];
-                    id = _a[_i];
+                    if (!(_i < _b.length)) return [3, 4];
+                    _c = _b[_i];
+                    if (!(_c in _a)) return [3, 3];
+                    id = _c;
                     return [4, this.get(id)];
                 case 2:
-                    _c.sent();
-                    _c.label = 3;
+                    _d.sent();
+                    _d.label = 3;
                 case 3:
                     _i++;
                     return [3, 1];
@@ -622,29 +518,6 @@ var Type = (function () {
     return Type;
 }());
 var TYPES_BY_ID = [];
-
-// if (type_chart >= 6) {
-//     exports.TYPE_CHART[3].Dark.Steel = 1
-//     exports.TYPE_CHART[3].Ghost.Steel = 1
-
-//     exports.TYPE_CHART[4].Dark.Steel = 1
-//     exports.TYPE_CHART[4].Ghost.Steel = 1
-
-//     exports.TYPE_CHART[5].Dark.Steel = 1
-//     exports.TYPE_CHART[5].Ghost.Steel = 1
-
-//     exports.TYPE_CHART[6].Dark.Steel = 1
-//     exports.TYPE_CHART[6].Ghost.Steel = 1
-
-//     exports.TYPE_CHART[7].Dark.Steel = 1
-//     exports.TYPE_CHART[7].Ghost.Steel = 1
-
-//     exports.TYPE_CHART[8].Dark.Steel = 1
-//     exports.TYPE_CHART[8].Ghost.Steel = 1
-
-// }
-
-
 try {
     for (var TYPE_CHART_1 = __values(exports.TYPE_CHART), TYPE_CHART_1_1 = TYPE_CHART_1.next(); !TYPE_CHART_1_1.done; TYPE_CHART_1_1 = TYPE_CHART_1.next()) {
         var typeChart = TYPE_CHART_1_1.value;
@@ -663,33 +536,4 @@ finally {
     }
     finally { if (e_1) throw e_1.error; }
 }
-
-// function construct_type_chart() {
-//     var type_names = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice",
-//              "Fighting", "Poison", "Ground", "Flying", "Psychic",
-//              "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy","???"]
-
-//     var types = TYPES_BY_ID[type_chart]
-//     var chart = []
-
-//     for (let i = 0; i < type_names.length; i++) {
-//         var effectiveness = []
-
-//         for (let j = 0; j < type_names.length; j++) {
-//             effectiveness.push(types[type_names[i].toLowerCase().replace("???", "")].effectiveness[type_names[j]])
-//         }
-//         chart.push(effectiveness)
-//     }
-
-//     return chart
-
-// }
-
-// final_type_chart = construct_type_chart()
-
-
-
-
-
-
 //# sourceMappingURL=types.js.map

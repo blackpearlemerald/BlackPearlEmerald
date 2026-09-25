@@ -1,0 +1,106 @@
+/* Black Pearl Emerald additions to the damage calculator. */
+
+#bpe-strip {
+    clear: both;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 4px 0 16px;
+}
+
+.bpe-team {
+    flex: 1 1 380px;
+    box-sizing: border-box;
+    padding: 8px 10px 10px;
+    border: 1px solid rgba(128, 128, 128, 0.35);
+    border-radius: 8px;
+}
+
+.bpe-team-label {
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.bpe-team-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+}
+
+.bpe-team-mon {
+    width: 104px;
+    padding: 4px 2px 6px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 1.25;
+}
+
+.bpe-team-mon:hover {
+    border-color: #1abc9c;
+    background: rgba(26, 188, 156, 0.1);
+}
+
+/* The team member that is loaded above stays in the row, marked. */
+.bpe-team-mon.is-current {
+    border-color: #1abc9c;
+    background: rgba(26, 188, 156, 0.18);
+    cursor: default;
+}
+
+.bpe-team-sprite {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.bpe-team-name {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bpe-team-level {
+    opacity: 0.75;
+}
+
+.bpe-team-moves {
+    margin-top: 3px;
+}
+
+.bpe-team-move {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Import .sav */
+#bpe-save-controls {
+    margin: 6px 0;
+}
+
+#bpe-save-status {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+}
+
+#bpe-save-status.is-error { color: #c0392b; }
+#bpe-save-status.is-success { color: #1e8449; }
+#bpe-save-status[hidden] { display: none; }
+
+#bpe-data-error {
+    display: none;
+    margin: 8px auto;
+    max-width: 640px;
+    text-align: center;
+    color: #c0392b;
+}

@@ -2,7 +2,7 @@
   'use strict';
   var inCalc = /\/calc\//.test(location.pathname);
   var prefix = inCalc ? '../' : '';
-  var calcHref = (inCalc ? 'index.html' : 'calc/index.html') + '?data=bpe&gen=8&dmgGen=8&types=9&customPoks=1';
+  var calcHref = inCalc ? 'index.html' : 'calc/index.html';
   var current = inCalc ? 'calc' : (location.pathname.split('/').pop() || 'index.html').replace('.html', '');
   if (current === 'pokemon') current = 'pokedex';
   if (current === 'item') current = 'items';

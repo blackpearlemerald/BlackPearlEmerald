@@ -45,7 +45,7 @@ function trainerPopup(t, spriteFile) {
   }
   for (const m of t.party || []) {
     // Trainer mons deep-link into the damage calculator: clicking loads this
-    // exact set onto the defender side (see js/calc_deeplink.js).
+    // exact set onto the defender side (see calc/js/bpe_deeplink.js).
     const desc = encodeURIComponent(JSON.stringify({
       s: m.species, l: m.level,
       c: t.class || "", tn: t.name || "", m: m.moves || [],

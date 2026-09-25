@@ -2,7 +2,11 @@
 exports.__esModule = true;
 
 function toID(text) {
-    return ('' + text).toLowerCase().replace(/[^a-z0-9]+/g, '');
+    var lcase = ('' + text).toLowerCase();
+    if (lcase === 'flabébé') {
+        return 'flabebe';
+    }
+    return lcase.replace(/[^a-z0-9]+/g, '');
 }
 exports.toID = toID;
 function error(err, msg) {
