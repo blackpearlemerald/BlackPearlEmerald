@@ -50,8 +50,9 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
   member.
 - `js/bpe_formes.js` — a trainer's Pokémon holding its Mega Stone Mega Evolves,
   which is what happens in battle.
-- `js/bpe_box.js` — the player's imported Pokémon inside Pokémon 1's panel,
-  under its moves, party first. Sets live in the calculator's own imported-set store
+- `js/bpe_box.js` — the player's imported Pokémon inside Pokémon 1's panel:
+  the party in party order between its HP and its moves, opposite the
+  trainer's team and outlined, and everything else under its moves. Sets live in the calculator's own imported-set store
   (`localStorage.customsets`), the party order beside it in
   `localStorage.bpeBoxParty`. Each tile shows its match-up against the
   trainer's Pokémon; sets spell stats `at`/`df`/`sa`/`sd`/`sp`, so they are

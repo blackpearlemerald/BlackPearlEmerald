@@ -1,10 +1,10 @@
-/* Black Pearl Emerald — the player's box.
+/* Black Pearl Emerald — the player's party and box.
  *
  * A save import turns every Pokémon in the party, the PC and the Day Care into
  * a set named "My Box" (then "My Box 2", ... for another of the same species).
- * The calculator already knows how to hold imported sets; this shows them as a
- * row under the player's side so one can be loaded with a click, with the
- * party first.
+ * The calculator already knows how to hold imported sets; this shows them on
+ * the player's side so one can be loaded with a click: the party between HP
+ * and moves, opposite the trainer's team, and everything else under the moves.
  */
 (function (root) {
   "use strict";
@@ -82,29 +82,40 @@
     return (selected && selected.id) || selector.val() || "";
   }
 
-  function render() {
-    var container = document.getElementById("bpe-box");
-    if (!container) return;
-    var members = entries();
-    if (!members.length) { container.innerHTML = ""; container.hidden = true; return; }
+  function tile(member, current) {
+    var id = setId(member.species, member.setName);
+    var name = member.set.nickname || member.species;
+    return '<div class="bpe-team-mon' + (id === current ? " is-current" : "") +
+      '" data-set-id="' + escapeHtml(id) + '" title="' + escapeHtml(member.species) + '">' +
+      '<img class="bpe-team-sprite" src="./img/newhd/' + encodeURIComponent(spriteName(member.species)) + '.png"' +
+      ' alt="' + escapeHtml(member.species) + '" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
+      '<div class="bpe-team-name">' + escapeHtml(name) + "</div>" +
+      '<div class="bpe-team-level">Lv ' + (member.set.level || "?") + "</div></div>";
+  }
 
-    var current = currentSetId();
-    var html = '<div class="bpe-team-label">Your Pokémon' +
-      ' <button type="button" id="bpe-box-clear" class="bpe-box-clear">Clear</button></div>' +
-      '<div class="bpe-team-list">';
-    members.forEach(function (member) {
-      var id = setId(member.species, member.setName);
-      var inParty = party.indexOf(id) >= 0 ? " is-party" : "";
-      var name = member.set.nickname || member.species;
-      html += '<div class="bpe-team-mon' + (id === current ? " is-current" : "") + inParty +
-        '" data-set-id="' + escapeHtml(id) + '" title="' + escapeHtml(member.species) + '">' +
-        '<img class="bpe-team-sprite" src="./img/newhd/' + encodeURIComponent(spriteName(member.species)) + '.png"' +
-        ' alt="' + escapeHtml(member.species) + '" loading="lazy" onerror="this.style.visibility=\'hidden\'">' +
-        '<div class="bpe-team-name">' + escapeHtml(name) + "</div>" +
-        '<div class="bpe-team-level">Lv ' + (member.set.level || "?") + "</div></div>";
-    });
-    container.innerHTML = html + "</div>";
+  function fill(container, label, members, current) {
+    if (!container) return;
+    if (!members.length) { container.innerHTML = ""; container.hidden = true; return; }
+    container.innerHTML = '<div class="bpe-team-label">' + label + "</div>" +
+      '<div class="bpe-team-list">' +
+      members.map(function (member) { return tile(member, current); }).join("") + "</div>";
     container.hidden = false;
+  }
+
+  // The party in party order, then the rest. Clear sits on the first row shown
+  // and empties both.
+  function render() {
+    var members = entries();
+    var inParty = members.filter(function (member) {
+      return party.indexOf(setId(member.species, member.setName)) >= 0;
+    });
+    var inBox = members.filter(function (member) { return inParty.indexOf(member) < 0; });
+    var current = currentSetId();
+    var clear = ' <button type="button" class="bpe-box-clear">Clear</button>';
+    fill(document.getElementById("bpe-party"), "Your party" + clear, inParty, current);
+    fill(document.getElementById("bpe-box"),
+      (inParty.length ? "Your box" : "Your Pokémon" + clear) +
+      ' <span class="bpe-team-count">(' + inBox.length + ")</span>", inBox, current);
     scheduleMatchups();
   }
 
@@ -144,9 +155,8 @@
   }
 
   function matchups() {
-    var container = document.getElementById("bpe-box");
-    if (!container || container.hidden || !BPE.data) return;
-    var tiles = container.querySelectorAll(".bpe-team-mon");
+    if (!BPE.data) return;
+    var tiles = document.querySelectorAll("#bpe-party .bpe-team-mon, #bpe-box .bpe-team-mon");
     if (!tiles.length) return;
 
     var gen = calc.Generations.get(BPE.gen);
@@ -208,19 +218,26 @@
     else selector.val(id).change();
   }
 
+  function row(id) {
+    var container = document.createElement("div");
+    container.id = id;
+    container.className = "bpe-team " + id;
+    container.hidden = true;
+    return container;
+  }
+
   function mount() {
     if (document.getElementById("bpe-box")) return;
-    var container = document.createElement("div");
-    container.id = "bpe-box";
-    container.className = "bpe-team bpe-box";
-    container.hidden = true;
-    BPE.mountRow(container, "#p1");
+    var partyRow = row("bpe-party");
+    var boxRow = row("bpe-box");
+    BPE.mountRow(partyRow, "#p1", ".move1");
+    BPE.mountRow(boxRow, "#p1");
 
-    $(container).on("click", ".bpe-team-mon", function () {
+    $([partyRow, boxRow]).on("click", ".bpe-team-mon", function () {
       var id = this.getAttribute("data-set-id");
       if (id && id !== currentSetId()) loadPlayerSet(id);
     });
-    $(container).on("click", "#bpe-box-clear", function (event) {
+    $([partyRow, boxRow]).on("click", ".bpe-box-clear", function (event) {
       event.stopPropagation();
       box.clear();
     });
