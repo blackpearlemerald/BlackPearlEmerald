@@ -18,6 +18,14 @@ License: MIT (see upstream repo)
   a species can have several imported sets (`My Box`, `My Box 2`, ...): the
   party row, box search, right-click, **Remove** and **Clear Imported Sets**
   use the set named in the sprite's `data-id` instead of always `My Box`.
+- `js/shared_controls.js`, `css/main.css` — the opposing team row keeps the
+  Pokémon that is loaded above (marked `.current`) instead of hiding it. The
+  map links a trainer's Pokémon straight into the calculator, so the row reads
+  as that trainer's whole team rather than as who can switch in.
+- `js/showdown_hooks.js` — `addMegaStones` adds the data source's `mega_stones`
+  that the vendored item list (which stops at Sword/Shield) lacks, such as
+  Garchompite Z and the other Legends Z-A stones, to the item menu and
+  `MEGA_STONES`.
 
 ## Excluded from vendoring (not needed / too large)
 - `*_mastersheet*.html` and `*_mastersheet_files/` (other romhacks, 9–13 MB each)

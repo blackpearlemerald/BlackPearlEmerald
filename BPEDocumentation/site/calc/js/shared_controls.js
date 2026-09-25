@@ -527,12 +527,15 @@ function refresh_next_in() {
     }
 
 	var trpok_html = ""
+	var currentSet = $('input.opposing').val()
 	for (i in next_poks ) {
-		
 
-		if (next_poks[i][0].includes($('input.opposing').val()) && noSwitch != "1"){
-			continue
-		}
+
+		// BPE Emerald: the row is a trainer's whole team, not just who can
+		// switch in - the map links a trainer's Pokemon straight into the
+		// calculator, so hiding the one that is loaded looked like a missing
+		// team member. Keep it in the row and mark it instead.
+		var isCurrent = (currentSet && next_poks[i][0].includes(currentSet)) ? "current" : ""
 		var pok_name = next_poks[i][0].split(" (")[0].toLowerCase().replace(" ","-").replace(".","").replace("’","").replace(":","-")
 
 		if (pok_name.includes("galarian-")) {
@@ -572,7 +575,7 @@ function refresh_next_in() {
 		}
 
 		var pok = `<div class="trainer-pok-container no-switch-${noSwitch}">
-			<img class="trainer-pok right-side ${highlight} ${isFainted} ${isLead}" src="./img/${sprite_style}/${pok_name.replace("sn-s", "sion").replace(/-s$/, "")}.png" data-id="${dataID}">`
+			<img class="trainer-pok right-side ${highlight} ${isFainted} ${isLead} ${isCurrent}" src="./img/${sprite_style}/${pok_name.replace("sn-s", "sion").replace(/-s$/, "")}.png" data-id="${dataID}">`
 
 
 		var species = next_poks[i][0].split(" (")[0]

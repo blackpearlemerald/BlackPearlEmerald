@@ -415,6 +415,19 @@ class SaveNumberingTests(unittest.TestCase):
                                  "DARMANITAN_ZEN": "Darmanitan-Zen", "LYCANROC": "Lycanroc",
                                  "LYCANROC_DUSK": "Lycanroc-Dusk", "URSHIFU": "Urshifu"})
 
+    def test_every_mega_stone_reaches_the_calculator(self):
+        # The vendored item list stops at Sword/Shield, so Garchompite Z and
+        # the other newer stones were missing from the item menu.
+        blob = json.loads(CALC_DATA.read_text(encoding="utf-8"))
+        stones = blob["mega_stones"]
+        self.assertEqual(len(stones), len({item for _, item in build_calc_data.mega_evolutions()}))
+        self.assertEqual(stones["Garchompite Z"], "Garchomp")
+        self.assertEqual(stones["Charizardite X"], "Charizard")
+        for sets in blob["formatted_sets"].values():
+            for set_data in sets.values():
+                if "mega" in set_data:
+                    self.assertTrue(set_data["mega"].startswith(stones[set_data["item"]]))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -15,7 +15,9 @@ Schema mirrors the working Dynamic-Calc npoint example (Blaze Black):
                                   nature, evs, ivs, sprite, battle_type, mega,
                                   ...}  (mega: the form its held Mega Stone
                                   turns it into, when it has one)
-  save_data                    = this source's species/move/item numbering and
+  mega_stones[Item Name]       = the species it Mega Evolves; the calc adds
+                                  the ones its item list lacks (Garchompite Z)
+  save_data                   = this source's species/move/item numbering and
                                   the rules js/calc_save_import.js needs to read
                                   a player's .sav into the calculator
 
@@ -119,6 +121,37 @@ def calc_species_names():
         if "%" not in name and "\\" not in name:  # "%" breaks sprite URLs
             names.setdefault(normalize(name), name)
     return names
+
+
+def calc_name_index(filename):
+    """normalize(name) -> the vendored calculator's spelling, from one of its
+    own name lists (moves.js, abilities.js, items.js).
+
+    A trainer set only reaches the calculator's data when its move, ability and
+    item names are spelled the way the calculator spells them. The game's own
+    names differ in punctuation between releases ("King'sShield" in 1.0.1,
+    "King's Shield" now), so they are matched without it.
+    """
+    path = os.path.join(CALC_DIR, "calc", "data", filename)
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    names = {}
+    for quoted in re.findall(r"^\s*'((?:[^'\\]|\\.)*)'\s*[,:]", text, flags=re.M):
+        name = re.sub(r"\\(.)", r"\1", quoted)
+        if name and normalize(name):
+            names.setdefault(normalize(name), name)
+    return names
+
+
+def calc_spelling(index, name, keep=()):
+    """The calculator's spelling of `name`, unless BPE supplies it itself.
+
+    Names in `keep` come from this data source (a rebalanced move, a Mega Stone
+    the vendored list lacks), so the calculator learns them as BPE spells them.
+    """
+    if not name or name in keep:
+        return name
+    return index.get(normalize(name), name)
 
 
 def form_names(records, species_numbers):
@@ -488,12 +521,21 @@ def main():
     # appending an incrementing number, mirroring upstream ("Grunt6").
     items_data = common.load_json(ITEMS_JSON)
     mega_for = {}  # (ShowdownName, item display name) -> Mega ShowdownName
+    mega_stones = {}  # item display name -> species it Mega Evolves
     for (species, item), target in mega_evolutions().items():
         source_name = norm_index.get(normalize(species))
         target_name = norm_index.get(normalize(target))
         item_name = items_data.get(item, {}).get("name")
         if source_name and target_name and item_name:
             mega_for[(source_name, item_name)] = target_name
+            mega_stones[item_name] = re.sub(r"-Mega.*$", "", target_name)
+
+    # The calculator knows a name only in its own spelling, except for what
+    # this data source adds to it: rebalanced damaging moves (out_moves) and
+    # the Mega Stones its item list stops short of (mega_stones).
+    calc_moves = calc_name_index("moves.js")
+    calc_items = calc_name_index("items.js")
+    calc_abilities = calc_name_index("abilities.js")
 
     formatted_sets = {}
     unmatched = set()
@@ -533,7 +575,8 @@ def main():
                 "tr_id": tr_id,
                 "sub_index": sub_index,
                 "level": mon.get("level", 50),
-                "moves": [m for m in (mon.get("moves") or []) if m] or ["-"],
+                "moves": [calc_spelling(calc_moves, m, out_moves)
+                          for m in (mon.get("moves") or []) if m] or ["-"],
                 "nature": mon.get("nature", "Hardy"),
                 "evs": evs,
                 "ivs": {short: mon["ivs"][long] for long, short in EV_KEYS if long in mon.get("ivs", {})},
@@ -543,9 +586,9 @@ def main():
                 "reward_item": "None",
             }
             if mon.get("ability"):
-                set_data["ability"] = mon["ability"]
+                set_data["ability"] = calc_spelling(calc_abilities, mon["ability"])
             if mon.get("item"):
-                set_data["item"] = mon["item"]
+                set_data["item"] = calc_spelling(calc_items, mon["item"], mega_stones)
                 if (key, mon["item"]) in mega_for:
                     set_data["mega"] = mega_for[(key, mon["item"])]
             if trainer_sprite:
@@ -570,6 +613,7 @@ def main():
         "poks": poks,
         "moves": out_moves,
         "formatted_sets": formatted_sets,
+        "mega_stones": dict(sorted(mega_stones.items())),
         "save_data": save_data,
     }
     if unmatched:

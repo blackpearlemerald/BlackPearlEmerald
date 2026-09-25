@@ -992,6 +992,12 @@ table td {
     margin-bottom: 10px;
 }
 
+/* BPE Emerald: the team member that is loaded above stays in the row. */
+.trainer-pok.right-side.current {
+    border: 3px solid #1abc9c;
+    box-shadow: 0 0 6px 1px rgba(26, 188, 156, 0.9);
+}
+
 .left-side:hover, .left-side.active {
     border:  3px solid #1abc9c;
     border-radius: 10px;
