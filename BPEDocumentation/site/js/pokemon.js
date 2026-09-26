@@ -239,16 +239,24 @@
   var ENC_TYPE_LABELS = {
     'land_mons': 'Grass', 'water_mons': 'Surf',
     'rock_smash_mons': 'Rock Smash', 'fishing_mons': 'Fishing',
-    'static': 'Static', 'mirage': 'Mirage'
+    'static': 'Static', 'mirage': 'Mirage', 'altar': 'Mirage Altar'
   };
   var ENC_TYPE_CSS = {
     'land_mons': 'land', 'water_mons': 'water_mons',
     'rock_smash_mons': 'rock_smash_mons', 'fishing_mons': 'fishing',
-    'static': 'static', 'mirage': 'mirage'
+    'static': 'static', 'mirage': 'mirage', 'altar': 'mirage'
   };
 
-  function renderEncounters(encounters) {
+  function renderEncounters(encounters, pkmn) {
     if (!encounters || encounters.length === 0) {
+      var obtain = (pkmn && pkmn.obtain) || [];
+      if (obtain.length) {
+        // Found nowhere, but reachable another way (Solgaleo, Phione).
+        return '<div class="dex-empty" style="padding:16px 16px 4px">Not found in the wild. How to get one:</div>'
+          + '<ul class="form-how obtain-how">'
+          + obtain.map(function (h) { return howHtml(h, { id: pkmn.id }, pkmn.obtainItems || {}); }).join('')
+          + '</ul>';
+      }
       return '<div class="dex-empty" style="padding:16px">Not found in the wild.</div>';
     }
     var rows = encounters.map(function (enc) {
@@ -307,6 +315,123 @@
     });
   }
 
+  // ── Forms ─────────────────────────────────────────────────────
+  // Every form of this Pokémon (Megas, regional forms, Rotom's appliances…)
+  // with each way to get it, as the exporter worked it out from the game.
+  var HOW_LABELS = {
+    wild: 'Wild', static: 'Encounter', mirage: 'Mirage Island', altar: 'Mirage Altar', gift: 'Gift', trade: 'Trade',
+    evolve: 'Evolve', breed: 'Breed', fusion: 'Fusion', change: 'Form change', battle: 'In battle'
+  };
+  var FORMS_SHOWN = 12;
+  var PLACES_SHOWN = 4;
+
+  function speciesChip(sp) {
+    var img = sp.icon ? '<img class="form-chip-icon" src="' + esc(sp.icon) + '" alt="" loading="lazy" />' : '';
+    return '<a class="form-chip" href="pokemon.html?id=' + encodeURIComponent(sp.id) + '">'
+      + img + '<span>' + esc(sp.label) + '</span></a>';
+  }
+
+  function itemChip(id, item) {
+    item = item || { name: prettifyConstant(id), where: [] };
+    var where = item.where || [];
+    var whereHtml = where.length
+      ? where.slice(0, 2).map(function (w) {
+          if (w.map) return '<a href="index.html?map=' + encodeURIComponent(w.map) + '">' + esc(w.text) + '</a>';
+          if (w.species) return '<a href="pokemon.html?id=' + encodeURIComponent(w.species) + '">' + esc(w.text) + '</a>';
+          return esc(w.text);
+        }).join(' · ') + (where.length > 2 ? ' · <a href="item.html?id=' + encodeURIComponent(id) + '">+' + (where.length - 2) + ' more</a>' : '')
+      : '<span class="form-item-none">Not obtainable</span>';
+    return '<span class="form-item">'
+      + '<a class="form-item-name" href="item.html?id=' + encodeURIComponent(id) + '">'
+      + (item.icon ? '<img class="form-item-icon" src="' + esc(item.icon) + '" alt="" loading="lazy" onerror="this.remove()" />' : '')
+      + esc(item.name) + '</a>'
+      + '<span class="form-item-where">' + whereHtml + '</span></span>';
+  }
+
+  function placesHtml(places, formId) {
+    var links = places.slice(0, PLACES_SHOWN).map(function (p) {
+      var name = p.mapName + (p.levels ? ' (Lv. ' + p.levels + ')' : '');
+      return '<a href="index.html?map=' + encodeURIComponent(p.map) + '">' + esc(name) + '</a>'
+        + (p.note ? ' <span class="form-place-note">' + esc(p.note) + '</span>' : '');
+    });
+    if (places.length > PLACES_SHOWN) {
+      links.push('<a href="pokemon.html?id=' + encodeURIComponent(formId) + '">+' + (places.length - PLACES_SHOWN) + ' more</a>');
+    }
+    return '<div class="form-places">' + links.join(' · ') + '</div>';
+  }
+
+  function howHtml(entry, form, items) {
+    var extras = '';
+    if (entry.places && entry.places.length) extras += placesHtml(entry.places, form.id);
+    var chips = (entry.species || []).map(speciesChip).join('');
+    chips += (entry.items || []).map(function (id) { return itemChip(id, items[id]); }).join('');
+    if (chips) extras += '<div class="form-chips">' + chips + '</div>';
+    if (entry.unavailable) extras += '<div class="form-how-blocked">' + esc(entry.unavailable) + '</div>';
+    return '<li class="form-how-item' + (entry.unavailable ? ' blocked' : '') + '">'
+      + '<span class="form-how-kind k-' + esc(entry.kind) + '">' + esc(HOW_LABELS[entry.kind] || entry.kind) + '</span>'
+      + '<div class="form-how-body"><div>' + esc(entry.text) + '</div>' + extras + '</div></li>';
+  }
+
+  function formCardHtml(form, currentId, items) {
+    var how = form.how || [];
+    var obtainable = how.some(function (h) { return !h.unavailable; });
+    var tags = '';
+    if (form.id === currentId) tags += '<span class="form-tag current">This page</span>';
+    if (form.battleOnly) tags += '<span class="form-tag battle">Battle only</span>';
+    if (!obtainable) tags += '<span class="form-tag none">Not obtainable</span>';
+    var icon = form.icon
+      ? '<img class="form-card-icon" src="' + esc(form.icon) + '" alt="" loading="lazy" />'
+      : '<span class="form-card-icon"></span>';
+    var list = how.length
+      ? '<ul class="form-how">' + how.map(function (h) { return howHtml(h, form, items); }).join('') + '</ul>'
+      : '<div class="form-how-empty">' + (form.totem
+          ? 'Totem Pokémon are not obtainable in this release.'
+          : 'Not obtainable in this release.') + '</div>';
+    var evolves = (form.evolvesInto || []).length
+      ? '<div class="form-evolves"><span class="form-evolves-label">Evolves into</span>'
+        + form.evolvesInto.map(speciesChip).join('') + '</div>'
+      : '';
+    return '<div class="form-card' + (form.id === currentId ? ' current' : '') + (obtainable ? '' : ' unobtainable') + '">'
+      + '<a class="form-card-head" href="pokemon.html?id=' + encodeURIComponent(form.id) + '">'
+      +   icon
+      +   '<span class="form-card-title"><span class="form-card-name">' + esc(form.label) + '</span>'
+      +   '<span class="form-card-types">' + (form.types || []).map(typeBadge).join('') + '</span></span>'
+      + '</a>'
+      + (tags ? '<div class="form-tags">' + tags + '</div>' : '')
+      + list + evolves
+      + '</div>';
+  }
+
+  function renderForms(pkmn) {
+    var forms = pkmn.forms || [];
+    if (forms.length < 2) return '';
+    var items = pkmn.formItems || {};
+    var current = forms.findIndex(function (f) { return f.id === pkmn.id; });
+    var cards = forms.map(function (f, i) {
+      var hidden = forms.length > FORMS_SHOWN && i >= FORMS_SHOWN && i !== current;
+      return hidden
+        ? formCardHtml(f, pkmn.id, items).replace('<div class="form-card', '<div hidden class="form-card')
+        : formCardHtml(f, pkmn.id, items);
+    }).join('');
+    var more = forms.length > FORMS_SHOWN
+      ? '<button type="button" class="forms-more">Show all ' + forms.length + ' forms</button>'
+      : '';
+    return '<div class="dex-section forms-section" id="forms">'
+      + '<h2>Forms (' + forms.length + ')</h2>'
+      + '<p class="forms-intro">Every form of ' + esc(pkmn.name) + ' and how to get it, including Mega Evolutions, regional forms and form changes.</p>'
+      + '<div class="form-grid">' + cards + '</div>' + more
+      + '</div>';
+  }
+
+  function wireForms(content) {
+    var btn = content.querySelector('.forms-more');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      content.querySelectorAll('.form-card[hidden]').forEach(function (c) { c.hidden = false; });
+      btn.remove();
+    });
+  }
+
   // ── Main render ───────────────────────────────────────────────
   function render(pkmn, moves, abilities) {
     var content = document.getElementById('pokemon-content');
@@ -333,7 +458,7 @@
     var abilitiesHtml = renderAbilities(pkmn.abilities, abilities);
 
     // Need full index for evo chain
-    var evoHtml = '<em style="color:#4a6070;font-size:13px">Loading…</em>';
+    var evoHtml = '<em class="evo-loading" style="color:#4a6070;font-size:13px">Loading…</em>';
 
     var lvlMoves = renderLearnsetTable(pkmn.levelUpMoves, moves, true);
     var tmMoves = renderLearnsetTable(pkmn.tmMoves, moves, false);
@@ -347,7 +472,7 @@
     var specialPanel = (pkmn.specialMoves || []).length
       ? '<div id="tab-special" class="tab-panel">' + specialMoves + '</div>'
       : '';
-    var encHtml = renderHeldItems(pkmn, abilities) + renderEncounters(pkmn.encounters);
+    var encHtml = renderHeldItems(pkmn, abilities) + renderEncounters(pkmn.encounters, pkmn);
 
     var descHtml = pkmn.description
       ? '<p style="color:#7e93a8;font-size:14px;line-height:1.6;margin:0 0 12px">' + esc(pkmn.description) + '</p>'
@@ -372,6 +497,7 @@
       +     '<div class="info-card" id="evo-card"><h3>Evolution Chain</h3>' + evoHtml + '</div>'
       +   '</div>'
       + '</div>'
+      + renderForms(pkmn)
       + '<div class="dex-section">'
       +   '<h2>Learnset</h2>'
       +   '<div class="tab-bar">'
@@ -390,6 +516,8 @@
       +   specialPanel
       + '</div>'
       + '<div class="dex-section"><h2>Wild Encounters</h2>' + encHtml + '</div>';
+
+    wireForms(content);
 
     // Wire up tab buttons
     content.querySelectorAll('.tab-btn').forEach(function (btn) {
@@ -486,9 +614,9 @@
       html = '<div class="evo-chain">' + renderBranch(chain) + '</div>';
     }
 
+    var loading = card.querySelector('.evo-loading');
+    if (loading) loading.remove();
     card.querySelector('h3').insertAdjacentHTML('afterend', html);
-    var loading = card.querySelector('em');
-    if (loading && loading.textContent === 'Loading…') loading.remove();
   }
 
   // ── Bootstrap ─────────────────────────────────────────────────

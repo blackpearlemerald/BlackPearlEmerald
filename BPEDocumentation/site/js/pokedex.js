@@ -19,7 +19,7 @@
     index: null,
     query: '',
     activeType: null,
-    showForms: false,
+    showForms: true,
   };
 
   function applyFilters() {
@@ -107,7 +107,9 @@
       renderGrid(applyFilters());
     });
 
-    document.getElementById('show-forms').addEventListener('change', function (e) {
+    var showForms = document.getElementById('show-forms');
+    state.showForms = showForms.checked;
+    showForms.addEventListener('change', function (e) {
       state.showForms = e.target.checked;
       renderGrid(applyFilters());
     });

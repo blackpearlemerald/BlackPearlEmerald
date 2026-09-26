@@ -167,6 +167,49 @@ def rematch_trainers():
     return later
 
 
+# Emerald keeps each rival fight as six trainers (the player's gender x their
+# starter) and the game picks one of them. Wally's Victory Road fights are the
+# rival's too.
+RIVAL_COPY = re.compile(r"TRAINER_(MAY|BRENDAN)_(.+)_(MUDKIP|TORCHIC|TREECKO)$")
+WALLY_VR = re.compile(r"TRAINER_WALLY_VR_\d+$")
+
+
+def place_name(token):
+    """ROUTE_103 -> Route 103"""
+    return " ".join(word.capitalize() for word in token.split("_"))
+
+
+def rival_fights(trainers):
+    """The rival's fights, named by where they happen.
+
+    Returns ({TRAINER_ID: place}, {copies to leave out}). Where all six copies
+    of a fight field the same Nuzlocke team it is listed once; a release whose
+    copies differ keeps them apart, named by gender and starter as well.
+    """
+    def team(tid):
+        return json.dumps([{k: v for k, v in mon.items() if not k.startswith("standard")}
+                           for mon in trainers[tid].get("party") or []], sort_keys=True)
+
+    copies = {}
+    for tid in sorted(trainers):
+        match = RIVAL_COPY.match(tid)
+        if match and trainers[tid].get("party"):
+            copies.setdefault(match.group(2), []).append((tid, match))
+    places, skip = {}, set()
+    for token, fights in copies.items():
+        if len({team(tid) for tid, _ in fights}) == 1:
+            places[fights[0][0]] = place_name(token)
+            skip.update(tid for tid, _ in fights[1:])
+        else:
+            for tid, match in fights:
+                places[tid] = "%s, %s, %s" % (place_name(token), match.group(1).capitalize(),
+                                              match.group(3).capitalize())
+    for tid in trainers:
+        if WALLY_VR.match(tid):
+            places[tid] = "Victory Road"
+    return places, skip
+
+
 def calc_spelling(index, name, keep=()):
     """The calculator's spelling of `name`, unless BPE supplies it itself.
 
@@ -565,6 +608,7 @@ def main():
 
     formatted_sets = {}
     rematches = rematch_trainers()
+    rival_places, rival_copies = rival_fights(trainers)
     unmatched = set()
     tr_id = 0
     label_counts = {}
@@ -574,11 +618,13 @@ def main():
     for internal_tid in sorted(trainers.keys()):
         t = trainers[internal_tid]
         party = t.get("party") or []
-        if not party or internal_tid == "TRAINER_NONE":
+        if not party or internal_tid == "TRAINER_NONE" or internal_tid in rival_copies:
             continue
         tr_id += 1
         base_label = ("%s %s" % (t.get("class", ""), t.get("name", ""))).strip() \
             or "Trainer"
+        if internal_tid in rival_places:
+            base_label += " (%s)" % rival_places[internal_tid]
         label_counts[base_label] = label_counts.get(base_label, 0) + 1
         label = base_label if label_counts[base_label] == 1 \
             else "%s %d" % (base_label, label_counts[base_label])

@@ -382,7 +382,8 @@ class SaveNumberingTests(unittest.TestCase):
         items = build_calc_data.c_constants(str(REPO / "include/constants/items.h"), "ITEM")
         self.assertEqual(items["ITEM_HM01"], 824)
         self.assertEqual(items["ITEM_LEVEL_LIMITER"], 1021)
-        self.assertEqual(items["ITEMS_COUNT"], 1022)
+        self.assertEqual(items["ITEM_INFINITE_REPEL"], 1022)
+        self.assertEqual(items["ITEMS_COUNT"], 1023)
         flags = build_calc_data.c_constants(str(REPO / "include/constants/flags.h"), "FLAG_NUZLOCKE")
         self.assertEqual(flags, {"FLAG_NUZLOCKE": 0x493})
 

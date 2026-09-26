@@ -105,6 +105,7 @@ static enum Collision CheckForPlayerAvatarStaticCollision(enum Direction);
 static enum Collision CheckForObjectEventStaticCollision(struct ObjectEvent *, s16, s16, enum Direction, u8);
 static bool8 CanStopSurfing(s16, s16, enum Direction);
 static bool8 ShouldJumpLedge(s16, s16, enum Direction);
+static bool32 IsLedgeLandingTaken(struct ObjectEvent *objectEvent, s16 x, s16 y, enum Direction direction);
 static bool8 TryPushBoulder(s16, s16, enum Direction);
 static void CheckAcroBikeCollision(s16, s16, u8, enum Collision *);
 
@@ -966,7 +967,7 @@ enum Collision CheckForObjectEventCollision(struct ObjectEvent *objectEvent, s16
     if (collision == COLLISION_ELEVATION_MISMATCH && CanStopSurfing(x, y, direction))
         return COLLISION_STOP_SURFING;
 
-    if (ShouldJumpLedge(x, y, direction))
+    if (ShouldJumpLedge(x, y, direction) && !IsLedgeLandingTaken(objectEvent, x, y, direction))
     {
         IncrementGameStat(GAME_STAT_JUMPED_DOWN_LEDGES);
         return COLLISION_LEDGE_JUMP;
@@ -1020,6 +1021,24 @@ static bool8 ShouldJumpLedge(s16 x, s16 y, enum Direction direction)
         return TRUE;
     else
         return FALSE;
+}
+
+// BPE: the player never jumps down onto another object, which left them standing
+// inside an item ball or a trainer (item balls below ledges on Routes 112 and
+// 114). The ledge then blocks like a wall. Followers are behind the player, and
+// their own jumps land where the player just was.
+static bool32 IsLedgeLandingTaken(struct ObjectEvent *objectEvent, s16 x, s16 y, enum Direction direction)
+{
+    u32 objectEventId;
+
+    if (!objectEvent->isPlayer)
+        return FALSE;
+    MoveCoords(direction, &x, &y);
+    objectEventId = GetObjectEventIdByXY(x, y);
+    if (objectEventId == OBJECT_EVENTS_COUNT)
+        return FALSE;
+    return gObjectEvents[objectEventId].localId != OBJ_EVENT_ID_FOLLOWER
+        && gObjectEvents[objectEventId].localId != OBJ_EVENT_ID_NPC_FOLLOWER;
 }
 
 static bool8 TryPushBoulder(s16 x, s16 y, enum Direction direction)

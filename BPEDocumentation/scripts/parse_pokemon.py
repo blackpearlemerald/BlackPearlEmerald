@@ -124,6 +124,7 @@ def prettify_map(map_id):
     name = map_id.replace("MAP_", "").replace("_", " ").title()
     # Fix common abbreviations
     name = re.sub(r'\bB(\d+)F\b', r'B\1F', name)
+    name = re.sub(r'\bRoute(\d)', r'Route \1', name)
     return name
 
 # ── 1. National Dex Numbers ────────────────────────────────────────────────────
@@ -144,16 +145,21 @@ def parse_dex_numbers():
         current += 1
     return dex_map  # {"BULBASAUR": 1, "IVYSAUR": 2, ...}
 
-def parse_species_aliases():
+def parse_species_aliases(defines=False):
     """Parse `SPECIES_X = SPECIES_Y` aliases from species.h → {X: Y}.
 
     Used to find each form-family's canonical default form (e.g.
-    SPECIES_ALCREMIE = SPECIES_ALCREMIE_STRAWBERRY = …_VANILLA_CREAM)."""
+    SPECIES_ALCREMIE = SPECIES_ALCREMIE_STRAWBERRY = …_VANILLA_CREAM).
+    With `defines`, BPE's `#define SPECIES_MEOWTH_ALOLAN SPECIES_MEOWTH_ALOLA`
+    names are included too, for resolving what scripts and wild tables use."""
     path = REPO / "include" / "constants" / "species.h"
     content = read_file(path)
     alias = {}
     for m in re.finditer(r"\bSPECIES_(\w+)\s*=\s*SPECIES_(\w+)\b", content):
         alias[m.group(1)] = m.group(2)
+    if defines:
+        for m in re.finditer(r"^\s*#define\s+SPECIES_(\w+)\s+SPECIES_(\w+)\s*$", content, re.M):
+            alias.setdefault(m.group(1), m.group(2))
     return alias
 
 # ── 2. Moves ───────────────────────────────────────────────────────────────────
@@ -282,6 +288,44 @@ def read_island_legendary_pool():
     return level, species
 
 
+def read_pre_e4_legendaries():
+    """{BARE_SPECIES: needs the 8th badge} for sPreE4Legendaries[] in
+    src/field_specials.c, the legendaries of which only one can be caught
+    before the Champion. Empty for releases without the list."""
+    txt = strip_c_comments((REPO / "src" / "field_specials.c").read_text(encoding="utf-8"))
+    arr = re.search(r"sPreE4Legendaries\[\]\s*=\s*\{(.*?)\};", txt, re.S)
+    if not arr:
+        return {}
+    return {sp: badge == "TRUE" for sp, badge in
+            re.findall(r"\{\s*SPECIES_(\w+)\s*,\s*\w+\s*,\s*\w+\s*,\s*(TRUE|FALSE)\s*\}", arr.group(1))}
+
+
+def read_mirage_altar_species():
+    """[BARE_SPECIES ...] the Mirage Altar on Route 130 can call back, from the
+    VAR_0x8004 values its script checks. Empty for releases without the altar."""
+    path = REPO / "data" / "maps" / "Route130" / "scripts.inc"
+    if not path.is_file():
+        return []
+    txt = path.read_text(encoding="utf-8")
+    start = txt.find("Route130_EventScript_MirageAltar::")
+    if start < 0:
+        return []
+    # Up to the next label: the script body, not its menu helpers.
+    after = start + len("Route130_EventScript_MirageAltar::")
+    end = re.search(r"^\w+::", txt[after:], re.M)
+    body = txt[start:after + end.start() if end else len(txt)]
+    return re.findall(r"setvar VAR_0x8004, SPECIES_(\w+)\s*\n\s*special CheckAltarSpeciesCaught", body)
+
+
+# Notes on the Pokédex's location rows for the legendaries, so a player knows
+# when each one is there as well as where.
+PRE_E4_NOTE = ("Before you become Champion, only one of the pre-Champion legendaries can be caught; "
+               "the others hide until the Hall of Fame. Comes back until caught.")
+STORY_LEGENDARY_NOTE = "Comes back until caught."
+MIRAGE_NOTE = "After the Hall of Fame. Each visit, the island offers one legendary you haven't caught."
+ALTAR_NOTE = "After the Hall of Fame, once you've caught one. The altar calls back as many as you like."
+
+
 def load_static_encounters():
     """Scripted overworld encounters (legendaries, Snorlax, Kecleon...) that
     extract_world.py already wrote to world.json for this release."""
@@ -367,7 +411,7 @@ def parse_encounters(statics=()):
     # Wild tables may name a form family by its alias (SPECIES_FLORGES is
     # SPECIES_FLORGES_RED); species pages use the form's own name.
     species_h = REPO / "include" / "constants" / "species.h"
-    aliases = parse_species_aliases() if species_h.is_file() else {}
+    aliases = parse_species_aliases(defines=True) if species_h.is_file() else {}
 
     def resolve(name):
         seen = set()
@@ -412,18 +456,24 @@ def parse_encounters(statics=()):
                         })
 
     # Static encounters: one row per species and map, linked to that map.
+    pre_e4 = read_pre_e4_legendaries()
     for st in statics:
         sp = resolve(st["species"].replace("SPECIES_", ""))
         rows = species_enc.setdefault(sp, [])
         if any(e["map"] == st["mapId"] and e["type"] == "static" for e in rows):
             continue
-        rows.append({
+        row = {
             "map": st["mapId"],
             "mapName": st.get("place") or prettify_map(st["mapId"]),
             "minLevel": st["level"],
             "maxLevel": st["level"],
             "type": "static",
-        })
+        }
+        if st.get("preE4") and sp in pre_e4:
+            row["note"] = ("Appears after the 8th Gym. " if pre_e4[sp] else "") + PRE_E4_NOTE
+        elif st.get("legendary") and pre_e4:
+            row["note"] = STORY_LEGENDARY_NOTE
+        rows.append(row)
 
     # Legendary Lottery Island: every pool legendary gets a "Mirage Island"
     # location (Route 130) whose link snaps to the island on the map.
@@ -435,6 +485,19 @@ def parse_encounters(statics=()):
             "minLevel": mirage_level,
             "maxLevel": mirage_level,
             "type": "mirage",
+            "note": MIRAGE_NOTE,
+        })
+
+    # The Mirage Altar calls back another of a legendary already caught, which
+    # is what its evolutions and forms need.
+    for sp in read_mirage_altar_species():
+        species_enc.setdefault(resolve(sp), []).append({
+            "map": "MAP_ROUTE130",
+            "mapName": "Mirage Altar",
+            "minLevel": mirage_level,
+            "maxLevel": mirage_level,
+            "type": "altar",
+            "note": ALTAR_NOTE,
         })
 
     # Wild form variants: each form is found wherever its species is, with a
@@ -1158,6 +1221,8 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
     tm_set = set(tms)
     hm_set = set(hms)
     all_species = {}
+    species_h = REPO / "include" / "constants" / "species.h"
+    enc_alias = parse_species_aliases(defines=True) if species_h.is_file() else {}
 
     info_dir = REPO / "src" / "data" / "pokemon" / "species_info"
     for gen_file in sorted(info_dir.glob("gen_*_families.h")):
@@ -1270,6 +1335,14 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
             # every target species' national dex number is known)
             entry["_evosRaw"] = _parse_evolutions(block)
 
+            # Read by apply_forms(), which removes them again.
+            m = re.search(r"\.formChangeTable\s*=\s*s(\w+FormChangeTable)", block)
+            entry["_formTable"] = m.group(1) if m else None
+            entry["_battleOnly"] = bool(re.search(
+                r"\.is(?:MegaEvolution|PrimalReversion|UltraBurst|Gigantamax|TeraForm)\s*=\s*TRUE", block))
+            entry["_totem"] = bool(re.search(r"\.isTotem\s*=\s*TRUE", block))
+            entry["_evolvesFrom"] = []
+
             # Learnsets (resolve by array name embedded in block)
             def get_array_name(field):
                 am = re.search(rf"\.{field}\s*=\s*s(\w+)", block)
@@ -1288,7 +1361,10 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
             entry["tutorMoves"] = [mv for mv in all_teach if mv not in tm_set and mv not in hm_set]
 
             # Wild encounters
-            entry["encounters"] = encounters.get(species_key, [])
+            # The wild tables resolve names to the enum's own (GRENINJA_BOND)
+            # while species_info may declare its alias (GRENINJA_BATTLE_BOND).
+            entry["encounters"] = (encounters.get(species_key)
+                                   or encounters.get(_final_species(species_key, enc_alias), []))
 
             # Items a wild one can hold, with their odds
             if held_rules:
@@ -1380,7 +1456,17 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
         order = []
         for evo in entry.pop("_evosRaw"):
             if not _evo_possible(evo, key, names):
+                target = all_species.get(resolve_alias(evo["target"]))
+                if target is not None:
+                    target["_hasParent"] = True
                 continue
+            # The exact form reached, which the Forms section lists even when
+            # the chain collapses it into one node.
+            exact = all_species.get(resolve_alias(evo["target"]))
+            if exact is not None:
+                exact["_hasParent"] = True
+            if exact is not None:
+                exact["_evolvesFrom"].append({"from": key, "method": _evo_label(evo, key, names)})
             ck = canonical_target(evo["target"])
             if ck not in groups:
                 groups[ck] = []
@@ -1580,7 +1666,643 @@ def apply_special_moves(all_species):
     return added
 
 
-# ── 11. Sprites ────────────────────────────────────────────────────────────────
+# ── 11. Alternate forms ────────────────────────────────────────────────────────
+#
+# Every species that shares a national dex number is a form of the same
+# Pokémon: Megas, regional forms, Rotom's appliances, Vivillon's patterns...
+# Each species page lists them all with every way to get each one.
+
+# Older releases name the forms SPECIES_MEOWTH_ALOLAN instead of _ALOLA.
+_REGION_WORDS = {"ALOLA": "Alolan", "GALAR": "Galarian", "HISUI": "Hisuian", "PALDEA": "Paldean",
+                 "ALOLAN": "Alolan", "GALARIAN": "Galarian", "HISUIAN": "Hisuian", "PALDEAN": "Paldean"}
+_FORM_WORDS = {"F": "Female", "M": "Male"}
+
+# Form changes that only undo another one. They are listed when they lead
+# somewhere other than the Pokémon's usual form (Minior's core after battle).
+_REVERT_METHODS = {"FORM_CHANGE_END_BATTLE", "FORM_CHANGE_FAINT", "FORM_CHANGE_BATTLE_SWITCH_OUT",
+                   "FORM_CHANGE_DEPOSIT", "FORM_CHANGE_WITHDRAW", "FORM_CHANGE_DAYS_PASSED",
+                   "FORM_CHANGE_STATUS", "FORM_CHANGE_TIME_OF_DAY", "FORM_CHANGE_BEGIN_BATTLE"}
+
+# Older names of form change methods.
+_LEGACY_FORM_METHODS = {"FORM_CHANGE_END_BATTLE_TERRAIN": "FORM_CHANGE_END_BATTLE_ENVIRONMENT",
+                        "FORM_CHANGE_BATTLE_SWITCH": "FORM_CHANGE_BATTLE_SWITCH_OUT",
+                        "FORM_CHANGE_HIT_BY_MOVE": "FORM_CHANGE_BATTLE_HIT_BY_MOVE_CATEGORY",
+                        "FORM_CHANGE_TERASTALLIZATION": "FORM_CHANGE_BATTLE_TERASTALLIZATION"}
+
+_GIMMICK_NAMES = {"MEGA": "Mega Evolution", "ULTRA_BURST": "Ultra Burst",
+                  "TERA": "Terastallization", "DYNAMAX": "Dynamax"}
+
+# The key item each battle gimmick needs, when the battle code asks for it.
+_GIMMICK_KEY_ITEMS = {"MEGA": "MEGA_RING", "ULTRA_BURST": "Z_POWER_RING",
+                      "TERA": "TERA_ORB", "DYNAMAX": "DYNAMAX_BAND"}
+
+_BATTLE_WEATHER = {"B_WEATHER_SUN": "harsh sunlight", "B_WEATHER_RAIN": "rain",
+                   "B_WEATHER_ICY_ANY": "snow or hail", "B_WEATHER_HAIL": "hail",
+                   "B_WEATHER_SNOW": "snow", "B_WEATHER_SANDSTORM": "a sandstorm"}
+_OVERWORLD_WEATHER = {"WEATHER_SUNNY_CLOUDS": "sunshine", "WEATHER_DROUGHT": "a drought",
+                      "WEATHER_RAIN": "rain", "WEATHER_RAIN_THUNDERSTORM": "thunderstorms",
+                      "WEATHER_DOWNPOUR": "downpours", "WEATHER_SNOW": "snow"}
+_ENVIRONMENTS = {"GRASS": "grass", "LONG_GRASS": "tall grass", "POND": "water", "MOUNTAIN": "mountains",
+                 "PLAIN": "plains", "CAVE": "caves", "SAND": "sand", "BUILDING": "buildings"}
+
+
+def _final_species(key, alias):
+    """Follow species.h aliases to the name the enum itself defines."""
+    seen = set()
+    while key in alias and key not in seen:
+        seen.add(key)
+        key = alias[key]
+    return key
+
+
+def _form_label(name, parts, genders=True):
+    """"Mega Charizard X", "Galarian Meowth", "Rotom (Wash)" from the species
+    name and what its constant adds to the family's. Without `genders`, F and
+    M are letters (Unown) rather than Female and Male."""
+    parts = list(parts)
+    lead, tail, letter = [], [], ""
+    while parts and parts[0] in _REGION_WORDS:
+        lead.append(_REGION_WORDS[parts.pop(0)])
+    if parts and parts[-1] in ("GMAX", "GIGANTAMAX"):
+        parts.pop()
+        lead.insert(0, "Gigantamax")
+    if parts and parts[0] in ("MEGA", "PRIMAL"):
+        lead.insert(0, parts.pop(0).title())
+        if len(parts) == 1 and len(parts[0]) == 1:
+            letter = " " + parts.pop()
+    elif "MEGA" in parts:
+        parts.remove("MEGA")
+        lead.insert(0, "Mega")
+    for word, text in (("TOTEM", "Totem"), ("TERA", "Terastal")):
+        if parts and parts[-1] == word:
+            parts.pop()
+            tail.insert(0, text)
+    words = _FORM_WORDS if genders else {}
+    inside = [" ".join(words.get(p, p.title()) for p in parts)] if parts else []
+    inside += tail
+    return " ".join(lead + [name]) + letter + (f" ({', '.join(inside)})" if inside else "")
+
+
+def _read_form_changes():
+    """({table: [(method, target, [args])]}, [(item, first, second, result)])"""
+    path = REPO / "src" / "data" / "pokemon" / "form_change_tables.h"
+    if not path.exists():
+        return {}, []
+    text = strip_c_comments(read_file(path))
+    tables = {}
+    for name, body in re.findall(r"struct FormChange s(\w+FormChangeTable)\[\]\s*=\s*\{(.*?)\n\};", text, re.S):
+        rows = []
+        for method, rest in re.findall(r"\{\s*(FORM_CHANGE_\w+)\s*,?\s*([^}]*)\}", body):
+            args = [a.strip() for a in rest.split(",") if a.strip()]
+            if args and args[0].startswith("SPECIES_"):
+                rows.append((_LEGACY_FORM_METHODS.get(method, method), args[0][8:], args[1:]))
+        tables[name] = rows
+    fusions = []
+    for body in re.findall(r"struct Fusion s\w+\[\]\s*=\s*\{(.*?)\n\};", text, re.S):
+        fusions += re.findall(r"\{\s*\w+\s*,\s*ITEM_(\w+)\s*,\s*SPECIES_(\w+)\s*,\s*SPECIES_(\w+)\s*,\s*SPECIES_(\w+)", body)
+    return tables, fusions
+
+
+def _gimmick_key_items():
+    """{gimmick: key item} for the gimmicks whose battle code checks the bag."""
+    code = "".join(read_file(p) for p in (REPO / "src").glob("battle_*.c"))
+    return {g: item for g, item in _GIMMICK_KEY_ITEMS.items()
+            if re.search(rf"CheckBagHasItem\(ITEM_{item}\b", code)}
+
+
+def _dynamax_enabled():
+    config = REPO / "include" / "config" / "battle.h"
+    m = re.search(r"#define\s+B_FLAG_DYNAMAX_BATTLE\s+(\w+)", read_file(config)) if config.exists() else None
+    return bool(m) and m.group(1) != "0"
+
+
+def _mirage_held_items():
+    """{ITEM: SPECIES} for island legendaries that come holding an item."""
+    txt = strip_c_comments(read_file(REPO / "src" / "field_specials.c"))
+    body = re.search(r"GetIslandLegendaryHeldItem\([^)]*\)\s*\{(.*?)\n\}", txt, re.S)
+    if not body:
+        return {}
+    return {item: species for species, item in
+            re.findall(r"SPECIES_(\w+)\s*\)\s*return\s+ITEM_(\w+)", body.group(1))}
+
+
+def _item_sources(item_ids, all_species, labels):
+    """{ITEM: [{"text", "map"?}, ...]}: where the player gets each item, from
+    the same world data as the item pages. An empty list means nowhere."""
+    import parse_items
+    locations = parse_items.build_locations({i: None for i in item_ids})
+    wild_types = {"land_mons", "water_mons", "rock_smash_mons", "fishing_mons"}
+    mirage = _mirage_held_items()
+    script_items = {}
+    hoenn = parse_hoenn_map_ids()
+    for mj in sorted((REPO / "data" / "maps").glob("*/map.json")):
+        script = mj.parent / "scripts.inc"
+        if not script.exists():
+            continue
+        with open(mj, "r", encoding="utf-8") as f:
+            map_id = json.load(f).get("id")
+        if map_id not in hoenn:
+            continue
+        for item in re.findall(r"^\s*(?:giveitem|giveitem_msg|finditem|additem)\s+ITEM_(\w+)",
+                               read_file(script), re.M):
+            if map_id not in script_items.setdefault(item, []):
+                script_items[item].append(map_id)
+    out = {}
+    for item in item_ids:
+        loc = locations.get(item) or {}
+        where = []
+        for g in loc.get("gifts", []):
+            where.append({"text": "Gift in " + g["mapName"], "map": g["mapId"]})
+        for o in loc.get("overworld", []):
+            place = "Mirage Island" if o["mapId"] == "MAP_ROUTE130" else o["mapName"]
+            where.append({"text": ("Hidden in " if o.get("hidden") else "") + place, "map": o["mapId"]})
+        for m in loc.get("marts", []):
+            cond = m.get("condition") or ""
+            cond = "" if cond in ("", "Always available") else f" ({cond})"
+            where.append({"text": f"{m['martName']} shop{cond}", "map": m["mapId"]})
+        if item in mirage:
+            where.append({"text": f"Held by Mirage Island's {labels.get(mirage[item], mirage[item])}",
+                          "map": "MAP_ROUTE130"})
+        for key, sp in all_species.items():
+            if any(h["item"] == item for h in sp.get("wildHeldItems", [])) \
+                    and any(e["type"] in wild_types for e in sp.get("encounters", [])):
+                where.append({"text": f"Held by wild {labels[key]}", "species": key})
+        # The world data misses some handouts (a trainer's reward), so no
+        # item is called unobtainable while a map script still gives it.
+        if not where:
+            for map_id in script_items.get(item, []):
+                where.append({"text": "Event in " + prettify_map(map_id), "map": map_id})
+        out[item] = where
+    return out
+
+
+def _script_gifts_and_trades():
+    """[(SPECIES, kind, MAP, requested SPECIES or None)] for the Pokémon map
+    scripts hand over: gifts, Eggs and in-game trades."""
+    trades = {}
+    trade_h = REPO / "src" / "data" / "trade.h"
+    if trade_h.exists():
+        text = strip_c_comments(read_file(trade_h))
+        for name, body in re.findall(r"\[INGAME_TRADE_(\w+)\]\s*=\s*\{(.*?)\n\s*\},", text, re.S):
+            species = re.findall(r"\.species\s*=\s*SPECIES_(\w+)", body)
+            wanted = re.findall(r"\.requestedSpecies\s*=\s*SPECIES_(\w+)", body)
+            if species:
+                trades[name] = (species[-1], wanted[-1] if wanted else None)
+    hoenn = parse_hoenn_map_ids()
+    out = []
+    for mj in sorted((REPO / "data" / "maps").glob("*/map.json")):
+        script = mj.parent / "scripts.inc"
+        if not script.exists():
+            continue
+        with open(mj, "r", encoding="utf-8") as f:
+            map_id = json.load(f).get("id")
+        if map_id not in hoenn:
+            continue
+        text = read_file(script)
+        for op, species in re.findall(r"^\s*(givemon|giveegg|randomgift)\s+SPECIES_(\w+)", text, re.M):
+            out.append((species, "egg" if op == "giveegg" else "gift", map_id, None))
+        for species in re.findall(r"^\s*setvar\s+VAR_RESULT,\s*SPECIES_(\w+)\s*\n\s*special\s+RandomizeEggSpecies",
+                                  text, re.M):
+            out.append((species, "egg", map_id, None))
+        for trade in dict.fromkeys(re.findall(r"\bINGAME_TRADE_(\w+)", text)):
+            if trade in trades:
+                out.append((trades[trade][0], "trade", map_id, trades[trade][1]))
+    return out
+
+
+def _can_breed(entry):
+    return bool(entry.get("eggGroups")) and "NO_EGGS_DISCOVERED" not in entry["eggGroups"]
+
+
+def _daycare_egg_overrides():
+    """[(PARENT, CHILD), ...]: Eggs from PARENT that hatch as CHILD, from the
+    exact-species checks in the Day Care's egg code (src/daycare.c)."""
+    path = REPO / "src" / "daycare.c"
+    if not path.is_file():
+        return []
+    return re.findall(r"if \(eggSpecies == SPECIES_(\w+)\)\s*eggSpecies = SPECIES_(\w+);", read_file(path))
+
+
+def apply_forms(all_species, moves=None, abilities=None):
+    """Give every species with alternate forms a `forms` list: each form, with
+    every way to get it, and `formItems`, where to find the items those ways
+    need. Removes the private fields parse_species_info() left for it."""
+    names = EvoNames(moves, {k: v["name"] for k, v in all_species.items()})
+    alias = parse_species_aliases(defines=True)
+
+    # Species constants -> the name its page uses, through aliases either way.
+    page_key = {_final_species(k, alias): k for k in all_species}
+
+    def resolve(key):
+        return key if key in all_species else page_key.get(_final_species(key, alias), key)
+
+    by_dex = {}
+    for key, e in all_species.items():
+        by_dex.setdefault(e["natDexNum"], []).append(key)
+
+    labels, default_form = {}, {}
+    for dn, keys in by_dex.items():
+        if not dn or len(keys) == 1:
+            for k in keys:
+                labels[k] = all_species[k]["name"]
+                default_form[k] = k
+            continue
+        split = [k.split("_") for k in keys]
+        common = 0
+        while all(len(s) > common and s[common] == split[0][common] for s in split):
+            common += 1
+        prefix = "_".join(split[0][:common])
+        default = resolve(prefix) if resolve(prefix) in keys else keys[0]
+        letters = {s[common] for s in split if len(s) == common + 1 and len(s[common]) == 1}
+        genders = letters <= set(_FORM_WORDS)
+        for k, parts in zip(keys, split):
+            labels[k] = _form_label(all_species[k]["name"], parts[common:], genders)
+            default_form[k] = default
+
+    tables, fusions = _read_form_changes()
+    table_users = {}
+    for key, e in all_species.items():
+        if e.get("_formTable"):
+            table_users.setdefault(e["_formTable"], []).append(key)
+    key_items = _gimmick_key_items()
+    dynamax = _dynamax_enabled()
+    daycare = REPO / "src" / "daycare.c"
+    everstone_keeps_form = daycare.exists() and "IsSpeciesForeignRegionalForm" in read_file(daycare)
+
+    how = {key: [] for key in all_species}
+
+    def add(target, entry):
+        if target in how and entry not in how[target]:
+            how[target].append(entry)
+
+    # Wild, scripted and Mirage Island encounters.
+    kinds = {"land_mons": "wild", "water_mons": "wild", "rock_smash_mons": "wild",
+             "fishing_mons": "wild", "static": "static", "mirage": "mirage", "altar": "altar"}
+    texts = {"wild": "Catch one in the wild.",
+             "static": "Battle the one waiting in the overworld.",
+             "mirage": "Win it in Mirage Island's legendary lottery.",
+             "altar": "Call another one at the Mirage Altar on top of Mirage Island."}
+    for key, e in all_species.items():
+        for kind in ("wild", "static", "mirage", "altar"):
+            places = [{"map": enc["map"], "mapName": enc["mapName"], "type": enc["type"],
+                       "levels": (str(enc["minLevel"]) if enc["minLevel"] == enc["maxLevel"]
+                                  else f"{enc['minLevel']}–{enc['maxLevel']}"),
+                       **({"note": enc["note"]} if enc.get("note") else {})}
+                      for enc in e.get("encounters", []) if kinds.get(enc["type"]) == kind]
+            if places:
+                add(key, {"kind": kind, "text": texts[kind], "places": places})
+
+    # Gifts, Eggs and in-game trades.
+    for species, kind, map_id, wanted in _script_gifts_and_trades():
+        species = resolve(species)
+        if species not in how:
+            continue
+        place = {"map": map_id, "mapName": prettify_map(map_id), "type": kind}
+        if kind == "trade" and wanted:
+            wanted = resolve(wanted)
+            entry = {"kind": "trade", "text": f"Trade a {labels.get(wanted, wanted)} for one.",
+                     "species": [wanted], "places": [place]}
+        else:
+            entry = {"kind": "gift", "text": "Receive an Egg that hatches into one." if kind == "egg"
+                     else "Receive one as a gift.", "places": [place]}
+        existing = next((e for e in how[species] if e["text"] == entry["text"]), None)
+        if existing:
+            if place not in existing["places"]:
+                existing["places"].append(place)
+        else:
+            add(species, entry)
+
+    # Evolution, exactly as the chain shows it; several ways from the same
+    # Pokémon (Trade or Linking Cord) share one line.
+    for key, e in all_species.items():
+        by_source = {}
+        for src in e.get("_evolvesFrom", []):
+            by_source.setdefault(src["from"], []).append(src["method"])
+        for source, methods in by_source.items():
+            add(key, {"kind": "evolve", "text": f"Evolve {labels[source]}: {' or '.join(methods)}",
+                      "species": [source]})
+
+    # Fusions.
+    for item, first, second, result in fusions:
+        first, second, result = resolve(first), resolve(second), resolve(result)
+        if result in how:
+            add(result, {"kind": "fusion", "items": [item], "species": [first, second],
+                         "text": f"Fuse {labels.get(first, first)} with {labels.get(second, second)} "
+                                 f"using the {names.item(item)}."})
+
+    # Form change tables. Rows that differ only in the item (Arceus holding a
+    # Plate or a Z-Crystal) or the weather are one way with alternatives.
+    merged, reverts, item_steps = {}, [], {}
+    for table, rows in tables.items():
+        users = [u for u in table_users.get(table, []) if u in all_species]
+        if not users:
+            continue
+        for method, target, args in rows:
+            target = resolve(target)
+            if target not in how or any("~" in a or a.endswith("WEATHER_NONE") for a in args):
+                continue
+            sources = [u for u in users if u != target]
+            if not sources:
+                continue
+            # Within one Pokémon the forms are one name: "Use the Zygarde Cube
+            # on Zygarde" rather than a line for each form it can start from.
+            same_family = all_species[sources[0]]["natDexNum"] == all_species[target]["natDexNum"]
+            src = all_species[sources[0]]["name"] if same_family else labels[sources[0]]
+            if method in _REVERT_METHODS and not (method == "FORM_CHANGE_BEGIN_BATTLE" and args):
+                text = {"FORM_CHANGE_END_BATTLE": f"{src} takes this form after a battle.",
+                        "FORM_CHANGE_BEGIN_BATTLE": f"{src} takes this form when a battle starts.",
+                        "FORM_CHANGE_BATTLE_SWITCH_OUT": f"In battle, {src} takes this form when it switches out.",
+                        }.get(method)
+                if text:
+                    reverts.append((target, {"kind": "change" if method == "FORM_CHANGE_END_BATTLE"
+                                             else "battle", "text": text}))
+                continue
+            item = next((a[5:] for a in args if a.startswith("ITEM_")), None)
+            move = next((names.move(a) for a in args if a.startswith("MOVE_")), None)
+            ability = next(((abilities or {}).get(a[8:], {}).get("name") or C.prettify_constant(a[8:])
+                            for a in args if a.startswith("ABILITY_")), None)
+            via = f" ({ability})" if ability else ""
+            entry = None
+            if method == "FORM_CHANGE_ITEM_USE":
+                when = " during the day" if "DAY" in args else " at night" if "NIGHT" in args else ""
+                entry = {"kind": "change", "text": f"Use the {names.item(item)} on {src}{when}.", "items": [item]}
+                for u in sources:
+                    item_steps.setdefault(item, {})[u] = target
+            elif method == "FORM_CHANGE_ITEM_USE_MULTICHOICE":
+                entry = {"kind": "change", "items": [item],
+                         "text": f"Use the {names.item(item)} on {src} and choose this form."}
+            elif method == "FORM_CHANGE_ITEM_HOLD":
+                if item in (None, "NONE"):
+                    entry = {"kind": "change", "text": f"Take {src}'s held item away."}
+                else:
+                    merged.setdefault((target, "hold", src), []).append(item)
+            elif method == "FORM_CHANGE_MOVE":
+                if "WHEN_FORGOTTEN" in args:
+                    entry = {"kind": "change", "text": f"Make {src} forget {move}."}
+                else:
+                    entry = {"kind": "change", "text": f"Teach {src} {move}."}
+            elif method == "FORM_CHANGE_BEGIN_BATTLE":
+                entry = {"kind": "battle", "items": [item],
+                         "text": f"{src} takes this form when a battle starts while it holds the {names.item(item)}."}
+            elif method == "FORM_CHANGE_END_BATTLE_ENVIRONMENT":
+                env = re.sub(r"^BATTLE_(ENVIRONMENT|TERRAIN)_", "", args[0]) if args else ""
+                merged.setdefault((target, "environment", src), []).append(_ENVIRONMENTS.get(env, env.lower()))
+            elif method == "FORM_CHANGE_OVERWORLD_WEATHER":
+                merged.setdefault((target, "overworld weather", src), []).append(
+                    _OVERWORLD_WEATHER.get(args[0], args[0].lower()))
+            elif method == "FORM_CHANGE_BATTLE_WEATHER":
+                merged.setdefault((target, "battle weather", src), []).append(
+                    _BATTLE_WEATHER.get(args[0], args[0].lower()))
+            elif method == "FORM_CHANGE_BATTLE_MEGA_EVOLUTION_ITEM":
+                entry = {"kind": "battle", "gimmick": "MEGA", "items": [item],
+                         "text": f"Mega Evolve {src} in battle while it holds the {names.item(item)}."}
+            elif method == "FORM_CHANGE_BATTLE_MEGA_EVOLUTION_MOVE":
+                entry = {"kind": "battle", "gimmick": "MEGA",
+                         "text": f"Mega Evolve {src} in battle while it knows {move}."}
+            elif method == "FORM_CHANGE_BATTLE_PRIMAL_REVERSION":
+                entry = {"kind": "battle", "items": [item],
+                         "text": f"{src} undergoes Primal Reversion when it enters battle "
+                                 f"holding the {names.item(item)}."}
+            elif method == "FORM_CHANGE_BATTLE_ULTRA_BURST":
+                merged.setdefault((target, "ultra burst", item), []).extend(labels[u] for u in sources)
+            elif method == "FORM_CHANGE_BATTLE_GIGANTAMAX":
+                entry = {"kind": "battle", "gimmick": "DYNAMAX", "text": f"Gigantamax {src} in battle."}
+            elif method == "FORM_CHANGE_BATTLE_TERASTALLIZATION":
+                entry = {"kind": "battle", "gimmick": "TERA", "text": f"Terastallize {src} in battle."}
+            elif method.startswith("FORM_CHANGE_BATTLE_HP_PERCENT"):
+                cmp = next((a for a in args if a.startswith("HP_")), "")
+                pct = next((a for a in args if a.isdigit()), "")
+                side = "above" if cmp == "HP_HIGHER_THAN" else "at or below"
+                merged.setdefault((target, f"hp|{side}|{pct}|{via}", src), []).append(move)
+            elif method in ("FORM_CHANGE_BATTLE_BEFORE_MOVE", "FORM_CHANGE_BATTLE_BEFORE_MOVE_CATEGORY"):
+                what = move or "a damaging move"
+                entry = {"kind": "battle", "text": f"In battle, {src} takes this form when it uses {what}{via}."}
+            elif method == "FORM_CHANGE_BATTLE_AFTER_MOVE":
+                entry = {"kind": "battle", "text": f"In battle, {src} changes form after it uses {move}."}
+            elif method.startswith("FORM_CHANGE_BATTLE_HIT_BY"):
+                entry = {"kind": "battle", "text": f"In battle, {src} takes this form when an attack breaks its {ability}."}
+            elif method == "FORM_CHANGE_BATTLE_SWITCH_IN":
+                entry = {"kind": "battle", "text": f"{src} takes this form when it enters battle{via}."}
+            elif method == "FORM_CHANGE_BATTLE_TURN_END":
+                entry = {"kind": "battle", "text": f"In battle, {src} switches to this form at the end of a turn{via}."}
+            elif method == "FORM_CHANGE_BEGIN_WILD_ENCOUNTER":
+                entry = {"kind": "battle", "text": f"Wild {src} appear in this form in battle."}
+            if entry:
+                entry["items"] = [i for i in entry.get("items", []) if i]
+                add(target, entry)
+
+    def join(words):
+        words = list(dict.fromkeys(w for w in words if w))
+        return " or ".join(words) if len(words) < 3 else ", ".join(words[:-1]) + " or " + words[-1]
+
+    for (target, kind, src), values in merged.items():
+        if kind == "hold":
+            add(target, {"kind": "change", "items": list(dict.fromkeys(values)),
+                         "text": f"Give {src} the {join(names.item(i) for i in values)} to hold."})
+        elif kind == "environment":
+            add(target, {"kind": "change", "text": f"Battle with {src} in {join(values)}."})
+        elif kind == "overworld weather":
+            add(target, {"kind": "change", "text": f"{src} takes this form in the overworld during {join(values)}."})
+        elif kind == "battle weather":
+            add(target, {"kind": "battle", "text": f"In battle, {src} takes this form in {join(values)}."})
+        elif kind == "ultra burst":
+            add(target, {"kind": "battle", "gimmick": "ULTRA_BURST", "items": [src],
+                         "text": f"Ultra Burst {join(values)} in battle while it holds the {names.item(src)}."})
+        else:
+            _, side, pct, via = kind.split("|")
+            during = f" while using {join(values)}" if any(values) else ""
+            add(target, {"kind": "battle",
+                         "text": f"In battle, {src} takes this form when its HP is {side} {pct}%{during}{via}."})
+
+    # An item that moves a Pokémon on to its next form, round and round
+    # (Deoxys and the Meteorite), says so on every form of the cycle.
+    for item, steps in item_steps.items():
+        start = next(iter(steps))
+        start = default_form.get(start, start) if default_form.get(start, start) in steps else start
+        order, cur = [], start
+        while cur in steps and cur not in order:
+            order.append(cur)
+            cur = steps[cur]
+        if len(order) > 2 and cur == start:
+            name = all_species[start]["name"]
+            forms = ", ".join(labels[k].split("(")[-1].rstrip(")") for k in order)
+            for key in order:
+                how[key] = [e for e in how[key] if e.get("items") != [item]]
+                add(key, {"kind": "change", "items": [item],
+                          "text": f"Use the {names.item(item)} on {name}. Each use changes it to "
+                                  f"the next form, in this order: {forms}."})
+
+    # Battle Bond turns Greninja into Ash-Greninja in the rules before Gen 9.
+    ash, bond = resolve("GRENINJA_ASH"), resolve("GRENINJA_BATTLE_BOND")
+    if ash in how and bond in all_species:
+        config = REPO / "include" / "config" / "battle.h"
+        gen = re.search(r"#define\s+B_BATTLE_BOND\s+(\w+)", read_file(config)) if config.exists() else None
+        transforms = (gen.group(1) in ("GEN_7", "GEN_8") if gen
+                      else "SPECIES_GRENINJA_ASH" in read_file(REPO / "src" / "battle_util.c"))
+        entry = {"kind": "battle", "species": [bond],
+                 "text": f"In battle, {labels[bond]} becomes this form after it knocks out a Pokémon."}
+        if not transforms:
+            entry["unavailable"] = "Battle Bond raises Greninja's stats instead in this game."
+        add(ash, entry)
+        all_species[ash]["_battleOnly"] = True
+
+    # A form the Pokémon keeps is reached the lasting way; its battle changes
+    # and the undoing of other forms only matter for forms with no other way
+    # (Minior's core after a battle, Xerneas in battle).
+    lasting = ("wild", "static", "mirage", "gift", "trade", "evolve", "fusion", "altar")
+    reverted = set()
+    for key, entries in how.items():
+        if key == default_form.get(key) or any(e["kind"] in lasting for e in entries):
+            how[key] = [e for e in entries if e["kind"] != "battle"]
+    # Minior's core: "after a battle" says it all, without the switch-out and
+    # battle-start lines that lead to the same form.
+    for target, entry in sorted(reverts, key=lambda r: r[1]["kind"] != "change"):
+        if (target != default_form.get(target) and not all_species[target].get("_totem")
+                and all(e["kind"] == "battle" for e in how[target])
+                and not (entry["kind"] == "battle" and target in reverted)):
+            add(target, entry)
+            if entry["kind"] == "change":
+                reverted.add(target)
+
+    # Breeding keeps a regional form when the parent holds an Everstone.
+    if everstone_keeps_form:
+        for key, e in all_species.items():
+            if (set(key.split("_")) & set(_REGION_WORDS) and not e.get("_hasParent")
+                    and _can_breed(e) and not e.get("_battleOnly") and not e.get("_totem")
+                    and not any(entry["kind"] in ("change", "battle", "fusion") for entry in how[key])):
+                article = "an" if labels[key][0] in "AEIOU" else "a"
+                add(key, {"kind": "breed", "items": ["EVERSTONE"],
+                          "text": f"Breed {article} {labels[key]} holding an Everstone to hatch more."})
+
+    # Forms with no way of their own that hatch from an Egg: a baby from its
+    # evolved form (Pichu, Flabébé's colours), and a regular form from a
+    # regional one bred without an Everstone (Farfetch'd).
+    children = {}
+    for key, entries in how.items():
+        for entry in entries:
+            if entry["kind"] == "evolve":
+                children.setdefault(entry["species"][0], []).append(key)
+
+    def breedable_descendant(key, depth=0):
+        for child in children.get(key, []):
+            if _can_breed(all_species[child]) and any(e["kind"] in lasting[:5] for e in how[child]):
+                return child
+            found = depth < 3 and breedable_descendant(child, depth + 1)
+            if found:
+                return found
+        return None
+
+    for key, e in all_species.items():
+        if how[key] or e.get("_battleOnly") or e.get("_totem") or e.get("_evolvesFrom") is None:
+            continue
+        if e["_evolvesFrom"]:
+            continue
+        parent = breedable_descendant(key)
+        if parent:
+            article = "an" if labels[parent][0] in "AEIOU" else "a"
+            add(key, {"kind": "breed", "species": [parent],
+                      "text": f"Breed {article} {labels[parent]} to hatch one."})
+            continue
+        regional = [k for k in by_dex.get(e["natDexNum"], [])
+                    if set(k.split("_")) & set(_REGION_WORDS) and _can_breed(all_species[k])
+                    and any(x["kind"] in lasting for x in how[k])]
+        if everstone_keeps_form and regional and not set(key.split("_")) & set(_REGION_WORDS):
+            article = "an" if labels[regional[0]][0] in "AEIOU" else "a"
+            add(key, {"kind": "breed", "species": [regional[0]],
+                      "text": f"Breed {article} {labels[regional[0]]} that isn't holding an Everstone."})
+
+    # Eggs the Day Care turns into another Pokémon (Manaphy's hatch as Phione).
+    for parent, child in _daycare_egg_overrides():
+        parent, child = resolve(parent), resolve(child)
+        if child in how and parent in how and not how[child]:
+            article = "an" if labels[parent][0] in "AEIOU" else "a"
+            add(child, {"kind": "breed", "species": [parent],
+                        "text": f"Breed {article} {labels[parent]} to hatch one."})
+
+    # Unown's letter is chosen by its personality when it is caught.
+    for key in how:
+        if key.startswith("UNOWN_") and not how[key] and "UNOWN" in how and how["UNOWN"]:
+            add(key, {"kind": "wild", "text": "Wild Unown come in a random letter.",
+                      "species": ["UNOWN"]})
+
+    def species_link(key):
+        return {"id": key, "label": labels.get(key, key),
+                "icon": all_species[key].get("icon") if key in all_species else None}
+
+    # Where each needed item comes from, and whether the way is open at all.
+    for entries in how.values():
+        for entry in entries:
+            if entry.get("gimmick") in key_items:
+                entry["items"] = entry.get("items", []) + [key_items[entry["gimmick"]]]
+    needed = sorted({i for entries in how.values() for entry in entries for i in entry.get("items", [])})
+    sources = _item_sources(needed, all_species, labels) if needed else {}
+    for entries in how.values():
+        for entry in entries:
+            items = entry.get("items", [])
+            if entry["kind"] == "change" and len(items) > 1:
+                # Alternatives: keep the ones the player can get.
+                kept = [i for i in items if sources.get(i)]
+                if kept and len(kept) < len(items):
+                    src = entry["text"][len("Give "):entry["text"].index(" the ")]
+                    entry["items"] = kept
+                    entry["text"] = f"Give {src} the {join(names.item(i) for i in kept)} to hold."
+                missing = [] if kept else items[:1]
+            else:
+                missing = [i for i in items if not sources.get(i)]
+            gimmick = entry.get("gimmick")
+            if gimmick == "DYNAMAX" and not dynamax:
+                entry["unavailable"] = "Dynamax isn't part of this game."
+            elif gimmick in _GIMMICK_NAMES and key_items.get(gimmick) in missing:
+                entry["unavailable"] = f"{_GIMMICK_NAMES[gimmick]} isn't part of this game."
+            elif missing:
+                entry["unavailable"] = f"The {names.item(missing[0])} can't be obtained in this release."
+            entry.pop("gimmick", None)
+            if not entry.get("items"):
+                entry.pop("items", None)
+            if entry.get("species"):
+                entry["species"] = [species_link(s) for s in entry["species"]]
+
+    for dn, keys in by_dex.items():
+        if not dn or len(keys) < 2:
+            continue
+        group = []
+        item_ids = set()
+        for k in keys:
+            e = all_species[k]
+            entries = how[k]
+            item_ids.update(i for entry in entries for i in entry.get("items", []))
+            form = {"id": k, "label": labels[k], "types": e["types"], "icon": e.get("icon"),
+                    "how": entries}
+            if e.get("_battleOnly"):
+                form["battleOnly"] = True
+            if e.get("_totem"):
+                form["totem"] = True
+            if e.get("evolutions"):
+                form["evolvesInto"] = [species_link(ev["target"]) for ev in e["evolutions"]]
+            group.append(form)
+        items = {i: {"name": names.item("ITEM_" + i), "icon": f"sprites/items/{i.lower()}.png",
+                     "where": sources.get(i, [])} for i in sorted(item_ids)}
+        for k in keys:
+            all_species[k]["forms"] = group
+            if items:
+                all_species[k]["formItems"] = items
+
+    # A Pokémon found nowhere says how to get it instead (Solgaleo, Phione).
+    for key, e in all_species.items():
+        if not e.get("forms") and not e.get("encounters") and how[key]:
+            e["obtain"] = how[key]
+            item_ids = sorted({i for entry in how[key] for i in entry.get("items", [])})
+            if item_ids:
+                e["obtainItems"] = {i: {"name": names.item("ITEM_" + i), "icon": f"sprites/items/{i.lower()}.png",
+                                        "where": sources.get(i, [])} for i in item_ids}
+
+    for e in all_species.values():
+        for field in ("_formTable", "_battleOnly", "_totem", "_evolvesFrom", "_hasParent"):
+            e.pop(field, None)
+    return sum(1 for keys in by_dex.values() if len(keys) > 1)
+
+
+# ── 12. Sprites ────────────────────────────────────────────────────────────────
 
 FORM_SUFFIXES = [
     ("_MEGA_X", "mega_x"), ("_MEGA_Y", "mega_y"), ("_MEGA_Z", "mega_z"),
@@ -1770,7 +2492,11 @@ def main():
     print("  [11] Copying sprites ...")
     copy_sprites(all_species)
 
-    print("  [12] Writing JSON ...")
+    print("  [12] Alternate forms ...")
+    families = apply_forms(all_species, moves, abilities)
+    print(f"       -> {families} Pokémon with more than one form")
+
+    print("  [13] Writing JSON ...")
 
     write_json(DATA_DIR / "moves.json", moves)
     write_json(DATA_DIR / "abilities.json", abilities)

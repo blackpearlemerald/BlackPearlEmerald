@@ -65,9 +65,13 @@ EventScript_AccessHallOfFame::
 	goto EventScript_AccessPC
 	end
 
+@ BPE: the Box Link works anywhere, so there is no PC to switch off. The PC
+@ turn-off effect stamped an impassable PC tile next to the player in some
+@ spots (Weather Institute, Trick House, Mt. Chimney), one more each use.
 EventScript_AccessPokemonBoxLink::
 	playse SE_PC_LOGIN
 	msgbox gText_StorageSystemOpened, MSGBOX_DEFAULT
 	special ShowPokemonStorageSystemPC
-	goto EventScript_TurnOffPC
+	playse SE_PC_OFF
+	releaseall
 	end

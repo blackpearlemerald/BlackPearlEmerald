@@ -73,6 +73,7 @@ void EndDexNavSearch(void);
 void Task_OpenDexNavFromStartMenu(u8 taskId);
 bool32 IsDexNavUnlocked(void);
 bool32 IsDexNavUsableHere(void);
+bool32 IsDexNavStalkingPokemon(void);
 bool32 TryStartDexNavSearch(void);
 void TryIncrementSpeciesSearchLevel(void);
 void ResetDexNavSearch(void);

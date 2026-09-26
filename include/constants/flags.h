@@ -62,9 +62,9 @@
 #define FLAG_POCKET_WATCH_SET       0x28 // BPE: formerly unused. The Pocket Watch time holds until the player picks Real Time.
 #define FLAG_POCKET_WATCH_TIME_LO   0x29 // BPE: formerly unused. With _HI, the time of day the Pocket Watch shows.
 #define FLAG_POCKET_WATCH_TIME_HI   0x2A // BPE: formerly unused
-#define FLAG_UNUSED_0x02B    0x2B // Unused Flag
-#define FLAG_UNUSED_0x02C    0x2C // Unused Flag
-#define FLAG_UNUSED_0x02D    0x2D // Unused Flag
+#define FLAG_INFINITE_REPEL_ON       0x2B // BPE: formerly unused. The Infinite Repel is switched on.
+#define FLAG_RECEIVED_INFINITE_REPEL 0x2C // BPE: formerly unused. Mom has handed out the Infinite Repel.
+#define FLAG_LILYCOVE_NPC_TRADE_COMPLETED 0x2D // BPE: formerly unused. The Lickitung trade in Lilycove House 1 is done.
 #define FLAG_UNUSED_0x02E    0x2E // Unused Flag
 #define FLAG_UNUSED_0x02F    0x2F // Unused Flag
 // BPE: set when the matching pre-Elite Four legendary is caught (Mew uses FLAG_CAUGHT_MEW)

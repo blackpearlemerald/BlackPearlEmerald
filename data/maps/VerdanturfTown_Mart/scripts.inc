@@ -361,14 +361,34 @@ VerdanturfTown_Mart_Pokemart_Postgame:
 	.2byte ITEM_GRISEOUS_CORE
 	.2byte ITEM_RUSTED_SWORD
 	.2byte ITEM_RUSTED_SHIELD
+	.2byte ITEM_RED_ORB
+	.2byte ITEM_BLUE_ORB
+	.2byte ITEM_ULTRANECROZIUM_Z
 	pokemartlistend
 
 VerdanturfTown_Mart_EventScript_Boy::
 	msgbox VerdanturfTown_Mart_Text_XSpecialIsCrucial, MSGBOX_NPC
 	end
 
+@ BPE: after the Hall of Fame she gives the Z-Power Ring, which Necrozma needs
+@ to Ultra Burst. No flag: the key item itself records that she gave it.
 VerdanturfTown_Mart_EventScript_ExpertF::
-	msgbox VerdanturfTown_Mart_Text_NoStrategyGuidesForBattleTent, MSGBOX_NPC
+	lock
+	faceplayer
+	goto_if_unset FLAG_SYS_GAME_CLEAR, VerdanturfTown_Mart_EventScript_ExpertFBattleTent
+	checkitem ITEM_Z_POWER_RING
+	goto_if_eq VAR_RESULT, TRUE, VerdanturfTown_Mart_EventScript_ExpertFUltraBurst
+	msgbox VerdanturfTown_Mart_Text_ChampionTakeZPowerRing, MSGBOX_DEFAULT
+	giveitem ITEM_Z_POWER_RING
+	goto_if_eq VAR_RESULT, FALSE, EventScript_BagIsFull
+VerdanturfTown_Mart_EventScript_ExpertFUltraBurst::
+	msgbox VerdanturfTown_Mart_Text_ExplainUltraBurst, MSGBOX_DEFAULT
+	release
+	end
+
+VerdanturfTown_Mart_EventScript_ExpertFBattleTent::
+	msgbox VerdanturfTown_Mart_Text_NoStrategyGuidesForBattleTent, MSGBOX_DEFAULT
+	release
 	end
 
 VerdanturfTown_Mart_EventScript_Lass::
@@ -386,6 +406,18 @@ VerdanturfTown_Mart_Text_NoStrategyGuidesForBattleTent:
 	.string "strategy guides for the BATTLE TENT…\p"
 	.string "It seems one must rely on one's\n"
 	.string "own wits after all…$"
+
+VerdanturfTown_Mart_Text_ChampionTakeZPowerRing:
+	.string "Oh! You're the new CHAMPION!\p"
+	.string "A CHAMPION should have this.\n"
+	.string "I never found a use for it myself.$"
+
+VerdanturfTown_Mart_Text_ExplainUltraBurst:
+	.string "That Z-POWER RING lets a NECROZMA\n"
+	.string "fused with SOLGALEO or LUNALA\l"
+	.string "ULTRA BURST in battle.\p"
+	.string "It has to hold an ULTRANECROZIUM Z.\n"
+	.string "The clerk here sells those now.$"
 
 VerdanturfTown_Mart_Text_NestBallOnWeakenedPokemon:
 	.string "The NEST BALL works better on\n"

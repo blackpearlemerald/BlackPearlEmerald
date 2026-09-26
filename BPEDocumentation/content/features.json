@@ -40,7 +40,11 @@
         },
         {
           "title": "Starter kit and Candy Jar",
-          "body": "You have the Running Shoes from your first step, and you can run indoors. Mom gives you the Candy Jar, Taxi Ticket, Pokévial, Pokémon Box Link, Exp. Share, Old Rod, Escape Rope and Pocket Watch, plus the Level Limiter in Standard mode. The Candy Jar never runs out and raises a Pokémon straight to the level your badges allow, in both modes."
+          "body": "You have the Running Shoes from your first step, and you can run indoors. Mom gives you the Candy Jar, Taxi Ticket, Pokévial, Pokémon Box Link, Exp. Share, Old Rod, Escape Rope, Pocket Watch and Infinite Repel, plus the Level Limiter in Standard mode. The Candy Jar never runs out and raises a Pokémon straight to the level your badges allow, in both modes."
+        },
+        {
+          "title": "Infinite Repel",
+          "body": "A key item from Mom's starter kit that works like a Max Repel that never runs out: while it is on, wild Pokémon of a lower level than the first Pokémon in your party stay away. Use it from the Bag, or register it to SELECT, to switch it on or off. It has no effect in the Safari Zone or the Battle Frontier's Pike and Pyramid. Saves from before it existed get it by talking to Mom at home."
         },
         {
           "title": "Taxi Ticket",
@@ -102,7 +106,7 @@
         },
         {
           "title": "The Mirage Altar",
-          "body": "A few Pokémon are made by evolving a second copy of a legendary you already have: Cosmoem, Naganadel, both Urshifu and Silvally. The stone altar at the top of Mirage Island calls back a Cosmog, Poipole, Kubfu or Type: Null you have already caught so you can battle and catch another one at level 70. It only lists the ones you have registered, so it doubles as a reminder of what is still ahead of you."
+          "body": "A few Pokémon are made by evolving a second copy of a legendary you already have: Cosmoem, Solgaleo, Lunala, Naganadel, both Urshifu and Silvally. The stone altar at the top of Mirage Island calls back a Cosmog, Poipole, Kubfu or Type: Null you have already caught so you can battle and catch another one at level 70. It only lists the ones you have registered, so it doubles as a reminder of what is still ahead of you."
         }
       ]
     },

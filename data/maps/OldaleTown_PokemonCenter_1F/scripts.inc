@@ -61,10 +61,11 @@ OldaleTown_PokemonCenter_1F_Text_TradedInWirelessClub:
 	.string "I traded POKéMON right away.$"
 
 
+@ BPE: this relearner stands in every Pokemon Center, where local id 1
+@ (LOCALID_MOVE_RELEARNER, from Fallarbor) is the Nurse. Turn the one talked to.
 OldaleTown_MoveRelearnersHouse_EventScript_MoveRelearner::
 	lockall
-	applymovement LOCALID_MOVE_RELEARNER, Common_Movement_FacePlayer
-	waitmovement 0
+	faceplayer
 	goto_if_set FLAG_TEMP_1, FallarborTown_MoveRelearnersHouse_EventScript_AskTeachMove
 	msgbox FallarborTown_MoveRelearnersHouse_Text_ImTheMoveTutor, MSGBOX_DEFAULT
 	setflag FLAG_TEMP_1

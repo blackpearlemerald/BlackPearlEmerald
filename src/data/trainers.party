@@ -128,7 +128,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Ambipom @ Loaded Dice
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 Ability: Technician
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fake Out
@@ -139,7 +139,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Bibarel @ Sitrus Berry
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 Ability: Simple
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Curse
@@ -150,7 +150,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Hydrapple @ Big Root
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 Ability: Supersweet Syrup
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fickle Beam
@@ -161,7 +161,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Feraligatr @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 Ability: Sheer Force
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aqua Jet
@@ -279,7 +279,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Kingler @ Assault Vest
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 Ability: Sheer Force
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Crabhammer
@@ -290,7 +290,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Crawdaunt @ Choice Band
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 Ability: Adaptability
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aqua Jet
@@ -301,7 +301,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Crustle @ Custap Berry
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 Ability: Sturdy
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Shell Smash
@@ -761,7 +761,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Drednaw
 Quirky Nature
 Level: 21
-Standard Level: 18
+Standard Level: 16
 Ability: Strong Jaw
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Bite
@@ -772,7 +772,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gurdurr
 Quirky Nature
 Level: 21
-Standard Level: 18
+Standard Level: 16
 Ability: Iron Fist
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mach Punch
@@ -783,7 +783,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Croconaw
 Quirky Nature
 Level: 21
-Standard Level: 18
+Standard Level: 16
 Ability: Sheer Force
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aqua Jet
@@ -1354,7 +1354,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Toxapex @ Black Sludge
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 Ability: Merciless
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Baneful Bunker
@@ -1365,7 +1365,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gyarados @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 Ability: Moxie
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Dance
@@ -1376,7 +1376,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Slowking-Galar
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 Ability: Regenerator
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Chilly Reception
@@ -1387,7 +1387,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Sandslash-Alola @ Bright Powder
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 Ability: Snow Cloak
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Brick Break
@@ -1436,7 +1436,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Seismitoad @ Red Card
 Quirky Nature
 Level: 67
-Standard Level: 64
+Standard Level: 63
 Ability: Poison Touch
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Poison Jab
@@ -1447,7 +1447,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Cloyster @ White Herb
 Quirky Nature
 Level: 67
-Standard Level: 64
+Standard Level: 63
 Ability: Skill Link
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Rock Blast
@@ -1458,7 +1458,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Slowbro @ Leftovers
 Quirky Nature
 Level: 67
-Standard Level: 64
+Standard Level: 63
 Ability: Regenerator
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Counter
@@ -1469,7 +1469,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Machamp @ Quick Claw
 Quirky Nature
 Level: 67
-Standard Level: 64
+Standard Level: 63
 Ability: No Guard
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dynamic Punch
@@ -1480,7 +1480,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Tentacruel @ Black Sludge
 Quirky Nature
 Level: 67
-Standard Level: 64
+Standard Level: 63
 Ability: Clear Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Giga Drain
@@ -1491,7 +1491,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Blastoise @ Blastoisinite
 Quirky Nature
 Level: 67
-Standard Level: 64
+Standard Level: 63
 Ability: Torrent
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aura Sphere
@@ -3916,7 +3916,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Mawile @ Leftovers
 Quirky Nature
 Level: 57
-Standard Level: 56
+Standard Level: 55
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Sucker Punch
 - Iron Head
@@ -3926,7 +3926,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Sceptile @ Life Orb
 Quirky Nature
 Level: 57
-Standard Level: 56
+Standard Level: 55
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Leaf Blade
 - Slam
@@ -3936,7 +3936,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Jumpluff @ Focus Sash
 Quirky Nature
 Level: 57
-Standard Level: 56
+Standard Level: 55
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Bounce
 - Acrobatics
@@ -4854,7 +4854,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Corsola-Galar
 Quirky Nature
 Level: 12
-Standard Level: 8
+Standard Level: 7
 Ability: Cursed Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Night Shade
@@ -4864,7 +4864,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Golett
 Quirky Nature
 Level: 12
-Standard Level: 8
+Standard Level: 7
 Ability: Iron Fist
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Smack Down
@@ -5559,7 +5559,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Beautifly
 Quirky Nature
 Level: 12
-Standard Level: 9
+Standard Level: 8
 Ability: Rivalry
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tailwind
@@ -5570,7 +5570,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Grimer-Alola
 Quirky Nature
 Level: 12
-Standard Level: 9
+Standard Level: 8
 Ability: Poison Touch
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mud Slap
@@ -5580,7 +5580,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Rockruff
 Quirky Nature
 Level: 12
-Standard Level: 9
+Standard Level: 8
 Ability: Steadfast
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Rock Throw
@@ -10480,16 +10480,16 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Claydol @ Assault Vest
+Metagross @ Leftovers
 Quirky Nature
-Level: 50
-Standard Level: 50
-Ability: Levitate
+Level: 51
+Standard Level: 51
+Ability: Clear Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Scorching Sands
-- Psychic
-- Ancient Power
-- Ice Beam
+- Meteor Mash
+- Zen Headbutt
+- Earthquake
+- Bullet Punch
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -10502,6 +10502,17 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
 - Thunderbolt
 
+Farigiraf @ Assault Vest
+Quirky Nature
+Level: 50
+Standard Level: 50
+Ability: Armor Tail
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Hyper Voice
+- Psychic Noise
+- Thunderbolt
+- Shadow Ball
+
 Hatterene @ Leftovers
 Quirky Nature
 Level: 51
@@ -10512,17 +10523,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psyshock
 - Draining Kiss
 - Mystical Fire
-
-Metagross @ Leftovers
-Quirky Nature
-Level: 51
-Standard Level: 51
-Ability: Clear Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Meteor Mash
-- Zen Headbutt
-- Earthquake
-- Bullet Punch
 
 Gallade @ Life Orb
 Quirky Nature
@@ -11040,7 +11040,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Sinistea @ Lagging Tail
 Quirky Nature
 Level: 13
-Standard Level: 13
+Standard Level: 12
 Ability: Cursed Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Memento
@@ -11051,7 +11051,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Poltchageist
 Quirky Nature
 Level: 13
-Standard Level: 13
+Standard Level: 12
 Ability: Heatproof
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Mega Drain
@@ -11550,7 +11550,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Sylveon
 Quirky Nature
 Level: 30
-Standard Level: 29
+Standard Level: 28
 Ability: Pixilate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Draining Kiss
@@ -11560,7 +11560,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Glaceon @ Never Melt Ice
 Quirky Nature
 Level: 30
-Standard Level: 29
+Standard Level: 28
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Ice Shard
 - Chilling Water
@@ -12322,7 +12322,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Skwovet @ Oran Berry
 Quirky Nature
 Level: 12
-Standard Level: 7
+Standard Level: 6
 Ability: Cheek Pouch
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -12331,7 +12331,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Mime Jr
 Quirky Nature
 Level: 12
-Standard Level: 7
+Standard Level: 6
 Ability: Filter
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fake Out
@@ -12924,7 +12924,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Chewtle
 Quirky Nature
 Level: 12
-Standard Level: 7
+Standard Level: 5
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Gun
 - Bite
@@ -12933,7 +12933,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Growlithe-Hisui
 Quirky Nature
 Level: 12
-Standard Level: 7
+Standard Level: 5
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Ember
 - Tackle
@@ -13059,7 +13059,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Corsola @ Focus Sash
 Quirky Nature
 Level: 30
-Standard Level: 28
+Standard Level: 27
 Ability: Regenerator
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Stealth Rock
@@ -13069,7 +13069,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Floatzel
 Quirky Nature
 Level: 30
-Standard Level: 28
+Standard Level: 27
 Ability: Swift Swim
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aqua Jet
@@ -13088,7 +13088,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Orthworm
 Quirky Nature
 Level: 11
-Standard Level: 8
+Standard Level: 7
 Ability: Earth Eater
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Smack Down
@@ -13097,7 +13097,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Qwilfish
 Quirky Nature
 Level: 12
-Standard Level: 9
+Standard Level: 8
 Ability: Intimidate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Poison Sting
@@ -13108,7 +13108,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Chinchou
 Quirky Nature
 Level: 12
-Standard Level: 9
+Standard Level: 8
 Ability: Volt Absorb
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thundershock
@@ -13167,7 +13167,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Lombre
 Quirky Nature
 Level: 21
-Standard Level: 19
+Standard Level: 17
 Ability: Own Tempo
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fake Out
@@ -13178,7 +13178,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Bibarel
 Quirky Nature
 Level: 21
-Standard Level: 19
+Standard Level: 17
 Ability: Simple
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Amnesia
@@ -13189,7 +13189,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Seel
 Quirky Nature
 Level: 21
-Standard Level: 19
+Standard Level: 17
 Ability: Thick Fat
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aurora Beam
@@ -13208,7 +13208,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Gyarados
 Quirky Nature
 Level: 21
-Standard Level: 20
+Standard Level: 18
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Gun
 - Bite
@@ -13216,7 +13216,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Azumarill @ Sitrus Berry
 Quirky Nature
 Level: 21
-Standard Level: 20
+Standard Level: 18
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Bubble Beam
 - Disarming Voice
@@ -13225,7 +13225,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Vaporeon
 Quirky Nature
 Level: 21
-Standard Level: 20
+Standard Level: 18
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Swift
 - Water Pulse
@@ -13243,7 +13243,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Relicanth
 Quirky Nature
 Level: 30
-Standard Level: 25
+Standard Level: 26
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Waterfall
 - Bulldoze
@@ -13253,7 +13253,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Wailmer
 Quirky Nature
 Level: 30
-Standard Level: 25
+Standard Level: 26
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Body Press
 - Heavy Slam
@@ -14045,7 +14045,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Deerling Summer
 Quirky Nature
 Level: 30
-Standard Level: 31
+Standard Level: 30
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Energy Ball
 - Zen Headbutt
@@ -14055,7 +14055,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Scovillain
 Quirky Nature
 Level: 30
-Standard Level: 31
+Standard Level: 30
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Zen Headbutt
 - Headbutt
@@ -14177,7 +14177,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Swampert @ Swampertite
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earthquake
 - Waterfall
@@ -14187,7 +14187,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Floatzel @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aqua Jet
 - Liquidation
@@ -14436,7 +14436,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Espeon @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Calm Mind
 - Psychic
@@ -14446,7 +14446,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Meganium @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Light Screen
 - Body Slam
@@ -14465,7 +14465,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Seismitoad @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Ice Punch
 - Hydro Pump
@@ -14475,7 +14475,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Vileplume @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 63
+Standard Level: 62
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Giga Drain
 - Moonlight
@@ -14553,7 +14553,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Magnezone @ Air Balloon
 Quirky Nature
 Level: 66
-Standard Level: 66
+Standard Level: 65
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thunderbolt
 - Tri Attack
@@ -14563,7 +14563,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lickilicky @ Sitrus Berry
 Quirky Nature
 Level: 66
-Standard Level: 66
+Standard Level: 65
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Knock Off
 - Power Whip
@@ -14820,7 +14820,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Pyukumuku @ Light Clay
 Quirky Nature
 Level: 57
-Standard Level: 52
+Standard Level: 53
 Ability: Innards Out
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Light Screen
@@ -14831,7 +14831,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Shuckle
 Quirky Nature
 Level: 57
-Standard Level: 52
+Standard Level: 53
 Ability: Sturdy
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Toxic
@@ -14842,7 +14842,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Honchkrow
 Quirky Nature
 Level: 57
-Standard Level: 52
+Standard Level: 53
 Ability: Super Luck
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dark Pulse
@@ -14853,7 +14853,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Pawmot
 Quirky Nature
 Level: 57
-Standard Level: 52
+Standard Level: 53
 Ability: Iron Fist
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Revival Blessing
@@ -15500,7 +15500,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Staraptor
 Quirky Nature
 Level: 66
-Standard Level: 64
+Standard Level: 63
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Brave Bird
 - Close Combat
@@ -15510,7 +15510,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Talonflame
 Quirky Nature
 Level: 66
-Standard Level: 64
+Standard Level: 63
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Flare Blitz
 - Acrobatics
@@ -15529,7 +15529,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Ninetales-Alola @ Icy Rock
 Quirky Nature
 Level: 57
-Standard Level: 56
+Standard Level: 55
 Ability: Snow Warning
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Blizzard
@@ -15540,7 +15540,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Luxray
 Quirky Nature
 Level: 57
-Standard Level: 56
+Standard Level: 55
 Ability: Intimidate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thunder Fang
@@ -15551,7 +15551,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Froslass
 Quirky Nature
 Level: 57
-Standard Level: 56
+Standard Level: 55
 Ability: Snow Cloak
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Hex
@@ -15824,7 +15824,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Tentacool @ Black Sludge
 Quirky Nature
 Level: 21
-Standard Level: 21
+Standard Level: 20
 Ability: Liquid Ooze
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Pulse
@@ -15835,7 +15835,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Mareanie @ Leftovers
 Quirky Nature
 Level: 21
-Standard Level: 21
+Standard Level: 20
 Ability: Merciless
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Baneful Bunker
@@ -15846,7 +15846,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Skrelp
 Quirky Nature
 Level: 21
-Standard Level: 21
+Standard Level: 20
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Double Team
@@ -15857,7 +15857,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Qwilfish @ Rocky Helmet
 Quirky Nature
 Level: 21
-Standard Level: 21
+Standard Level: 20
 Ability: Intimidate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fell Stinger
@@ -15877,7 +15877,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Weepinbell
 Quirky Nature
 Level: 21
-Standard Level: 22
+Standard Level: 21
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Acid
 - Vine Whip
@@ -15886,7 +15886,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Koffing
 Quirky Nature
 Level: 21
-Standard Level: 22
+Standard Level: 21
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Sludge
 - Assurance
@@ -15895,7 +15895,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Ariados
 Quirky Nature
 Level: 21
-Standard Level: 22
+Standard Level: 21
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Trailblaze
 - Thief
@@ -16721,7 +16721,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Greninja @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 Ability: Protean
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Liquidation
@@ -16732,7 +16732,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Rhyperior @ Assault Vest
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 Ability: Lightning Rod
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earthquake
@@ -16752,7 +16752,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Slowking @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Surf
 - Slack Off
@@ -16762,7 +16762,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Pikachu @ Light Ball
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thunder
 - Electro Ball
@@ -16839,7 +16839,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Azumarill @ Quick Claw
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 Ability: Huge Power
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Superpower
@@ -16850,7 +16850,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Walrein @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Yawn
 - Blizzard
@@ -16957,7 +16957,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Whiscash @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 65
+Standard Level: 64
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earthquake
 - Waterfall
@@ -16967,7 +16967,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Claydol
 Quirky Nature
 Level: 66
-Standard Level: 65
+Standard Level: 64
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Hyper Beam
 - Ancient Power
@@ -17769,7 +17769,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Impidimp @ Light Clay
 Quirky Nature
 Level: 12
-Standard Level: 8
+Standard Level: 7
 Ability: Prankster
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Reflect
@@ -17780,7 +17780,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Litwick
 Quirky Nature
 Level: 12
-Standard Level: 8
+Standard Level: 7
 Ability: Flame Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Hex
@@ -19020,7 +19020,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Gible
 Quirky Nature
 Level: 4
-Standard Level: 6
+Standard Level: 5
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -19306,7 +19306,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Gible
 Quirky Nature
 Level: 4
-Standard Level: 6
+Standard Level: 5
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -19385,7 +19385,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Roserade @ Black Sludge
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Energy Ball
@@ -19396,7 +19396,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Togekiss
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Air Slash
@@ -19407,7 +19407,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lucario
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aura Sphere
@@ -19418,7 +19418,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Milotic @ Leftovers
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Competitive
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Surf
@@ -19429,7 +19429,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Garchomp
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Claw
@@ -19449,7 +19449,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Gible
 Quirky Nature
 Level: 4
-Standard Level: 6
+Standard Level: 5
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -19467,7 +19467,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Roselia
 Quirky Nature
 Level: 32
-Standard Level: 27
+Standard Level: 26
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Toxic Spikes
@@ -19478,7 +19478,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Togetic @ Sitrus Berry
 Quirky Nature
 Level: 32
-Standard Level: 27
+Standard Level: 26
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Metronome
@@ -19489,7 +19489,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lucario
 Quirky Nature
 Level: 32
-Standard Level: 27
+Standard Level: 26
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Quick Attack
@@ -19500,7 +19500,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Milotic @ Leftovers
 Quirky Nature
 Level: 33
-Standard Level: 28
+Standard Level: 27
 Ability: Competitive
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Pulse
@@ -19510,7 +19510,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gabite @ Lum Berry
 Quirky Nature
 Level: 33
-Standard Level: 28
+Standard Level: 27
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Breath
@@ -19528,7 +19528,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Roserade @ Black Sludge
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Energy Ball
@@ -19539,7 +19539,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Togekiss
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Air Slash
@@ -19550,7 +19550,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lucario
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aura Sphere
@@ -19561,7 +19561,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Milotic @ Leftovers
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Competitive
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Surf
@@ -19572,7 +19572,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Garchomp
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Claw
@@ -19592,7 +19592,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Gible
 Quirky Nature
 Level: 4
-Standard Level: 6
+Standard Level: 5
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -19610,7 +19610,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Roselia
 Quirky Nature
 Level: 32
-Standard Level: 27
+Standard Level: 26
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Toxic Spikes
@@ -19621,7 +19621,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Togetic @ Sitrus Berry
 Quirky Nature
 Level: 32
-Standard Level: 27
+Standard Level: 26
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Metronome
@@ -19632,7 +19632,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lucario
 Quirky Nature
 Level: 32
-Standard Level: 27
+Standard Level: 26
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Quick Attack
@@ -19643,7 +19643,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Milotic @ Leftovers
 Quirky Nature
 Level: 33
-Standard Level: 28
+Standard Level: 27
 Ability: Competitive
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Pulse
@@ -19653,7 +19653,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gabite @ Lum Berry
 Quirky Nature
 Level: 33
-Standard Level: 28
+Standard Level: 27
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Breath
@@ -19671,7 +19671,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Roserade @ Black Sludge
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Energy Ball
@@ -19682,7 +19682,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Togekiss
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Air Slash
@@ -19693,7 +19693,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lucario
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aura Sphere
@@ -19704,7 +19704,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Milotic @ Leftovers
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Competitive
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Surf
@@ -19715,7 +19715,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Garchomp
 Quirky Nature
 Level: 57
-Standard Level: 55
+Standard Level: 53
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Claw
@@ -21304,7 +21304,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Skorupi
 Quirky Nature
 Level: 21
-Standard Level: 20
+Standard Level: 19
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Venoshock
 - Knock Off
@@ -21314,7 +21314,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Seviper
 Quirky Nature
 Level: 21
-Standard Level: 20
+Standard Level: 19
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Venoshock
 - Poison Fang
@@ -21324,7 +21324,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Whirlipede
 Quirky Nature
 Level: 21
-Standard Level: 20
+Standard Level: 19
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Poison Tail
 - Bug Bite
@@ -21382,7 +21382,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Golbat
 Quirky Nature
 Level: 21
-Standard Level: 21
+Standard Level: 19
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Poison Fang
 - Absorb
@@ -21392,7 +21392,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Arbok
 Quirky Nature
 Level: 21
-Standard Level: 21
+Standard Level: 19
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thunder Fang
 - Poison Fang
@@ -21402,7 +21402,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Dustox
 Quirky Nature
 Level: 21
-Standard Level: 21
+Standard Level: 19
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Bug Bite
 - Venoshock
@@ -21459,7 +21459,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Simipour @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aqua Tail
 - Gunk Shot
@@ -21469,7 +21469,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Vaporeon @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Surf
 - Ice Beam
@@ -22012,7 +22012,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Togepi
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Metronome
@@ -22020,7 +22020,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Riolu
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Quick Attack
@@ -22031,7 +22031,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Feebas
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Adaptability
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -22040,7 +22040,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Roselia
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Absorb
@@ -22051,7 +22051,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gabite
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Breath
@@ -22157,7 +22157,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Starmie @ Choice Scarf
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
 - Surf
@@ -22167,7 +22167,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Blissey @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Seismic Toss
 - Soft Boiled
@@ -22312,7 +22312,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Cramorant @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 65
+Standard Level: 64
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dive
 - Drill Peck
@@ -22322,7 +22322,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Blissey @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 65
+Standard Level: 64
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Soft Boiled
 - Seismic Toss
@@ -22341,7 +22341,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Togepi
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Metronome
@@ -22349,7 +22349,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Riolu
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Quick Attack
@@ -22360,7 +22360,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Feebas
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Adaptability
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -22369,7 +22369,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Roselia
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Absorb
@@ -22380,7 +22380,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gabite
 Quirky Nature
 Level: 24
-Standard Level: 16
+Standard Level: 15
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Breath
@@ -22399,7 +22399,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Togepi
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Metronome
@@ -22407,7 +22407,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Riolu
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Quick Attack
@@ -22418,7 +22418,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Feebas
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Adaptability
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -22427,7 +22427,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Roselia
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Absorb
@@ -22438,7 +22438,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gabite
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Breath
@@ -22607,7 +22607,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Bidoof
 Quirky Nature
 Level: 12
-Standard Level: 7
+Standard Level: 6
 Ability: Moody
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -22618,7 +22618,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Scraggy
 Quirky Nature
 Level: 12
-Standard Level: 7
+Standard Level: 6
 Ability: Intimidate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fake Out
@@ -22637,7 +22637,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Yamper
 Quirky Nature
 Level: 12
-Standard Level: 9
+Standard Level: 8
 Ability: Rattled
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Nuzzle
@@ -22648,7 +22648,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Tympole
 Quirky Nature
 Level: 12
-Standard Level: 9
+Standard Level: 8
 Ability: Water Absorb
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Gun
@@ -22668,7 +22668,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Shinx @ Toxic Orb
 Quirky Nature
 Level: 12
-Standard Level: 11
+Standard Level: 10
 Ability: Guts
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Trailblaze
@@ -22678,7 +22678,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Magnemite
 Quirky Nature
 Level: 12
-Standard Level: 11
+Standard Level: 10
 Ability: Magnet Pull
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thunder Wave
@@ -22688,7 +22688,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Meowth-Galar
 Quirky Nature
 Level: 12
-Standard Level: 11
+Standard Level: 10
 Ability: Tough Claws
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fake Out
@@ -23024,7 +23024,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Wimpod
 Quirky Nature
 Level: 13
-Standard Level: 8
+Standard Level: 6
 Ability: Wimp Out
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Gun
@@ -23035,7 +23035,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Butterfree
 Quirky Nature
 Level: 12
-Standard Level: 7
+Standard Level: 5
 Ability: Tinted Lens
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Bug Bite
@@ -23055,7 +23055,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Larvesta
 Quirky Nature
 Level: 12
-Standard Level: 10
+Standard Level: 9
 Ability: Flame Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Flame Charge
@@ -23065,7 +23065,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Yanma
 Quirky Nature
 Level: 12
-Standard Level: 10
+Standard Level: 9
 Ability: Speed Boost
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Feint
@@ -23269,7 +23269,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Sizzlipede
 Quirky Nature
 Level: 12
-Standard Level: 10
+Standard Level: 9
 Ability: Flame Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Ember
@@ -23280,7 +23280,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Snom
 Quirky Nature
 Level: 12
-Standard Level: 10
+Standard Level: 9
 Ability: Ice Scales
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Powder Snow
@@ -23291,7 +23291,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Venipede
 Quirky Nature
 Level: 12
-Standard Level: 10
+Standard Level: 9
 Ability: Speed Boost
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Poison Sting
@@ -23729,7 +23729,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Hippopotas
 Quirky Nature
 Level: 12
-Standard Level: 11
+Standard Level: 10
 Ability: Sand Stream
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Yawn
@@ -23739,7 +23739,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Drilbur
 Quirky Nature
 Level: 12
-Standard Level: 11
+Standard Level: 10
 Ability: Sand Rush
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Rock Tomb
@@ -23789,7 +23789,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Golem
 Quirky Nature
 Level: 30
-Standard Level: 29
+Standard Level: 28
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Rock Blast
 - Bulldoze
@@ -23798,7 +23798,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Machamp
 Quirky Nature
 Level: 30
-Standard Level: 29
+Standard Level: 28
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Strength
 - Vital Throw
@@ -23961,7 +23961,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Delcatty @ Quick Claw
 Quirky Nature
 Level: 57
-Standard Level: 58
+Standard Level: 57
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Play Rough
 - Double Edge
@@ -23971,7 +23971,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Manectric @ Manectite
 Quirky Nature
 Level: 57
-Standard Level: 58
+Standard Level: 57
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Discharge
 - Howl
@@ -23981,7 +23981,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Spidops
 Quirky Nature
 Level: 57
-Standard Level: 58
+Standard Level: 57
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Silk Trap
 - Throat Chop
@@ -23991,7 +23991,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Dachsbun
 Quirky Nature
 Level: 57
-Standard Level: 58
+Standard Level: 57
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Double Edge
 - Play Rough
@@ -24446,7 +24446,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Glimmora @ Focus Sash
 Quirky Nature
 Level: 57
-Standard Level: 57
+Standard Level: 56
 Ability: Toxic Debris
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Spikes
@@ -24457,7 +24457,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Dodrio @ Wacan Berry
 Quirky Nature
 Level: 57
-Standard Level: 57
+Standard Level: 56
 Ability: Tangled Feet
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Whirlwind
@@ -24468,7 +24468,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Bellossom @ Leftovers
 Quirky Nature
 Level: 57
-Standard Level: 57
+Standard Level: 56
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Drain Punch
 - Petal Blizzard
@@ -24478,7 +24478,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Kingambit @ Lum Berry
 Quirky Nature
 Level: 57
-Standard Level: 57
+Standard Level: 56
 Ability: Supreme Overlord
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Brick Break
@@ -25483,7 +25483,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Weezing-Galar @ Leftovers
 Quirky Nature
 Level: 66
-Standard Level: 64
+Standard Level: 63
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Sludge Bomb
 - Strange Steam
@@ -25493,7 +25493,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Avalugg @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 64
+Standard Level: 63
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Icicle Crash
 - Double Edge
@@ -25659,7 +25659,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Blastoise @ Damp Rock
 Quirky Nature
 Level: 66
-Standard Level: 67
+Standard Level: 66
 Ability: Rain Dish
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Rain Dance
@@ -25670,7 +25670,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Arbok @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 67
+Standard Level: 66
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Ice Fang
 - Fire Fang
@@ -25731,7 +25731,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Altaria @ Dragon Fang
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Draco Meteor
 - Tailwind
@@ -25741,7 +25741,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Camerupt @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earthquake
 - Yawn
@@ -25751,7 +25751,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Flygon @ Sitrus Berry
 Quirky Nature
 Level: 66
-Standard Level: 62
+Standard Level: 61
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Dance
 - Earthquake
@@ -25976,7 +25976,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Lanturn @ Quick Claw
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thunderbolt
 - Hydro Pump
@@ -25986,7 +25986,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Sharpedo @ Life Orb
 Quirky Nature
 Level: 66
-Standard Level: 61
+Standard Level: 60
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Crunch
 - Aqua Jet
@@ -26249,7 +26249,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Grookey
 Quirky Nature
 Level: 12
-Standard Level: 12
+Standard Level: 11
 Ability: Grassy Surge
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Bullet Seed
@@ -26260,7 +26260,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Smoliv
 Quirky Nature
 Level: 12
-Standard Level: 12
+Standard Level: 11
 Ability: Harvest
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Synthesis
@@ -26271,7 +26271,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Wattrel @ Covert Cloak
 Quirky Nature
 Level: 12
-Standard Level: 12
+Standard Level: 11
 Ability: Volt Absorb
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Thunderbolt
@@ -26291,7 +26291,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Squirtle
 Quirky Nature
 Level: 12
-Standard Level: 8
+Standard Level: 7
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Gun
 - Bite
@@ -26300,7 +26300,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Staryu
 Quirky Nature
 Level: 12
-Standard Level: 8
+Standard Level: 7
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Water Gun
 - Confuse Ray
@@ -26375,7 +26375,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Hypno
 Quirky Nature
 Level: 30
-Standard Level: 26
+Standard Level: 27
 Ability: Insomnia
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Hypnosis
@@ -26384,7 +26384,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Octillery
 Quirky Nature
 Level: 30
-Standard Level: 26
+Standard Level: 27
 Ability: Sniper
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Octazooka
@@ -28653,7 +28653,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Alakazam @ Twisted Spoon
 Quirky Nature
 Level: 30
-Standard Level: 30
+Standard Level: 29
 Ability: Magic Guard
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
@@ -28664,7 +28664,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gardevoir
 Quirky Nature
 Level: 30
-Standard Level: 30
+Standard Level: 29
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
 - Dazzling Gleam
@@ -28873,7 +28873,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Volcarona
 Quirky Nature
 Level: 57
-Standard Level: 57
+Standard Level: 56
 Ability: Flame Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Bug Buzz
@@ -28884,7 +28884,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Sceptile @ Sceptilite
 Quirky Nature
 Level: 57
-Standard Level: 57
+Standard Level: 56
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Claw
 - Acrobatics
@@ -29131,7 +29131,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Togepi
 Quirky Nature
 Level: 24
-Standard Level: 18
+Standard Level: 15
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Metronome
@@ -29139,7 +29139,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Riolu
 Quirky Nature
 Level: 24
-Standard Level: 18
+Standard Level: 15
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Quick Attack
@@ -29150,7 +29150,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Feebas
 Quirky Nature
 Level: 24
-Standard Level: 18
+Standard Level: 15
 Ability: Adaptability
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -29159,7 +29159,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Roselia
 Quirky Nature
 Level: 24
-Standard Level: 18
+Standard Level: 15
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Absorb
@@ -29170,7 +29170,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gabite
 Quirky Nature
 Level: 24
-Standard Level: 18
+Standard Level: 15
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Breath
@@ -29189,7 +29189,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Togepi
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Metronome
@@ -29197,7 +29197,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Riolu
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Quick Attack
@@ -29208,7 +29208,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Feebas
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Adaptability
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Tackle
@@ -29217,7 +29217,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Roselia
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Absorb
@@ -29228,7 +29228,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Gabite
 Quirky Nature
 Level: 24
-Standard Level: 17
+Standard Level: 15
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Dragon Breath
@@ -30316,15 +30316,15 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Claydol @ Assault Vest
+Metagross @ Leftovers
 Quirky Nature
-Level: 55
-Ability: Levitate
+Level: 56
+Ability: Clear Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Scorching Sands
-- Psychic
-- Ancient Power
-- Ice Beam
+- Meteor Mash
+- Zen Headbutt
+- Earthquake
+- Bullet Punch
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30336,6 +30336,16 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
 - Thunderbolt
 
+Farigiraf @ Assault Vest
+Quirky Nature
+Level: 55
+Ability: Armor Tail
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Hyper Voice
+- Psychic Noise
+- Thunderbolt
+- Shadow Ball
+
 Hatterene @ Leftovers
 Quirky Nature
 Level: 56
@@ -30345,16 +30355,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psyshock
 - Draining Kiss
 - Mystical Fire
-
-Metagross @ Leftovers
-Quirky Nature
-Level: 56
-Ability: Clear Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Meteor Mash
-- Zen Headbutt
-- Earthquake
-- Bullet Punch
 
 Gallade @ Life Orb
 Quirky Nature
@@ -30385,15 +30385,15 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Claydol @ Assault Vest
+Metagross @ Leftovers
 Quirky Nature
-Level: 60
-Ability: Levitate
+Level: 61
+Ability: Clear Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Scorching Sands
-- Psychic
-- Ancient Power
-- Ice Beam
+- Meteor Mash
+- Zen Headbutt
+- Earthquake
+- Bullet Punch
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30405,6 +30405,16 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
 - Thunderbolt
 
+Farigiraf @ Assault Vest
+Quirky Nature
+Level: 60
+Ability: Armor Tail
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Hyper Voice
+- Psychic Noise
+- Thunderbolt
+- Shadow Ball
+
 Hatterene @ Leftovers
 Quirky Nature
 Level: 61
@@ -30414,16 +30424,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psyshock
 - Draining Kiss
 - Mystical Fire
-
-Metagross @ Leftovers
-Quirky Nature
-Level: 61
-Ability: Clear Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Meteor Mash
-- Zen Headbutt
-- Earthquake
-- Bullet Punch
 
 Gallade @ Life Orb
 Quirky Nature
@@ -30454,15 +30454,15 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Claydol @ Assault Vest
+Metagross @ Leftovers
 Quirky Nature
-Level: 65
-Ability: Levitate
+Level: 66
+Ability: Clear Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Scorching Sands
-- Psychic
-- Ancient Power
-- Ice Beam
+- Meteor Mash
+- Zen Headbutt
+- Earthquake
+- Bullet Punch
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30474,6 +30474,16 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
 - Thunderbolt
 
+Farigiraf @ Assault Vest
+Quirky Nature
+Level: 65
+Ability: Armor Tail
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Hyper Voice
+- Psychic Noise
+- Thunderbolt
+- Shadow Ball
+
 Hatterene @ Leftovers
 Quirky Nature
 Level: 66
@@ -30483,16 +30493,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psyshock
 - Draining Kiss
 - Mystical Fire
-
-Metagross @ Leftovers
-Quirky Nature
-Level: 66
-Ability: Clear Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Meteor Mash
-- Zen Headbutt
-- Earthquake
-- Bullet Punch
 
 Gallade @ Life Orb
 Quirky Nature
@@ -30523,15 +30523,15 @@ Music: Male
 Battle Type: Singles
 AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
 
-Claydol @ Assault Vest
+Metagross @ Leftovers
 Quirky Nature
-Level: 70
-Ability: Levitate
+Level: 71
+Ability: Clear Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Scorching Sands
-- Psychic
-- Ancient Power
-- Ice Beam
+- Meteor Mash
+- Zen Headbutt
+- Earthquake
+- Bullet Punch
 
 Gothitelle @ Choice Specs
 Quirky Nature
@@ -30543,6 +30543,16 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
 - Thunderbolt
 
+Farigiraf @ Assault Vest
+Quirky Nature
+Level: 70
+Ability: Armor Tail
+IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
+- Hyper Voice
+- Psychic Noise
+- Thunderbolt
+- Shadow Ball
+
 Hatterene @ Leftovers
 Quirky Nature
 Level: 71
@@ -30552,16 +30562,6 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psyshock
 - Draining Kiss
 - Mystical Fire
-
-Metagross @ Leftovers
-Quirky Nature
-Level: 71
-Ability: Clear Body
-IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
-- Meteor Mash
-- Zen Headbutt
-- Earthquake
-- Bullet Punch
 
 Gallade @ Life Orb
 Quirky Nature

@@ -5823,14 +5823,15 @@ bool8 CheckAddCoins(void)
 // So a legendary that another one evolves, hatches or fuses into is only listed
 // when the player has no way to make it:
 //
-//   not listed  Cosmoem, Naganadel, the two Urshifu, Silvally and Phione - a
-//               second Cosmog, Poipole, Kubfu or Type: Null from the Mirage
-//               Altar becomes any of them, and Phione hatches from the Manaphy
-//               the player keeps. Listing them made the same Pokemon turn up
-//               over and over, which is what the altar exists to fix.
-//   listed      Solgaleo, Lunala, Melmetal and the Necrozma fusions - reaching
-//               them costs a legendary the player would then be missing, and
-//               Meltan has no evolution at all.
+//   not listed  Cosmoem, Solgaleo, Lunala, Naganadel, the two Urshifu,
+//               Silvally and Phione - a second Cosmog, Poipole, Kubfu or
+//               Type: Null from the Mirage Altar becomes any of them, and
+//               Phione hatches from the Manaphy the player keeps. Listing them
+//               made the same Pokemon turn up over and over, which is what the
+//               altar exists to fix.
+//   listed      Melmetal and the Necrozma fusions - Meltan has no evolution at
+//               all, and the one Necrozma the pool gives can only be fused one
+//               way at a time.
 //   listed      Kyurem White/Black and Calyrex Ice/Shadow - their two fusions
 //               share one fusion storage slot (MAX_FUSION_STORAGE), so the
 //               DNA Splicers and the Reins of Unity could never give both at
@@ -5865,11 +5866,11 @@ static const u16 sIslandLegendaryPool[] =
     SPECIES_HOOPA_CONFINED, SPECIES_VOLCANION,
     // Gen 7
     SPECIES_TAPU_KOKO, SPECIES_TAPU_LELE, SPECIES_TAPU_BULU, SPECIES_TAPU_FINI,
-    SPECIES_COSMOG, SPECIES_SOLGALEO, SPECIES_LUNALA, SPECIES_NIHILEGO,
-    SPECIES_BUZZWOLE, SPECIES_PHEROMOSA, SPECIES_XURKITREE, SPECIES_CELESTEELA,
-    SPECIES_KARTANA, SPECIES_GUZZLORD, SPECIES_NECROZMA, SPECIES_MAGEARNA,
-    SPECIES_MARSHADOW, SPECIES_POIPOLE, SPECIES_STAKATAKA, SPECIES_BLACEPHALON,
-    SPECIES_ZERAORA, SPECIES_MELTAN, SPECIES_MELMETAL,
+    SPECIES_COSMOG, SPECIES_NIHILEGO, SPECIES_BUZZWOLE, SPECIES_PHEROMOSA,
+    SPECIES_XURKITREE, SPECIES_CELESTEELA, SPECIES_KARTANA, SPECIES_GUZZLORD,
+    SPECIES_NECROZMA, SPECIES_MAGEARNA, SPECIES_MARSHADOW, SPECIES_POIPOLE,
+    SPECIES_STAKATAKA, SPECIES_BLACEPHALON, SPECIES_ZERAORA, SPECIES_MELTAN,
+    SPECIES_MELMETAL,
     // Gen 8
     SPECIES_DRACOZOLT, SPECIES_ARCTOZOLT, SPECIES_ZACIAN_HERO, SPECIES_ZAMAZENTA_HERO,
     SPECIES_ETERNATUS, SPECIES_KUBFU, SPECIES_ZARUDE, SPECIES_REGIELEKI,
@@ -5894,9 +5895,10 @@ static const u16 sIslandLegendaryPool[] =
 // elsewhere, or the player can also get them by evolving or hatching another
 // Pokemon. Each has its own flag, set when it is caught here.
 //
-// Entries for species the pool no longer lists (Cosmoem, Naganadel, Phione, the
-// two Urshifu, Silvally) are never read now, but they are kept: they are still
-// correct, and saves made while those species were in the pool hold their flags.
+// Entries for species the pool no longer lists (Cosmoem, Solgaleo, Lunala,
+// Naganadel, Phione, the two Urshifu, Silvally) are never read now, but they are
+// kept: they are still correct, and saves made while those species were in the
+// pool hold their flags.
 struct IslandCatchFlag
 {
     u16 species;

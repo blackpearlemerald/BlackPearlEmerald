@@ -305,6 +305,7 @@ PlayersHouse_1F_EventScript_Mom::
 	faceplayer
 	goto_if_unset FLAG_V1PATCH, PlayersHouse_1F_EventScript_V1PATCH
 	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveLevelLimiter
+	call PlayersHouse_1F_EventScript_TryGiveInfiniteRepel
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_MAY, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_set FLAG_HAS_MATCH_CALL, PlayersHouse_1F_EventScript_TryRegisterMom
@@ -329,6 +330,22 @@ PlayersHouse_1F_Text_HereIsLevelLimiter:
 	.string "This LEVEL LIMITER turns the badge\n"
 	.string "level caps on or off, whenever you\l"
 	.string "like. Take it with you!$"
+
+@ BPE: saves made before the Infinite Repel existed get it from Mom.
+PlayersHouse_1F_EventScript_TryGiveInfiniteRepel::
+	goto_if_set FLAG_RECEIVED_INFINITE_REPEL, PlayersHouse_1F_EventScript_TryGiveInfiniteRepelDone
+	msgbox PlayersHouse_1F_Text_HereIsInfiniteRepel, MSGBOX_DEFAULT
+	giveitem ITEM_INFINITE_REPEL
+	setflag FLAG_RECEIVED_INFINITE_REPEL
+PlayersHouse_1F_EventScript_TryGiveInfiniteRepelDone::
+	return
+
+PlayersHouse_1F_Text_HereIsInfiniteRepel:
+	.string "MOM: Oh, honey, one more thing!\p"
+	.string "This INFINITE REPEL keeps weak\n"
+	.string "wild POKéMON away, and it never\l"
+	.string "runs out. Switch it on or off\l"
+	.string "whenever you like!$"
 
 PlayersHouse_1F_EventScript_V1PATCH::
 	giveitem ITEM_CANDY_JAR

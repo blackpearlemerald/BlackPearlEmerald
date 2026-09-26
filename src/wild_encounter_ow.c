@@ -1022,7 +1022,7 @@ void SetMinimumOWESpawnTimer(void)
 
 void TryTriggerOverworldWildEncounter(struct ObjectEvent *obstacle, struct ObjectEvent *collider)
 {
-    if (WE_OWE_NO_REPEL_DEXNAV_COLLISION && (FlagGet(DN_FLAG_SEARCHING) || REPEL_STEP_COUNT))
+    if (WE_OWE_NO_REPEL_DEXNAV_COLLISION && (FlagGet(DN_FLAG_SEARCHING) || IsRepelActive()))
         return;
 
     bool32 playerFollowerIsColliderOWE = ((collider->isPlayer || collider->localId == OBJ_EVENT_ID_FOLLOWER)
@@ -1463,7 +1463,7 @@ void DespawnAllOverworldWildEncounters(enum TypeOWE oweType, u32 flags)
 
         if (flags & WILD_CHECK_REPEL)
         {
-            if (!REPEL_STEP_COUNT)
+            if (!IsRepelActive())
                 continue;
 
             if (HasOWENoDespawnFlag(owe))

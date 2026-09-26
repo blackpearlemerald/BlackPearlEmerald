@@ -185,8 +185,11 @@ The enum in `include/constants/species.h` uses upstream's short regional-form na
 
 **FRLG layouts:** BPE deleted the FRLG `data/layouts/*` folders but `layouts.json` still lists them. `mapjson` handles this itself: it skips any layout whose folder is missing and emits `0xFFFF` stubs for the required `LAYOUT_*` defines listed in `tools/mapjson/required_map_defines.json` that have no data (29 stubs today). `layouts.h` therefore regenerates cleanly and `make clean` is safe. If new upstream code references an FRLG `LAYOUT_*` that is not stubbed, add it to `required_map_defines.json` or patch the C code; do not restore the FRLG layout data.
 
+### FRLG overworld sprites
+Upstream builds the FRLG object graphics (pics, frame tables, `gObjectEventGraphicsInfo_*` and their `gObjectEventGraphicsInfoPointers` entries) only `#if IS_FRLG`, so in BPE those `OBJ_EVENT_GFX_*` ids have a NULL entry even though the constants exist and maps compile. BPE uses two of them, Giovanni (Victory Road 1F) and Blue (B2F), and moved them above the `IS_FRLG` blocks in all four `src/data/object_events/` files; their palettes are already outside the gate. Do the same for any other FRLG character a map or script uses. `GetObjectEventGraphicsInfo()` now falls back to the Ninja Boy for a NULL entry, and `test/map_objects.c` fails if any map object has no graphics or a trainer stands inside a wall.
+
 ### Item numbering
-BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`). BPE's `ITEM_LEVEL_LIMITER` follows at 1021, so `ITEMS_COUNT` is 1022. New upstream items must be placed after the BPE HM block, never on top of it.
+BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`). BPE's `ITEM_LEVEL_LIMITER` follows at 1021 and `ITEM_INFINITE_REPEL` at 1022, so `ITEMS_COUNT` is 1023. New upstream items must be placed after the BPE HM block, never on top of it.
 
 ### Audio formats
 Upstream samples are `.wav` (since expansion 1.14). BPE's 507 BW/DP expansion samples under `sound/direct_sound_samples/` are still `.aif` and are live build inputs through `audio_rules.mk`. Do not convert or delete them.
@@ -285,6 +288,14 @@ The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
   Pokémon check that could never run, and a search started from the menu that
   returned to the field mid-fade (sprites flashed untinted for a frame). BPE's
   wild tables have no hidden Pokémon.
+- Caves and water (reported on Discord for Meteor Falls): there the Pokémon moves
+  up to twice when the player gets close. `DexNavPickTile()` only picks tiles on
+  screen, centred on the player, that a flood fill from the player can reach
+  (collision, elevation, water vs land, no ledges or waterfalls); upstream
+  scanned off-screen, moved the Pokémon only down and right, and often put it
+  across a river or wall. Each move restarts the 15-second timer, and
+  `IsDexNavStalkingPokemon()` turns off random encounters while a revealed search
+  runs, since a random battle ends the search.
 - Found through DexNav but game-wide: the weather color maps in
   `src/field_weather.c` copy the unfaded palettes into the faded buffer and then
   darken them in place. On a heavy frame the VBlank interrupt could send the
@@ -343,6 +354,18 @@ clock itself, so berries, daily events and the clock displays keep the real time
 Tests: `make check TESTS=test/time_evolutions.c`, which also checks every
 time-of-day evolution.
 
+### Infinite Repel
+
+A key item that works like a Max Repel that never wears off, switched on and off
+from the Bag or SELECT. Mom's starter kit gives it in both modes; Mom at home
+gives it to older saves. `FLAG_INFINITE_REPEL_ON` and
+`FLAG_RECEIVED_INFINITE_REPEL` (0x2B, 0x2C) are flags no release used before, so
+the save layout did not change, and it never touches `VAR_REPEL_STEP_COUNT`.
+Every repel check goes through `IsRepelActive()` in `src/wild_encounter.c`; use
+it instead of `REPEL_STEP_COUNT` when checking whether a repel is on.
+`IsInfiniteRepelActive()` turns it off in the Safari Zone, Battle Pike and
+Battle Pyramid. Tests: `make check TESTS=test/infinite_repel.c`.
+
 ### Registered items
 
 SELECT holds up to `MAX_REGISTERED_ITEMS` (5) key items. With one registered it
@@ -364,7 +387,12 @@ Every species and every form that can be kept in the PC must stay obtainable.
 `python BPETools/audit_living_dex.py` checks this from the source (wild tables,
 gifts, Mirage Island, evolutions and the items they need, breeding and form
 changes) and exits 1 listing any gap; `--verbose` shows how each form is
-reached. Run it after changing wild tables, evolutions, marts, item balls or
+reached. It counts an in-game trade only when a script uses it (`src/data/trade.h`
+also holds FireRed and LeafGreen's trades, which the randomizer still counts), and
+a regional form's Egg hatching the base form without an Everstone. Lickitung, and so
+Lickilicky, come only from the Lilycove House 1 trade (`INGAME_TRADE_LICKITUNG`, a
+Slowbro for it), recorded in `FLAG_LILYCOVE_NPC_TRADE_COMPLETED` (0x2D, unused by every
+earlier release). Run it after changing wild tables, evolutions, marts, item balls or
 the Mirage pool. Battle-only forms and Totem Pokémon are not required.
 
 - `src/data/wild_form_variants.h` lists wild species that appear in several
@@ -400,9 +428,10 @@ kept offering the same Pokémon, so the three systems no longer overlap:
   before the battle instead of announcing a second "ARTICUNO".
 - **The Mirage Altar** (`Route130_EventScript_MirageAltar`) calls back a Cosmog,
   Poipole, Kubfu or Type: Null the player has already caught, which is what
-  Cosmoem, Naganadel, both Urshifu and Silvally are evolved from. It gates on the
-  Pokédex alone and costs no flags or vars. Add to it rather than adding a pool
-  entry whenever a form only needs a second copy of something.
+  Cosmoem, Solgaleo, Lunala, Naganadel, both Urshifu and Silvally are evolved
+  from, so none of those is a pool entry. It gates on the Pokédex alone and costs
+  no flags or vars. Add to it rather than adding a pool entry whenever a form
+  only needs a second copy of something.
 
 Pool members that share a Pokédex number with another form, or that the player
 can also reach by evolving or hatching, record their catch in
@@ -415,6 +444,22 @@ Memories, Drives, Masks and the Rusted Sword and Shield are in the postgame
 Verdanturf mart. Adding an item ball changes `sRandomizerFieldItems`, which
 shifts every existing randomizer seed and needs a `RANDOMIZER_ALGORITHM_VERSION`
 bump - put new form items in the mart instead unless the ball is the point.
+
+**Battle forms.** Every Mega, Primal and Ultra Burst form is usable. The Red
+Orb, Blue Orb and Ultranecrozium Z are in the postgame Verdanturf mart, and the
+woman in that mart (`VerdanturfTown_Mart_EventScript_ExpertF`) gives the
+Z-Power Ring after the Hall of Fame. `B_BATTLE_BOND` is `GEN_8` so Battle Bond
+Greninja (a wild form variant) becomes Ash-Greninja. Dynamax and
+Terastallization are deliberately left out for the player: no Dynamax Band or
+Tera Orb is given, so Gigantamax and Terastal forms are not obtainable, and the
+Pokédex says so. The Pokédex's Forms section (`apply_forms` in
+`BPEDocumentation/scripts/parse_pokemon.py`) documents how to reach each form.
+
+The Pokédex tells players where each of these is and when: `parse_pokemon.py`
+reads `sPreE4Legendaries` (the one-pick note and the 8th-badge note), the pool
+(Mirage Island rows), the altar script (Mirage Altar rows) and the Day Care's egg
+overrides (Phione), and a Pokémon with no location lists how to get it instead
+(`obtain`, drawn by `pokemon.js`).
 
 Tests: `make check TESTS=test/living_dex.c`, plus the audit above.
 

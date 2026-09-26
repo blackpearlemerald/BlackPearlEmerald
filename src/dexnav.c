@@ -147,7 +147,7 @@ static void Task_DexNavWaitFadeIn(u8 taskId);
 static void Task_DexNavMain(u8 taskId);
 static void PrintCurrentSpeciesInfo(void);
 // SEARCH
-static bool8 TryStartHiddenMonFieldEffect(enum EncounterType environment, u8 xSize, u8 ySize, bool8 smallScan);
+static bool8 TryStartHiddenMonFieldEffect(enum EncounterType environment, u8 radiusX, u8 radiusY);
 static void DexNavGenerateMoveset(enum Species species, u8 searchLevel, u8 encounterLevel, u16 *moveDst);
 static u16 DexNavGenerateHeldItem(enum Species species, u8 searchLevel);
 static u8 DexNavGetAbilityNum(enum Species species, u8 searchLevel);
@@ -156,7 +156,7 @@ static u8 DexNavTryGenerateMonLevel(enum Species species, enum EncounterType env
 static u8 GetEncounterLevelFromMapData(enum Species species, enum EncounterType environment);
 static void CreateDexNavWildMon(enum Species species, u8 potential, u8 level, u8 abilityNum, enum Item item, enum Move *moves);
 static u8 GetPlayerDistance(s16 x, s16 y);
-static u8 DexNavPickTile(enum EncounterType environment, u8 xSize, u8 ySize, bool8 smallScan);
+static u8 DexNavPickTile(enum EncounterType environment, u8 radiusX, u8 radiusY);
 static void DexNavProximityUpdate(void);
 static void DexNavDrawIcons(void);
 static void DexNavUpdateSearchWindow(u8 proximity, u8 searchLevel);
@@ -580,56 +580,139 @@ static void DexNavProximityUpdate(void)
     sDexNavSearchDataPtr->proximity = GetPlayerDistance(sDexNavSearchDataPtr->tileX, sDexNavSearchDataPtr->tileY);
 }
 
+// BPE: the Pokémon only hides where the player can see it and walk to it. Upstream
+// scanned a box that reached off the top of the screen and, when a cave or water
+// Pokémon moved, only below and right of the player. It checked nothing about the
+// way there, so in caves it often landed across a river, a ledge or a wall, and
+// the search ran out of time.
+#define PICK_RADIUS_X_MAX   7   // the screen is 15 tiles wide around the player
+#define PICK_RADIUS_Y_MAX   4   // and shows 4 full rows above and below
+#define PICK_WIDTH          (PICK_RADIUS_X_MAX * 2 + 1)
+#define PICK_HEIGHT         (PICK_RADIUS_Y_MAX * 2 + 1)
+#define PICK_UNREACHED      0xFF
+
+static bool32 IsTileOccupiedByObject(s16 x, s16 y, bool32 ignorePlayerAndFollower)
+{
+    struct ObjectEvent *follower = GetFollowerObject();
+    u32 i;
+
+    for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
+    {
+        if (!gObjectEvents[i].active || gObjectEvents[i].currentCoords.x != x || gObjectEvents[i].currentCoords.y != y)
+            continue;
+        if (ignorePlayerAndFollower && (i == gPlayerAvatar.objectEventId || &gObjectEvents[i] == follower))
+            continue;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+static bool32 CanDexNavPlayerEnter(s16 x, s16 y, u32 elevation, bool32 surfing)
+{
+    u32 behavior = MapGridGetMetatileBehaviorAt(x, y);
+
+    if (MapGridGetCollisionAt(x, y) || IsElevationMismatchAt(elevation, x, y))
+        return FALSE;
+    if ((MetatileBehavior_IsSurfableWaterOrUnderwater(behavior) != FALSE) != surfing)
+        return FALSE;
+    // ledges only go one way and waterfalls need an HM, so never path across them
+    if (MetatileBehavior_IsJumpNorth(behavior) || MetatileBehavior_IsJumpSouth(behavior)
+     || MetatileBehavior_IsJumpEast(behavior) || MetatileBehavior_IsJumpWest(behavior)
+     || MetatileBehavior_IsWaterfall(behavior))
+        return FALSE;
+    return !IsTileOccupiedByObject(x, y, TRUE);
+}
+
+// Marks every tile on screen that the player can walk (or surf) to. reached[] holds
+// the elevation the player would have there, like ObjectEventUpdateElevation.
+static void FindDexNavReachableTiles(u8 *reached)
+{
+    struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+    static const s8 sSteps[][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
+    bool32 surfing = TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING);
+    s16 originX = player->currentCoords.x - PICK_RADIUS_X_MAX;
+    s16 originY = player->currentCoords.y - PICK_RADIUS_Y_MAX;
+    u8 queue[PICK_WIDTH * PICK_HEIGHT];
+    u32 head = 0, tail = 0, i;
+
+    memset(reached, PICK_UNREACHED, PICK_WIDTH * PICK_HEIGHT);
+    i = PICK_RADIUS_Y_MAX * PICK_WIDTH + PICK_RADIUS_X_MAX;
+    reached[i] = player->currentElevation;
+    queue[tail++] = i;
+
+    while (head < tail)
+    {
+        u32 cell = queue[head++];
+        s16 cellX = cell % PICK_WIDTH, cellY = cell / PICK_WIDTH;
+        u32 j;
+
+        for (j = 0; j < ARRAY_COUNT(sSteps); j++)
+        {
+            s16 nextX = cellX + sSteps[j][0], nextY = cellY + sSteps[j][1];
+            s16 x = originX + nextX, y = originY + nextY;
+            u32 next, elevation, fromTile, toTile;
+
+            if (nextX < 0 || nextX >= PICK_WIDTH || nextY < 0 || nextY >= PICK_HEIGHT)
+                continue;
+            next = nextY * PICK_WIDTH + nextX;
+            if (reached[next] != PICK_UNREACHED || !CanDexNavPlayerEnter(x, y, reached[cell], surfing))
+                continue;
+
+            elevation = reached[cell];
+            fromTile = MapGridGetElevationAt(originX + cellX, originY + cellY);
+            toTile = MapGridGetElevationAt(x, y);
+            if (fromTile != ELEVATION_MULTI_LEVEL && toTile != ELEVATION_MULTI_LEVEL)
+                elevation = toTile;
+            reached[next] = elevation;
+            queue[tail++] = next;
+        }
+    }
+}
+
 // Pick a random tile near the player where the Pokémon can hide.
 // BPE: every suitable tile is equally likely. The upstream odds overflowed a u8
 // in caves and on water (a zero divisor was possible), so searches there often
 // found nothing; it also read the player's elevation through a sprite id.
-static bool8 DexNavPickTile(enum EncounterType environment, u8 areaX, u8 areaY, bool8 smallScan)
+static bool8 DexNavPickTile(enum EncounterType environment, u8 radiusX, u8 radiusY)
 {
-    // area of map to cover starting from camera position {-7, -7}
-    s16 startX = gSaveBlock1Ptr->pos.x - SCANSTART_X + (smallScan * 5);
-    s16 startY = gSaveBlock1Ptr->pos.y - SCANSTART_Y + (smallScan * 5);
-    u32 playerElevation = gObjectEvents[gPlayerAvatar.objectEventId].currentElevation;
-    enum MapType currMapType = GetCurrentMapType();
+    struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
+    u8 reached[PICK_WIDTH * PICK_HEIGHT];
     u32 tileBuffer = 2;
-    u32 i, count = 0;
-    s16 x, y;
+    u32 count = 0;
+    s32 dx, dy;
+
+    radiusX = min(radiusX, PICK_RADIUS_X_MAX);
+    radiusY = min(radiusY, PICK_RADIUS_Y_MAX);
 
     if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_BIKE))
         tileBuffer = SNEAKING_PROXIMITY + 3;
     else if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_DASH))
         tileBuffer = SNEAKING_PROXIMITY + 1;
 
-    for (y = startY; y < startY + areaY; y++)
+    FindDexNavReachableTiles(reached);
+
+    for (dy = -radiusY; dy <= radiusY; dy++)
     {
-        for (x = startX; x < startX + areaX; x++)
+        for (dx = -radiusX; dx <= radiusX; dx++)
         {
+            s16 x = player->currentCoords.x + dx;
+            s16 y = player->currentCoords.y + dy;
             u32 tileBehaviour = MapGridGetMetatileBehaviorAt(x, y);
             bool32 suitable = FALSE;
 
-            // not too close to the player, and not on a wall
-            if (GetPlayerDistance(x, y) <= tileBuffer || MapGridGetCollisionAt(x, y))
-                continue;
-
-            // cannot be on a tile where an object exists
-            for (i = 0; i < OBJECT_EVENTS_COUNT; i++)
-            {
-                if (gObjectEvents[i].active && gObjectEvents[i].currentCoords.x == x && gObjectEvents[i].currentCoords.y == y)
-                    break;
-            }
-            if (i < OBJECT_EVENTS_COUNT)
+            // not too close to the player, somewhere the player can get to, and free of objects
+            if ((u32)(abs(dx) + abs(dy)) <= tileBuffer
+             || reached[(dy + PICK_RADIUS_Y_MAX) * PICK_WIDTH + dx + PICK_RADIUS_X_MAX] == PICK_UNREACHED
+             || IsTileOccupiedByObject(x, y, FALSE))
                 continue;
 
             switch (environment)
             {
             case ENCOUNTER_TYPE_LAND:
-                // in caves the Pokémon hides on the player's level
-                suitable = MetatileBehavior_IsLandWildEncounter(tileBehaviour)
-                        && (currMapType != MAP_TYPE_UNDERGROUND || !IsElevationMismatchAt(playerElevation, x, y));
+                suitable = MetatileBehavior_IsLandWildEncounter(tileBehaviour);
                 break;
             case ENCOUNTER_TYPE_WATER:
-                suitable = MetatileBehavior_IsWaterWildEncounter(tileBehaviour)
-                        && !IsElevationMismatchAt(playerElevation, x, y);
+                suitable = MetatileBehavior_IsWaterWildEncounter(tileBehaviour);
                 break;
             default:
                 break;
@@ -648,12 +731,12 @@ static bool8 DexNavPickTile(enum EncounterType environment, u8 areaX, u8 areaY, 
 }
 
 
-static bool8 TryStartHiddenMonFieldEffect(enum EncounterType environment, u8 xSize, u8 ySize, bool8 smallScan)
+static bool8 TryStartHiddenMonFieldEffect(enum EncounterType environment, u8 radiusX, u8 radiusY)
 {
     enum MapType currMapType = GetCurrentMapType();
     u8 fldEffId = 0;
 
-    if (DexNavPickTile(environment, xSize, ySize, smallScan))
+    if (DexNavPickTile(environment, radiusX, radiusY))
     {
         u8 metatileBehaviour = MapGridGetMetatileBehaviorAt(sDexNavSearchDataPtr->tileX, sDexNavSearchDataPtr->tileY);
 
@@ -817,7 +900,7 @@ static bool8 InitDexNavSearch(enum Species species, u32 environment)
         return TRUE;
     }
 
-    if (sDexNavSearchDataPtr->monLevel == MON_LEVEL_NONEXISTENT || !TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 12, 12, FALSE))
+    if (sDexNavSearchDataPtr->monLevel == MON_LEVEL_NONEXISTENT || !TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 6, 4))
     {
         DexNavSearchBail(EventScript_NotFoundNearby);
         return TRUE;
@@ -919,6 +1002,14 @@ bool32 IsDexNavUnlocked(void)
 bool32 IsDexNavUsableHere(void)
 {
     return !GetSafariZoneFlag() && !InBattlePike() && !InBattlePyramid_();
+}
+
+// BPE: while the player sneaks up on a Pokémon the DexNav found, no other wild
+// Pokémon jumps out. A random battle ended the search, and in caves, where every
+// floor tile has encounters, that happened often.
+bool32 IsDexNavStalkingPokemon(void)
+{
+    return FlagGet(DN_FLAG_SEARCHING) && sDexNavSearchDataPtr != NULL && !sDexNavSearchDataPtr->hiddenSearch;
 }
 
 bool32 TryStartDexNavSearch(void)
@@ -1104,12 +1195,15 @@ bool32 OnStep_DexNavSearch(void)
     {
         FieldEffectStop(&gSprites[sDexNavSearchDataPtr->fldEffSpriteId], sDexNavSearchDataPtr->fldEffId);
 
-        if (!TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 10, 10, TRUE))
+        if (!TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 5, 4))
         {
             EndDexNavSearchSetupScript(EventScript_PokemonGotAway);
             return TRUE;
         }
 
+        // BPE: the player gets the full time again to reach the new spot. Upstream kept
+        // the old timer, so after a move or two the Pokémon usually got away.
+        sDexNavSearchDataPtr->startingTime = gMain.vblankCounter1;
         sDexNavSearchDataPtr->movementCount++;
     }
     return FALSE;
@@ -1872,31 +1966,33 @@ static void DexNavFadeAndExit(void)
     SetMainCallback2(DexNav_MainCB);
 }
 
+// BPE: compares species, not Pokedex numbers. A regional form is its own wild
+// table entry with its own level and search, so Galarian Zigzagoon on Route 101
+// was dropped from the list as a second Zigzagoon.
 static bool8 SpeciesInArray(enum Species species, u8 section)
 {
     u32 i;
-    enum NationalDexOrder dexNum = SpeciesToNationalPokedexNum(species);
 
     switch (section)
     {
     case 0: //land
         for (i = 0; i < LAND_WILD_COUNT; i++)
         {
-            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->landSpecies[i]) == dexNum)
+            if (sDexNavUiDataPtr->landSpecies[i] == species)
                 return TRUE;
         }
         break;
     case 1: //water
         for (i = 0; i < WATER_WILD_COUNT; i++)
         {
-            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->waterSpecies[i]) == dexNum)
+            if (sDexNavUiDataPtr->waterSpecies[i] == species)
                 return TRUE;
         }
         break;
     case 2: //hidden
         for (i = 0; i < HIDDEN_WILD_COUNT; i++)
         {
-            if (SpeciesToNationalPokedexNum(sDexNavUiDataPtr->hiddenSpecies[i]) == dexNum)
+            if (sDexNavUiDataPtr->hiddenSpecies[i] == species)
                 return TRUE;
         }
         break;
@@ -2598,7 +2694,7 @@ bool32 TryFindHiddenPokemon(void)
         }
 
         // find tile for hidden mon and start effect if possible
-        if (!TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 8, 8, TRUE))
+        if (!TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 4, 4))
         {
             FREE_AND_SET_NULL(sDexNavSearchDataPtr);
             FlagClear(DN_FLAG_SEARCHING);
@@ -2731,5 +2827,17 @@ u32 DexNav_Test_GetListedLandSpecies(enum Species *dst)
         dst[count++] = sDexNavUiDataPtr->landSpecies[i];
     FREE_AND_SET_NULL(sDexNavUiDataPtr);
     return count;
+}
+
+// A search with no window or sprites, for checking what a running search changes.
+void DexNav_Test_SetSearch(bool32 searching, bool32 hiddenSearch)
+{
+    TRY_FREE_AND_SET_NULL(sDexNavSearchDataPtr);
+    FlagClear(DN_FLAG_SEARCHING);
+    if (!searching)
+        return;
+    sDexNavSearchDataPtr = AllocZeroed(sizeof(struct DexNavSearch));
+    sDexNavSearchDataPtr->hiddenSearch = hiddenSearch;
+    FlagSet(DN_FLAG_SEARCHING);
 }
 #endif // TESTING

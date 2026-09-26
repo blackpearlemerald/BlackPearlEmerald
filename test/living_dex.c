@@ -61,6 +61,21 @@ TEST("A Peat Block evolves Ursaring into both Ursaluna forms")
     EXPECT(bloodmoon);
 }
 
+// Its own trigger needs the Dusty Bowl arch, which BPE has no map for.
+TEST("Galarian Yamask evolves into Runerigus on level-up after losing 49 HP")
+{
+    struct Pokemon mon;
+    bool32 canStopEvo = TRUE;
+    u32 hp;
+
+    CreateMon(&mon, SPECIES_YAMASK_GALAR, 34, 0, OTID_STRUCT_PRESET(0));
+    EXPECT_EQ(GetEvolutionTargetSpecies(&mon, EVO_MODE_NORMAL, ITEM_NONE, NULL, &canStopEvo, CHECK_EVO), SPECIES_NONE);
+
+    hp = GetMonData(&mon, MON_DATA_MAX_HP) - 49;
+    SetMonData(&mon, MON_DATA_HP, &hp);
+    EXPECT_EQ(GetEvolutionTargetSpecies(&mon, EVO_MODE_NORMAL, ITEM_NONE, NULL, &canStopEvo, CHECK_EVO), SPECIES_RUNERIGUS);
+}
+
 static void AddToPokedex(u16 species)
 {
     u32 dexNum = SpeciesToNationalPokedexNum(species);
@@ -114,6 +129,36 @@ TEST("Evolving an island legendary leaves its evolutions on the island")
     EXPECT(IsIslandLegendaryCaught(SPECIES_URSHIFU_SINGLE_STRIKE));
     EXPECT(!IsIslandLegendaryCaught(SPECIES_URSHIFU_RAPID_STRIKE));
 
+    ClearIslandCatches();
+}
+
+void ChooseIslandLegendary(void);
+
+// The Altar's unlimited Cosmog evolves into both, so neither is a pool entry.
+// Kept in the pool, they turned up again and again for players whose Pokedex
+// could not show whether theirs came from the island or from Cosmoem.
+TEST("Mirage Island never offers Solgaleo or Lunala")
+{
+    u32 dexNum, flag;
+
+    ClearIslandCatches();
+    for (dexNum = 1; dexNum <= NATIONAL_DEX_COUNT; dexNum++)
+    {
+        if (dexNum == SpeciesToNationalPokedexNum(SPECIES_SOLGALEO) || dexNum == SpeciesToNationalPokedexNum(SPECIES_LUNALA))
+            continue;
+        GetSetPokedexFlag(dexNum, FLAG_SET_SEEN);
+        GetSetPokedexFlag(dexNum, FLAG_SET_CAUGHT);
+    }
+    for (flag = FLAG_ISLAND_CAUGHT_ARTICUNO_GALAR; flag <= FLAG_ISLAND_CAUGHT_PHIONE; flag++)
+    {
+        if (flag != FLAG_ISLAND_CAUGHT_SOLGALEO && flag != FLAG_ISLAND_CAUGHT_LUNALA)
+            FlagSet(flag);
+    }
+    ASSUME(!IsIslandLegendaryCaught(SPECIES_SOLGALEO));
+    ASSUME(!IsIslandLegendaryCaught(SPECIES_LUNALA));
+
+    ChooseIslandLegendary();
+    EXPECT_EQ(gSpecialVar_Result, SPECIES_NONE);
     ClearIslandCatches();
 }
 

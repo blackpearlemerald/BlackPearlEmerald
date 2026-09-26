@@ -904,6 +904,15 @@ LittlerootTown_EventScript_GiveLevelLimiter::
 LittlerootTown_EventScript_GiveLevelLimiterDone::
 	return
 
+@ BPE: both modes get the Infinite Repel. Guarded so a save that already got it
+@ from Mom at home is not given a second one.
+LittlerootTown_EventScript_GiveInfiniteRepel::
+	goto_if_set FLAG_RECEIVED_INFINITE_REPEL, LittlerootTown_EventScript_GiveInfiniteRepelDone
+	giveitem ITEM_INFINITE_REPEL
+	setflag FLAG_RECEIVED_INFINITE_REPEL
+LittlerootTown_EventScript_GiveInfiniteRepelDone::
+	return
+
 @ BPE: New games start with the Running Shoes (NewGameInitData), so Mom only
 @ hands them over on a save made before that change.
 LittlerootTown_EventScript_GiveRunningShoes::
@@ -930,6 +939,7 @@ LittlerootTown_EventScript_GiveStarterKit::
 	giveitem ITEM_OLD_ROD
 	giveitem ITEM_ESCAPE_ROPE
 	giveitem ITEM_POCKET_WATCH
+	call LittlerootTown_EventScript_GiveInfiniteRepel
 	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveLevelLimiter
 	setflag FLAG_RECEIVED_OLD_ROD
 	setflag FLAG_V1PATCH

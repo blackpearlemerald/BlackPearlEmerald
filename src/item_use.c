@@ -956,6 +956,33 @@ void ItemUseOutOfBattle_LevelLimiter(u8 taskId)
         DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
 }
 
+static const u8 sText_InfiniteRepelOn[] = _("The Infinite Repel is now ON.\nWeak wild Pokémon will stay away.{PAUSE_UNTIL_PRESS}");
+static const u8 sText_InfiniteRepelOff[] = _("The Infinite Repel is now OFF.{PAUSE_UNTIL_PRESS}");
+
+// BPE: switches the Infinite Repel on or off. While it is on, wild Pokémon are
+// kept away as by a Max Repel that never wears off (see IsRepelActive).
+void ItemUseOutOfBattle_InfiniteRepel(u8 taskId)
+{
+    const u8 *text;
+
+    if (FlagGet(FLAG_INFINITE_REPEL_ON))
+    {
+        FlagClear(FLAG_INFINITE_REPEL_ON);
+        text = sText_InfiniteRepelOff;
+    }
+    else
+    {
+        FlagSet(FLAG_INFINITE_REPEL_ON);
+        PlaySE(SE_REPEL);
+        text = sText_InfiniteRepelOn;
+    }
+
+    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+        DisplayItemMessage(taskId, FONT_NORMAL, text, CloseItemMessage);
+    else
+        DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
+}
+
 // BPE: using a Ball on a party Pokemon moves it into that Ball.
 void ItemUseOutOfBattle_Ball(u8 taskId)
 {

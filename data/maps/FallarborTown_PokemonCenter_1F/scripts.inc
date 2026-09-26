@@ -53,15 +53,18 @@ FallarborTown_PokemonCenter_1F_EventScript_LanetteExited::
 	release
 	end
 
+@ BPE: goes around the move relearner Dusclops at (11,4) instead of through it.
 FallarborTown_PokemonCenter_1F_Movement_LanetteExitNorth:
+	walk_right
 	walk_right
 	walk_down
 	walk_down
-	walk_left
-	walk_left
-	walk_left
-	walk_left
 	walk_down
+	walk_left
+	walk_left
+	walk_left
+	walk_left
+	walk_left
 	walk_down
 	walk_down
 	walk_down

@@ -18,6 +18,7 @@ u16 DexNav_Test_GenerateHeldItem(enum Species species, u8 searchLevel);
 void DexNav_Test_GenerateMoveset(enum Species species, u8 searchLevel, u8 level, u16 *moves);
 u8 DexNav_Test_GenerateMonLevel(enum Species species, enum EncounterType environment);
 u32 DexNav_Test_GetListedLandSpecies(enum Species *dst);
+void DexNav_Test_SetSearch(bool32 searching, bool32 hiddenSearch);
 
 static void GoToRoute101(void)
 {
@@ -70,6 +71,22 @@ TEST("A running search is RAM-only state and ending it clears it")
     EXPECT_GE(DN_FLAG_SEARCHING, SPECIAL_FLAGS_START);
     FlagSet(DN_FLAG_SEARCHING);
     EndDexNavSearch();
+    EXPECT(!FlagGet(DN_FLAG_SEARCHING));
+}
+
+TEST("No other wild Pokemon interrupts a DexNav search")
+{
+    DexNav_Test_SetSearch(FALSE, FALSE);
+    EXPECT(!IsDexNavStalkingPokemon());
+
+    DexNav_Test_SetSearch(TRUE, FALSE);
+    EXPECT(IsDexNavStalkingPokemon());
+
+    // the detector's passive hint is not a search the player chose
+    DexNav_Test_SetSearch(TRUE, TRUE);
+    EXPECT(!IsDexNavStalkingPokemon());
+
+    DexNav_Test_SetSearch(FALSE, FALSE);
     EXPECT(!FlagGet(DN_FLAG_SEARCHING));
 }
 
@@ -216,8 +233,8 @@ TEST("DexNav lists and finds the randomizer's wild Pokemon")
         enum Species species = GetWildEncounterSpecies(land->wildPokemon[i].species, WILD_AREA_LAND);
         if (species != land->wildPokemon[i].species)
             changed = TRUE;
-        // every slot's Pokémon in this game is listed (forms share one entry)
-        for (j = 0; j < count && SpeciesToNationalPokedexNum(listed[j]) != SpeciesToNationalPokedexNum(species); j++)
+        // every slot's Pokémon in this game is listed
+        for (j = 0; j < count && listed[j] != species; j++)
             ;
         EXPECT_LT(j, count);
     }
@@ -227,6 +244,28 @@ TEST("DexNav lists and finds the randomizer's wild Pokemon")
         EXPECT_NE(DexNav_Test_GenerateMonLevel(listed[i], ENCOUNTER_TYPE_LAND), MON_LEVEL_NONEXISTENT);
 
     TurnRandomizerOff();
+}
+
+// Route 101 has both Zigzagoon forms as their own wild slots. The list used to
+// merge Pokemon that share a Pokedex number, so only one Zigzagoon was listed.
+TEST("DexNav lists a regional form apart from the original")
+{
+    enum Species listed[LAND_WILD_COUNT];
+    u32 i, count;
+    bool32 original = FALSE, galar = FALSE;
+
+    TurnRandomizerOff();
+    GoToRoute101();
+    count = DexNav_Test_GetListedLandSpecies(listed);
+    for (i = 0; i < count; i++)
+    {
+        if (listed[i] == SPECIES_ZIGZAGOON)
+            original = TRUE;
+        if (listed[i] == SPECIES_ZIGZAGOON_GALAR)
+            galar = TRUE;
+    }
+    EXPECT(original);
+    EXPECT(galar);
 }
 
 TEST("A DexNav Pokemon keeps the form its search showed")

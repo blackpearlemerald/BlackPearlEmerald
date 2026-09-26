@@ -44,6 +44,16 @@ LEADERS = ("TRAINER_ROXANNE_1", "TRAINER_BRAWLY_1", "TRAINER_WATTSON_1", "TRAINE
            "TRAINER_NORMAN_1", "TRAINER_WINONA_1", "TRAINER_TATE_AND_LIZA_1", "TRAINER_JUAN_1",
            "TRAINER_SIDNEY", "TRAINER_PHOEBE", "TRAINER_GLACIA", "TRAINER_DRAKE", "TRAINER_WALLACE")
 REMATCH_STEP = 5
+# Emerald keeps each rival fight as six trainers (the player's gender x their
+# starter). BPE's rival fields the same team in all six, so they are one fight
+# and share one Standard Level.
+RIVAL_COPY = re.compile(r"TRAINER_(?:MAY|BRENDAN)_(.+)_(?:MUDKIP|TORCHIC|TREECKO)$")
+
+
+def fight(trainer):
+    """The fight a trainer id stands for: the rival's copies share one."""
+    match = RIVAL_COPY.match(trainer)
+    return "RIVAL_" + match.group(1) if match else trainer
 
 
 def read(path):
@@ -153,8 +163,12 @@ def apply_standard_levels(parts):
             levels[parts[i][4:-4]] = found
 
     buckets = collections.defaultdict(list)
-    for trainer, folder in placed.items():
+    copies = collections.defaultdict(list)
+    for trainer, folder in sorted(placed.items()):
         if trainer in rematch or trainer not in levels or any(s in folder for s in SKIP_MAPS):
+            continue
+        copies[fight(trainer)].append(trainer)
+        if len(copies[fight(trainer)]) > 1:
             continue
         ace = max(levels[trainer])
         cap = next((c for c in CAPS if ace <= c), None)
@@ -174,6 +188,9 @@ def apply_standard_levels(parts):
         for trainer, _, _ in rows:
             if trainer in LEADERS:
                 plan[trainer] = cap
+    for trainer in list(plan):
+        for copy in copies[fight(trainer)]:
+            plan[copy] = plan[trainer]
 
     for i in range(1, len(parts), 2):
         trainer = parts[i][4:-4]

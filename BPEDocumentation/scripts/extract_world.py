@@ -424,6 +424,12 @@ def _mart_get_pokemart(body, subscripts):
 # trigger. "set" = the tier reached when the flag IS set; "unset" = when it is
 # not. Unknown flags fall back to a generic title-cased phrasing.
 MART_FLAG_DESCRIPTIONS = {
+    # The Seashore House owner sells Soda Pop once the player has beaten the
+    # three trainers inside and taken the reward.
+    "FLAG_RECEIVED_6_SODA_POP": {
+        "set":   "After beating the three trainers here and taking the owner's reward",
+        "unset": "Before beating the three trainers here",
+    },
     "FLAG_ADVENTURE_STARTED": {
         "set":   "After starting your adventure",
         "unset": "Before starting your adventure",
@@ -744,6 +750,55 @@ def parse_prize_scripts(content, object_events):
     return inventories, coin_sales
 
 
+def parse_money_sales(content):
+    """Parse NPCs that sell an item for money in a script rather than a
+    `pokemart` list (the Seashore House owner's Soda Pop).
+
+    A sale is a script that takes money (`removemoney`) and gives exactly one
+    kind of item. The NPC whose script leads to it is the vendor, and the
+    first flag branch on the way names when it opens. Returns mart-style
+    [{vendor, condition, items}].
+    """
+    if "removemoney" not in content:
+        return []
+    scripts = {}
+    for m in re.finditer(r"^(\w+)::(.*?)(?=^\w+::|\Z)",
+                         content, re.MULTILINE | re.DOTALL):
+        scripts[m.group(1)] = m.group(2)
+    sales = {}
+    for label, body in scripts.items():
+        items = {m.group(1) for m in GIVEITEM_RE.finditer(body)}
+        if REMOVEMONEY_RE.search(body) and len(items) == 1 \
+                and not ADDCOINS_RE.search(body):
+            sales[label] = items.pop()
+    if not sales:
+        return []
+
+    parents = {}
+    for label, body in scripts.items():
+        for target in script_refs(body, scripts):
+            parents.setdefault(target, label)
+
+    out = []
+    for label, item in sales.items():
+        condition, cur, seen = "Always available", label, set()
+        while cur in parents and cur not in seen:
+            seen.add(cur)
+            parent = parents[cur]
+            gate = next((kind for kind, flag, target
+                         in SHOP_FLAG_GATE_RE.findall(scripts[parent])
+                         if target == cur), None)
+            if gate and condition == "Always available":
+                flag = next(flag for kind, flag, target
+                            in SHOP_FLAG_GATE_RE.findall(scripts[parent])
+                            if target == cur)
+                condition = _describe_condition(flag, gate)
+            cur = parent
+        out.append({"vendor": _spaced(re.sub(r"^.*?EventScript_", "", cur)),
+                    "condition": condition, "items": [item]})
+    return out
+
+
 def parse_marts(trainer_names=None):
     """Return {map_id: {name, inventories}} for every map that sells items.
 
@@ -788,7 +843,8 @@ def parse_marts(trainer_names=None):
                 result[map_id]["coinSales"] = coin_sales
             continue
 
-        inventories = parse_shop_scripts(content, trainer_names)
+        inventories = parse_shop_scripts(content, trainer_names) \
+            + parse_money_sales(content)
         if inventories:
             name = _spaced(dirname)
             title = name if re.search(r"\b(Shop|Store|Mart|Market)\b", name) \
@@ -812,6 +868,18 @@ def script_refs(body, scripts):
             yield toks[-1]
 
 
+def reward_refs(body, scripts):
+    """Yield the scripts a trainer battle runs after the player wins (the
+    event_script argument of trainerbattle_single and the like), where
+    trainers such as Shane on Route 114 hand over an item."""
+    for line in body.splitlines():
+        if not re.match(r"\s*trainerbattle\w*\s", line):
+            continue
+        for tok in re.findall(r"[A-Za-z_]\w*", line)[1:]:
+            if tok in scripts and not tok.startswith("TRAINER_"):
+                yield tok
+
+
 def collect_gift_packages(script_label, scripts, _seen=None, _depth=0):
     """Return item reward groups reachable from an object's script.
 
@@ -832,15 +900,19 @@ def collect_gift_packages(script_label, scripts, _seen=None, _depth=0):
     body = scripts.get(script_label)
     if body is None:
         return []
+    # Items after the block's return/end/goto belong to the next label (the
+    # body runs on into it) and are counted when that label is reached.
+    stop = re.search(r"^\s*(?:return|end|goto\s+\w+)\s*(?:@.*)?$", body, re.M)
+    live = body[:stop.start()] if stop else body
     direct = []
-    for m in GIVEITEM_RE.finditer(body):
+    for m in GIVEITEM_RE.finditer(live):
         direct.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
-    for m in ADDITEM_RE.finditer(body):
+    for m in ADDITEM_RE.finditer(live):
         direct.append((m.group(1), int(m.group(2)) if m.group(2) else 1))
     if len({item for item, _ in direct}) == 1 and PURCHASE_RE.search(body):
         direct = []  # a coin/money purchase (Game Corner prizes), not a gift
     packages = [(script_label, direct)] if direct else []
-    for target in script_refs(body, scripts):
+    for target in list(script_refs(body, scripts)) + list(reward_refs(body, scripts)):
         packages.extend(collect_gift_packages(
             target, scripts, _seen, _depth + 1))
     return packages

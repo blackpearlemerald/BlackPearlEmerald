@@ -6312,6 +6312,11 @@ static void Task_TryLearningNextMove(u8 taskId)
 static void CB2_ReturnToPartyMenuUsingRareCandy(void)
 {
     gItemUseCB = ItemUseCB_RareCandy;
+    // BPE: a Candy Jar used from SELECT opened the party menu straight from the
+    // field. Reopened after an evolution, the menu must close back to the field
+    // too; it went to a Bag that was never opened, and closing that went black.
+    if (gPartyMenu.exitCallback == CB2_ReturnToField)
+        gPartyMenu.data1 = DATA1_PARTY_MENU_FROM_FIELD;
     SetMainCallback2(CB2_ShowPartyMenuForItemUse);
 }
 

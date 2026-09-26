@@ -181,6 +181,26 @@ def load_event_mon_statics():
     return names
 
 
+def direct_sources():
+    """grd.parse_sources(), without the in-game trades no map offers.
+
+    src/data/trade.h also holds FireRed and LeafGreen's trades (Lickitung, Mr.
+    Mime, Jynx, ...), which grd counts as gifts. The randomizer keeps that as it
+    is, since changing it would change existing seeds, but for the living dex a
+    trade only counts if some script makes it."""
+    used = set()
+    for path in grd.script_files():
+        used.update(re.findall(r"\bINGAME_TRADE_\w+", grd.read_abs(path)))
+    trades = re.findall(r"\[(INGAME_TRADE_\w+)\]\s*=\s*\{(.*?)\n    \}", read("src/data/trade.h"), re.S)
+    trade_h = "".join(f"[{trade}] = {{{body}\n    }},\n" for trade, body in trades if trade in used)
+    original = grd.read
+    grd.read = lambda path: trade_h if path == "src/data/trade.h" else original(path)
+    try:
+        return grd.parse_sources()
+    finally:
+        grd.read = original
+
+
 def load_mirage_pool():
     text = strip(read("src/field_specials.c"))
     body = re.search(r"sIslandLegendaryPool\[\]\s*=\s*\{(.*?)\};", text, re.S).group(1)
@@ -214,7 +234,8 @@ RESTING_METHODS = KEEP_METHODS | {"EVOLUTION", "FUSION", "FORM_CHANGE_FAINT", "F
                                   "FORM_CHANGE_TIME_OF_DAY", "FORM_CHANGE_STATUS"}
 BATTLE_FLAGS = {"isMegaEvolution", "isPrimalReversion", "isUltraBurst", "isGigantamax", "isTeraForm"}
 CURRENT_REGION = "REGION_HOENN"
-IMPOSSIBLE_EVOS = {"EVO_NONE"}
+# No BPE script runs tryspecialevo, so script-triggered evolutions never happen.
+IMPOSSIBLE_EVOS = {"EVO_NONE", "EVO_SCRIPT_TRIGGER"}
 # Battle forms that no form change table leads to: Ash-Greninja comes from
 # Battle Bond, Eternamax exists only in its story battle, and Shadow Lugia is
 # the Orre battle form.
@@ -301,7 +322,7 @@ class Audit:
         return False
 
     def run(self):
-        sources = grd.parse_sources()
+        sources = direct_sources()
         for name in sources:
             self.add(name, "wild/gift/static")
         for name in self.event_statics:
@@ -358,6 +379,11 @@ class Audit:
                     changed |= self.add("SPECIES_NIDORAN_M", f"bred from {name[8:]}")
                 if egg == "SPECIES_ILLUMISE":
                     changed |= self.add("SPECIES_VOLBEAT", f"bred from {name[8:]}")
+                # A regional form is foreign in Hoenn: bred without an Everstone,
+                # its Egg hatches the first form in its table (GetRegionalFormByRegion).
+                base = re.sub(r"_(ALOLA|GALAR|HISUI|PALDEA)(_\w+)?$", "", egg)
+                if base != egg:
+                    changed |= self.add(base, f"bred from {name[8:]} without an Everstone")
 
         for method, target, args in self.tables.get(info["formTable"], []):
             if not target or target in self.how or target == name or method not in KEEP_METHODS:
@@ -392,10 +418,8 @@ class Audit:
 # make from something else, so the lottery never offers what feels like a repeat.
 # These are the deliberate exceptions, each with the reason it earns its slot.
 POOL_DUPES_ALLOWED = {
-    "SPECIES_SOLGALEO":            "reaching it costs a Cosmog the player would then be missing",
-    "SPECIES_LUNALA":              "reaching it costs a Cosmog the player would then be missing",
-    "SPECIES_NECROZMA_DUSK_MANE":  "fusing costs the Solgaleo the player would then be missing",
-    "SPECIES_NECROZMA_DAWN_WINGS": "fusing costs the Lunala the player would then be missing",
+    "SPECIES_NECROZMA_DUSK_MANE":  "the one Necrozma can only be fused one way at a time",
+    "SPECIES_NECROZMA_DAWN_WINGS": "the one Necrozma can only be fused one way at a time",
     "SPECIES_KYUREM_WHITE":        "both Kyurem fusions share one fusion storage slot",
     "SPECIES_KYUREM_BLACK":        "both Kyurem fusions share one fusion storage slot",
     "SPECIES_CALYREX_ICE":         "both Calyrex fusions share one fusion storage slot",

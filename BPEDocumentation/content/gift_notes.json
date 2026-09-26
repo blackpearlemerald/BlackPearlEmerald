@@ -13,13 +13,13 @@
   },
   {
     "script": "LittlerootTown_EventScript_Mom",
-    "note": "<b>Automatic, after the Pokédex.</b> Once Professor Birch gives you the Pokédex, Mom stops you on your way out of Littleroot Town with her starter kit: Picnic Basket, Portable PC, Taxi Ticket, Candy Jar, Exp. Share, Old Rod, Escape Rope and Pocket Watch. In Standard mode the kit also includes the Level Limiter. It can't be missed."
+    "note": "<b>Automatic, after the Pokédex.</b> Once Professor Birch gives you the Pokédex, Mom stops you on your way out of Littleroot Town with her starter kit: Picnic Basket, Portable PC, Taxi Ticket, Candy Jar, Exp. Share, Old Rod, Escape Rope, Pocket Watch and Infinite Repel. In Standard mode the kit also includes the Level Limiter. It can't be missed."
   },
   {
     "script": "PlayersHouse_1F_EventScript_Mom",
-    "note": "<b>Talk to Mom at home.</b> Mom is on the ground floor of your house.<br><b>Amulet Coin:</b> once you have the PokéNav, talk to her once so she registers her number. After you earn Badge 5 from your Dad at the Petalburg Gym, talk to her again for the Amulet Coin. <b>Can be missed:</b> once your Dad has visited after the Hall of Fame, she no longer gives it.<br><b>Level Limiter:</b> Standard players already get it in her starter kit. A Nuzlocke challenge ends after the Hall of Fame; talk to her after that and she gives it to you.",
+    "note": "<b>Talk to Mom at home.</b> Mom is on the ground floor of your house.<br><b>Amulet Coin:</b> once you have the PokéNav, talk to her once so she registers her number. After you earn Badge 5 from your Dad at the Petalburg Gym, talk to her again for the Amulet Coin. <b>Can be missed:</b> once your Dad has visited after the Hall of Fame, she no longer gives it.<br><b>Level Limiter:</b> Standard players already get it in her starter kit. A Nuzlocke challenge ends after the Hall of Fame; talk to her after that and she gives it to you.<br><b>Infinite Repel:</b> every new game gets it in her starter kit. A save from before it existed gets it the next time you talk to her.",
     "exclude": ["ITEM_CANDY_JAR", "ITEM_EXP_SHARE"],
-    "add": [{"item": "ITEM_AMULET_COIN"}, {"item": "ITEM_LEVEL_LIMITER"}]
+    "add": [{"item": "ITEM_AMULET_COIN"}, {"item": "ITEM_LEVEL_LIMITER"}, {"item": "ITEM_INFINITE_REPEL"}]
   },
   {
     "script": "LittlerootTown_BrendansHouse_1F_MapScripts",
@@ -213,6 +213,14 @@
   {
     "script": "Route114_EventScript_RoarGentleman",
     "note": "<b>Just talk to him.</b> This gentleman on Route 114 gives you the Roar TM the first time you speak to him."
+  },
+  {
+    "script": "VerdanturfTown_Mart_EventScript_ExpertF",
+    "note": "<b>Postgame: after the Hall of Fame.</b> The woman in the Verdanturf Poké Mart gives you the Z-Power Ring once you are Champion. With it, Necrozma fused with Solgaleo or Lunala can Ultra Burst while holding an Ultranecrozium Z, which the clerk sells after the Hall of Fame."
+  },
+  {
+    "script": "Route114_EventScript_Shane",
+    "note": "<b>Beat him.</b> Camper Shane, halfway along Route 114, gives you the Aggronite right after you defeat him. He only battles once, so have room in your Bag."
   },
   {
     "script": "Route114_FossilManiacsHouse_EventScript_FossilManiacsBrother",

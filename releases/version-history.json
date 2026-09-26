@@ -1,6 +1,22 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.9-beta": {
+      "channel": "beta",
+      "changes": [
+        "Fixed a freeze on Victory Road caused by invisible trainers.",
+        "Type-boosting held items like Charcoal and Mystic Water boost moves again. They had stopped working in 2.0.",
+        "New Infinite Repel: a key item from Mom that works like a Max Repel that never runs out. Switch it on or off from the Bag or SELECT.",
+        "DexNav: Pokémon found in caves and on water no longer slip away across walls and rivers, and regional forms like Galarian Zigzagoon get their own entry.",
+        "Lickitung can now be traded for in Lilycove City, so every Pokémon can be obtained.",
+        "Solgaleo and Lunala now come from evolving a Cosmog from the Mirage Altar, not the island lottery.",
+        "After you become Champion, the Verdanturf Poké Mart sells the Red Orb, Blue Orb and Ultranecrozium Z, and a woman there gives you the Z-Power Ring.",
+        "Primal Kyogre and Groudon and Ultra Necrozma can be used, and Greninja with Battle Bond becomes Ash-Greninja.",
+        "Fixed the Candy Jar going to a black screen after an evolution when used from SELECT, and your character showing as Cynthia in the Battle Tents.",
+        "Fixed the Box Link placing PC tiles, the Pokémon Center move relearner turning the Nurse, two unreachable items on Route 114, and two trainers stuck inside rock on Victory Road and Route 118.",
+        "Website: the Pokédex shows where and when to find every legendary, and how to get Pokémon that aren't found in the wild."
+      ]
+    },
     "2.1.8-beta": {
       "channel": "beta",
       "changes": [

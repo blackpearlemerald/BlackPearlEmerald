@@ -922,6 +922,9 @@ static bool8 CheckStandardWildEncounter(u16 metatileBehavior)
     if (ShouldDisableRandomEncounters())
         return FALSE;
 
+    if (IsDexNavStalkingPokemon())
+        return FALSE;
+
     if (sWildEncounterImmunitySteps < 4)
     {
         sWildEncounterImmunitySteps++;

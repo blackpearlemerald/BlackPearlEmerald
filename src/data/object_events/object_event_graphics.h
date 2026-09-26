@@ -548,6 +548,10 @@ const u16 gObjectEventPal_Hassel[] = INCGFX_U16("graphics/object_events/palettes
 const u16 gObjectEventPal_Larry[] = INCGFX_U16("graphics/object_events/palettes/larry.pal", ".gbapal");
 const u16 gObjectEventPal_Poppy[] = INCGFX_U16("graphics/object_events/palettes/poppy.pal", ".gbapal");
 
+// BPE: used by Victory Road trainers, so built outside IS_FRLG (see object_event_graphics_info_pointers.h).
+const u16 gObjectEventPic_Giovanni[] = INCGFX_U16("graphics/object_events/pics/people/giovanni.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Blue[] = INCGFX_U16("graphics/object_events/pics/people/blue.png", ".4bpp", "-mwidth 2 -mheight 4");
+
 #if IS_FRLG
 
 const u16 gObjectEventPic_RedNormal[] = INCGFX_U16("graphics/object_events/pics/people/red/red_normal.png", ".4bpp", "-mwidth 2 -mheight 4");
@@ -570,7 +574,6 @@ const u16 gObjectEventPal_PlayerReflectionFrlg[] = INCGFX_U16("graphics/object_e
 
 const u16 gObjectEventPic_Pokedex[] = INCGFX_U16("graphics/object_events/pics/misc/pokedex.png", ".4bpp");
 const u16 gObjectEventPic_TownMap[] = INCGFX_U16("graphics/object_events/pics/misc/town_map.png", ".4bpp", "-mwidth 2 -mheight 2");
-const u16 gObjectEventPic_Giovanni[] = INCGFX_U16("graphics/object_events/pics/people/giovanni.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_Blaine[] = INCGFX_U16("graphics/object_events/pics/people/blaine.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_Sabrina[] = INCGFX_U16("graphics/object_events/pics/people/sabrina.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_Daisy[] = INCGFX_U16("graphics/object_events/pics/people/daisy.png", ".4bpp", "-mwidth 2 -mheight 4");
@@ -626,7 +629,6 @@ const u16 gObjectEventPic_GymGuy[] = INCGFX_U16("graphics/object_events/pics/peo
 const u16 gObjectEventPic_Man[] = INCGFX_U16("graphics/object_events/pics/people/man.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_Rocker[] = INCGFX_U16("graphics/object_events/pics/people/rocker.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_ProfOak[] = INCGFX_U16("graphics/object_events/pics/people/prof_oak.png", ".4bpp", "-mwidth 2 -mheight 4");
-const u16 gObjectEventPic_Blue[] = INCGFX_U16("graphics/object_events/pics/people/blue.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_NurseFrlg[] = INCGFX_U16("graphics/object_events/pics/people/nurse_frlg.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_CableClubReceptionist[] = INCGFX_U16("graphics/object_events/pics/people/cable_club_receptionist.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_UnionRoomReceptionist[] = INCGFX_U16("graphics/object_events/pics/people/union_room_receptionist.png", ".4bpp", "-mwidth 2 -mheight 4");

@@ -1131,11 +1131,28 @@ bool8 UpdateRepelCounter(void)
     return FALSE;
 }
 
+// BPE: the Infinite Repel works like a Max Repel that never wears off. The Safari
+// Zone and the Battle Pike and Pyramid keep their own encounter rules, and the
+// Pyramid only allows the Repels in its own bag, so it does nothing there.
+bool32 IsInfiniteRepelActive(void)
+{
+    return FlagGet(FLAG_INFINITE_REPEL_ON)
+        && !GetSafariZoneFlag()
+        && !InBattlePike()
+        && CurrentBattlePyramidLocation() == PYRAMID_LOCATION_NONE;
+}
+
+// BPE: a Repel or Max Repel with steps left, or the Infinite Repel.
+bool32 IsRepelActive(void)
+{
+    return REPEL_STEP_COUNT != 0 || IsInfiniteRepelActive();
+}
+
 bool8 IsWildLevelAllowedByRepel(u8 wildLevel)
 {
     u8 i;
 
-    if (!REPEL_STEP_COUNT)
+    if (!IsRepelActive())
         return TRUE;
 
     for (i = 0; i < PARTY_SIZE; i++)
