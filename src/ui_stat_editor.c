@@ -3,6 +3,7 @@
 #include "pokemon.h"
 #include "strings.h"
 #include "bg.h"
+#include "caps.h"
 #include "data.h"
 #include "decompress.h"
 #include "event_data.h"
@@ -65,10 +66,25 @@ struct StatEditorResources
     u16 ivTotal;
     u16 partyid;
     u16 inputMode;
+    bool8 canEdit;                  // BPE: Standard mode only; Nuzlocke games just view
+    u8 wideSelectorSpriteId;
+    u8 infoRow;
 };
 
 #define INPUT_SELECT_STAT 0
 #define INPUT_EDIT_STAT 1
+
+// BPE: selector_x picks the EV column, the IV column or the Ability/Nature panel on the left.
+#define SELECTOR_COLUMN_EV   0
+#define SELECTOR_COLUMN_IV   1
+#define SELECTOR_COLUMN_INFO 2
+#define SELECTOR_COLUMNS     3
+
+#define INFO_ROW_ABILITY 0
+#define INFO_ROW_NATURE  1
+#define INFO_ROWS        2
+
+#define STAT_ROWS 6
 
 enum WindowIds
 {
@@ -178,9 +194,11 @@ static const u8 sMenuWindowFontColors[][3] =
 };
 
 #define TAG_SELECTOR 30004
+#define TAG_SELECTOR_WIDE 30005
 
 static const u16 sSelector_Pal[] = INCGFX_U16("graphics/ui_menu/selector.png", ".gbapal");
 static const u32 sSelector_Gfx[] = INCGFX_U32("graphics/ui_menu/selector.png", ".4bpp.lz");
+static const u32 sSelectorWide_Gfx[] = INCGFX_U32("graphics/ui_menu/selector_wide.png", ".4bpp.lz");
 static const u8 sA_ButtonGfx[]         = INCGFX_U8("graphics/ui_menu/a_button.png", ".4bpp");
 static const u8 sB_ButtonGfx[]         = INCGFX_U8("graphics/ui_menu/b_button.png", ".4bpp");
 static const u8 sR_ButtonGfx[]         = INCGFX_U8("graphics/ui_menu/r_button.png", ".4bpp");
@@ -206,6 +224,22 @@ static const struct SpritePalette sSpritePal_Selector =
     .tag = TAG_SELECTOR
 };
 
+// BPE: a 64-pixel-wide selector for the Ability and Nature boxes.
+static const struct OamData sOamData_SelectorWide =
+{
+    .size = SPRITE_SIZE(64x32),
+    .shape = SPRITE_SHAPE(64x32),
+    .priority = 0,
+};
+
+static const struct CompressedSpriteSheet sSpriteSheet_SelectorWide =
+{
+    .data = sSelectorWide_Gfx,
+    .size = 64*32*4/2,
+    .tag = TAG_SELECTOR_WIDE,
+};
+
+// Selector frames: white while choosing, red at the maximum, blue at the minimum, gold while editing.
 static const union AnimCmd sSpriteAnim_Selector0[] =
 {
     ANIMCMD_FRAME(0, 32),
@@ -230,8 +264,8 @@ static const union AnimCmd sSpriteAnim_Selector2[] =
 
 static const union AnimCmd sSpriteAnim_Selector3[] =
 {
-    ANIMCMD_FRAME(0, 32),
-    ANIMCMD_FRAME(0, 32),
+    ANIMCMD_FRAME(48, 32),
+    ANIMCMD_FRAME(48, 32),
     ANIMCMD_JUMP(0),
 };
 
@@ -243,12 +277,61 @@ static const union AnimCmd *const sSpriteAnimTable_Selector[] =
     sSpriteAnim_Selector3,
 };
 
+// The wide frames are 32 tiles each, so the same four frames start at 0, 32, 64 and 96.
+static const union AnimCmd sSpriteAnim_SelectorWide0[] =
+{
+    ANIMCMD_FRAME(0, 32),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd sSpriteAnim_SelectorWide1[] =
+{
+    ANIMCMD_FRAME(64, 32),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd sSpriteAnim_SelectorWide2[] =
+{
+    ANIMCMD_FRAME(32, 32),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd sSpriteAnim_SelectorWide3[] =
+{
+    ANIMCMD_FRAME(96, 32),
+    ANIMCMD_JUMP(0),
+};
+
+static const union AnimCmd *const sSpriteAnimTable_SelectorWide[] =
+{
+    sSpriteAnim_SelectorWide0,
+    sSpriteAnim_SelectorWide1,
+    sSpriteAnim_SelectorWide2,
+    sSpriteAnim_SelectorWide3,
+};
+
+#define SELECTOR_ANIM_CHOOSING 0
+#define SELECTOR_ANIM_AT_MIN   1
+#define SELECTOR_ANIM_AT_MAX   2
+#define SELECTOR_ANIM_EDITING  3
+
 static const struct SpriteTemplate sSpriteTemplate_Selector =
 {
     .tileTag = TAG_SELECTOR,
     .paletteTag = TAG_SELECTOR,
     .oam = &sOamData_Selector,
     .anims = sSpriteAnimTable_Selector,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SelectorCallback
+};
+
+static const struct SpriteTemplate sSpriteTemplate_SelectorWide =
+{
+    .tileTag = TAG_SELECTOR_WIDE,
+    .paletteTag = TAG_SELECTOR,
+    .oam = &sOamData_SelectorWide,
+    .anims = sSpriteAnimTable_SelectorWide,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SelectorCallback
@@ -278,6 +361,7 @@ void StatEditor_Init(MainCallback callback)
     sStatEditorDataPtr->gfxLoadState = 0;
     sStatEditorDataPtr->savedCallback = callback;
     sStatEditorDataPtr->selectorSpriteId = 0xFF;
+    sStatEditorDataPtr->wideSelectorSpriteId = 0xFF;
     sStatEditorDataPtr->partyid = gSpecialVar_0x8004;
     
     SetMainCallback2(StatEditor_RunSetup);
@@ -341,9 +425,11 @@ static bool8 StatEditor_DoGfxSetup(void)
         break;
     case 4:
         sStatEditorDataPtr->speciesID = GetMonData(ReturnPartyMon(), MON_DATA_SPECIES);
+        sStatEditorDataPtr->canEdit = StatEditor_CanEditMon(ReturnPartyMon());
         FreeMonIconPalettes();
         LoadMonIconPalettes();
         LoadCompressedSpriteSheet(&sSpriteSheet_Selector);
+        LoadCompressedSpriteSheet(&sSpriteSheet_SelectorWide);
         LoadSpritePalette(&sSpritePal_Selector);
         SampleUi_DrawMonIcon(sStatEditorDataPtr->speciesID);
         gMain.state++;
@@ -515,9 +601,14 @@ static u8 CreateSelector()
 {
     if (sStatEditorDataPtr->selectorSpriteId == 0xFF)
         sStatEditorDataPtr->selectorSpriteId = CreateSprite(&sSpriteTemplate_Selector, 188, 30, 0);
+    if (sStatEditorDataPtr->wideSelectorSpriteId == 0xFF)
+    {
+        sStatEditorDataPtr->wideSelectorSpriteId = CreateSprite(&sSpriteTemplate_SelectorWide, 40, 130, 0);
+        gSprites[sStatEditorDataPtr->wideSelectorSpriteId].data[1] = TRUE;
+    }
 
-    gSprites[sStatEditorDataPtr->selectorSpriteId].invisible = FALSE;
-    StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 0);
+    StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], SELECTOR_ANIM_CHOOSING);
+    StartSpriteAnim(&gSprites[sStatEditorDataPtr->wideSelectorSpriteId], SELECTOR_ANIM_CHOOSING);
     DebugPrintf("Sprite ID: %d", sStatEditorDataPtr->selectorSpriteId);
     return sStatEditorDataPtr->selectorSpriteId;
 }
@@ -527,6 +618,9 @@ static void DestroySelector()
     if (sStatEditorDataPtr->selectorSpriteId != 0xFF)
         DestroySprite(&gSprites[sStatEditorDataPtr->selectorSpriteId]);
     sStatEditorDataPtr->selectorSpriteId = 0xFF;
+    if (sStatEditorDataPtr->wideSelectorSpriteId != 0xFF)
+        DestroySprite(&gSprites[sStatEditorDataPtr->wideSelectorSpriteId]);
+    sStatEditorDataPtr->wideSelectorSpriteId = 0xFF;
 }
 
 #define DISTANCE_BETWEEN_STATS_Y 16
@@ -600,23 +694,34 @@ static const u8 sText_MenuEV[] = _("EV");
 static const u8 sText_MenuIV[] = _("IV");
 static const u8 sText_MonLevel[]         = _("Lv.{CLEAR 1}{STR_VAR_1}");
 
-//static const u8 sText_MenuLRButtonTextMain[]   = _("Cycle Party");
-//static const u8 sText_MenuAButtonTextMain[]    = _("Edit Stats");
+static const u8 sText_MenuAButtonTextMain[]    = _("Edit");
 static const u8 sText_MenuBButtonTextMain[]    = _("Back");
-static const u8 sText_MenuDPadButtonTextMain[] = _("Change Stat");
+static const u8 sText_MenuBButtonTextEdit[]    = _("Done");
+static const u8 sText_MenuDPadButtonTextMain[] = _("Move");
+static const u8 sText_MenuDPadButtonTextEdit[] = _("Change");
 
 #define BUTTON_Y 4
+#define HINT_DPAD_X 60
+#define HINT_A_X    124
+#define HINT_B_X    170
+
+static void PrintButtonHint(const u8 *gfx, u32 x, u32 width, const u8 *text)
+{
+    BlitBitmapToWindow(WINDOW_1, gfx, x, BUTTON_Y, width, 8);
+    AddTextPrinterParameterized4(WINDOW_1, FONT_NARROW, x + width + 4, 0, 0, 0, sMenuWindowFontColors[FONT_WHITE], TEXT_SKIP_DRAW, text);
+}
+
 static void PrintTitleToWindowMainState()
 {
     FillWindowPixelBuffer(WINDOW_1, PIXEL_FILL(TEXT_COLOR_TRANSPARENT));
-    
-    //AddTextPrinterParameterized4(WINDOW_1, FONT_NORMAL, 1, 0, 0, 0, sMenuWindowFontColors[FONT_WHITE], TEXT_SKIP_DRAW, sText_MenuTitle);
 
-    //BlitBitmapToWindow(WINDOW_1, sR_ButtonGfx, 75, (BUTTON_Y), 24, 8);
-    //AddTextPrinterParameterized4(WINDOW_1, FONT_NARROW, 102, 0, 0, 0, sMenuWindowFontColors[FONT_WHITE], TEXT_SKIP_DRAW, sText_MenuLRButtonTextMain);
-
-    //BlitBitmapToWindow(WINDOW_1, sA_ButtonGfx, 160, (BUTTON_Y), 8, 8);
-    //AddTextPrinterParameterized4(WINDOW_1, FONT_NARROW, 172, 0, 0, 0, sMenuWindowFontColors[FONT_WHITE], TEXT_SKIP_DRAW, sText_MenuAButtonTextMain);
+    // BPE: Nuzlocke games can only look, so they get just the way out.
+    if (sStatEditorDataPtr->canEdit)
+    {
+        PrintButtonHint(sDPad_ButtonGfx, HINT_DPAD_X, 24, sText_MenuDPadButtonTextMain);
+        PrintButtonHint(sA_ButtonGfx, HINT_A_X, 8, sText_MenuAButtonTextMain);
+    }
+    PrintButtonHint(sB_ButtonGfx, HINT_B_X, 8, sText_MenuBButtonTextMain);
 
     PutWindowTilemap(WINDOW_1);
     CopyWindowToVram(WINDOW_1, 3);
@@ -625,14 +730,9 @@ static void PrintTitleToWindowMainState()
 static void PrintTitleToWindowEditState()
 {
     FillWindowPixelBuffer(WINDOW_1, PIXEL_FILL(TEXT_COLOR_TRANSPARENT));
-    
-    //AddTextPrinterParameterized4(WINDOW_1, FONT_NORMAL, 1, 0, 0, 0, sMenuWindowFontColors[FONT_WHITE], TEXT_SKIP_DRAW, sText_MenuTitle);
 
-    BlitBitmapToWindow(WINDOW_1, sDPad_ButtonGfx, 75, (BUTTON_Y), 24, 8);
-    AddTextPrinterParameterized4(WINDOW_1, FONT_NARROW, 102, 0, 0, 0, sMenuWindowFontColors[FONT_WHITE], TEXT_SKIP_DRAW, sText_MenuDPadButtonTextMain);
-
-    BlitBitmapToWindow(WINDOW_1, sB_ButtonGfx, 160, (BUTTON_Y), 8, 8);
-    AddTextPrinterParameterized4(WINDOW_1, FONT_NARROW, 172, 0, 0, 0, sMenuWindowFontColors[FONT_WHITE], TEXT_SKIP_DRAW, sText_MenuBButtonTextMain);
+    PrintButtonHint(sDPad_ButtonGfx, HINT_DPAD_X, 24, sText_MenuDPadButtonTextEdit);
+    PrintButtonHint(sB_ButtonGfx, HINT_B_X, 8, sText_MenuBButtonTextEdit);
 
     PutWindowTilemap(WINDOW_1);
     CopyWindowToVram(WINDOW_1, 3);
@@ -680,7 +780,8 @@ static void PrintMonStats()
 
     for(i = 0; i < 6; i++)
     {
-        currentStat = ((GetMonData(ReturnPartyMon(), statsToPrintEVs[i]))*0);
+        // BPE: EVs do nothing in Nuzlocke mode, so they read zero there.
+        currentStat = FlagGet(FLAG_NUZLOCKE) ? 0 : GetMonData(ReturnPartyMon(), statsToPrintEVs[i]);
         sStatEditorDataPtr->evTotal += currentStat;
         DebugPrintf("Stat: %d", currentStat);
         ConvertIntToDecimalStringN(gStringVar2, currentStat, STR_CONV_MODE_RIGHT_ALIGN, 3);
@@ -731,7 +832,8 @@ static void PrintMonStats()
         AddTextPrinterParameterized4(WINDOW_3, FONT_NORMAL, 41 + 8, 19, 0, 0, sGenderColors[(gender == MON_FEMALE)], TEXT_SKIP_DRAW, text);
     }
 
-    nature = GetNature(ReturnPartyMon());
+    // BPE: the nature the stats use, which a Mint (or this editor) may have changed.
+    nature = GetMonData(ReturnPartyMon(), MON_DATA_HIDDEN_NATURE);
     StringCopy(gStringVar2, gNaturesInfo[nature].name);
     AddTextPrinterParameterized4(WINDOW_3, FONT_SMALL_NARROW, 4, 50, 0, 0, sMenuWindowFontColors[FONT_WHITE], 0xFF, gStringVar2);
 
@@ -750,16 +852,39 @@ struct SpriteCordsStruct {
     u8 y;
 };
 
+// BPE: where the selectors sit. The EV and IV cells are two columns of six; the
+// Ability and Nature boxes are under the Pokemon's picture.
+static const struct SpriteCordsStruct sStatSelectorCoords[STAT_ROWS][2] = {
+    {{188, 30 + 20}, {220, 30 + 20}},
+    {{188, 46 + 20}, {220, 46 + 20}},
+    {{188, 62 + 20}, {220, 62 + 20}},
+    {{188, 78 + 20}, {220, 78 + 20}},
+    {{188, 94 + 20}, {220, 94 + 20}},
+    {{188, 110 + 20}, {220, 110 + 20}}, // Thanks Jaizu
+};
+
+static const struct SpriteCordsStruct sInfoSelectorCoords[INFO_ROWS] = {
+    [INFO_ROW_ABILITY] = {40, 130},
+    [INFO_ROW_NATURE]  = {40, 146},
+};
+
+// Left to right on screen: the Ability/Nature panel, then EVs, then IVs.
+static const u8 sColumnOrder[SELECTOR_COLUMNS] = {
+    SELECTOR_COLUMN_INFO, SELECTOR_COLUMN_EV, SELECTOR_COLUMN_IV,
+};
+
 static void SelectorCallback(struct Sprite *sprite)
 {
-    struct SpriteCordsStruct spriteCords[6][2] = {
-        {{188, 30 + 20}, {220, 30 + 20}},
-        {{188, 46 + 20}, {220, 46 + 20}},
-        {{188, 62 + 20}, {220, 62 + 20}},
-        {{188, 78 + 20}, {220, 78 + 20}},
-        {{188, 94 + 20}, {220, 94 + 20}},
-        {{188, 110 + 20}, {220, 110 + 20}}, // Thanks Jaizu
-    };
+    bool32 isWide = sprite->data[1];
+    bool32 onInfo = (sStatEditorDataPtr->selector_x == SELECTOR_COLUMN_INFO);
+
+    // Only the selector for the current box shows, and none at all when the Pokemon can't be edited.
+    if (!sStatEditorDataPtr->canEdit || isWide != onInfo)
+    {
+        sprite->invisible = TRUE;
+        sprite->data[0] = 0;
+        return;
+    }
 
     if(sStatEditorDataPtr->inputMode == INPUT_EDIT_STAT)
     {
@@ -780,12 +905,17 @@ static void SelectorCallback(struct Sprite *sprite)
         sprite->data[0] = 0;
     }
 
-    sStatEditorDataPtr->selectedStat = sStatEditorDataPtr->selector_x + (sStatEditorDataPtr->selector_y * 2);
-
-    sprite->x = spriteCords[sStatEditorDataPtr->selector_y][sStatEditorDataPtr->selector_x].x;
-    sprite->y = spriteCords[sStatEditorDataPtr->selector_y][sStatEditorDataPtr->selector_x].y;
-
-    DebugPrintf("%d", sStatEditorDataPtr->selectedStat);
+    if (isWide)
+    {
+        sprite->x = sInfoSelectorCoords[sStatEditorDataPtr->infoRow].x;
+        sprite->y = sInfoSelectorCoords[sStatEditorDataPtr->infoRow].y;
+    }
+    else
+    {
+        sStatEditorDataPtr->selectedStat = sStatEditorDataPtr->selector_x + (sStatEditorDataPtr->selector_y * 2);
+        sprite->x = sStatSelectorCoords[sStatEditorDataPtr->selector_y][sStatEditorDataPtr->selector_x].x;
+        sprite->y = sStatSelectorCoords[sStatEditorDataPtr->selector_y][sStatEditorDataPtr->selector_x].y;
+    }
 }
 
 static const u16 selectedStatToStatEnum[] = {
@@ -793,8 +923,65 @@ static const u16 selectedStatToStatEnum[] = {
         MON_DATA_SPATK_EV, MON_DATA_SPATK_IV, MON_DATA_SPDEF_EV, MON_DATA_SPDEF_IV, MON_DATA_SPEED_EV, MON_DATA_SPEED_IV,
 };
 
+// BPE: Standard games may change a Pokemon's EVs, IVs, nature and ability here.
+// Nuzlocke games only look, and so does anyone looking at an Egg.
+bool32 StatEditor_CanEditMon(struct Pokemon *mon)
+{
+    return !FlagGet(FLAG_NUZLOCKE) && !GetMonData(mon, MON_DATA_IS_EGG);
+}
+
+// The highest value this EV or IV may take, given the Pokemon's other EVs.
+u32 StatEditor_GetStatMax(struct Pokemon *mon, u32 field)
+{
+    u32 i, evCap, otherEVs = 0;
+
+    if (field < MON_DATA_HP_EV || field >= MON_DATA_HP_EV + NUM_STATS)
+        return MAX_PER_STAT_IVS;
+
+    for (i = 0; i < NUM_STATS; i++)
+    {
+        if (MON_DATA_HP_EV + i != field)
+            otherEVs += GetMonData(mon, MON_DATA_HP_EV + i);
+    }
+
+    evCap = GetCurrentEVCap();
+    if (otherEVs >= evCap)
+        return 0;
+    return min((u32)MAX_PER_STAT_EVS, evCap - otherEVs);
+}
+
+// The next ability slot in the given direction that gives a different ability. Empty
+// slots and slots repeating an earlier one are skipped. Returns the current slot if
+// the species has only one ability.
+u32 StatEditor_GetNextAbilityNum(struct Pokemon *mon, s32 direction)
+{
+    enum Species species = GetMonData(mon, MON_DATA_SPECIES);
+    u32 current = GetMonData(mon, MON_DATA_ABILITY_NUM);
+    enum Ability currentAbility = GetMonAbility(mon);
+    u32 i, j, slot = current;
+
+    for (i = 0; i < NUM_ABILITY_SLOTS; i++)
+    {
+        enum Ability ability;
+        bool32 repeated = FALSE;
+
+        slot = (slot + NUM_ABILITY_SLOTS + direction) % NUM_ABILITY_SLOTS;
+        ability = GetSpeciesAbility(species, slot);
+        if (ability == ABILITY_NONE || ability == currentAbility)
+            continue;
+        for (j = 0; j < slot; j++)
+        {
+            if (GetSpeciesAbility(species, j) == ability)
+                repeated = TRUE;
+        }
+        if (!repeated)
+            return slot;
+    }
+    return current;
+}
+
 static void Task_DelayedSpriteLoad(u8 taskId) // wait 4 frames after changing the mon you're editing so there are no palette problems
-{   
+{
     if (gTasks[taskId].data[11] >= 4)
     {
         SampleUi_DrawMonIcon(sStatEditorDataPtr->speciesID);
@@ -808,7 +995,7 @@ static void Task_DelayedSpriteLoad(u8 taskId) // wait 4 frames after changing th
     }
 }
 
-static void ReloadNewPokemon(u8 taskId)
+static void UNUSED ReloadNewPokemon(u8 taskId)
 {
     gSprites[sStatEditorDataPtr->monIconSpriteId].invisible = TRUE;
     FreeAndDestroyMonPicSprite(sStatEditorDataPtr->monIconSpriteId);
@@ -817,209 +1004,212 @@ static void ReloadNewPokemon(u8 taskId)
     gTasks[taskId].data[11] = 0;
 }
 
+static u32 GetSelectedStatField(void)
+{
+    return selectedStatToStatEnum[sStatEditorDataPtr->selector_x + (sStatEditorDataPtr->selector_y * 2)];
+}
+
+static struct Sprite *GetActiveSelector(void)
+{
+    if (sStatEditorDataPtr->selector_x == SELECTOR_COLUMN_INFO)
+        return &gSprites[sStatEditorDataPtr->wideSelectorSpriteId];
+    return &gSprites[sStatEditorDataPtr->selectorSpriteId];
+}
+
+// White while choosing; while editing, red at the maximum, blue at the minimum and gold otherwise.
+static void UpdateSelectorAnim(void)
+{
+    u32 anim = SELECTOR_ANIM_CHOOSING;
+
+    if (sStatEditorDataPtr->inputMode == INPUT_EDIT_STAT)
+    {
+        anim = SELECTOR_ANIM_EDITING;
+        if (sStatEditorDataPtr->selector_x != SELECTOR_COLUMN_INFO)
+        {
+            u32 field = GetSelectedStatField();
+            u32 value = GetMonData(ReturnPartyMon(), field);
+
+            if (value >= StatEditor_GetStatMax(ReturnPartyMon(), field))
+                anim = SELECTOR_ANIM_AT_MAX;
+            else if (value == 0)
+                anim = SELECTOR_ANIM_AT_MIN;
+        }
+    }
+
+    if (GetActiveSelector()->animNum != anim)
+        StartSpriteAnim(GetActiveSelector(), anim);
+}
+
 static void Task_StatEditorMain(u8 taskId) // input control when first loaded into menu
 {
-    // if (JOY_NEW(A_BUTTON))
-    // {
-    //     sStatEditorDataPtr->editingStat = GetMonData(ReturnPartyMon(), selectedStatToStatEnum[sStatEditorDataPtr->selectedStat]);
-    //     StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 3);
-    //     PlaySE(SE_SELECT);
-    //     PrintTitleToWindowEditState();
-    //     sStatEditorDataPtr->inputMode = INPUT_EDIT_STAT;
-    //     gTasks[taskId].func = Task_MenuEditingStat;
-    //     if(sStatEditorDataPtr->editingStat == 0)
-    //         StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 1);
-    //     if((sStatEditorDataPtr->editingStat == 255 || (sStatEditorDataPtr->evTotal == 510)) && (sStatEditorDataPtr->selector_x == 0))
-    //         StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 2);
-    //     if((sStatEditorDataPtr->editingStat == 31) && (sStatEditorDataPtr->selector_x == 1))
-    //         StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 2);
-    //     return;
-    // }
-    // if (JOY_NEW(L_BUTTON))
-    // {
-    //     u16 partyid = sStatEditorDataPtr->partyid;
-    //     if (partyid == 0)
-    //         partyid = gPlayerPartyCount - 1;
-    //     else
-    //         partyid -= 1;
-    //     sStatEditorDataPtr->partyid = partyid;
-    //     PlaySE(SE_SELECT);
-    //     ReloadNewPokemon(taskId);
-    // }
-    // if (JOY_NEW(R_BUTTON))
-    // {
-    //     u16 partyid = sStatEditorDataPtr->partyid;
-    //     if (partyid == gPlayerPartyCount - 1)
-    //         partyid = 0;
-    //     else
-    //         partyid += 1;
-    //     sStatEditorDataPtr->partyid = partyid;
-    //     PlaySE(SE_SELECT);
-    //     ReloadNewPokemon(taskId);
-    // }
+    u32 i;
+
     if (JOY_NEW(B_BUTTON))
     {
         PlaySE(SE_PC_OFF);
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
         gTasks[taskId].func = Task_StatEditorTurnOff;
+        return;
     }
-    // if (JOY_NEW(DPAD_LEFT) || JOY_NEW(DPAD_RIGHT))
-    // {
-    //     if(sStatEditorDataPtr->selector_x == 0)
-    //         sStatEditorDataPtr->selector_x = 1;
-    //     else
-    //         sStatEditorDataPtr->selector_x = 0; 
-    // }
-    // if (JOY_NEW(DPAD_UP))
-    // {
-    //     if (sStatEditorDataPtr->selector_y == 0)
-    //         sStatEditorDataPtr->selector_y = 5;
-    //     else
-    //         sStatEditorDataPtr->selector_y--;
-    // }
-    // if (JOY_NEW(DPAD_DOWN))
-    // {
-    //     if (sStatEditorDataPtr->selector_y == 5)
-    //         sStatEditorDataPtr->selector_y = 0;
-    //     else
-    //         sStatEditorDataPtr->selector_y++;
-    // }
 
+    if (!sStatEditorDataPtr->canEdit)
+        return;
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        sStatEditorDataPtr->inputMode = INPUT_EDIT_STAT;
+        PrintTitleToWindowEditState();
+        UpdateSelectorAnim();
+        gTasks[taskId].func = Task_MenuEditingStat;
+        return;
+    }
+
+    if (JOY_NEW(DPAD_LEFT) || JOY_NEW(DPAD_RIGHT))
+    {
+        for (i = 0; i < SELECTOR_COLUMNS; i++)
+        {
+            if (sColumnOrder[i] == sStatEditorDataPtr->selector_x)
+                break;
+        }
+        if (JOY_NEW(DPAD_LEFT))
+            i = (i + SELECTOR_COLUMNS - 1) % SELECTOR_COLUMNS;
+        else
+            i = (i + 1) % SELECTOR_COLUMNS;
+        sStatEditorDataPtr->selector_x = sColumnOrder[i];
+    }
+    else if (sStatEditorDataPtr->selector_x == SELECTOR_COLUMN_INFO)
+    {
+        if (JOY_NEW(DPAD_UP) || JOY_NEW(DPAD_DOWN))
+            sStatEditorDataPtr->infoRow = (sStatEditorDataPtr->infoRow + 1) % INFO_ROWS;
+    }
+    else if (JOY_NEW(DPAD_UP))
+    {
+        if (sStatEditorDataPtr->selector_y == 0)
+            sStatEditorDataPtr->selector_y = STAT_ROWS - 1;
+        else
+            sStatEditorDataPtr->selector_y--;
+    }
+    else if (JOY_NEW(DPAD_DOWN))
+    {
+        if (sStatEditorDataPtr->selector_y == STAT_ROWS - 1)
+            sStatEditorDataPtr->selector_y = 0;
+        else
+            sStatEditorDataPtr->selector_y++;
+    }
 }
 
-static void ChangeAndUpdateStat()
+// Recalculates the stats after an edit, keeping the damage the Pokemon has taken
+// the same, and redraws them.
+static void RecalculateStats(void)
 {
-    u16 currentStatEnum = selectedStatToStatEnum[sStatEditorDataPtr->selectedStat];
-    u32 currentHP = 0;
-    u32 oldMaxHP = 0;
-    u32 amountHPLost = 0;
-    s32 tempDifference = 0;
-    u32 newDifference = 0;
+    struct Pokemon *mon = ReturnPartyMon();
+    u32 currentHP = GetMonData(mon, MON_DATA_HP);
+    u32 amountHPLost = GetMonData(mon, MON_DATA_MAX_HP) - currentHP;
+    u32 newHP;
 
-    if (currentStatEnum == MON_DATA_HP_EV || currentStatEnum == MON_DATA_HP_IV)
+    CalculateMonStats(mon);
+
+    if (currentHP != 0)
     {
-        currentHP = GetMonData(ReturnPartyMon(), MON_DATA_HP);
-        oldMaxHP = GetMonData(ReturnPartyMon(), MON_DATA_MAX_HP);
-        amountHPLost = oldMaxHP - currentHP;
-    }
-
-    SetMonData(ReturnPartyMon(), currentStatEnum, &(sStatEditorDataPtr->editingStat));
-    CalculateMonStats(ReturnPartyMon());
-
-    if ((amountHPLost > 0) && (currentHP != 0))
-    {
-        tempDifference = GetMonData(ReturnPartyMon(), MON_DATA_MAX_HP) - amountHPLost;
-        if (tempDifference < 0)
-            tempDifference = 0;
-        newDifference = (u32) tempDifference;
-        SetMonData(ReturnPartyMon(), MON_DATA_HP, &newDifference);
+        newHP = GetMonData(mon, MON_DATA_MAX_HP);
+        newHP = (newHP > amountHPLost) ? newHP - amountHPLost : 1;
+        SetMonData(mon, MON_DATA_HP, &newHP);
     }
 
     PrintMonStats();
 }
 
-#define EDIT_INPUT_INCREASE_STATE           0
-#define EDIT_INPUT_MAX_INCREASE_STATE       1
-#define EDIT_INPUT_DECREASE_STATE           2
-#define EDIT_INPUT_MAX_DECREASE_STATE       3
+#define STAT_STEP_SMALL 1
+#define STAT_STEP_LARGE 10
+#define STAT_STEP_ALL   0xFFFF
 
-#define STAT_MINIMUM          0  
-#define IV_MAX_SINGLE_STAT    31   
-#define EV_MAX_SINGLE_STAT    255   
-#define EV_MAX_TOTAL          510            
-                
-#define EDITING_EVS     0
-#define EDITING_IVS     1
-
-#define CHECK_IF_STAT_CANT_INCREASE (((sStatEditorDataPtr->editingStat == ((sStatEditorDataPtr->selector_x == EDITING_EVS) ? (EV_MAX_SINGLE_STAT) : (IV_MAX_SINGLE_STAT))) \
-                                     || ((sStatEditorDataPtr->selector_x == EDITING_EVS) && (sStatEditorDataPtr->evTotal == EV_MAX_TOTAL))))
-
-static void HandleEditingStatInput(u32 input)
+static void ChangeSelectedStat(s32 delta)
 {
-    u16 iterator = 0;
-    if((input <= EDIT_INPUT_MAX_INCREASE_STATE) && CHECK_IF_STAT_CANT_INCREASE)
-    {
-        StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 2);
-        return;
-    }
+    struct Pokemon *mon = ReturnPartyMon();
+    u32 field = GetSelectedStatField();
+    u32 value = GetMonData(mon, field);
+    u32 max = StatEditor_GetStatMax(mon, field);
+    u32 newValue;
 
-    if((input >= EDIT_INPUT_DECREASE_STATE) && (sStatEditorDataPtr->editingStat == STAT_MINIMUM))
-    {
-        StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 1);
-        return;
-    }
-
-    #define INCREASE_DECREASE_AMOUNT 1
-
-    switch(input)
-    {
-        case EDIT_INPUT_DECREASE_STATE:
-            for (iterator = 0; iterator < INCREASE_DECREASE_AMOUNT; iterator++)
-            {
-                if(!(sStatEditorDataPtr->editingStat == STAT_MINIMUM))
-                    sStatEditorDataPtr->editingStat--;
-                else
-                    break;
-            }
-            break;
-       case EDIT_INPUT_MAX_DECREASE_STATE:
-            sStatEditorDataPtr->editingStat = STAT_MINIMUM;
-            break;
-        case EDIT_INPUT_INCREASE_STATE:
-            for (iterator = 0; iterator < INCREASE_DECREASE_AMOUNT; iterator++)
-            {
-                if(!CHECK_IF_STAT_CANT_INCREASE)
-                    sStatEditorDataPtr->editingStat++;
-                else
-                    break;
-            }
-            break;
-        case EDIT_INPUT_MAX_INCREASE_STATE:
-            if((sStatEditorDataPtr->selector_x == EDITING_EVS))
-            {
-                if (EV_MAX_TOTAL - sStatEditorDataPtr->evTotal < EV_MAX_SINGLE_STAT)
-                    sStatEditorDataPtr->editingStat += EV_MAX_TOTAL - sStatEditorDataPtr->evTotal;
-                else
-                    sStatEditorDataPtr->editingStat = EV_MAX_SINGLE_STAT;
-                if(sStatEditorDataPtr->editingStat > EV_MAX_SINGLE_STAT)
-                    sStatEditorDataPtr->editingStat = EV_MAX_SINGLE_STAT;
-            }
-            else
-            {
-                sStatEditorDataPtr->editingStat = IV_MAX_SINGLE_STAT;
-            }
-    }
-
-    ChangeAndUpdateStat();
-
-    if(CHECK_IF_STAT_CANT_INCREASE)
-        StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 2);
-    else if(sStatEditorDataPtr->editingStat == STAT_MINIMUM)
-        StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 1); 
+    if (delta < 0)
+        newValue = (value > (u32)-delta) ? value + delta : 0;
+    else if (value >= max) // An older save may hold more than the limit; it can only go down.
+        newValue = value;
     else
-        StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 3);       
+        newValue = min(value + delta, max);
+
+    if (newValue != value)
+    {
+        SetMonData(mon, field, &newValue);
+        RecalculateStats();
+    }
+    UpdateSelectorAnim();
 }
 
-static void Task_MenuEditingStat(u8 taskId) // This function should be refactored to not be a hot mess
+static void ChangeNature(s32 direction)
 {
-    if (JOY_NEW(B_BUTTON))
+    u32 nature = GetMonData(ReturnPartyMon(), MON_DATA_HIDDEN_NATURE);
+
+    // Changes the nature the stats use, as a Mint does; the Pokemon's personality is untouched.
+    nature = (nature + NUM_NATURES + direction) % NUM_NATURES;
+    SetMonData(ReturnPartyMon(), MON_DATA_HIDDEN_NATURE, &nature);
+    RecalculateStats();
+}
+
+static void ChangeAbility(s32 direction)
+{
+    u32 abilityNum = StatEditor_GetNextAbilityNum(ReturnPartyMon(), direction);
+
+    if (abilityNum == GetMonData(ReturnPartyMon(), MON_DATA_ABILITY_NUM))
+        return;
+    SetMonData(ReturnPartyMon(), MON_DATA_ABILITY_NUM, &abilityNum);
+    PrintMonStats();
+}
+
+// EVs and IVs: Left/Right change by 1, Up/Down by 10, R and L jump to the maximum and zero.
+// Ability and nature: any direction steps through the choices.
+static void Task_MenuEditingStat(u8 taskId)
+{
+    if (JOY_NEW(A_BUTTON) || JOY_NEW(B_BUTTON))
     {
         gTasks[taskId].func = Task_StatEditorMain;
-        StartSpriteAnim(&gSprites[sStatEditorDataPtr->selectorSpriteId], 0);
         PlaySE(SE_SELECT);
         sStatEditorDataPtr->inputMode = INPUT_SELECT_STAT;
+        UpdateSelectorAnim();
         PrintTitleToWindowMainState();
         return;
     }
-    if (JOY_NEW(DPAD_LEFT))
-        HandleEditingStatInput(EDIT_INPUT_DECREASE_STATE);
-    else if (JOY_NEW(DPAD_RIGHT))
-        HandleEditingStatInput(EDIT_INPUT_INCREASE_STATE);
-    else if (JOY_NEW(DPAD_UP) || JOY_NEW(R_BUTTON))
-        HandleEditingStatInput(EDIT_INPUT_MAX_INCREASE_STATE);
-    else if (JOY_NEW(DPAD_DOWN) || JOY_NEW(L_BUTTON))
-        HandleEditingStatInput(EDIT_INPUT_MAX_DECREASE_STATE);
 
+    if (sStatEditorDataPtr->selector_x == SELECTOR_COLUMN_INFO)
+    {
+        s32 direction = 0;
+
+        if (JOY_REPEAT(DPAD_RIGHT) || JOY_REPEAT(DPAD_UP))
+            direction = 1;
+        else if (JOY_REPEAT(DPAD_LEFT) || JOY_REPEAT(DPAD_DOWN))
+            direction = -1;
+
+        if (direction != 0)
+        {
+            if (sStatEditorDataPtr->infoRow == INFO_ROW_ABILITY)
+                ChangeAbility(direction);
+            else
+                ChangeNature(direction);
+        }
+        return;
+    }
+
+    if (JOY_REPEAT(DPAD_RIGHT))
+        ChangeSelectedStat(STAT_STEP_SMALL);
+    else if (JOY_REPEAT(DPAD_LEFT))
+        ChangeSelectedStat(-STAT_STEP_SMALL);
+    else if (JOY_REPEAT(DPAD_UP))
+        ChangeSelectedStat(STAT_STEP_LARGE);
+    else if (JOY_REPEAT(DPAD_DOWN))
+        ChangeSelectedStat(-STAT_STEP_LARGE);
+    else if (JOY_NEW(R_BUTTON))
+        ChangeSelectedStat(STAT_STEP_ALL);
+    else if (JOY_NEW(L_BUTTON))
+        ChangeSelectedStat(-STAT_STEP_ALL);
 }
-
-

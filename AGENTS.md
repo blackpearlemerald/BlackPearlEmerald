@@ -378,6 +378,17 @@ packed records with `GetBoxMonDataAt` instead of loading each box into the cache
 since it now runs during a field step. Nothing new is saved.
 Tests: `make check TESTS=test/daycare.c`.
 
+### Stat Editor
+
+`src/ui_stat_editor.c` opens from the party menu and after the Birch Case
+starter. In Standard mode it edits EVs, IVs, nature and ability; Nuzlocke games
+and Eggs only view (`StatEditor_CanEditMon`), and EVs read zero in Nuzlocke.
+The nature it shows and changes is `MON_DATA_HIDDEN_NATURE`, the one Mints set
+and the stats use, so the personality never changes. EVs stay within
+`MAX_PER_STAT_EVS` and `GetCurrentEVCap()`, and the ability cycles the slots of
+`GetSpeciesAbility`, which follows the randomizer, skipping empty and repeated
+ones. Tests: `make check TESTS=test/stat_editor.c`.
+
 ### Registered items
 
 SELECT holds up to `MAX_REGISTERED_ITEMS` (5) key items. With one registered it

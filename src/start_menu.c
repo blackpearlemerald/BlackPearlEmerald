@@ -580,20 +580,38 @@ static void RemoveExtraStartMenuWindows(void)
     }
 }
 
+// BPE: eight entries fit 16 pixels apart. With the DexNav the menu can hold
+// nine, so the lines move closer together to keep the window on screen.
+static u32 GetStartMenuLineHeight(void)
+{
+    return min(16, (START_MENU_MAX_HEIGHT * 8 - 2) / sNumStartMenuActions);
+}
+
+static u32 GetStartMenuTextTop(void)
+{
+    u32 lineHeight = GetStartMenuLineHeight();
+
+    if (lineHeight == 16)
+        return 9;
+    return (START_MENU_MAX_HEIGHT * 8 - sNumStartMenuActions * lineHeight) / 2 + 1;
+}
+
 static bool32 PrintStartMenuActions(s8 *pIndex, u32 count)
 {
     s8 index = *pIndex;
+    u32 y;
 
     do
     {
+        y = GetStartMenuTextTop() + index * GetStartMenuLineHeight();
         if (sStartMenuItems[sCurrentStartMenuActions[index]].func.u8_void == StartMenuPlayerNameCallback)
         {
-            PrintPlayerNameOnWindow(GetStartMenuWindowId(), sStartMenuItems[sCurrentStartMenuActions[index]].text, 8, (index << 4) + 9);
+            PrintPlayerNameOnWindow(GetStartMenuWindowId(), sStartMenuItems[sCurrentStartMenuActions[index]].text, 8, y);
         }
         else
         {
             StringExpandPlaceholders(gStringVar4, sStartMenuItems[sCurrentStartMenuActions[index]].text);
-            AddTextPrinterParameterized(GetStartMenuWindowId(), FONT_NORMAL, gStringVar4, 8, (index << 4) + 9, TEXT_SKIP_DRAW, NULL);
+            AddTextPrinterParameterized(GetStartMenuWindowId(), FONT_NORMAL, gStringVar4, 8, y, TEXT_SKIP_DRAW, NULL);
         }
 
         index++;
@@ -646,7 +664,7 @@ static bool32 InitStartMenuStep(void)
             sInitStartMenuData[0]++;
         break;
     case 6:
-        sStartMenuCursorPos = InitMenuNormal(GetStartMenuWindowId(), FONT_NORMAL, 0, 9, 16, sNumStartMenuActions, sStartMenuCursorPos);
+        sStartMenuCursorPos = InitMenuNormal(GetStartMenuWindowId(), FONT_NORMAL, 0, GetStartMenuTextTop(), GetStartMenuLineHeight(), sNumStartMenuActions, sStartMenuCursorPos);
         CopyWindowToVram(GetStartMenuWindowId(), COPYWIN_MAP);
         return TRUE;
     }

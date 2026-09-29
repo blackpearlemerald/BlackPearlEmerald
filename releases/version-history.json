@@ -1,6 +1,13 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.11-beta": {
+      "channel": "beta",
+      "changes": [
+        "Standard mode: the Stat Editor can now change EVs, IVs, nature and ability.",
+        "Fixed the Start menu running off the screen."
+      ]
+    },
     "2.1.10-beta": {
       "channel": "beta",
       "changes": [

@@ -9,6 +9,10 @@
 #define DLG_WINDOW_BASE_TILE_NUM 0x200
 #define STD_WINDOW_PALETTE_NUM 14
 #define STD_WINDOW_PALETTE_SIZE PLTT_SIZEOF(10)
+
+// BPE: the start menu window starts on tile row 1, so 18 rows is all that fits
+// above the bottom frame. That is eight entries 16 pixels apart.
+#define START_MENU_MAX_HEIGHT 18
 #define STD_WINDOW_BASE_TILE_NUM 0x214
 
 #define MENU_NOTHING_CHOSEN -2
