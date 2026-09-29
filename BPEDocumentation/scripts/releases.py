@@ -24,6 +24,8 @@ VERSION_HISTORY = ROOT / "releases/version-history.json"
 REPOSITORY = "blackpearlemerald/BlackPearlEmerald"
 PAGES_LIMIT = 1_000_000_000
 LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Converter"}
+# Tools that work on any game version: their entry link always opens the newest release.
+VERSIONLESS_PAGES = {"save-converter.html"}
 
 
 def gh(*args):
@@ -310,16 +312,23 @@ def write_entry_pages(output, catalog):
         target = output / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         prefix = "../" if relative.startswith("calc/") else ""
+        releases = catalog["releases"]
+        pick = 'c.releases.find(function(x){return x.version===saved})||c.releases.find(function(x){return x.version===c.latest})'
         # Releases published before a page existed fall back to their map.
         go = "location.replace(u.href)"
-        if relative in LATER_PAGES:
+        if relative in VERSIONLESS_PAGES:
+            # Players on older games need this page most, and they are the ones
+            # whose remembered version predates it.
+            releases = [r for r in releases if r["version"] == catalog["latest"]]
+            pick = 'c.releases.find(function(x){return x.version===c.latest})'
+        elif relative in LATER_PAGES:
             go = ('fetch(u,{method:"HEAD",cache:"no-cache"}).then(function(p){if(p.status===404){u=new URL(r.path+"index.html",base);'
                   'u.searchParams.set("missing-page",' + json.dumps(LATER_PAGES[relative]) + ');u.hash=""}location.replace(u.href)})')
         links = ''.join(f'<li><a href="{prefix}{html.escape(r["path"])}{relative}">{html.escape(website_label(r))}</a></li>'
-                        for r in catalog["releases"])
+                        for r in releases)
         body = '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BPE Emerald releases</title>'
         body += '<body style="background:#101c27;color:#eaf8f0;font:18px system-ui;padding:32px"><h1>Choose your game version</h1><ul>' + links + '</ul>'
-        body += '<script>fetch(' + json.dumps(prefix + 'versions.json') + ',{cache:"no-cache"}).then(function(r){if(!r.ok)throw Error();return r.json()}).then(function(c){var base=new URL(' + json.dumps(prefix or './') + ',location.href),saved;try{saved=localStorage.getItem("bpe:"+base.pathname+":selected-release")}catch(e){}var r=c.releases.find(function(x){return x.version===saved})||c.releases.find(function(x){return x.version===c.latest});if(r){var u=new URL(r.path+' + json.dumps(relative) + ',base);u.search=location.search;u.hash=location.hash;' + go + '}}).catch(function(){});</script></body></html>'
+        body += '<script>fetch(' + json.dumps(prefix + 'versions.json') + ',{cache:"no-cache"}).then(function(r){if(!r.ok)throw Error();return r.json()}).then(function(c){var base=new URL(' + json.dumps(prefix or './') + ',location.href),saved;try{saved=localStorage.getItem("bpe:"+base.pathname+":selected-release")}catch(e){}var r=' + pick + ';if(r){var u=new URL(r.path+' + json.dumps(relative) + ',base);u.search=location.search;u.hash=location.hash;' + go + '}}).catch(function(){});</script></body></html>'
         target.write_text(body, encoding="utf-8")
     (output / ".nojekyll").touch()
     (output / "404.html").write_text('<!doctype html><html lang="en"><meta charset="utf-8"><title>Release not found</title><h1>This release or page is unavailable</h1><p>Check the version in your link. No other game version has been substituted.</p></html>', encoding="utf-8")

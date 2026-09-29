@@ -430,6 +430,39 @@ static const struct FormChange sZacianFormChangeTable[] = {
                 self.assertEqual((page.parent / path).read_bytes(), b"identical image")
                 self.assertIn("../../assets/", (page.parent / "app.js").read_text())
 
+    def test_entry_pages_follow_remembered_version_except_save_converter(self):
+        # A 1.0.1 player who remembered 1.0.1 must still reach the converter.
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import releases
+        catalog = {"latest": "2.1.0-beta", "releases": [
+            {"version": "2.1.0-beta", "label": "2.1.0 Beta", "channel": "beta", "path": "versions/2.1.0-beta/"},
+            {"version": "1.0.1", "label": "1.0.1", "channel": "stable", "path": "versions/1.0.1/"}]}
+        harness = r"""
+const html = require('fs').readFileSync(process.argv[2], 'utf8');
+const code = html.match(/<script>([\s\S]*)<\/script>/)[1];
+const catalog = JSON.parse(process.argv[3]);
+const location = {href: 'https://example.test/BlackPearlEmerald/page.html', search: '', hash: '', replace: u => console.log(u)};
+const fetch = async (url, options) => options && options.method === 'HEAD'
+  ? {status: String(url).includes('/1.0.1/') ? 404 : 200}
+  : {ok: true, json: async () => catalog};
+const localStorage = {getItem: () => '1.0.1'};
+new Function('fetch', 'location', 'localStorage', code)(fetch, location, localStorage);
+"""
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            releases.write_entry_pages(root, catalog)
+            (root / "harness.cjs").write_text(harness)
+            def destination(page):
+                return subprocess.run(["node", str(root / "harness.cjs"), str(root / page), json.dumps(catalog)],
+                                      capture_output=True, text=True, check=True).stdout.strip()
+            self.assertEqual(destination("save-converter.html"),
+                             "https://example.test/BlackPearlEmerald/versions/2.1.0-beta/save-converter.html")
+            self.assertEqual(destination("pokedex.html"),
+                             "https://example.test/BlackPearlEmerald/versions/1.0.1/pokedex.html")
+            self.assertEqual(destination("features.html"),
+                             "https://example.test/BlackPearlEmerald/versions/1.0.1/index.html?missing-page=Features")
+            self.assertNotIn("1.0.1", (root / "save-converter.html").read_text())
+
 
 if __name__ == "__main__":
     unittest.main()
