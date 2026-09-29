@@ -130,13 +130,19 @@ static const struct YesNoFuncTable sUseTMHMYesNoFuncTable =
 };
 
 #define tEnigmaBerryType data[4]
+static void SetUpItemUseCallbackForType(u8 taskId, enum ItemType itemType);
+
 static void SetUpItemUseCallback(u8 taskId)
 {
-    enum ItemType type;
     if (gSpecialVar_ItemId == ITEM_ENIGMA_BERRY_E_READER)
-        type = gTasks[taskId].tEnigmaBerryType - 1;
+        SetUpItemUseCallbackForType(taskId, gTasks[taskId].tEnigmaBerryType);
     else
-        type = GetItemType(gSpecialVar_ItemId) - 1;
+        SetUpItemUseCallbackForType(taskId, GetItemType(gSpecialVar_ItemId));
+}
+
+static void SetUpItemUseCallbackForType(u8 taskId, enum ItemType itemType)
+{
+    enum ItemType type = itemType - 1;
 
     if (gTasks[taskId].tUsingRegisteredKeyItem && type == (ITEM_USE_PARTY_MENU - 1))
     {
@@ -983,11 +989,13 @@ void ItemUseOutOfBattle_InfiniteRepel(u8 taskId)
         DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
 }
 
-// BPE: using a Ball on a party Pokemon moves it into that Ball.
+// BPE: using a Ball on a party Pokemon moves it into that Ball. Balls keep the
+// type ITEM_USE_BAG_MENU, which battle needs for throwing them, so the party menu
+// is asked for here; that type has no screen of its own and would close the Bag.
 void ItemUseOutOfBattle_Ball(u8 taskId)
 {
     gItemUseCB = ItemUseCB_Ball;
-    SetUpItemUseCallback(taskId);
+    SetUpItemUseCallbackForType(taskId, ITEM_USE_PARTY_MENU);
 }
 
 void ItemUseOutOfBattle_RareCandy(u8 taskId)

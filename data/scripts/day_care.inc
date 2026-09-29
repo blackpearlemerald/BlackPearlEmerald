@@ -63,6 +63,7 @@ Route117_EventScript_CheckOnTwoMons::
 	special ShowFieldMessageStringVar4
 	waitmessage
 	waitbuttonpress
+	msgbox Route117_Text_EggsGoToYourPC, MSGBOX_DEFAULT
 	setvar VAR_0x8004, 0
 	call Route117_EventScript_CheckMonReceivedMail
 	setvar VAR_0x8004, 1
@@ -317,6 +318,10 @@ Route117_Text_SeeWifeIfYouWantToPickUpMon:
 Route117_Text_YourMonsAreDoingFine:
 	.string "Ah, it's you! Your {STR_VAR_1} and\n"
 	.string "{STR_VAR_2} are doing fine.$"
+
+Route117_Text_EggsGoToYourPC:
+	.string "If they have an EGG, I'll send it\n"
+	.string "straight to your PC.$"
 
 Route117_Text_IWillKeepDoYouWantIt:
 	.string "I really will keep it.\n"

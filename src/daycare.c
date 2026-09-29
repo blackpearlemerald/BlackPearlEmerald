@@ -1073,34 +1073,60 @@ static enum Species DetermineEggSpeciesAndParentSlots(struct DayCare *daycare, u
     return eggSpecies;
 }
 
-static void _GiveEggFromDaycare(struct DayCare *daycare)
+static bool32 CreateDaycareEgg(struct Pokemon *egg, struct DayCare *daycare)
 {
-    struct Pokemon egg;
     enum Species species;
     u8 parentSlots[DAYCARE_MON_COUNT] = {0};
     bool8 isEgg;
 
     if (GetDaycareCompatibilityScore(daycare) == PARENTS_INCOMPATIBLE)
-        return;
+        return FALSE;
 
     species = DetermineEggSpeciesAndParentSlots(daycare, parentSlots);
     if (P_INCENSE_BREEDING < GEN_9)
         AlterEggSpeciesWithIncenseItem(&species, daycare);
-    SetInitialEggData(&egg, species, daycare);
-    InheritIVs(&egg, daycare);
-    InheritPokeball(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
-    BuildEggMoveset(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
+    SetInitialEggData(egg, species, daycare);
+    InheritIVs(egg, daycare);
+    InheritPokeball(egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
+    BuildEggMoveset(egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
     if (P_ABILITY_INHERITANCE >= GEN_6)
-        InheritAbility(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
+        InheritAbility(egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
 
-    GiveMoveIfItem(&egg, daycare);
+    GiveMoveIfItem(egg, daycare);
 
     isEgg = TRUE;
-    SetMonData(&egg, MON_DATA_IS_EGG, &isEgg);
+    SetMonData(egg, MON_DATA_IS_EGG, &isEgg);
+    return TRUE;
+}
+
+static void _GiveEggFromDaycare(struct DayCare *daycare)
+{
+    struct Pokemon egg;
+
+    if (!CreateDaycareEgg(&egg, daycare))
+        return;
+
     gParties[B_TRAINER_PLAYER][PARTY_SIZE - 1] = egg;
     CompactPartySlots();
     CalculatePlayerPartyCount();
     RemoveEggFromDayCare(daycare);
+}
+
+// BPE: a waiting Egg goes straight to the PC so the parents can start on the
+// next one. When every box is full the Day Care Man keeps it, as in vanilla,
+// and the next try comes when the following Egg is due.
+static void TrySendDaycareEggToPC(struct DayCare *daycare)
+{
+    struct Pokemon egg;
+
+    if (!CreateDaycareEgg(&egg, daycare))
+        return;
+    if (CopyMonToPC(&egg) != MON_GIVEN_TO_PC)
+        return;
+
+    // Not RemoveEggFromDayCare: stepCounter also paces hatching in the party.
+    daycare->offspringPersonality = 0;
+    FlagClear(FLAG_PENDING_DAYCARE_EGG);
 }
 
 void CreateEgg(struct Pokemon *mon, enum Species species, bool8 setHotSpringsLocation)
@@ -1166,11 +1192,21 @@ static bool8 TryProduceOrHatchEgg(struct DayCare *daycare)
     }
 
     // Check if an egg should be produced
-    if (daycare->offspringPersonality == 0 && validEggs == DAYCARE_MON_COUNT && (daycare->mons[1].steps & 0xFF) == 0xFF)
+    if (validEggs == DAYCARE_MON_COUNT && (daycare->mons[1].steps & 0xFF) == 0xFF)
     {
-        u8 compatibility = ModifyBreedingScoreForOvalCharm(GetDaycareCompatibilityScore(daycare));
-        if (compatibility > (Random() * 100u) / USHRT_MAX)
-            TriggerPendingDaycareEgg();
+        // BPE: an Egg left waiting (an older save, or a full PC) goes first.
+        if (daycare->offspringPersonality != 0)
+            TrySendDaycareEggToPC(daycare);
+
+        if (daycare->offspringPersonality == 0)
+        {
+            u8 compatibility = ModifyBreedingScoreForOvalCharm(GetDaycareCompatibilityScore(daycare));
+            if (compatibility > (Random() * 100u) / USHRT_MAX)
+            {
+                TriggerPendingDaycareEgg();
+                TrySendDaycareEggToPC(daycare);
+            }
+        }
     }
 
     // Try to hatch Egg

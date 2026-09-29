@@ -500,7 +500,13 @@ static struct Pokemon *ReturnPartyMon()
 static void SampleUi_DrawMonIcon(u16 dexNum)
 {
     u16 speciesId = dexNum;
-    sStatEditorDataPtr->monIconSpriteId = CreateMonPicSprite(speciesId, 0, 0x8000, TRUE, MON_ICON_X, MON_ICON_Y, 0, TAG_NONE);
+    // BPE: draw the Pokemon itself, not a stock picture of its species, so a shiny
+    // shows its own colours here and gender differences match the mon.
+    struct Pokemon *mon = ReturnPartyMon();
+    bool8 isShiny = IsMonShiny(mon);
+    u32 personality = GetMonData(mon, MON_DATA_PERSONALITY);
+
+    sStatEditorDataPtr->monIconSpriteId = CreateMonPicSprite(speciesId, isShiny, personality, TRUE, MON_ICON_X, MON_ICON_Y, 0, TAG_NONE);
 
     gSprites[sStatEditorDataPtr->monIconSpriteId].oam.priority = 0;
 }

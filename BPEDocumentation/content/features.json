@@ -85,6 +85,10 @@
           "body": "The PC has 41 boxes instead of Emerald's 14: 1,230 places to keep Pokémon rather than 420, which is room for a full living Pokédex. The save format was rebuilt to hold them while keeping the protection against save corruption. Each box is copied to a backup sector before it is rewritten and your progress is committed in a single step, so a power cut or a crash while saving leaves your last completed save intact."
         },
         {
+          "title": "Day Care Eggs go to the PC",
+          "body": "Leave two compatible Pokémon at the Route 117 Day Care and every Egg they produce is sent straight to your PC, so they keep breeding without you going back for each one. Move Eggs into your party to hatch them. If every box is full, the Day Care Man holds the Egg until you collect it or make room."
+        },
+        {
           "title": "Bean Shop",
           "body": "Verdanturf's Poké Mart sells Rare Candies, every evolution stone and many evolution items. Its stock grows after the third and fourth badges, adding trade-evolution items and type-resist Berries."
         },

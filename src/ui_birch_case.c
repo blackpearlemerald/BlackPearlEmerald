@@ -39,6 +39,7 @@
 #include "pokedex.h"
 #include "script_pokemon_util.h"
 #include "pokeball.h"
+#include "pokemon.h"
 #include "constants/moves.h"
 #include "naming_screen.h"
 #include "tv.h"
@@ -66,6 +67,7 @@ struct MenuResources
     u16 movingSelector;
     u16 species[9]; // BPE: the Pokémon behind each ball, after the randomizer
     u8 nature;      // BPE: the nature the player picked for the starter
+    bool8 starterGiven; // BPE: the starter is in party slot 0, so draw that Pokemon
 };
 
 enum WindowIds
@@ -166,6 +168,7 @@ static void Task_BirchCaseWaitFadeIn(u8 taskId);
 static void Task_BirchCaseMain(u8 taskId);
 static void SampleUi_DrawMonIcon(u16 speciesId);
 static void Task_DelayedSpriteLoad(u8 taskId);
+static void Task_BirchCaseRecievedMon(u8 taskId); // BPE
 
 //==========CONST=DATA==========//
 static const struct BgTemplate sMenuBgTemplates[] =
@@ -442,7 +445,21 @@ static void DestroyPokeballSprites()
 #define TAG_MON_SPRITE 30003
 static void SampleUi_DrawMonIcon(u16 speciesId)
 {
-    sBirchCaseDataPtr->monSpriteId = CreateMonPicSprite_Affine(speciesId, 0, 0x8000, TRUE, MON_ICON_X, MON_ICON_Y, 5, TAG_NONE);
+    bool8 isShiny = FALSE;
+    u32 personality = 0x8000;
+
+    // BPE: while the player is browsing, the balls only hold a species, so this is a
+    // stock picture. Once the starter has been created it is a real Pokemon, and a
+    // shiny one has to look shiny.
+    if (sBirchCaseDataPtr->starterGiven)
+    {
+        struct Pokemon *starter = &gParties[B_TRAINER_PLAYER][0];
+
+        isShiny = IsMonShiny(starter);
+        personality = GetMonData(starter, MON_DATA_PERSONALITY);
+    }
+
+    sBirchCaseDataPtr->monSpriteId = CreateMonPicSprite_Affine(speciesId, isShiny, personality, TRUE, MON_ICON_X, MON_ICON_Y, 5, TAG_NONE);
     gSprites[sBirchCaseDataPtr->monSpriteId].oam.priority = 0;
 }
 
@@ -896,6 +913,31 @@ static void Task_WaitForFadeAndOpenStatEditor(u8 taskId)
     }
 }
 
+// BPE: redraw the Pokemon now that it really exists. Same 4 frame wait as
+// ReloadNewPokemon, so the old palette is gone before the new one is loaded.
+static void Task_DelayedStarterSpriteLoad(u8 taskId)
+{
+    if (gTasks[taskId].data[11] >= 4)
+    {
+        SampleUi_DrawMonIcon(sBirchCaseDataPtr->species[sBirchCaseDataPtr->handPosition]);
+        if (IsMonShiny(&gParties[B_TRAINER_PLAYER][0]))
+            PlaySE(SE_SHINY);
+        sBirchCaseDataPtr->movingSelector = FALSE;
+        gTasks[taskId].func = Task_BirchCaseRecievedMon;
+        return;
+    }
+    gTasks[taskId].data[11]++;
+}
+
+static void ReloadStarterSprite(u8 taskId)
+{
+    gSprites[sBirchCaseDataPtr->monSpriteId].invisible = TRUE;
+    FreeResourcesAndDestroySprite(&gSprites[sBirchCaseDataPtr->monSpriteId], sBirchCaseDataPtr->monSpriteId);
+    sBirchCaseDataPtr->movingSelector = TRUE;
+    gTasks[taskId].data[11] = 0;
+    gTasks[taskId].func = Task_DelayedStarterSpriteLoad;
+}
+
 static void Task_BirchCaseRecievedMon(u8 taskId)
 {
     if (JOY_NEW(A_BUTTON))
@@ -941,8 +983,9 @@ static void Task_BirchCaseChooseNature(u8 taskId)
         // BPE: offer the stat editor so the player can check the starter's stats
         if (gSpecialVar_Result == MON_GIVEN_TO_PARTY)
         {
+            sBirchCaseDataPtr->starterGiven = TRUE;
             PrintTextToBottomBar(RECIEVED_MON);
-            gTasks[taskId].func = Task_BirchCaseRecievedMon;
+            ReloadStarterSprite(taskId); // BPE: show the starter that was actually created
         }
         else
         {

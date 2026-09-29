@@ -33,6 +33,7 @@
 #include "trainer_pokemon_sprites.h"
 #include "data.h"
 #include "confetti_util.h"
+#include "randomizer.h"
 #include "constants/rgb.h"
 
 #define HALL_OF_FAME_MAX_TEAMS 30
@@ -1098,11 +1099,27 @@ static void Task_HofPC_ExitOnButtonPress(u8 taskId)
 #undef tMonNo
 #undef tMonSpriteId
 
+// BPE: the second line names the way the game was played.
+static const u8 sText_HofStandardMode[] = _("Standard Mode");
+static const u8 sText_HofNuzlockeMode[] = _("Nuzlocke Mode");
+static const u8 sText_HofStandardRandomizer[] = _("Standard Mode + Randomizer");
+static const u8 sText_HofNuzlockeRandomizer[] = _("Nuzlocke Mode + Randomizer");
+
+static const u8 *GetHallOfFameModeText(void)
+{
+    if (FlagGet(FLAG_NUZLOCKE))
+        return Randomizer_IsActive() ? sText_HofNuzlockeRandomizer : sText_HofNuzlockeMode;
+    return Randomizer_IsActive() ? sText_HofStandardRandomizer : sText_HofStandardMode;
+}
+
 static void HallOfFame_PrintWelcomeText(u8 unusedPossiblyWindowId, u8 unused2)
 {
+    const u8 *modeText = GetHallOfFameModeText();
+
     FillWindowPixelBuffer(0, PIXEL_FILL(0));
     PutWindowTilemap(0);
     AddTextPrinterParameterized3(0, FONT_NORMAL, GetStringCenterAlignXOffset(FONT_NORMAL, gText_WelcomeToHOF, 0xD0), 1, sMonInfoTextColors, 0, gText_WelcomeToHOF);
+    AddTextPrinterParameterized3(0, FONT_NORMAL, GetStringCenterAlignXOffset(FONT_NORMAL, modeText, 0xD0), 0x11, sMonInfoTextColors, 0, modeText);
     CopyWindowToVram(0, COPYWIN_FULL);
 }
 

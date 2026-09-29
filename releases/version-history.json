@@ -1,6 +1,15 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.10-beta": {
+      "channel": "beta",
+      "changes": [
+        "The Day Care now sends each Egg straight to your PC, so your Pokémon keep breeding without you going back for every Egg. If your boxes are full, the Day Care Man holds the Egg as before.",
+        "The Hall of Fame now shows how you played: Standard or Nuzlocke mode, and whether the randomizer was on.",
+        "Fixed using a Poké Ball from the Bag to move a party Pokémon into it. Since 2.1.1 it closed the Bag instead of opening your party.",
+        "A shiny starter now shows its shiny colours (with the shiny sound) in Birch's case once you receive it, and the stat editor shows shiny Pokémon in their shiny colours."
+      ]
+    },
     "2.1.9-beta": {
       "channel": "beta",
       "changes": [

@@ -366,6 +366,18 @@ it instead of `REPEL_STEP_COUNT` when checking whether a repel is on.
 `IsInfiniteRepelActive()` turns it off in the Safari Zone, Battle Pike and
 Battle Pyramid. Tests: `make check TESTS=test/infinite_repel.c`.
 
+### Day Care Eggs go to the PC
+
+When the Day Care produces an Egg, `TrySendDaycareEggToPC()` in `src/daycare.c`
+builds it at once and puts it in the PC through `CopyMonToPC`, so breeding
+continues without the player collecting it. If every box is full the Egg waits
+with the Day Care Man as in vanilla, and the next due Egg check retries it first
+(which also clears an Egg left waiting in an older save). It does not reset
+`stepCounter`, which also paces hatching in the party. `CopyMonToPC` scans the
+packed records with `GetBoxMonDataAt` instead of loading each box into the cache,
+since it now runs during a field step. Nothing new is saved.
+Tests: `make check TESTS=test/daycare.c`.
+
 ### Registered items
 
 SELECT holds up to `MAX_REGISTERED_ITEMS` (5) key items. With one registered it

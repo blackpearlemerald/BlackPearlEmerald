@@ -5,6 +5,7 @@
 #include "clock.h"
 #include "coins.h"
 #include "credits.h"
+#include "hall_of_fame.h"
 #include "credits_frlg.h"
 #include "data.h"
 #include "daycare.h"
@@ -277,6 +278,7 @@ static void DebugAction_Util_Warp_SelectWarp(u8 taskId);
 static void DebugAction_Util_Weather(u8 taskId);
 static void DebugAction_Util_Weather_SelectId(u8 taskId);
 static void DebugAction_Util_WatchCredits(u8 taskId);
+static void DebugAction_Util_WatchHallOfFame(u8 taskId);
 static void DebugAction_Util_CheatStart(u8 taskId);
 
 static void DebugAction_TimeMenu_ChangeTimeOfDay(u8 taskId);
@@ -585,6 +587,7 @@ static const struct DebugMenuOption sDebugMenu_Actions_Utilities[] =
     { COMPOUND_STRING("Font Test…"),        DebugAction_ExecuteScript, Debug_EventScript_FontTest },
     { COMPOUND_STRING("Time Functions…"),   DebugAction_OpenSubMenu, sDebugMenu_Actions_TimeMenu, },
     { COMPOUND_STRING("Watch credits…"),    DebugAction_Util_WatchCredits },
+    { COMPOUND_STRING("Watch Hall of Fame…"), DebugAction_Util_WatchHallOfFame },
     { COMPOUND_STRING("Cheat start"),       DebugAction_Util_CheatStart },
     { COMPOUND_STRING("Berry Functions…"),  DebugAction_OpenSubMenu, sDebugMenu_Actions_BerryFunctions },
     { COMPOUND_STRING("EWRAM Counters…"),   DebugAction_ExecuteScript, Debug_EventScript_EWRAMCounters },
@@ -1732,6 +1735,13 @@ static void DebugAction_Util_WatchCredits(u8 taskId)
 {
     Debug_DestroyMenu_Full(taskId);
     SetMainCallback2(CB2_StartCreditsSequence);
+}
+
+// BPE: shows the Hall of Fame with the current party without saving it.
+static void DebugAction_Util_WatchHallOfFame(u8 taskId)
+{
+    Debug_DestroyMenu_Full(taskId);
+    SetMainCallback2(CB2_DoHallOfFameScreenDontSaveData);
 }
 
 static void DebugAction_Player_Name(u8 taskId)

@@ -1874,7 +1874,9 @@ static void ItemMenu_UseOutOfBattle(u8 taskId)
     if (GetItemFieldFunc(gSpecialVar_ItemId))
     {
         RemoveContextWindow();
-        if (CalculatePlayerPartyCount() == 0 && GetItemType(gSpecialVar_ItemId) == ITEM_USE_PARTY_MENU)
+        if (CalculatePlayerPartyCount() == 0
+         && (GetItemType(gSpecialVar_ItemId) == ITEM_USE_PARTY_MENU
+          || GetItemFieldFunc(gSpecialVar_ItemId) == ItemUseOutOfBattle_Ball))
         {
             PrintThereIsNoPokemon(taskId);
         }

@@ -3397,11 +3397,12 @@ u8 CopyMonToPC(struct Pokemon *mon)
     {
         for (boxPos = 0; boxPos < IN_BOX_COUNT; boxPos++)
         {
-            struct BoxPokemon *checkingMon = GetBoxedMonPtr(boxNo, boxPos);
-            if (GetBoxMonData(checkingMon, MON_DATA_SPECIES) == SPECIES_NONE)
+            // BPE: read the packed records rather than unpacking every box,
+            // since the Day Care sends Eggs here while the player walks.
+            if (GetBoxMonDataAt(boxNo, boxPos, MON_DATA_SPECIES) == SPECIES_NONE)
             {
                 MonRestorePP(mon);
-                CopyMon(checkingMon, &mon->box, sizeof(mon->box));
+                SetBoxMonAt(boxNo, boxPos, &mon->box);
                 gSpecialVar_MonBoxId = boxNo;
                 gSpecialVar_MonBoxPos = boxPos;
                 if (GetPCBoxToSendMon() != boxNo)

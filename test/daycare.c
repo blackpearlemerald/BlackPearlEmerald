@@ -3,6 +3,7 @@
 #include "event_data.h"
 #include "malloc.h"
 #include "party_menu.h"
+#include "pokemon_storage_system.h"
 #include "regions.h"
 #include "test/overworld_script.h"
 #include "test/test.h"
@@ -164,4 +165,117 @@ TEST("(Daycare) Pokémon with regional forms give the correct offspring")
     STORE_IN_DAYCARE_AND_GET_EGG();
 
     EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPECIES), offspring);
+}
+
+static u32 CountPCEggs(enum Species species)
+{
+    u32 boxId, boxPos, count = 0;
+
+    for (boxId = 0; boxId < TOTAL_BOXES_COUNT; boxId++)
+    {
+        for (boxPos = 0; boxPos < IN_BOX_COUNT; boxPos++)
+        {
+            if (GetBoxMonDataAt(boxId, boxPos, MON_DATA_SPECIES) == species
+             && GetBoxMonDataAt(boxId, boxPos, MON_DATA_IS_EGG))
+                count++;
+        }
+    }
+    return count;
+}
+
+static void PutPikachuPairInDaycare(void)
+{
+    ResetPokemonStorageSystem();
+    ZeroPlayerPartyMons();
+    memset(&gSaveBlock1Ptr->daycare, 0, sizeof(gSaveBlock1Ptr->daycare));
+    FlagClear(FLAG_PENDING_DAYCARE_EGG);
+    RUN_OVERWORLD_SCRIPT(
+        givemon SPECIES_PIKACHU, 100, gender=MON_MALE;
+        givemon SPECIES_PIKACHU, 100, gender=MON_FEMALE;
+    );
+    StorePokemonInDaycare(&gParties[B_TRAINER_PLAYER][0], &gSaveBlock1Ptr->daycare.mons[0]);
+    StorePokemonInDaycare(&gParties[B_TRAINER_PLAYER][0], &gSaveBlock1Ptr->daycare.mons[1]);
+}
+
+// The step that makes mons[1].steps end in 0xFF is when an Egg is due.
+static void WalkToNextEggCheck(void)
+{
+    gSaveBlock1Ptr->daycare.mons[0].steps = 0xFE;
+    gSaveBlock1Ptr->daycare.mons[1].steps = 0xFE;
+    ShouldEggHatch();
+}
+
+static void ClearDaycareAndPC(void)
+{
+    memset(&gSaveBlock1Ptr->daycare, 0, sizeof(gSaveBlock1Ptr->daycare));
+    FlagClear(FLAG_PENDING_DAYCARE_EGG);
+    ZeroPlayerPartyMons();
+    ResetPokemonStorageSystem();
+}
+
+TEST("(Daycare) BPE: a waiting Egg goes to the PC and breeding carries on")
+{
+    ASSUME(P_FAMILY_PIKACHU == TRUE);
+    ASSUME(P_GEN_2_CROSS_EVOS == TRUE);
+
+    PutPikachuPairInDaycare();
+    TriggerPendingDaycareEgg();
+    WalkToNextEggCheck();
+
+    // The waiting Egg left for the PC; a second one may have followed it.
+    EXPECT_EQ(gSaveBlock1Ptr->daycare.offspringPersonality, 0);
+    EXPECT(!FlagGet(FLAG_PENDING_DAYCARE_EGG));
+    EXPECT_GE(CountPCEggs(SPECIES_PICHU), 1);
+    EXPECT_EQ(CalculatePlayerPartyCount(), 0);
+
+    ClearDaycareAndPC();
+}
+
+TEST("(Daycare) BPE: Eggs keep reaching the PC over many Egg checks")
+{
+    u32 i;
+
+    ASSUME(P_FAMILY_PIKACHU == TRUE);
+    ASSUME(P_GEN_2_CROSS_EVOS == TRUE);
+
+    PutPikachuPairInDaycare();
+    for (i = 0; i < 100; i++)
+    {
+        WalkToNextEggCheck();
+        EXPECT_EQ(gSaveBlock1Ptr->daycare.offspringPersonality, 0);
+    }
+    // At 50% odds, 100 checks all failing would be a broken Day Care.
+    EXPECT_GE(CountPCEggs(SPECIES_PICHU), 10);
+
+    ClearDaycareAndPC();
+}
+
+TEST("(Daycare) BPE: with a full PC the Day Care Man keeps the Egg until a box has room")
+{
+    struct BoxPokemon filler;
+    u32 boxId, boxPos;
+
+    ASSUME(P_FAMILY_PIKACHU == TRUE);
+    ASSUME(P_GEN_2_CROSS_EVOS == TRUE);
+
+    PutPikachuPairInDaycare();
+    CreateBoxMon(&filler, SPECIES_ZIGZAGOON, 5, 0, OTID_STRUCT_PRESET(0));
+    for (boxId = 0; boxId < TOTAL_BOXES_COUNT; boxId++)
+    {
+        for (boxPos = 0; boxPos < IN_BOX_COUNT; boxPos++)
+            SetBoxMonAt(boxId, boxPos, &filler);
+    }
+
+    TriggerPendingDaycareEgg();
+    WalkToNextEggCheck();
+    EXPECT_NE(gSaveBlock1Ptr->daycare.offspringPersonality, 0);
+    EXPECT(FlagGet(FLAG_PENDING_DAYCARE_EGG));
+    EXPECT_EQ(CountPCEggs(SPECIES_PICHU), 0);
+
+    ZeroBoxMonAt(TOTAL_BOXES_COUNT - 1, IN_BOX_COUNT - 1);
+    WalkToNextEggCheck();
+    EXPECT_EQ(GetBoxMonDataAt(TOTAL_BOXES_COUNT - 1, IN_BOX_COUNT - 1, MON_DATA_SPECIES), SPECIES_PICHU);
+    EXPECT(GetBoxMonDataAt(TOTAL_BOXES_COUNT - 1, IN_BOX_COUNT - 1, MON_DATA_IS_EGG));
+
+    ClearDaycareAndPC();
 }
