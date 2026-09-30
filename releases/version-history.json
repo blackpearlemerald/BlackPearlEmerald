@@ -1,6 +1,13 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.12-beta": {
+      "channel": "beta",
+      "changes": [
+        "Costumed Pikachu now have a second type and their costume move, like Radical Red.",
+        "Website: search boxes and Pokémon pages fit on phones."
+      ]
+    },
     "2.1.11-beta": {
       "channel": "beta",
       "changes": [

@@ -545,6 +545,33 @@ void CreateWildMon(enum Species species, u8 level)
     CreateWildMonForm(GetWildFormVariant(species), level);
 }
 
+// BPE: a costumed Pikachu always knows its costume's move, as in Omega Ruby/Alpha
+// Sapphire and Radical Red. The move is the first entry of its learnset, read
+// through the randomizer like any other level-up move.
+static void GiveCosplayPikachuMove(struct Pokemon *mon)
+{
+#if P_COSPLAY_PIKACHU_FORMS
+    static const u16 sCostumes[] = {
+        SPECIES_PIKACHU_ROCK_STAR, SPECIES_PIKACHU_BELLE, SPECIES_PIKACHU_POP_STAR,
+        SPECIES_PIKACHU_PHD, SPECIES_PIKACHU_LIBRE,
+    };
+    enum Species species = GetMonData(mon, MON_DATA_SPECIES);
+    u32 i;
+
+    for (i = 0; i < ARRAY_COUNT(sCostumes); i++)
+    {
+        if (sCostumes[i] == species)
+        {
+            enum Move move = GetLearnsetMove(species, GetSpeciesLevelUpLearnset(species), 0);
+
+            if (GiveMoveToMon(mon, move) == MON_HAS_MAX_MOVES)
+                DeleteFirstMoveAndGiveMoveToMon(mon, move);
+            return;
+        }
+    }
+#endif
+}
+
 // BPE: a wild Pokémon of exactly this form. DexNav picks the form when a search
 // starts, so the Pokémon it shows is the one the battle uses.
 void CreateWildMonForm(enum Species species, u8 level)
@@ -553,6 +580,7 @@ void CreateWildMonForm(enum Species species, u8 level)
     u32 personality = GetMonPersonality(species, GetSynchronizedGender(WILDMON_ORIGIN, species), PickWildMonNature(species), RANDOM_UNOWN_LETTER);
     CreateMonWithIVs(&gParties[B_TRAINER_OPPONENT_A][0], species, level, personality, OTID_STRUCT_PLAYER_ID, USE_RANDOM_IVS);
     GiveMonInitialMoveset(&gParties[B_TRAINER_OPPONENT_A][0]);
+    GiveCosplayPikachuMove(&gParties[B_TRAINER_OPPONENT_A][0]);
 }
 
 #ifdef BUGFIX

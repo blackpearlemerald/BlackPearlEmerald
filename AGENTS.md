@@ -422,6 +422,11 @@ the Mirage pool. Battle-only forms and Totem Pokémon are not required.
   forms (Vivillon patterns, Flabébé colours, Minior, Furfrou trims, costumed
   Pikachu, ...). `CreateWildMon` picks a form, preferring ones the player
   doesn't own. The documentation's Pokédex reads the same table.
+- The five costumed Pikachu are dual-typed as in Radical Red (Rock Star Steel,
+  Belle Ice, Pop Star Fairy, Ph.D. Psychic, Libre Fighting). Each has its own
+  learnset in `level_up_learnsets/gen_9.h` that starts with its costume move,
+  and `CreateWildMonForm` always teaches that move to a wild one. Tests:
+  `make check TESTS=test/cosplay_pikachu.c`.
 - A Peat Block evolves Ursaring into Ursaluna at night and into Bloodmoon
   Ursaluna at any other time.
 

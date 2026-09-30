@@ -3092,7 +3092,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .baseSpeed     = 90,
         .baseSpAttack  = 50,
         .baseSpDefense = 50,
-        .types = MON_TYPES(TYPE_ELECTRIC),
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_STEEL), // BPE: costume type, as in Radical Red
         .catchRate = 190,
         .expYield = PIKACHU_EXP_YIELD,
         .evYield_Speed = 2,
@@ -3131,7 +3131,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .pokemonJumpType = PKMN_JUMP_TYPE_NORMAL,
         SHADOW(-3, 5, SHADOW_SIZE_M)
         FOOTPRINT(Pikachu)
-        .levelUpLearnset = sPikachuLevelUpLearnset,
+        .levelUpLearnset = sPikachuRockStarLevelUpLearnset,
         .teachableLearnset = sPikachuTeachableLearnset,
         .formSpeciesIdTable = sPikachuFormSpeciesIdTable,
     },
@@ -3144,7 +3144,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .baseSpeed     = 90,
         .baseSpAttack  = 50,
         .baseSpDefense = 50,
-        .types = MON_TYPES(TYPE_ELECTRIC),
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_ICE), // BPE: costume type, as in Radical Red
         .catchRate = 190,
         .expYield = PIKACHU_EXP_YIELD,
         .evYield_Speed = 2,
@@ -3184,7 +3184,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .pokemonJumpType = PKMN_JUMP_TYPE_NORMAL,
         SHADOW(-3, 5, SHADOW_SIZE_M)
         FOOTPRINT(Pikachu)
-        .levelUpLearnset = sPikachuLevelUpLearnset,
+        .levelUpLearnset = sPikachuBelleLevelUpLearnset,
         .teachableLearnset = sPikachuTeachableLearnset,
         .formSpeciesIdTable = sPikachuFormSpeciesIdTable,
     },
@@ -3197,7 +3197,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .baseSpeed     = 90,
         .baseSpAttack  = 50,
         .baseSpDefense = 50,
-        .types = MON_TYPES(TYPE_ELECTRIC),
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_FAIRY), // BPE: costume type, as in Radical Red
         .catchRate = 190,
         .expYield = PIKACHU_EXP_YIELD,
         .evYield_Speed = 2,
@@ -3237,7 +3237,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .pokemonJumpType = PKMN_JUMP_TYPE_NORMAL,
         SHADOW(-3, 5, SHADOW_SIZE_M)
         FOOTPRINT(Pikachu)
-        .levelUpLearnset = sPikachuLevelUpLearnset,
+        .levelUpLearnset = sPikachuPopStarLevelUpLearnset,
         .teachableLearnset = sPikachuTeachableLearnset,
         .formSpeciesIdTable = sPikachuFormSpeciesIdTable,
     },
@@ -3250,7 +3250,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .baseSpeed     = 90,
         .baseSpAttack  = 50,
         .baseSpDefense = 50,
-        .types = MON_TYPES(TYPE_ELECTRIC),
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_PSYCHIC), // BPE: costume type, as in Radical Red
         .catchRate = 190,
         .expYield = PIKACHU_EXP_YIELD,
         .evYield_Speed = 2,
@@ -3289,7 +3289,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .pokemonJumpType = PKMN_JUMP_TYPE_NORMAL,
         SHADOW(-3, 5, SHADOW_SIZE_M)
         FOOTPRINT(Pikachu)
-        .levelUpLearnset = sPikachuLevelUpLearnset,
+        .levelUpLearnset = sPikachuPhDLevelUpLearnset,
         .teachableLearnset = sPikachuTeachableLearnset,
         .formSpeciesIdTable = sPikachuFormSpeciesIdTable,
     },
@@ -3302,7 +3302,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .baseSpeed     = 90,
         .baseSpAttack  = 50,
         .baseSpDefense = 50,
-        .types = MON_TYPES(TYPE_ELECTRIC),
+        .types = MON_TYPES(TYPE_ELECTRIC, TYPE_FIGHTING), // BPE: costume type, as in Radical Red
         .catchRate = 190,
         .expYield = PIKACHU_EXP_YIELD,
         .evYield_Speed = 2,
@@ -3341,7 +3341,7 @@ const struct SpeciesInfo gSpeciesInfoGen1[] =
         .pokemonJumpType = PKMN_JUMP_TYPE_NORMAL,
         SHADOW(-3, 5, SHADOW_SIZE_M)
         FOOTPRINT(Pikachu)
-        .levelUpLearnset = sPikachuLevelUpLearnset,
+        .levelUpLearnset = sPikachuLibreLevelUpLearnset,
         .teachableLearnset = sPikachuTeachableLearnset,
         .formSpeciesIdTable = sPikachuFormSpeciesIdTable,
     },
