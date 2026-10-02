@@ -189,7 +189,7 @@ The enum in `include/constants/species.h` uses upstream's short regional-form na
 Upstream builds the FRLG object graphics (pics, frame tables, `gObjectEventGraphicsInfo_*` and their `gObjectEventGraphicsInfoPointers` entries) only `#if IS_FRLG`, so in BPE those `OBJ_EVENT_GFX_*` ids have a NULL entry even though the constants exist and maps compile. BPE uses two of them, Giovanni (Victory Road 1F) and Blue (B2F), and moved them above the `IS_FRLG` blocks in all four `src/data/object_events/` files; their palettes are already outside the gate. Do the same for any other FRLG character a map or script uses. `GetObjectEventGraphicsInfo()` now falls back to the Ninja Boy for a NULL entry, and `test/map_objects.c` fails if any map object has no graphics or a trainer stands inside a wall.
 
 ### Item numbering
-BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`). BPE's `ITEM_LEVEL_LIMITER` follows at 1021 and `ITEM_INFINITE_REPEL` at 1022, so `ITEMS_COUNT` is 1023. New upstream items must be placed after the BPE HM block, never on top of it.
+BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`). BPE's `ITEM_LEVEL_LIMITER` follows at 1021 and `ITEM_INFINITE_REPEL` at 1022, so `ITEMS_COUNT` is 1023. New upstream items must be placed after the BPE HM block, never on top of it. **`ITEMS_COUNT` cannot grow past 1023:** `heldItem` is a 10-bit field (the assert in `src/pokemon.c`), and widening it changes the save layout. A new item must reuse an id nothing needs: `ITEM_CATCH_CHARM` took the FRLG-only Gold Teeth's id 891.
 
 ### Audio formats
 Upstream samples are `.wav` (since expansion 1.14). BPE's 507 BW/DP expansion samples under `sound/direct_sound_samples/` are still `.aif` and are live build inputs through `audio_rules.mk`. Do not convert or delete them.
@@ -273,9 +273,15 @@ The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
   species) and `VAR_DEXNAV_STEP_COUNTER` use variables no release ever used; the
   chain is the existing `dexNavChain` byte in SaveBlock3. The save layout did not
   change.
+- Caves: a search refuses only while the map is still dark (flash level above 1).
+  Once Flash is used (level 1) it works, and the Pokémon only hides inside the
+  lit circle (4 tiles around the player).
 - `USE_DEXNAV_SEARCH_LEVELS` stays `FALSE`: a byte per species does not fit in the
-  save. `GetSearchLevel()` returns the current chain instead, so chaining unlocks
-  the Egg Move, Hidden Ability, held item and perfect IV bonuses.
+  save. `GetSearchLevel()` returns `DEXNAV_CHAIN_MAX` for every species, so the
+  Egg Move, Hidden Ability, held item and perfect IV bonuses are available from
+  the first search. The DexNav also shows every species and its hidden ability
+  from the start: nothing is hidden behind `FLAG_GET_SEEN` or a catch. The chain
+  itself (`dexNavChain`) still grows and adds its level bonus.
 - It reads the wild tables through `GetWildEncounterSpecies()`, so it lists and
   spawns the randomizer's Pokémon. The form (`GetWildFormVariant()`) is chosen
   when a search starts and created with `CreateWildMonForm()`, so the battle
@@ -365,6 +371,53 @@ Every repel check goes through `IsRepelActive()` in `src/wild_encounter.c`; use
 it instead of `REPEL_STEP_COUNT` when checking whether a repel is on.
 `IsInfiniteRepelActive()` turns it off in the Safari Zone, Battle Pike and
 Battle Pyramid. Tests: `make check TESTS=test/infinite_repel.c`.
+
+### Catch Charm
+
+A Standard-mode key item that makes every Poké Ball catch, switched on and off
+from the Bag or SELECT like the Infinite Repel. Mom's starter kit gives it in
+Standard games only; Mom at home gives it to older Standard saves.
+`FLAG_CATCH_CHARM_ON` and `FLAG_RECEIVED_CATCH_CHARM` (0x2E, 0x2F) are flags no
+release used before, so the save layout did not change. `Cmd_handleballthrow`
+treats it like Nuzlocke's guaranteed catch (`CAPTURE_GUARANTEED`). It reuses the
+Gold Teeth's id, 891 (see "Item numbering"). Tests:
+`make check TESTS=test/battle/capture.c`.
+
+### Nuzlocke dupes clause
+
+`HasWildPokmnOnThisRouteBeenSeen()` returns `NUZLOCKE_ENCOUNTER_DUPLICATE` when the
+wild Pokémon's evolutionary line (itself or any pre-evolution) is already caught
+(`IsSpeciesLineCaught`, from the Pokédex caught flags). A duplicate cannot be
+caught, and it does not set the area's bit in `VAR_WILD_PKMN_ROUTE_SEEN_*`, so the
+route's real encounter is still open.
+
+Static encounters (scripted wild battles, legendaries, the Regis) are outside the
+clause entirely: they never check or use the area's encounter. Every battle
+starter in `src/battle_setup.c` therefore sets `gNuzlockeCannotCatch` itself, to
+`NUZLOCKE_ENCOUNTER_OPEN` for a static one. A starter that leaves it alone reuses
+the last wild or trainer battle's result, which is how 2.1.12 could refuse Zapdos
+and the Regis. Give any new battle starter the same line.
+Tests: `make check TESTS=test/nuzlocke_dupes.c`.
+
+### Gimmighoul coins
+
+Gimmighoul (both forms) evolves into Gholdengo on level up with 999 Gimmighoul Coins
+in the bag, and the evolution uses the coins up (`IF_BAG_ITEM_COUNT`). Nothing gave
+out coins, so the documented evolution could never happen. The Verdanturf mart sells
+them (the Expanded4 and Postgame lists, 400 each). Tests:
+`make check TESTS=test/gimmighoul_evolution.c`.
+
+### Gimmick prompt
+
+`CreateGimmickPrompt()` in `src/battle_gimmick.c` puts a small "START" label
+(`FONT_SMALL`, healthbox palette, OAM priority 0 so the healthbox never covers it)
+right under the Mega/Z-Move/Ultra Burst trigger
+icon, the button that toggles it. The label is a 32x16 sprite created and
+destroyed with the trigger sprite (its id is in the trigger's `data[2]`), and
+`SpriteCb_GimmickPrompt` shows it only while the icon is fully slid out, so it
+never hangs below the healthbox. It keeps the trigger's id in `data[0]` because
+the sprite text printer reads `data[1]` and `data[2]` on overflow. The trigger
+sprite alone never named the button.
 
 ### Day Care Eggs go to the PC
 

@@ -306,6 +306,7 @@ PlayersHouse_1F_EventScript_Mom::
 	goto_if_unset FLAG_V1PATCH, PlayersHouse_1F_EventScript_V1PATCH
 	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveLevelLimiter
 	call PlayersHouse_1F_EventScript_TryGiveInfiniteRepel
+	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveCatchCharm
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_MAY, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_set FLAG_HAS_MATCH_CALL, PlayersHouse_1F_EventScript_TryRegisterMom
@@ -346,6 +347,21 @@ PlayersHouse_1F_Text_HereIsInfiniteRepel:
 	.string "wild POKéMON away, and it never\l"
 	.string "runs out. Switch it on or off\l"
 	.string "whenever you like!$"
+
+@ BPE: Standard saves made before the Catch Charm existed get it from Mom.
+PlayersHouse_1F_EventScript_TryGiveCatchCharm::
+	goto_if_set FLAG_RECEIVED_CATCH_CHARM, PlayersHouse_1F_EventScript_TryGiveCatchCharmDone
+	msgbox PlayersHouse_1F_Text_HereIsCatchCharm, MSGBOX_DEFAULT
+	giveitem ITEM_CATCH_CHARM
+	setflag FLAG_RECEIVED_CATCH_CHARM
+PlayersHouse_1F_EventScript_TryGiveCatchCharmDone::
+	return
+
+PlayersHouse_1F_Text_HereIsCatchCharm:
+	.string "MOM: Oh, honey, and one last thing!\p"
+	.string "This CATCH CHARM makes every\n"
+	.string "POKéBALL catch. Switch it on or\l"
+	.string "off whenever you like!$"
 
 PlayersHouse_1F_EventScript_V1PATCH::
 	giveitem ITEM_CANDY_JAR

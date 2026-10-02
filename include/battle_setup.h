@@ -108,6 +108,12 @@ bool8 IsTrainerReadyForRematch(void);
 void ShouldTryGetTrainerScript(void);
 u16 CountMaxPossibleRematch(u16 trainerId);
 u16 CountBattledRematchTeams(u16 trainerId);
+enum {
+    NUZLOCKE_ENCOUNTER_OPEN,
+    NUZLOCKE_ENCOUNTER_AREA_USED,
+    NUZLOCKE_ENCOUNTER_DUPLICATE,
+};
+
 u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc);
 u8 currLocConvertForNuzlocke(u8 currLocation);
 void TrainerBattleLoadArgs(const u8 *data);

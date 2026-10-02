@@ -351,6 +351,7 @@ void BattleSetup_StartWildBattle(void)
 
 void BattleSetup_StartDoubleWildBattle(void)
 {
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     DoStandardWildBattle(TRUE);
 }
 
@@ -405,6 +406,7 @@ void DoStandardWildBattle_Debug(void)
 
 void BattleSetup_StartRoamerBattle(void)
 {
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     LockPlayerFieldControls();
     FreezeObjectEvents();
     StopPlayerAvatar();
@@ -495,6 +497,7 @@ void StartOldManTutorialBattle(void)
 
 void BattleSetup_StartScriptedWildBattle(void)
 {
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_EndScriptedWildBattle;
     gBattleTypeFlags = 0;
@@ -507,6 +510,7 @@ void BattleSetup_StartScriptedWildBattle(void)
 
 void BattleSetup_StartScriptedDoubleWildBattle(void)
 {
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_EndScriptedWildBattle;
     gBattleTypeFlags = BATTLE_TYPE_DOUBLE;
@@ -538,6 +542,7 @@ void StartMarowakBattle(void)
 
 void BattleSetup_StartLatiBattle(void)
 {
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_EndScriptedWildBattle;
     gBattleTypeFlags = BATTLE_TYPE_LEGENDARY;
@@ -550,6 +555,7 @@ void BattleSetup_StartLatiBattle(void)
 
 void BattleSetup_StartLegendaryBattle(void)
 {
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_EndScriptedWildBattle;
     gBattleTypeFlags = BATTLE_TYPE_LEGENDARY;
@@ -592,6 +598,7 @@ void BattleSetup_StartLegendaryBattle(void)
 
 void StartGroudonKyogreBattle(void)
 {
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_EndScriptedWildBattle;
     gBattleTypeFlags = BATTLE_TYPE_LEGENDARY;
@@ -612,6 +619,7 @@ void StartRegiBattle(void)
     enum BattleTransition transitionId;
     enum Species species;
 
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
     LockPlayerFieldControls();
     gMain.savedCallback = CB2_EndScriptedWildBattle;
     gBattleTypeFlags = BATTLE_TYPE_LEGENDARY;
@@ -2149,6 +2157,17 @@ u16 CountBattledRematchTeams(u16 trainerId)
     return REMATCHES_COUNT - 1;
 }
 
+static bool32 IsSpeciesLineCaught(enum Species species)
+{
+    for (u32 guard = 0; species != SPECIES_NONE && guard < 8; guard++)
+    {
+        if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+            return TRUE;
+        species = GetSpeciesPreEvolution(species);
+    }
+    return FALSE;
+}
+
 u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc) {
     u8 varToCheck, bitToCheck;
     u16 varValue;
@@ -2534,45 +2553,19 @@ u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc) {
         return 0;
     }
 
-    //u16 species_enemy = GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)]], MON_DATA_SPECIES2);
     u16 species_enemy = GetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_SPECIES, NULL);
-    DebugPrintf("An encounter detected...");
-    DebugPrintf(" species num: %d", species_enemy);
-    //if (!(GetSetPokedexFlag(SpeciesToNationalPokedexNum(species_enemy), FLAG_GET_CAUGHT))){
-        //DebugPrintf("An uncaught species seen!");
-        varValue = VarGet(pkmnSeenVars[varToCheck]);
-        DebugPrintf(" varValue: %d", varValue);
-        if (((varValue & (1 << bitToCheck)) != 0) && !(GetSetPokedexFlag(SpeciesToNationalPokedexNum(species_enemy), FLAG_GET_CAUGHT))){
-            DebugPrintf("Encoutner already recieved in this area! Returning 1...");
-            return 1;
-        }
-        else if (setVarForThisEnc){
-            if ((GetSetPokedexFlag(SpeciesToNationalPokedexNum(species_enemy), FLAG_GET_CAUGHT))){
-                DebugPrintf("Duplicate species seen! Returning 2...");
-                return 2;  // If it's a duplicate Pokemon
-            }
-            VarSet(pkmnSeenVars[varToCheck], varValue | (1 << bitToCheck));
-            DebugPrintf("First encounter in this area! Returning 0...");
-            DebugPrintf(" Var Set varValue: %d", varValue);
-        }
-    //}
-    return 0;
 
-    // u16 species_enemy = GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)]], MON_DATA_SPECIES2);
-    // if (!(GetSetPokedexFlag(SpeciesToNationalPokedexNum(species_enemy), FLAG_GET_CAUGHT))){
-    //     varValue = VarGet(pkmnSeenVars[varToCheck]);
-    //     if ((varValue & (1 << bitToCheck)) != 0){
-    //         return 1;
-    //     }
-    //     else if (setVarForThisEnc){
-    //     //    u16 species_enemy = GetMonData(&gEnemyParty[gBattlerPartyIndexes[GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT)]], MON_DATA_SPECIES2);
-    //     //    if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species_enemy), FLAG_GET_CAUGHT)){
-    //     //        return 2;  // If it's a duplicate Pokemon
-    //     //    }
-    //         VarSet(pkmnSeenVars[varToCheck], varValue | (1 << bitToCheck));
-    //     }
-    // //}
-    // return 0;
+    // BPE Nuzlocke dupes clause: a Pokémon whose evolutionary line is already caught can't be
+    // caught again, and meeting one does not use up the area's encounter.
+    if (IsSpeciesLineCaught(species_enemy))
+        return NUZLOCKE_ENCOUNTER_DUPLICATE;
+
+    varValue = VarGet(pkmnSeenVars[varToCheck]);
+    if ((varValue & (1 << bitToCheck)) != 0)
+        return NUZLOCKE_ENCOUNTER_AREA_USED;
+    if (setVarForThisEnc)
+        VarSet(pkmnSeenVars[varToCheck], varValue | (1 << bitToCheck));
+    return NUZLOCKE_ENCOUNTER_OPEN;
 }
 
 u8 currLocConvertForNuzlocke(u8 currLocation) {

@@ -1,5 +1,6 @@
 #include "global.h"
 #include "event_data.h"
+#include "item.h"
 #include "pokedex.h"
 #include "test/battle.h"
 
@@ -266,4 +267,44 @@ WILD_BATTLE_TEST("Capture: ball data is properly set in captured pokemon")
     } THEN {
         EXPECT_EQ(GetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_POKEBALL), GetItemSecondaryId(item));
     }
+}
+
+// BPE: the Catch Charm is a Standard mode toggle that makes every Ball catch.
+WILD_BATTLE_TEST("Capture: the Catch Charm guarantees the catch only while it is on")
+{
+    u32 recordedOdds;
+    bool32 charmOn;
+
+    PARAMETRIZE(charmOn = FALSE);
+    PARAMETRIZE(charmOn = TRUE);
+
+    GIVEN {
+        WITH_CONFIG(B_MISSING_BADGE_CATCH_MALUS, GEN_7);
+        ASSUME(!FlagGet(FLAG_NUZLOCKE));
+        if (charmOn)
+            FlagSet(FLAG_CATCH_CHARM_ON);
+        else
+            FlagClear(FLAG_CATCH_CHARM_ON);
+        PLAYER(SPECIES_WOBBUFFET);
+        OPPONENT(SPECIES_DITTO);
+    } WHEN {
+        TURN { USE_ITEM(player, ITEM_POKE_BALL); }
+    } SCENE {
+        CATCHING_CHANCE(&recordedOdds);
+    } THEN {
+        FlagClear(FLAG_CATCH_CHARM_ON);
+        if (charmOn)
+            EXPECT_EQ((s32)recordedOdds, -1);
+        else
+            EXPECT_NE((s32)recordedOdds, -1);
+    }
+}
+
+TEST("The Catch Charm is a key item, and its flags are the unused ones")
+{
+    EXPECT_EQ(GetItemPocket(ITEM_CATCH_CHARM), POCKET_KEY_ITEMS);
+    EXPECT_EQ(GetItemImportance(ITEM_CATCH_CHARM), 1);
+    EXPECT_EQ(FLAG_CATCH_CHARM_ON, 0x2E);
+    EXPECT_EQ(FLAG_RECEIVED_CATCH_CHARM, 0x2F);
+    EXPECT_LT(ITEMS_COUNT, 1024);
 }

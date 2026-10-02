@@ -210,10 +210,6 @@ SafariZone_West_EventScript_ItemTM32::
 	finditem ITEM_TM32
 	end
 
-SafariZone_West_EventScript_ItemGoldTeeth::
-	finditem ITEM_GOLD_TEETH
-	end
-
 SafariZone_West_EventScript_ItemMaxPotion::
 	finditem ITEM_MAX_POTION
 	end

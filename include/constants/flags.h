@@ -65,8 +65,8 @@
 #define FLAG_INFINITE_REPEL_ON       0x2B // BPE: formerly unused. The Infinite Repel is switched on.
 #define FLAG_RECEIVED_INFINITE_REPEL 0x2C // BPE: formerly unused. Mom has handed out the Infinite Repel.
 #define FLAG_LILYCOVE_NPC_TRADE_COMPLETED 0x2D // BPE: formerly unused. The Lickitung trade in Lilycove House 1 is done.
-#define FLAG_UNUSED_0x02E    0x2E // Unused Flag
-#define FLAG_UNUSED_0x02F    0x2F // Unused Flag
+#define FLAG_CATCH_CHARM_ON       0x2E // BPE: formerly unused. The Catch Charm is switched on.
+#define FLAG_RECEIVED_CATCH_CHARM 0x2F // BPE: formerly unused. The Catch Charm has been handed out.
 // BPE: set when the matching pre-Elite Four legendary is caught (Mew uses FLAG_CAUGHT_MEW)
 #define FLAG_CAUGHT_PREE4_ARTICUNO   0x30
 #define FLAG_CAUGHT_PREE4_MOLTRES    0x31

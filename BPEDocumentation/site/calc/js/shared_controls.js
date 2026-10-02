@@ -984,7 +984,10 @@ $(".forme").change(function () {
 	var isRandoms = $("#randoms").prop("checked");
 	var pokemonSets = isRandoms ? randdex[pokemonName] : setdex[pokemonName];
 	var chosenSet = isRandoms && gen < 8 ? pokemonSets : pokemonSets && pokemonSets[setName];
-	var greninjaSet = $(this).val().indexOf("Greninja") !== -1;
+	// BPE: upstream keeps a Greninja's ability when its forme changes, for
+	// Battle Bond sets. BPE has no such sets, and it left Greninja-Mega with
+	// Torrent instead of Protean.
+	var greninjaSet = false;
 	var isAltForme = $(this).val() !== pokemonName;
 	// BPE: a species may have no listed ability, and a trainer's set may leave
 	// the ability to the game, so neither lookup is guaranteed.

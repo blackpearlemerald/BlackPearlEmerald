@@ -10067,7 +10067,7 @@ static void Cmd_handleballthrow(void)
     {
         gBallToDisplay = gLastThrownBall = gLastUsedItem;
         u32 odds = ComputeCaptureOdds(gBattlerTarget, gBattlerAttacker);
-        if (FlagGet(FLAG_NUZLOCKE)) // BPE Nuzlocke: 100% catch rate
+        if (FlagGet(FLAG_NUZLOCKE) || FlagGet(FLAG_CATCH_CHARM_ON)) // BPE: Nuzlocke always catches; Standard's Catch Charm toggles it
             odds = CAPTURE_GUARANTEED;
         if (gTestRunnerEnabled)
             TestRunner_Battle_RecordCatchChance(odds);

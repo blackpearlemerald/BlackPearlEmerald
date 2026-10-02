@@ -1060,7 +1060,7 @@ enum __attribute__((packed)) Item
     ITEM_OAKS_PARCEL = ITEM_PARCEL, // Pre-Gen IV name
     ITEM_SECRET_KEY = 889,
     ITEM_BIKE_VOUCHER = 890,
-    ITEM_GOLD_TEETH = 891,
+    ITEM_CATCH_CHARM = 891, // BPE: the FRLG Gold Teeth's id, reused because ITEMS_COUNT is capped at 1023 (10-bit heldItem)
     ITEM_CARD_KEY = 892,
     ITEM_LIFT_KEY = 893,
     ITEM_SILPH_SCOPE = 894,

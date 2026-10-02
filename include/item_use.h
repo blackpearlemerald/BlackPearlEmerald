@@ -23,6 +23,7 @@ void ItemUseOutOfBattle_PPUp(u8 taskId);
 void ItemUseOutOfBattle_Ball(u8 taskId); // BPE
 void ItemUseOutOfBattle_LevelLimiter(u8 taskId); // BPE
 void ItemUseOutOfBattle_InfiniteRepel(u8 taskId); // BPE
+void ItemUseOutOfBattle_CatchCharm(u8 taskId); // BPE
 void ItemUseOutOfBattle_RareCandy(u8 taskId);
 void ItemUseOutOfBattle_DynamaxCandy(u8 taskId);
 void ItemUseOutOfBattle_TMHM(u8 taskId);
@@ -67,6 +68,7 @@ enum {
     BALL_THROW_ABLE,
     BALL_THROW_UNABLE_DISABLED_FLAG,
     BALL_THROW_UNABLE_NUZLOCKE,
+    BALL_THROW_UNABLE_NUZLOCKE_DUPLICATE,
 };
 
 bool32 CanThrowBall(void);

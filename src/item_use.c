@@ -989,6 +989,36 @@ void ItemUseOutOfBattle_InfiniteRepel(u8 taskId)
         DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
 }
 
+static const u8 sText_CatchCharmOn[] = _("The Catch Charm is now ON.\nEvery POKé BALL will catch!{PAUSE_UNTIL_PRESS}");
+static const u8 sText_CatchCharmOff[] = _("The Catch Charm is now OFF.{PAUSE_UNTIL_PRESS}");
+static const u8 sText_CatchCharmNuzlocke[] = _("Nuzlocke games always catch.\nThe Catch Charm has no effect.{PAUSE_UNTIL_PRESS}");
+
+// BPE: switches Standard mode's guaranteed catch on or off (see Cmd_handleballthrow).
+void ItemUseOutOfBattle_CatchCharm(u8 taskId)
+{
+    const u8 *text;
+
+    if (FlagGet(FLAG_NUZLOCKE))
+    {
+        text = sText_CatchCharmNuzlocke;
+    }
+    else if (FlagGet(FLAG_CATCH_CHARM_ON))
+    {
+        FlagClear(FLAG_CATCH_CHARM_ON);
+        text = sText_CatchCharmOff;
+    }
+    else
+    {
+        FlagSet(FLAG_CATCH_CHARM_ON);
+        text = sText_CatchCharmOn;
+    }
+
+    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+        DisplayItemMessage(taskId, FONT_NORMAL, text, CloseItemMessage);
+    else
+        DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
+}
+
 // BPE: using a Ball on a party Pokemon moves it into that Ball. Balls keep the
 // type ITEM_USE_BAG_MENU, which battle needs for throwing them, so the party menu
 // is asked for here; that type has no screen of its own and would close the Bag.
@@ -1256,8 +1286,10 @@ static u32 GetBallThrowableState(void)
         return BALL_THROW_UNABLE_DISABLED_FLAG;
     else if (isWildShiny == 1)
         return BALL_THROW_ABLE;
-    else if (gNuzlockeCannotCatch == 1) // 1 = route encounter already used on a new species; 2 = duplicate species (dupes clause) stays catchable
+    else if (gNuzlockeCannotCatch == NUZLOCKE_ENCOUNTER_AREA_USED)
         return BALL_THROW_UNABLE_NUZLOCKE;
+    else if (gNuzlockeCannotCatch == NUZLOCKE_ENCOUNTER_DUPLICATE)
+        return BALL_THROW_UNABLE_NUZLOCKE_DUPLICATE;
     // else if ((GetSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[GetCatchingBattler()].species), FLAG_GET_CAUGHT)))
     //     return BALL_THROW_UNABLE_NUZLOCKE;
 
@@ -1275,6 +1307,7 @@ static const u8 sText_CantThrowPokeBall_TwoMons[] = _("Cannot throw a ball!\nThe
 static const u8 sText_CantThrowPokeBall_SemiInvulnerable[] = _("Cannot throw a ball!\nThere's no Pokémon in sight!\p");
 static const u8 sText_CantThrowPokeBall_Disabled[] = _("POKé BALLS cannot be used\nright now!\p");
 static const u8 sText_CantThrowPokeBall_Nuzlocke[] = _("You've already caught\na Pokémon on this Route!\p");
+static const u8 sText_CantThrowPokeBall_NuzlockeDuplicate[] = _("Dupes Clause: you already\nhave this Pokémon!\p");
 void ItemUseInBattle_PokeBall(u8 taskId)
 {
     //// This if might be in wrong spot...
@@ -1323,6 +1356,12 @@ void ItemUseInBattle_PokeBall(u8 taskId)
             DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_Nuzlocke, CloseItemMessage);
         else
             DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_Nuzlocke, Task_CloseBattlePyramidBagMessage);
+        break;
+    case BALL_THROW_UNABLE_NUZLOCKE_DUPLICATE:
+        if (!InBattlePyramid_())
+            DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_NuzlockeDuplicate, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_NuzlockeDuplicate, Task_CloseBattlePyramidBagMessage);
         break;
     }
 }
@@ -1445,6 +1484,11 @@ bool32 CannotUseItemsInBattle(enum Item itemId, struct Pokemon *mon)
         case BALL_THROW_UNABLE_NUZLOCKE:
             failStr = sText_CantThrowPokeBall_Nuzlocke;
             cannotUse = TRUE;
+            break;
+        case BALL_THROW_UNABLE_NUZLOCKE_DUPLICATE:
+            failStr = sText_CantThrowPokeBall_NuzlockeDuplicate;
+            cannotUse = TRUE;
+            break;
         }
         break;
     case EFFECT_ITEM_INCREASE_ALL_STATS:

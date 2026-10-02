@@ -1,6 +1,18 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.13-beta": {
+      "channel": "beta",
+      "changes": [
+        "New Catch Charm (Standard mode): a key item from Mom that makes every Poké Ball catch. Switch it on or off from the Bag or SELECT.",
+        "Nuzlocke dupes clause: Pokémon from an evolutionary line you've already caught can't be caught, and they don't use up that area's encounter.",
+        "Nuzlocke: legendaries and other one-time encounters can always be caught, and never use up an area's encounter.",
+        "A small START label now sits under the Mega Evolution, Z-Move and Ultra Burst icon in battle, so you know which button to press.",
+        "DexNav: works in dark caves once you've used Flash, and shows every Pokémon and its Hidden Ability from the start, with every search bonus unlocked.",
+        "Gholdengo can now be obtained: the Verdanturf Poké Mart sells Gimmighoul Coins after the 4th Gym Badge.",
+        "Website: the damage calculator shows Mega and Primal forms for Pokémon imported from your save, Sea Floor Cavern now has its proper place on the map, and the Pokédex explains Gimmighoul's evolution."
+      ]
+    },
     "2.1.12-beta": {
       "channel": "beta",
       "changes": [

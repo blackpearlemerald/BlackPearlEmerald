@@ -433,7 +433,12 @@ class EvolutionLabelTests(unittest.TestCase):
     def test_shedinja_shares_ninjasks_level(self):
         self.assertEqual(self.labels("NINCADA", """{EVO_LEVEL, 20, SPECIES_NINJASK},
             {EVO_SPLIT_FROM_EVO, SPECIES_NINJASK, SPECIES_SHEDINJA, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_POKE_BALL, 1})}"""),
-            ["Lv. 20", "Lv. 20 with a free party slot and a Poké Ball in the bag"])
+            ["Lv. 20", "Lv. 20 with a free party slot and a Poké Ball in the bag (uses it up)"])
+
+    def test_gimmighoul_needs_999_coins_that_are_used_up(self):
+        self.assertEqual(self.labels("GIMMIGHOUL_CHEST", """
+            {EVO_LEVEL, 0, SPECIES_GHOLDENGO, CONDITIONS({IF_BAG_ITEM_COUNT, ITEM_GIMMIGHOUL_COIN, 999})}"""),
+            ["Level up with 999 Gimmighoul Coins in the bag (uses them up)"])
 
     def test_older_methods_read_like_conditions(self):
         self.assertEqual(self.labels("BASCULIN_WHITE_STRIPED", """
@@ -541,6 +546,45 @@ class FeaturesTests(unittest.TestCase):
                 write(site / "data/features.json", json.dumps(data))
                 with self.subTest(data=data), self.assertRaises(ValueError):
                     releases.validate_features(site)
+
+
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+class WorldLayoutTests(unittest.TestCase):
+    @staticmethod
+    def _map(mid, w, h, warps=(), connections=()):
+        return {"id": mid, "name": mid, "w": w, "h": h, "wPx": w * 16, "hPx": h * 16,
+                "connections": list(connections),
+                "warps": [{"x": x, "y": y, "dest": d} for x, y, d in warps]}
+
+    def test_sea_floor_cavern_sits_beside_route_128_with_links(self):
+        # The cavern is entered by a scripted dive, so no static warp leads to
+        # its Entrance; it must still be anchored at the Route 128 dive spot,
+        # and every room must get a warp link.
+        maps = {m["id"]: m for m in (
+            self._map("MAP_LITTLEROOT_TOWN", 20, 20, connections=[
+                {"map": "MAP_ROUTE128", "direction": "right", "offset": 0}]),
+            self._map("MAP_ROUTE128", 120, 40),
+            self._map("MAP_UNDERWATER_ROUTE128", 120, 40, warps=[
+                (38, 26, "MAP_UNDERWATER_SEAFLOOR_CAVERN")]),
+            self._map("MAP_UNDERWATER_SEAFLOOR_CAVERN", 14, 9),
+            self._map("MAP_SEAFLOOR_CAVERN_ENTRANCE", 20, 20, warps=[
+                (10, 18, "MAP_UNDERWATER_ROUTE128"), (10, 1, "MAP_SEAFLOOR_CAVERN_ROOM1")]),
+            self._map("MAP_SEAFLOOR_CAVERN_ROOM1", 20, 21, warps=[
+                (5, 18, "MAP_SEAFLOOR_CAVERN_ENTRANCE")]),
+        )}
+        placed, links = extract_world.assemble(maps)
+        route = placed["MAP_ROUTE128"]
+        for mid in ("MAP_SEAFLOOR_CAVERN_ENTRANCE", "MAP_SEAFLOOR_CAVERN_ROOM1"):
+            self.assertLess(abs(placed[mid][0] - route[0]), 2000, mid)
+            self.assertLess(abs(placed[mid][1] - route[1]), 2000, mid)
+            cx = placed[mid][0] + maps[mid]["wPx"] / 2
+            cy = placed[mid][1] + maps[mid]["hPx"] / 2
+            self.assertTrue(any(l["to"] == [cx, cy] for l in links), mid)
+        # The cavern's exit back to the sea floor must not anchor the
+        # underwater dive maps beside it.
+        uw = placed["MAP_UNDERWATER_ROUTE128"]
+        ucx, ucy = uw[0] + maps["MAP_UNDERWATER_ROUTE128"]["wPx"] / 2,             uw[1] + maps["MAP_UNDERWATER_ROUTE128"]["hPx"] / 2
+        self.assertFalse(any(l["to"] == [ucx, ucy] for l in links))
 
 
 if __name__ == "__main__":

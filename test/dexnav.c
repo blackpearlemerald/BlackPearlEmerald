@@ -90,12 +90,12 @@ TEST("No other wild Pokemon interrupts a DexNav search")
     EXPECT(!FlagGet(DN_FLAG_SEARCHING));
 }
 
-TEST("The chain is the search level")
+TEST("Every species searches at the maximum level from the start")
 {
     gSaveBlock3Ptr->dexNavChain = 0;
-    EXPECT_EQ(DexNav_Test_GetSearchLevel(SPECIES_ZIGZAGOON), 0);
+    EXPECT_EQ(DexNav_Test_GetSearchLevel(SPECIES_ZIGZAGOON), DEXNAV_CHAIN_MAX);
     gSaveBlock3Ptr->dexNavChain = 37;
-    EXPECT_EQ(DexNav_Test_GetSearchLevel(SPECIES_ZIGZAGOON), 37);
+    EXPECT_EQ(DexNav_Test_GetSearchLevel(SPECIES_ZIGZAGOON), DEXNAV_CHAIN_MAX);
     gSaveBlock3Ptr->dexNavChain = 0;
 }
 

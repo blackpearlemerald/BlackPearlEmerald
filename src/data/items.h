@@ -16099,21 +16099,20 @@ const struct ItemInfo gItemsInfo[] =
         .iconPalette = gItemIconPalette_BikeVoucher,
     },
 
-    [ITEM_GOLD_TEETH] =
+    [ITEM_CATCH_CHARM] =
     {
-        .name = ITEM_NAME("Gold Teeth"),
-        .pluralName = ITEM_PLURAL_NAME("Gold Teeth"),
+        .name = ITEM_NAME("Catch Charm"),
         .price = 0,
         .description = COMPOUND_STRING(
-            "Gold dentures lost\n"
-            "by the Safari\n"
-            "Zone's Warden."),
+            "Every Poké Ball\n"
+            "catches. Turn it\n"
+            "on or off."),
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
-        .iconPic = gItemIcon_GoldTeeth,
-        .iconPalette = gItemIconPalette_GoldTeeth,
+        .fieldUseFunc = ItemUseOutOfBattle_CatchCharm,
+        .iconPic = gItemIcon_CatchingCharm,
+        .iconPalette = gItemIconPalette_CatchingCharm,
     },
 
     [ITEM_CARD_KEY] =

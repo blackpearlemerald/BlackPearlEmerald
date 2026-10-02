@@ -913,6 +913,14 @@ LittlerootTown_EventScript_GiveInfiniteRepel::
 LittlerootTown_EventScript_GiveInfiniteRepelDone::
 	return
 
+@ BPE: Standard mode's switch for a guaranteed catch. Guarded like the others.
+LittlerootTown_EventScript_GiveCatchCharm::
+	goto_if_set FLAG_RECEIVED_CATCH_CHARM, LittlerootTown_EventScript_GiveCatchCharmDone
+	giveitem ITEM_CATCH_CHARM
+	setflag FLAG_RECEIVED_CATCH_CHARM
+LittlerootTown_EventScript_GiveCatchCharmDone::
+	return
+
 @ BPE: New games start with the Running Shoes (NewGameInitData), so Mom only
 @ hands them over on a save made before that change.
 LittlerootTown_EventScript_GiveRunningShoes::
@@ -941,6 +949,7 @@ LittlerootTown_EventScript_GiveStarterKit::
 	giveitem ITEM_POCKET_WATCH
 	call LittlerootTown_EventScript_GiveInfiniteRepel
 	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveLevelLimiter
+	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveCatchCharm
 	setflag FLAG_RECEIVED_OLD_ROD
 	setflag FLAG_V1PATCH
 	msgbox LittlerootTown_Text_ComeHomeIfAnythingHappens, MSGBOX_DEFAULT

@@ -185,7 +185,6 @@ static const u32 sHiddenMonIconGfx[] = INCGFX_U32("graphics/dexnav/hidden.png", 
 
 // strings
 static const u8 sText_DexNav_NoInfo[] = _("--------");
-static const u8 sText_DexNav_CaptureToSee[] = _("Capture first!");
 static const u8 sText_DexNav_PressRToRegister[] = _("R TO REGISTER!");
 static const u8 sText_DexNav_SearchForRegisteredSpecies[] = _("Search {STR_VAR_1}");
 static const u8 sText_DexNav_NotFoundHere[] = _("This Pokémon cannot be found here!");
@@ -700,6 +699,10 @@ static bool8 DexNavPickTile(enum EncounterType environment, u8 radiusX, u8 radiu
             u32 tileBehaviour = MapGridGetMetatileBehaviorAt(x, y);
             bool32 suitable = FALSE;
 
+            // BPE: Flash only lights a circle of 72 pixels around the player, so stay inside it
+            if (GetFlashLevel() != 0 && dx * dx + dy * dy > 16)
+                continue;
+
             // not too close to the player, somewhere the player can get to, and free of objects
             if ((u32)(abs(dx) + abs(dy)) <= tileBuffer
              || reached[(dy + PICK_RADIUS_Y_MAX) * PICK_WIDTH + dx + PICK_RADIUS_X_MAX] == PICK_UNREACHED
@@ -824,10 +827,11 @@ static u8 GetSearchLevel(enum Species species)
 #if USE_DEXNAV_SEARCH_LEVELS == TRUE
     searchLevel = gSaveBlock3Ptr->dexNavSearchLevels[species];
 #else
-    // BPE: the save has no room for a level per species, so the current chain
-    // stands in for it. Chaining raises the odds of an Egg Move, the Hidden
-    // Ability, a held item and perfect IVs; breaking the chain resets them.
-    searchLevel = gSaveBlock3Ptr->dexNavChain;
+    // BPE: the save has no room for a level per species, and the DexNav is meant to
+    // be complete from the start, so every species searches at the maximum level
+    // (Egg Moves, Hidden Abilities, held items and perfect IVs at their best odds).
+    // The chain still adds its own level bonus and is shown on screen.
+    searchLevel = DEXNAV_CHAIN_MAX;
 #endif
     return searchLevel;
 }
@@ -894,7 +898,8 @@ static bool8 InitDexNavSearch(enum Species species, u32 environment)
     sDexNavSearchDataPtr->isHiddenMon = (environment == ENCOUNTER_TYPE_HIDDEN) ? TRUE : FALSE;
     sDexNavSearchDataPtr->monLevel = DexNavTryGenerateMonLevel(species, environment);
 
-    if (GetFlashLevel() > 0)
+    // BPE: upstream refused in every cave, even after using Flash (flash level 1)
+    if (GetFlashLevel() > 1)
     {
         DexNavSearchBail(EventScript_TooDark);
         return TRUE;
@@ -1087,24 +1092,9 @@ static void RevealHiddenMon(void)
     }
 
 
-    if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
-    {
-        u8 index;
-
-        //if not seen, hide name and whiteout mon
-        DrawSearchWindow(species, sDexNavSearchDataPtr->potential, TRUE);
-        DrawDexNavSearchMonIcon(species, &sDexNavSearchDataPtr->iconSpriteId, FALSE);
-        // whiteout icon
-        index = IndexOfSpritePaletteTag(gSprites[sDexNavSearchDataPtr->iconSpriteId].template->paletteTag);
-        CpuCopy16(&gPlttBufferUnfaded[OBJ_PLTT_ID(index)], sDexNavSearchDataPtr->palBuffer, 32);
-        TintPalette_CustomTone(sDexNavSearchDataPtr->palBuffer, 16, 510, 510, 510);
-        LoadPalette(sDexNavSearchDataPtr->palBuffer, OBJ_PLTT_ID(index), PLTT_SIZE_4BPP);
-    }
-    else
-    {
-        DrawSearchWindow(species, sDexNavSearchDataPtr->potential, FALSE);
-        DrawDexNavSearchMonIcon(species, &sDexNavSearchDataPtr->iconSpriteId, GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT));
-    }
+    // BPE: every species is named and shown, seen or not
+    DrawSearchWindow(species, sDexNavSearchDataPtr->potential, FALSE);
+    DrawDexNavSearchMonIcon(species, &sDexNavSearchDataPtr->iconSpriteId, GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT));
 
     sDexNavSearchDataPtr->startingTime = gMain.vblankCounter1;
     DexNavUpdateDirectionArrow();
@@ -1211,13 +1201,8 @@ bool32 OnStep_DexNavSearch(void)
 
 static void DexNavUpdateSearchWindow(u8 proximity, u8 searchLevel)
 {
-    bool8 hideName = FALSE;
-
-    if (sDexNavSearchDataPtr->hiddenSearch && !GetSetPokedexFlag(SpeciesToNationalPokedexNum(sDexNavSearchDataPtr->species), FLAG_GET_SEEN))
-        hideName = TRUE;    //if a detector mode hidden search and player hasn't seen the mon, hide info
-
     FillWindowPixelBuffer(sDexNavSearchDataPtr->windowId, PIXEL_FILL(1));   //clear window
-    AddSearchWindowText(sDexNavSearchDataPtr->species, proximity, searchLevel, hideName);
+    AddSearchWindowText(sDexNavSearchDataPtr->species, proximity, searchLevel, FALSE);
 
     DexNavUpdateDirectionArrow();
 
@@ -2068,8 +2053,6 @@ static void TryDrawIconInSlot(enum Species species, s16 x, s16 y)
 {
     if (species == SPECIES_NONE || species > NUM_SPECIES)
         CreateNoDataIcon(x, y);   //'X' in slot
-    else if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
-        CreateMonIcon(SPECIES_NONE, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF); //question mark
     else
         CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF);
 }
@@ -2136,9 +2119,6 @@ static enum Species DexNavGetSpecies(void)
         return SPECIES_NONE;
     }
 
-    if (!GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_SEEN))
-        return SPECIES_NONE;
-
     return species;
 }
 
@@ -2188,11 +2168,7 @@ static void SetTypeIconPosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId)
 static void PrintCurrentSpeciesInfo(void)
 {
     enum Species species = DexNavGetSpecies();
-    enum NationalDexOrder dexNum = SpeciesToNationalPokedexNum(species);
     enum Type type1, type2;
-
-    if (!GetSetPokedexFlag(dexNum, FLAG_GET_SEEN))
-        species = SPECIES_NONE;
 
     // clear windows
     FillWindowPixelBuffer(WINDOW_INFO, PIXEL_FILL(TEXT_COLOR_TRANSPARENT));
@@ -2236,16 +2212,13 @@ static void PrintCurrentSpeciesInfo(void)
     {
         AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, HA_INFO_Y, sFontColor_Black, 0, sText_DexNav_NoInfo);
     }
-    else if (GetSetPokedexFlag(dexNum, FLAG_GET_CAUGHT))
+    else if (GetSpeciesAbility(species, 2) != ABILITY_NONE)
     {
-        if (GetSpeciesAbility(species, 2) != ABILITY_NONE)
-            AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, HA_INFO_Y, sFontColor_Black, 0, gAbilitiesInfo[GetSpeciesAbility(species, 2)].name);
-        else
-            AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, HA_INFO_Y, sFontColor_Black, 0, gText_None);
+        AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, HA_INFO_Y, sFontColor_Black, 0, gAbilitiesInfo[GetSpeciesAbility(species, 2)].name);
     }
     else
     {
-        AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, HA_INFO_Y, sFontColor_Black, 0, sText_DexNav_CaptureToSee);
+        AddTextPrinterParameterized3(WINDOW_INFO, FONT_SMALL, 0, HA_INFO_Y, sFontColor_Black, 0, gText_None);
     }
 
     //current chain
@@ -2588,7 +2561,7 @@ bool32 TryFindHiddenPokemon(void)
             || sDexNavSearchDataPtr != NULL
             || !FlagGet(DN_FLAG_DETECTOR_MODE)
             || FlagGet(DN_FLAG_SEARCHING)
-            || GetFlashLevel() > 0)
+            || GetFlashLevel() > 1)
     {
         if (stepPtr != NULL)
             (*stepPtr) = 0;

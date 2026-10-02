@@ -1401,6 +1401,10 @@ def assemble(maps):
     for mid, m in maps.items():
         for wp in m["warps"]:
             if wp["dest"]:
+                # The Sea Floor Cavern exit returns to the sea floor; don't let
+                # it drag the whole underwater dive area next to the cavern.
+                if mid.startswith("MAP_SEAFLOOR_CAVERN_") and wp["dest"].startswith("MAP_UNDERWATER_"):
+                    continue
                 warp_into[wp["dest"]].append((mid, wp["x"], wp["y"]))
 
     # Sootopolis City is reached by diving, not a warp, so nothing anchors it
@@ -1408,6 +1412,21 @@ def assemble(maps):
     # Treat the crater on Route 126's island as its entrance instead, so the
     # city floats next to the island with a link drawn from the crater.
     warp_into["MAP_SOOTOPOLIS_CITY"].insert(0, ("MAP_ROUTE126", 43, 45))
+
+    # Sea Floor Cavern is entered by diving at the cave mouth on the sea floor
+    # (Underwater_Route128 warps to the tiny Underwater_SeafloorCavern, whose
+    # dive warp is a script), so no static warp leads into the Entrance and all
+    # ten rooms fell to the overflow grid far below the map. The underwater
+    # maps share Route 128's size and tile grid, so anchor the Entrance to the
+    # same tile on Route 128 (where the dive spot sits). The rooms then chain
+    # off each other through their ordinary warps, like Shoal Cave, and each
+    # one gets a link from the warp that leads into it.
+    _sf_warp = next((w for w in maps.get("MAP_UNDERWATER_ROUTE128", {})
+                     .get("warps", [])
+                     if w["dest"] == "MAP_UNDERWATER_SEAFLOOR_CAVERN"), None)
+    if _sf_warp and "MAP_ROUTE128" in maps:
+        warp_into["MAP_SEAFLOOR_CAVERN_ENTRANCE"].insert(
+            0, ("MAP_ROUTE128", _sf_warp["x"], _sf_warp["y"]))
 
     # 1b. Cluster all Trick House maps into one tidy block. They are otherwise
     #     scattered: only Puzzle 1 has a static warp path from the overworld, so
@@ -1439,11 +1458,25 @@ def assemble(maps):
     #    (skip Trick House maps; they were clustered above in step 1b)
     remaining = [c for i, c in enumerate(comps)
                  if i != main_idx and not (set(c) & th_set)]
+    # Sea Floor Cavern (anchored above) would claim a patch of the crowded east
+    # side of the map, so it is placed in a second phase, after every other
+    # island has settled, and fills the free space near Route 128 instead of
+    # pushing Sky Pillar, Sootopolis or Victory Road somewhere else.
+    def _is_seafloor(c):
+        return any(m.startswith("MAP_SEAFLOOR_CAVERN_") for m in c)
+    defer_seafloor = True
     progressed = True
-    while remaining and progressed:
+    while remaining:
+        if not progressed:
+            if not defer_seafloor:
+                break
+            defer_seafloor = False
         progressed = False
         still = []
         for coords in remaining:
+            if defer_seafloor and _is_seafloor(coords):
+                still.append(coords)
+                continue
             anchor = None  # (ax, ay, link_from_xy, link_from_map, target_mid)
             for mid in coords:
                 for src_map, sx, sy in warp_into.get(mid, []):

@@ -11,6 +11,7 @@
 #include "palette.h"
 #include "pokemon.h"
 #include "sprite.h"
+#include "text.h"
 #include "util.h"
 #include "test_runner.h"
 
@@ -119,8 +120,80 @@ void SetGimmickAsActivated(enum BattlerId battler, enum Gimmick gimmick)
 #define DOUBLES_GIMMICK_TRIGGER_POS_X_SLIDE (15)
 #define DOUBLES_GIMMICK_TRIGGER_POS_Y_DIFF (-2)
 
-#define tBattler    data[0]
-#define tHide       data[1]
+#define tBattler        data[0]
+#define tHide           data[1]
+#define tPromptSpriteId data[2]
+
+// BPE: the trigger sprite shows that a gimmick can be used, but not which button
+// starts it, so a small "START" label sits right under it once it has slid out.
+#define TAG_GIMMICK_PROMPT_TILE 0xD791
+#define GIMMICK_PROMPT_X (-4) // the icon is drawn 4 pixels left of the sprite's centre
+#define GIMMICK_PROMPT_Y 9    // and ends 1 pixel below it
+
+// The text printer reads data[1] and data[2] for the next sprite when text
+// overflows, so the label keeps the trigger's id in data[0].
+#define sTriggerSpriteId data[0]
+
+static const u8 sText_GimmickPrompt[] = _("START");
+static const u32 sGimmickPromptBlankGfx[32 * 16 / 8] = {0};
+static const union TextColor sGimmickPromptTextColor = {.background = 0, .foreground = 1, .shadow = 3, .accent = 0};
+
+static void SpriteCb_GimmickPrompt(struct Sprite *sprite);
+
+static const struct OamData sOamData_GimmickPrompt =
+{
+    .shape = ST_OAM_H_RECTANGLE,
+    .size = ST_OAM_SIZE_2, // 32x16
+    .priority = 0, // above the healthbox it overlaps, so it stays readable
+};
+
+static const struct SpriteTemplate sSpriteTemplate_GimmickPrompt =
+{
+    .tileTag = TAG_GIMMICK_PROMPT_TILE,
+    .paletteTag = TAG_HEALTHBOX_PAL, // dark text with a light shadow, like the healthbox
+    .oam = &sOamData_GimmickPrompt,
+    .anims = gDummySpriteAnimTable,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCb_GimmickPrompt,
+};
+
+static void CreateGimmickPrompt(u32 triggerSpriteId)
+{
+    struct SpriteSheet sheet = {sGimmickPromptBlankGfx, sizeof(sGimmickPromptBlankGfx), TAG_GIMMICK_PROMPT_TILE};
+    struct Sprite *trigger = &gSprites[triggerSpriteId];
+    u32 spriteId;
+
+    if (triggerSpriteId >= MAX_SPRITES)
+        return;
+    trigger->tPromptSpriteId = SPRITE_NONE;
+    if (IndexOfSpritePaletteTag(TAG_HEALTHBOX_PAL) == 0xFF)
+        return;
+    if (GetSpriteTileStartByTag(TAG_GIMMICK_PROMPT_TILE) == 0xFFFF)
+        LoadSpriteSheet(&sheet);
+
+    spriteId = CreateSprite(&sSpriteTemplate_GimmickPrompt, trigger->x + GIMMICK_PROMPT_X, trigger->y + GIMMICK_PROMPT_Y, 0);
+    if (spriteId == MAX_SPRITES)
+        return;
+
+    gSprites[spriteId].invisible = TRUE;
+    gSprites[spriteId].sTriggerSpriteId = triggerSpriteId;
+    gSprites[spriteId].data[1] = SPRITE_NONE;
+    gSprites[spriteId].data[2] = SPRITE_NONE;
+    AddSpriteTextPrinterParameterized6(spriteId, FONT_SMALL, (32 - GetStringWidth(FONT_SMALL, sText_GimmickPrompt, 0)) / 2,
+                                       0, 0, 0, sGimmickPromptTextColor, 0, sText_GimmickPrompt);
+    trigger->tPromptSpriteId = spriteId;
+}
+
+static void DestroyGimmickPrompt(u32 triggerSpriteId)
+{
+    u32 spriteId = gSprites[triggerSpriteId].tPromptSpriteId;
+
+    if (spriteId < MAX_SPRITES)
+        DestroySprite(&gSprites[spriteId]);
+    gSprites[triggerSpriteId].tPromptSpriteId = SPRITE_NONE;
+    FreeSpriteTilesByTag(TAG_GIMMICK_PROMPT_TILE);
+}
 
 void ChangeGimmickTriggerSprite(u32 spriteId, u32 animId)
 {
@@ -154,6 +227,7 @@ void CreateGimmickTriggerSprite(enum BattlerId battler)
             gBattleStruct->gimmick.triggerSpriteId = CreateSprite(gimmick->triggerTemplate,
                                                                   gSprites[gHealthboxSpriteIds[battler]].x - SINGLES_GIMMICK_TRIGGER_POS_X_SLIDE,
                                                                   gSprites[gHealthboxSpriteIds[battler]].y - SINGLES_GIMMICK_TRIGGER_POS_Y_DIFF, 0);
+        CreateGimmickPrompt(gBattleStruct->gimmick.triggerSpriteId);
     }
 
     gSprites[gBattleStruct->gimmick.triggerSpriteId].tBattler = battler;
@@ -193,7 +267,10 @@ void DestroyGimmickTriggerSprite(void)
     FreeSpritePaletteByTag(TAG_GIMMICK_TRIGGER_PAL);
     FreeSpriteTilesByTag(TAG_GIMMICK_TRIGGER_TILE);
     if (gBattleStruct->gimmick.triggerSpriteId != 0xFF)
+    {
+        DestroyGimmickPrompt(gBattleStruct->gimmick.triggerSpriteId);
         DestroySprite(&gSprites[gBattleStruct->gimmick.triggerSpriteId]);
+    }
     gBattleStruct->gimmick.triggerSpriteId = 0xFF;
 }
 
@@ -250,6 +327,21 @@ static void SpriteCb_GimmickTrigger(struct Sprite *sprite)
         sprite->y = gSprites[gHealthboxSpriteIds[sprite->tBattler]].y - yDiff;
         sprite->y2 = gSprites[gHealthboxSpriteIds[sprite->tBattler]].y2 - yDiff;
     }
+}
+
+static void SpriteCb_GimmickPrompt(struct Sprite *sprite)
+{
+    struct Sprite *trigger = &gSprites[sprite->sTriggerSpriteId];
+    s32 xOptimal = GetBattlerCoordsIndex(trigger->tBattler) == BATTLE_COORDS_DOUBLES
+                 ? DOUBLES_GIMMICK_TRIGGER_POS_X_OPTIMAL : SINGLES_GIMMICK_TRIGGER_POS_X_OPTIMAL;
+
+    sprite->x = trigger->x + GIMMICK_PROMPT_X;
+    sprite->y = trigger->y + GIMMICK_PROMPT_Y;
+    sprite->y2 = trigger->y2;
+    // Shown only while the icon is fully out: as it slides in and out from behind
+    // the healthbox, the label would hang below the healthbox on its own.
+    sprite->invisible = trigger->tHide
+                     || trigger->x != gSprites[gHealthboxSpriteIds[trigger->tBattler]].x - xOptimal;
 }
 
 #undef tBattler

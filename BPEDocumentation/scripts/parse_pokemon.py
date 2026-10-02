@@ -1098,6 +1098,7 @@ def _evo_label(evo, source, names, form_pickers=True):
             count, item = int(a[1] or 1), names.item(a[0])
             words.append(f"with a {item} in the bag" if count == 1
                          else f"with {count:,} {item}{'' if item.endswith('s') else 's'} in the bag")
+            notes.append("uses them up" if count > 1 else "uses it up")
         elif cond == "IF_TRADE_PARTNER_SPECIES":
             words.append("for " + names.species(a[0]))
         elif cond in ("IF_IN_MAP", "IF_IN_MAPSEC"):

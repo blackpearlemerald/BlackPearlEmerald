@@ -48,8 +48,10 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
 - `js/bpe_trainers.js` — the opposing trainer's whole team inside Pokémon 2's
   panel, between its HP and its moves, in party order, with the one that is loaded marked. Clicking loads a team
   member.
-- `js/bpe_formes.js` — a trainer's Pokémon holding its Mega Stone Mega Evolves,
-  which is what happens in battle.
+- `js/bpe_formes.js` — a Pokémon holding its Mega Stone (or Red/Blue Orb)
+  Mega Evolves, which is what happens in battle: a trainer's set names the form
+  (`mega`), and the player's own imported Pokémon are matched by item through
+  the calculator's Mega Stone table.
 - `js/bpe_box.js` — the player's imported Pokémon inside Pokémon 1's panel:
   the party in party order between its HP and its moves, opposite the
   trainer's team and outlined, and everything else under its moves. The box
@@ -84,6 +86,8 @@ are worth sending upstream:
 - `js/shared_controls.js` — three guards for a generation whose sets load after
   the page (`getFirstValidSetOption()` can return nothing), and a species or set
   with no listed ability (`altForme.abilities[0]` and `chosenSet.abilities[0]`).
+- `js/shared_controls.js` — a forme change always sets the new forme's ability
+  (upstream kept a Greninja's, so Greninja-Mega stayed on Torrent).
 - `js/shared_controls.js` — a set of four moves keeps the order the game gives
   them; only a longer list is a pool to pick from.
 - `js/shared_controls.js` — the set search also matches a set's name, so a
