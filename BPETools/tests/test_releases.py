@@ -430,6 +430,40 @@ static const struct FormChange sZacianFormChangeTable[] = {
                 self.assertEqual((page.parent / path).read_bytes(), b"identical image")
                 self.assertIn("../../assets/", (page.parent / "app.js").read_text())
 
+    def test_older_patches_served_from_repository_copies(self):
+        # Pages has a 1 GB cap; only the newest release keeps a hosted patch.
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))
+        import releases
+        patch = b"UPS1 synthetic patch"
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for version_id in ("2.0.0-beta", "2.1.0-beta"):
+                snapshot = root / "versions" / version_id
+                hosted = "patches/BlackPearlEmerald_v" + version_id + ".zip"
+                write_zip(snapshot / hosted, {"bpe.ups": patch})
+                releases.write_json(snapshot / "release.json", {"version": version_id, "patch": {
+                    "file": "bpe.ups", "sha256": releases.sha256(patch), "url": hosted,
+                    "archiveSha256": releases.sha256((snapshot / hosted).read_bytes())}})
+            write_zip(root / "package.zip", {"bpe.ups": patch, "release.json": b"{}"})
+            package = (root / "package.zip").read_bytes()
+            available = {v: ({"version": v}, patch) for v in ("2.0.0-beta", "2.1.0-beta")}
+            with mock_patch.object(releases.subprocess, "check_output", return_value=package) as show:
+                urls = releases.externalize_patches(root, available, "2.1.0-beta", "abc123")
+            show.assert_called_once_with(["git", "show", "abc123:releases/packages/BlackPearlEmerald_v2.0.0-beta.zip"], cwd=releases.ROOT)
+            old = releases.read_json(root / "versions/2.0.0-beta/release.json")["patch"]
+            self.assertEqual(urls, {"2.0.0-beta": old["url"]})
+            self.assertEqual(old["url"], "https://raw.githubusercontent.com/blackpearlemerald/BlackPearlEmerald/abc123/releases/packages/BlackPearlEmerald_v2.0.0-beta.zip")
+            self.assertEqual(old["archiveSha256"], releases.sha256(package))
+            self.assertFalse((root / "versions/2.0.0-beta/patches").exists())
+            self.assertTrue((root / "versions/2.1.0-beta/patches/BlackPearlEmerald_v2.1.0-beta.zip").is_file())
+            # A repository copy with different patch bytes must stop publication.
+            write_zip(root / "versions/2.0.0-beta/patches/x.zip", {"bpe.ups": patch})
+            releases.write_json(root / "versions/2.0.0-beta/release.json", {"version": "2.0.0-beta", "patch": dict(old, url="patches/x.zip")})
+            write_zip(root / "other.zip", {"bpe.ups": b"different"})
+            with mock_patch.object(releases.subprocess, "check_output", return_value=(root / "other.zip").read_bytes()):
+                with self.assertRaises(ValueError):
+                    releases.externalize_patches(root, available, "2.1.0-beta", "abc123")
+
     def test_entry_pages_follow_remembered_version_except_save_converter(self):
         # A 1.0.1 player who remembered 1.0.1 must still reach the converter.
         sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "BPEDocumentation/scripts"))

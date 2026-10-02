@@ -97,6 +97,15 @@ Calculator teams and battle state are stored separately for each version.
 - The pipeline shares identical image directories and checks total Pages size.
   It warns above 700 MiB and stops before 1 GB. Expand hosting before capacity
   is exhausted; do not remove supported history to make room.
+- Only the newest release's patch is hosted on Pages. Since 2.1.14 Beta (the
+  first deploy over 1 GB with every patch hosted), each older release's patcher
+  and manual download fetch that release's tracked package (or legacy archive)
+  from `raw.githubusercontent.com`, pinned to the deploying commit, and the
+  patcher checks it against the SHA-256 in the served `release.json`. The frozen
+  `documentation-rN.zip` archives still contain every patch. Keep the packages
+  in `releases/packages/` and the repository public; deleting or rewriting one
+  breaks that version's patcher. A local preview of an older version's patcher
+  needs its exporter commit pushed.
 
 ## Local checks
 

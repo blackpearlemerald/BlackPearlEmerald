@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import html
+import io
 import json
 import math
 import os
@@ -23,6 +24,8 @@ SITE = ROOT / "BPEDocumentation/site"
 VERSION_HISTORY = ROOT / "releases/version-history.json"
 REPOSITORY = "blackpearlemerald/BlackPearlEmerald"
 PAGES_LIMIT = 1_000_000_000
+# Serves tracked files with cross-origin access, so the patcher can fetch them.
+RAW_ROOT = "https://raw.githubusercontent.com/" + REPOSITORY + "/"
 LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Converter"}
 # Tools that work on any game version: their entry link always opens the newest release.
 VERSIONLESS_PAGES = {"save-converter.html"}
@@ -385,6 +388,38 @@ def share_assets(output):
         validate_snapshot(snapshot, shared=True)
 
 
+def externalize_patches(output, available, latest, commit):
+    """Serve older releases' patches from their tracked repository copies.
+
+    GitHub Pages caps a site at 1 GB, and a ~24 MB patch per release was most
+    of it. Each older release's patch is fetched from its package (or legacy
+    archive) at the deploying commit, which the patcher verifies against the
+    SHA-256 recorded here. The newest release keeps its hosted copy, and the
+    frozen documentation archives keep every patch. Returns version -> URL.
+    """
+    urls = {}
+    for release_id, (meta, _) in available.items():
+        if release_id == latest:
+            continue
+        snapshot = Path(output) / "versions" / release_id
+        release = read_json(snapshot / "release.json")
+        relative = meta.get("legacyArchive") or f"releases/packages/BlackPearlEmerald_v{release_id}.zip"
+        data = subprocess.check_output(["git", "show", f"{commit}:{relative}"], cwd=ROOT)
+        with zipfile.ZipFile(io.BytesIO(data)) as archive:
+            if sha256(archive.read(release["patch"]["file"])) != release["patch"]["sha256"]:
+                raise ValueError(f"Repository patch for {release_id} does not match its release.")
+        hosted = snapshot / release["patch"]["url"]
+        if not hosted.resolve().is_relative_to(snapshot.resolve() / "patches"):
+            raise ValueError(f"Unexpected hosted patch location for {release_id}.")
+        hosted.unlink()
+        if not any(hosted.parent.iterdir()):
+            hosted.parent.rmdir()
+        release["patch"].update(url=RAW_ROOT + commit + "/" + relative, archiveSha256=sha256(data))
+        write_json(snapshot / "release.json", release)
+        urls[release_id] = release["patch"]["url"]
+    return urls
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=ROOT / ".release-work/site")
@@ -462,6 +497,9 @@ def main():
                              documentationRevision=release["documentationRevision"]))
     catalog = {"schemaVersion": 1, "latest": releases[0]["version"], "releases": releases}
     share_assets(args.output)
+    external = externalize_patches(args.output, available, catalog["latest"], exporter)
+    for entry in releases:
+        entry["patchUrl"] = external.get(entry["version"], entry["patchUrl"])
     write_entry_pages(args.output, catalog)
     total = sum(p.stat().st_size for p in args.output.rglob("*") if p.is_file())
     if total >= PAGES_LIMIT:

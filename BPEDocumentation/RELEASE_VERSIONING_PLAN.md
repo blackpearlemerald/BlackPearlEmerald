@@ -264,6 +264,12 @@ Permanent archives preserve recovery, but downloadable ZIPs alone do not replace
 live browsable historical documentation. Hosting expansion is a separate setup
 decision if growth requires it.
 
+Implemented expansion (2.1.14 Beta, at about 970 MB): patches were most of the
+site, so only the newest release's patch stays on Pages. Older releases'
+patches are served from their tracked packages through `raw.githubusercontent.com`,
+which allows cross-origin reads, pinned to the deploying commit and verified by
+checksum in the browser. Documentation snapshots remain on Pages.
+
 Repository browser uploads currently have a 25 MiB per-file limit; larger
 packages should use a normal Git push within GitHub's file limits. If packages
 eventually exceed Git's supported size, revise ingestion explicitly to use
