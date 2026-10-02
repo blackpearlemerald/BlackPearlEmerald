@@ -5700,11 +5700,20 @@ u16 GetBattleBGM(void)
         case TRAINER_CLASS_CHAMPION:
             return MUS_VS_CHAMPION;
         case TRAINER_CLASS_RIVAL:
-            if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
-                return MUS_DP_VS_CHAMPION;
-            if (!StringCompare(GetTrainerNameFromId(TRAINER_BATTLE_PARAM.opponentA), gText_BattleWallyName))
-                return MUS_VS_TRAINER;
-            return MUS_DP_VS_CHAMPION;
+            // Cameos share the Rival class, but not Cynthia's battle theme.
+            if (!(gBattleTypeFlags & BATTLE_TYPE_FRONTIER))
+            {
+                switch (GetTrainerPicFromId(TRAINER_BATTLE_PARAM.opponentA))
+                {
+                case TRAINER_PIC_CYNTHIA:
+                    return MUS_DP_VS_CHAMPION;
+                case TRAINER_PIC_N:
+                    return MUS_BW_VS_N_FINAL;
+                default:
+                    break;
+                }
+            }
+            return MUS_VS_TRAINER;
         case TRAINER_CLASS_ELITE_FOUR:
             // The Trick House Sinnoh E4 cameos get the authentic DPPt theme
             switch (TRAINER_BATTLE_PARAM.opponentA)

@@ -339,6 +339,11 @@ extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Hassel;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Larry;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Poppy;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_N;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Turo;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Iris;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lusamine;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Cyrus;
+extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Ghetsis;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Agatha;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Daisy;
 extern const struct ObjectEventGraphicsInfo gObjectEventGraphicsInfo_Lorelei;
@@ -713,6 +718,11 @@ const struct ObjectEventGraphicsInfo *const gObjectEventGraphicsInfoPointers[NUM
     [OBJ_EVENT_GFX_LARRY]               = &gObjectEventGraphicsInfo_Larry,
     [OBJ_EVENT_GFX_POPPY]               = &gObjectEventGraphicsInfo_Poppy,
     [OBJ_EVENT_GFX_N]                   = &gObjectEventGraphicsInfo_N,
+    [OBJ_EVENT_GFX_TURO] = &gObjectEventGraphicsInfo_Turo,
+    [OBJ_EVENT_GFX_IRIS] = &gObjectEventGraphicsInfo_Iris,
+    [OBJ_EVENT_GFX_LUSAMINE] = &gObjectEventGraphicsInfo_Lusamine,
+    [OBJ_EVENT_GFX_CYRUS] = &gObjectEventGraphicsInfo_Cyrus,
+    [OBJ_EVENT_GFX_GHETSIS] = &gObjectEventGraphicsInfo_Ghetsis,
     // BPE: FRLG characters that BPE trainers use in the Emerald build (Giovanni on
     // Victory Road 1F, Blue on B2F). Inside the IS_FRLG block these were never
     // built, so the trainers had no graphics: invisible, and they froze the game

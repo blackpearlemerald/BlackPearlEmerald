@@ -446,6 +446,12 @@ enum
     OBJ_EVENT_GFX_PHOEBE_ORIGINAL,
     OBJ_EVENT_GFX_GLACIA_ORIGINAL,
     OBJ_EVENT_GFX_DRAKE_ORIGINAL,
+    // BPE: dedicated Victory Road celebrity sprites.
+    OBJ_EVENT_GFX_TURO,
+    OBJ_EVENT_GFX_IRIS,
+    OBJ_EVENT_GFX_LUSAMINE,
+    OBJ_EVENT_GFX_CYRUS,
+    OBJ_EVENT_GFX_GHETSIS,
     NUM_OBJ_EVENT_GFX,
 };
 
@@ -623,6 +629,11 @@ enum
 #define OBJ_EVENT_PAL_TAG_HASSEL                  0x1147
 #define OBJ_EVENT_PAL_TAG_LARRY                   0x1148
 #define OBJ_EVENT_PAL_TAG_POPPY                   0x1149
+#define OBJ_EVENT_PAL_TAG_TURO                    0x114A
+#define OBJ_EVENT_PAL_TAG_IRIS                    0x114B
+#define OBJ_EVENT_PAL_TAG_LUSAMINE                0x114C
+#define OBJ_EVENT_PAL_TAG_CYRUS                   0x114D
+#define OBJ_EVENT_PAL_TAG_GHETSIS                 0x114E
 
 #if OW_FOLLOWERS_POKEBALLS
 // Vanilla
@@ -669,7 +680,7 @@ enum
 #define OBJ_EVENT_PAL_TAG_WAKE                    0x1125
 #define OBJ_EVENT_PAL_TAG_CYNTHIA                 0x1126
 #define OBJ_EVENT_PAL_TAG_PANTS                   0x1127
-#define OBJ_EVENT_PAL_TAG_N                       0x1128
+#define OBJ_EVENT_PAL_TAG_N                       0x114F
 // Not a real OW palette tag; used for the white flash applied to followers
 #define OBJ_EVENT_PAL_TAG_WHITE                   (OBJ_EVENT_PAL_TAG_NONE - 1)
 #define OBJ_EVENT_PAL_TAG_NONE                    0x11FF

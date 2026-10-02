@@ -546,13 +546,18 @@ const u32 gTrainerFrontPic_Pants[] = INCGFX_U32("graphics/trainers/front_pics/pa
 const u16 gTrainerPalette_Pants[] = INCGFX_U16("graphics/trainers/front_pics/pants.png", ".gbapal");
 
 const u32 gTrainerFrontPic_N[] = INCGFX_U32("graphics/trainers/front_pics/n.png", ".4bpp.smol");
-const u16 gTrainerPalette_N[] = INCGFX_U16("graphics/trainers/front_pics/n.png", ".gbapal");
+const u16 gTrainerPalette_N[] = INCGFX_U16("graphics/trainers/palettes/n.pal", ".gbapal");
 const u32 gTrainerFrontPic_Ghetsis[] = INCGFX_U32("graphics/trainers/front_pics/ghetsis.png", ".4bpp.smol");
-const u16 gTrainerPalette_Ghetsis[] = INCGFX_U16("graphics/trainers/front_pics/ghetsis.png", ".gbapal");
+const u16 gTrainerPalette_Ghetsis[] = INCGFX_U16("graphics/trainers/palettes/ghetsis.pal", ".gbapal");
 const u32 gTrainerFrontPic_Iris[] = INCGFX_U32("graphics/trainers/front_pics/iris.png", ".4bpp.smol");
-const u16 gTrainerPalette_Iris[] = INCGFX_U16("graphics/trainers/front_pics/iris.png", ".gbapal");
+const u16 gTrainerPalette_Iris[] = INCGFX_U16("graphics/trainers/palettes/iris.pal", ".gbapal");
 const u32 gTrainerFrontPic_Cyrus[] = INCGFX_U32("graphics/trainers/front_pics/cyrus.png", ".4bpp.smol");
-const u16 gTrainerPalette_Cyrus[] = INCGFX_U16("graphics/trainers/front_pics/cyrus.png", ".gbapal");
+const u16 gTrainerPalette_Cyrus[] = INCGFX_U16("graphics/trainers/palettes/cyrus.pal", ".gbapal");
+
+const u32 gTrainerFrontPic_Turo[] = INCGFX_U32("graphics/trainers/front_pics/turo.png", ".4bpp.smol");
+const u16 gTrainerPalette_Turo[] = INCGFX_U16("graphics/trainers/palettes/turo.pal", ".gbapal");
+const u32 gTrainerFrontPic_Lusamine[] = INCGFX_U32("graphics/trainers/front_pics/lusamine.png", ".4bpp.smol");
+const u16 gTrainerPalette_Lusamine[] = INCGFX_U16("graphics/trainers/palettes/lusamine.pal", ".gbapal");
 
 static const u8 gTrainerBackPic_None[] = INCGFX_U8("graphics/trainers/back_pics/none.png", ".4bpp");
 const u8 gTrainerBackPic_Brendan[] = INCGFX_U8("graphics/trainers/back_pics/brendan.png", ".4bpp");
@@ -1441,6 +1446,14 @@ const struct TrainerPicInfo gTrainerPicInfo[TRAINER_PIC_COUNT] =
     [TRAINER_PIC_IRIS] =
     {
         .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_Iris, gTrainerPalette_Iris),
+    },
+    [TRAINER_PIC_TURO] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_Turo, gTrainerPalette_Turo),
+    },
+    [TRAINER_PIC_LUSAMINE] =
+    {
+        .frontPic = TRAINER_FRONT_PIC(gTrainerFrontPic_Lusamine, gTrainerPalette_Lusamine),
     },
     [TRAINER_PIC_CYRUS] =
     {

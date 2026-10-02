@@ -374,7 +374,7 @@ const u16 gObjectEventPalette_Cynthia[] = INCGFX_U16("graphics/object_events/pic
 const u32 gObjectEventPic_Pants[] = INCGFX_U32("graphics/object_events/pics/people/pants.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPalette_Pants[] = INCGFX_U16("graphics/object_events/pics/people/pants.png", ".gbapal");
 const u32 gObjectEventPic_N[] = INCGFX_U32("graphics/object_events/pics/people/n.png", ".4bpp", "-mwidth 2 -mheight 4");
-const u16 gObjectEventPalette_N[] = INCGFX_U16("graphics/object_events/pics/people/n.png", ".gbapal");
+const u16 gObjectEventPalette_N[] = INCGFX_U16("graphics/object_events/palettes/n.pal", ".gbapal");
 
 const u32 gObjectEventPic_DeoxysOld[] = INCGFX_U32("graphics/object_events/pics/pokemon_old/deoxys.png", ".4bpp", "-mwidth 4 -mheight 4");
 const u32 gObjectEventPic_MewOld[] = INCGFX_U32("graphics/object_events/pics/pokemon_old/mew.png", ".4bpp", "-mwidth 2 -mheight 4");
@@ -520,25 +520,25 @@ const u16 gObjectEventPal_Grimsley[] = INCGFX_U16("graphics/object_events/palett
 const u16 gObjectEventPal_Caitlin[] = INCGFX_U16("graphics/object_events/palettes/caitlin.pal", ".gbapal");
 const u16 gObjectEventPal_Marshal[] = INCGFX_U16("graphics/object_events/palettes/marshal.pal", ".gbapal");
 // Kalos E4 cameos (Trick House Puzzle 6) use full nine-frame 32x32 walk sets.
-const u16 gObjectEventPic_Malva[] = INCGFX_U16("graphics/object_events/pics/people/malva.png", ".4bpp", "-mwidth 4 -mheight 4");
-const u16 gObjectEventPic_Drasna[] = INCGFX_U16("graphics/object_events/pics/people/drasna.png", ".4bpp", "-mwidth 4 -mheight 4");
-const u16 gObjectEventPic_Siebold[] = INCGFX_U16("graphics/object_events/pics/people/siebold.png", ".4bpp", "-mwidth 4 -mheight 4");
-const u16 gObjectEventPic_Wikstrom[] = INCGFX_U16("graphics/object_events/pics/people/wikstrom.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Malva[] = INCGFX_U16("graphics/object_events/pics/people/malva.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Drasna[] = INCGFX_U16("graphics/object_events/pics/people/drasna.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Siebold[] = INCGFX_U16("graphics/object_events/pics/people/siebold.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Wikstrom[] = INCGFX_U16("graphics/object_events/pics/people/wikstrom.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPal_Malva[] = INCGFX_U16("graphics/object_events/palettes/malva.pal", ".gbapal");
 const u16 gObjectEventPal_Drasna[] = INCGFX_U16("graphics/object_events/palettes/drasna.pal", ".gbapal");
 const u16 gObjectEventPal_Siebold[] = INCGFX_U16("graphics/object_events/palettes/siebold.pal", ".gbapal");
 const u16 gObjectEventPal_Wikstrom[] = INCGFX_U16("graphics/object_events/palettes/wikstrom.pal", ".gbapal");
-// Alola/Galar cameos (Trick House Puzzle 7). Nessa, Hala, and Olivia use full
-// nine-frame 32x32 Gen 3 walk sets; Hop remains a single-frame sprite.
-const u16 gObjectEventPic_Nessa[] = INCGFX_U16("graphics/object_events/pics/people/nessa.png", ".4bpp", "-mwidth 4 -mheight 4");
-const u16 gObjectEventPic_Hala[] = INCGFX_U16("graphics/object_events/pics/people/hala.png", ".4bpp", "-mwidth 4 -mheight 4");
+// Alola/Galar cameos (Trick House Puzzle 7): nine-frame walk sets.
+// Nessa/Hala use 32x32 cells; Hop/Olivia use 16x32 cells.
+const u16 gObjectEventPic_Nessa[] = INCGFX_U16("graphics/object_events/pics/people/nessa.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPic_Hala[] = INCGFX_U16("graphics/object_events/pics/people/hala.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_Hop[] = INCGFX_U16("graphics/object_events/pics/people/hop.png", ".4bpp", "-mwidth 2 -mheight 4");
-const u16 gObjectEventPic_Olivia[] = INCGFX_U16("graphics/object_events/pics/people/olivia.png", ".4bpp", "-mwidth 4 -mheight 4");
+const u16 gObjectEventPic_Olivia[] = INCGFX_U16("graphics/object_events/pics/people/olivia.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPal_Nessa[] = INCGFX_U16("graphics/object_events/palettes/nessa.pal", ".gbapal");
 const u16 gObjectEventPal_Hala[] = INCGFX_U16("graphics/object_events/palettes/hala.pal", ".gbapal");
 const u16 gObjectEventPal_Hop[] = INCGFX_U16("graphics/object_events/palettes/hop.pal", ".gbapal");
 const u16 gObjectEventPal_Olivia[] = INCGFX_U16("graphics/object_events/palettes/olivia.pal", ".gbapal");
-// Paldea E4 cameos (Trick House Puzzle 8) - single-frame front-facing OW sprites
+// Paldea E4 cameos (Trick House Puzzle 8); each has a full nine-frame walk set.
 const u16 gObjectEventPic_Rika[] = INCGFX_U16("graphics/object_events/pics/people/rika.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_Hassel[] = INCGFX_U16("graphics/object_events/pics/people/hassel.png", ".4bpp", "-mwidth 2 -mheight 4");
 const u16 gObjectEventPic_Larry[] = INCGFX_U16("graphics/object_events/pics/people/larry.png", ".4bpp", "-mwidth 2 -mheight 4");
@@ -547,6 +547,18 @@ const u16 gObjectEventPal_Rika[] = INCGFX_U16("graphics/object_events/palettes/r
 const u16 gObjectEventPal_Hassel[] = INCGFX_U16("graphics/object_events/palettes/hassel.pal", ".gbapal");
 const u16 gObjectEventPal_Larry[] = INCGFX_U16("graphics/object_events/palettes/larry.pal", ".gbapal");
 const u16 gObjectEventPal_Poppy[] = INCGFX_U16("graphics/object_events/palettes/poppy.pal", ".gbapal");
+
+// BPE: dedicated 16x32 Victory Road celebrity walk sets.
+const u16 gObjectEventPic_Turo[] = INCGFX_U16("graphics/object_events/pics/people/turo.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Turo[] = INCGFX_U16("graphics/object_events/palettes/turo.pal", ".gbapal");
+const u16 gObjectEventPic_Iris[] = INCGFX_U16("graphics/object_events/pics/people/iris.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Iris[] = INCGFX_U16("graphics/object_events/palettes/iris.pal", ".gbapal");
+const u16 gObjectEventPic_Lusamine[] = INCGFX_U16("graphics/object_events/pics/people/lusamine.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Lusamine[] = INCGFX_U16("graphics/object_events/palettes/lusamine.pal", ".gbapal");
+const u16 gObjectEventPic_Cyrus[] = INCGFX_U16("graphics/object_events/pics/people/cyrus.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Cyrus[] = INCGFX_U16("graphics/object_events/palettes/cyrus.pal", ".gbapal");
+const u16 gObjectEventPic_Ghetsis[] = INCGFX_U16("graphics/object_events/pics/people/ghetsis.png", ".4bpp", "-mwidth 2 -mheight 4");
+const u16 gObjectEventPal_Ghetsis[] = INCGFX_U16("graphics/object_events/palettes/ghetsis.pal", ".gbapal");
 
 // BPE: used by Victory Road trainers, so built outside IS_FRLG (see object_event_graphics_info_pointers.h).
 const u16 gObjectEventPic_Giovanni[] = INCGFX_U16("graphics/object_events/pics/people/giovanni.png", ".4bpp", "-mwidth 2 -mheight 4");

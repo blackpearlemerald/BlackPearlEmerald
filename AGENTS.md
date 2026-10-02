@@ -126,6 +126,339 @@ Output ROMs are named `poke$(BUILD_NAME).gba` and are gitignored (`*.gba`, excep
 - **Python**: invoke as `python` (matches `RELEASING.md`; `py` resolves to the same 3.14 install). Write scripts to a file and run them; shell escaping breaks backslashes in one-liners.
 - When writing `.s` files from Python, open them with `newline=''` to prevent CRLF line endings.
 
+## Trainer sprite art workflow: Larry reference (2026-10-02)
+
+The maintainer wants celebrity trainers to match the **existing project Brendan
+sprites** in style, pixel density and proportions. Use the actual project art as
+the comparison, not a remembered or assumed vanilla Emerald design:
+`graphics/trainers/front_pics/brendan.png` with `graphics/trainers/palettes/brendan.pal`,
+and `graphics/object_events/pics/people/brendan/walking.png` with
+`graphics/object_events/palettes/brendan.pal`. Read their palette files when
+rendering comparisons. The maintainer prefers **8x nearest-neighbor previews**, with
+Larry beside Brendan at the same pixel scale, including animated walking comparisons.
+
+### Iterations and what worked
+
+1. Inspected Larry's existing assets: a 64x64 battle sprite and a single 16x32
+   overworld pose. All nine entries in `sPicTable_Larry` repeated frame 0, so the
+   existing NPC had no real directional walking artwork. Looked up
+   [Larry's official artwork](https://scarletviolet.pokemon.com/en-gb/characters/larry/)
+   and his [expression sheet](https://archives.bulbagarden.net/media/upload/thumb/5/50/Larry_Anime_Expression_Sheet.png/661px-Larry_Anime_Expression_Sheet.png)
+   for character identity: tired brows/eyes, dark suit, pale blue tie, streaked hair
+   and briefcase. Used the built-in image generator for artwork, initially with
+   Steven, original Sidney and Gentleman sprites as style references.
+2. Generated battle and nine-frame overworld drafts, then refined them using
+   enlarged original sprite references. The large generated images looked more
+   detailed than their actual game-size conversions: facial features disappeared
+   and the overworld head was oversized. Merely requesting "GBA pixel art" or an
+   exact logical grid did not guarantee the requested resolution or proportions.
+   Always inspect the converted native-size result before presenting an 8x proof.
+3. The side-by-side Brendan comparison exposed the mismatch. Rebuilt Brendan's
+   walking strip as an enlarged 3x3 template and used that as the edit target;
+   Larry's official artwork served only as the identity reference. Prompted for
+   Brendan's compact head, top-down perspective and simple flat shading, lower
+   swept hair instead of tall spikes, small separate eyes, and a slightly longer
+   adult suit torso rather than a bigger head. Prompt targets were roughly an
+   11x9 head including hair and a 10-pixel body; judge the output visually rather
+   than treating those targets as measured results. Packed the final figures into
+   at most 14x20 visible pixels inside their 16x32 cells, with feet at y=31, matching
+   Brendan's baseline. This replaced the earlier 25-pixel-height/y=29 treatment.
+4. Stabilized the walk cycle by reusing each direction's generated standing head
+   in its two movement frames. For this Larry sheet, rows y=0..24 were identical
+   within each direction; the lower body poses provided the arm/case/leg movement.
+   This removed face/hair morphing between frames. That cutoff is specific to this
+   artwork, not a universal rule for other trainers.
+5. The maintainer then flagged the battle face: eyes merged into a dark band and
+   the mouth looked detached. Edited a **24x24 crop at sprite origin (20,0)**,
+   enlarged 32x, with the official expression sheet. Requested separated tired
+   eyes/brows, a restrained nose and closed mouth, keeping the coarse pixel grid
+   and existing placement. Sampled the result back to native pixels and applied
+   only the face region x=27..36, y=10..20. The final correction changed exactly
+   23 pixels, within x=27..35, y=10..19; every pixel outside the face was preserved.
+   The maintainer said this final battle face looked good. For a localized flaw,
+   edit an enlarged crop and verify the change bounds instead of regenerating
+   the whole approved pose.
+
+### Native assets, animation and review checks
+
+- Battle canvas: **64x64**. Overworld: **16x32 per frame**, nine frames. Both use
+  4-bit indexed PNGs, 15 opaque RGB555 colors and transparent palette index 0;
+  export the matching JASC `.pal`. Convert with nearest-neighbor sampling and a
+  fixed palette, without dithering, smooth scaling or residual semi-transparency.
+  The pale green comparison background is preview-only.
+- Authoring grid: **48x96**, rows down/up/left, columns stand/step A/step B.
+  Engine strip: **144x32**, ordered down stand, up stand, left stand, down A,
+  down B, up A, up B, left A, left B. Standard right-facing movement mirrors the
+  left frames; consider prop handedness if a future trainer needs asymmetric art.
+  Preview cycles use step A / stand / step B / stand, about 130 ms per frame.
+- Verify dimensions, palette/transparency, distinct movement poses, feet alignment,
+  frame clipping, stable head pixels and every decoded GIF frame. Compare at native
+  size and exactly 8x against Brendan with original colors and equal scale. A
+  polished large AI image is not evidence that a 64x64 or 16x32 sprite reads well.
+- Local conversion/preview tooling used PowerShell/System.Drawing (nearest-neighbor
+  interpolation with `PixelOffsetMode.Half`) and Node for GIF assembly/validation.
+  Detailed prompts, original references, scripts and earlier drafts are retained
+  under the gitignored `.release-work/sprite-review/larry/`; the method above remains
+  the project memory if those local review artifacts are later removed.
+
+Latest review assets (not yet installed in the game when this note was written):
+
+- Battle: `.release-work/sprite-review/larry/battle-face-refined/larry-battle-64x64.png`.
+  Its `artwork-spec.json`, `prepare-face.ps1` and `face-validation.json` record the
+  accepted face edit. Prefer this over the older battle copies in other draft folders.
+- Overworld: `.release-work/sprite-review/larry/refined/larry-overworld-144x32.png`,
+  with `larry.pal`; `artwork-spec.json` and `prepare-previews.ps1` record the Brendan
+  proportion refinement. Both final sprites use this same palette.
+- On later integration, replace the appropriate graphics/palettes and update
+  `sPicTable_Larry` to reference the nine real frames; artwork approval alone is not
+  evidence of integration or in-game testing. Follow the existing maintainer-only
+  mGBA testing preference for turns, walking toward the player and battle entry.
+
+### Poppy: child proportions and readable overworld eyes (2026-10-02)
+
+The maintainer asked for Emerald child comparisons, then specifically requested
+eyes shaped like **tiny vertical lines**. They called the final eye revision
+"much better." Apply these lessons to future child trainers:
+
+- Compare with the appropriate original NPC body type as well as Brendan.
+  Under `graphics/object_events/pics/people/`, use `little_girl.png` with
+  `npc_2.pal`, `little_boy.png` with `npc_4.pal`, `tuber_f.png` with `npc_1.pal`,
+  and `twin.png` with `npc_2.pal` (palettes are under
+  `graphics/object_events/palettes/`). Their standing front silhouettes measure
+  14x14, 12x14, 14x15 and 12x17 pixels respectively. The first three use 16x16
+  frame canvases; Twin uses 16x32. Canvas size is not visible character height.
+- Poppy's first 11x18 silhouette was too tall and narrow. Using the Little Girl
+  walking sheet as the art template produced a compact 12x15 front silhouette
+  (11x15 back/profile), including the bonnet, inside the existing 16x32 cells.
+  Keep the broad child face, short torso/skirt, short legs and strong outlines.
+  Official character art supplies costume/identity; the original NPC supplies
+  pixel density, perspective and proportions. Poppy's soles end at y=30.
+  Measure each reference's baseline and align comparison floors without scaling
+  the reference characters to the same height.
+- The preferred eyes here are solid dark **1x2-pixel vertical strokes**, two in
+  front and one in profile, without iris, whites or highlights. Dots did not read
+  like the original children. Simply extending the dots also failed visually
+  because they joined the hair: preserve a skin-colored pixel immediately above
+  and on both sides of each stroke so the eye remains distinct from the outline.
+- Fix a localized feature through enlarged native crops. The eye pass used a
+  48x32 front/back/left strip at 16x, followed by two 8x8 face crops at 64x
+  (frame-local origins front (4,19), left (2,19)). Built-in image generation did
+  not reliably honor the exact pixel grid, even with coordinate instructions.
+  Extracted the generated strokes, sampled them into exact native 1x2 footprints,
+  and transferred only the nearby generated skin pixels through a small mask.
+  Judge the converted game-size result, not the large generated image.
+- Final Poppy eye positions, in zero-based 16x32 frame coordinates: front x=6
+  and x=9 at y=22..23; left x=5 at y=22..23. Reuse the correction in all three
+  poses of each direction; right mirrors left. The completed edit changed
+  **21 native pixels across six frames**, including skin separation. All back
+  frames and every pixel outside the eye-area masks stayed unchanged. Verified
+  the 1x2 strokes, skin separation, stable faces, native palette/dimensions and
+  all decoded GIF frames. Show before/after and child comparisons at exact 8x.
+
+Latest Poppy overworld review assets are in
+`.release-work/sprite-review/poppy/eyes-refined/`: `poppy-overworld-144x32.png`,
+`poppy-overworld-grid-48x96.png`, and `poppy.pal`. Prefer these over the parent
+folder or `child-refinement/` drafts. `prepare-eyes.ps1`, `artwork-spec.json`,
+`eye-validation.json` and `validation.json` retain the prompts, masks and checks;
+`poppy-emerald-children-walking-8x.gif` is the final comparison. These remain
+review assets, not installed game graphics; the battle sprite was not changed
+during this overworld refinement.
+
+### Rika: dark outlines and clear walking poses (2026-10-02)
+
+The maintainer rejected Rika's first overworld draft because the outer outline
+was too light and walking was unclear beside Brendan. They called the final
+revision **"much better"** and asked to retain all these iterations. Carry the
+outline and animation lessons forward to other trainers; Larry's fixed-head
+assembly is not a universal animation rule.
+
+1. Used [official Rika artwork](https://archives.bulbagarden.net/wiki/File:Scarlet_Violet_Rika.png)
+   and her [concept sheet](https://archives.bulbagarden.net/wiki/File:Rika_concept_art.jpg)
+   for identity: swept teal fringe, small hair flick, long low ponytail, **khaki**
+   rolled-sleeve shirt, dark tie and suspenders, gloves, navy trousers and brown
+   boots. No glasses for this battle/overworld version. Used project Brendan and
+   Emerald female Cooltrainer for battle style; Brendan and `woman_1`, `woman_2`,
+   `woman_3` (palettes `npc_1`, `npc_3`, `npc_2`) for overworld proportions.
+   Original Rika was 28 visible pixels tall; these adult references are 20.
+2. Created a 64x64 battle draft with a 56-pixel-tall figure. Refined the face
+   through a 24x24 crop at native origin (20,3), enlarged 32x, using built-in
+   image generation. Transferred only mask x=29..35, y=13..21; exactly 17 pixels
+   changed within x=30..35, y=14..21. Kept a small readable red eye and restrained
+   mouth. Parent-folder `refinement-validation.json` records the bounds. This
+   battle draft was unchanged during the later overworld corrections.
+3. First overworld draft fit 20-pixel figures into nine 16x32 frames, preserved
+   small separate eyes, and repaired three eye-border pixels. However, medium
+   teal touched the outside of the hair, the steps barely read, and freezing all
+   upper rows flattened the walk. Passing dimensions/palette/distinct-frame
+   checks did **not** establish good animation or stylistic fit.
+4. First outline/walk generation pass asked for dark borders and Brendan's
+   poses, but reduction lost face and clothing detail. Retained that rejected
+   output as `outline-walk-refined/generated-overworld-first.png`. A large,
+   attractive generated sheet still needs inspection after native conversion.
+5. Better pass edited an enlarged **existing native Rika sheet**, with Brendan
+   in an identically arranged reference. Placed the 16x32 cells at x=3,24,45 on
+   a 64x96 logical canvas, shown at 8x; pale sage behind the references made
+   black outlines visible. Requested true transparency for the output. Kept a
+   strong dark exterior around hair, clothes, feet and ponytail, with separate
+   navy trouser interiors. The final overworld palette uses black at index 1
+   and RGB (16,32,41) at index 2; simply darkening all hair is not an outline.
+6. Compared individual poses with actual Brendan frames. His standing figure
+   occupies y=11..30; steps occupy y=12..31. Reused each direction's head as a
+   rigid shape translated **down one pixel** for both steps, instead of pinning
+   it in place or letting the face morph. For Rika, standing head rows end at
+   y=22 front and y=21 back/profile. These cutoffs are artwork-specific.
+   Prepared complementary front/back body poses by reflecting generated lower
+   poses, with a one-pixel front-body offset to put the leading boot off-center.
+   Mirroring a whole character would incorrectly flip the asymmetric fringe.
+7. The intermediate steps still had tall brown boot/leg shapes and a peach
+   smudge across the shirt. Made a **48x48 lower-body crop sheet**: nine 16x16
+   crops from native y=16..31, enlarged 16x, alongside identical Brendan crops.
+   Built-in image generation restored the khaki collar/tie/suspenders, navy
+   legs, opposite arm swing and short one-pixel brown boot highlights inside
+   dark feet. Sampled back on that grid, transferring only clothing/lower-body
+   rows and preserving the stabilized heads. Front/back generated steps left
+   the last row blank; extended the collar join by one row and lowered the body
+   to recover y=31 without stretching faces or boots. Profile strides retain
+   distinct near/far legs; the narrow ponytail leaves movement visible.
+
+The accepted overworld has 20-pixel-tall silhouettes, 12-14 pixels wide, within
+16x32 cells. Use the shared nine-frame ordering and A/stand/B/stand 130 ms cycle
+above; right mirrors left. Keep 4-bit indexed PNGs, 15 opaque RGB555 colors,
+transparent index 0 and matching JASC palette. Validate rigid heads with the
+one-pixel bob, opposite leading feet, clipping and all decoded GIF pixels at
+exact 8x. Final forward brown-boot centers: front A x=8.5 / B x=6.5; back A
+x=6.5 / B x=8.5. Check visual readability alongside those measurements. Do not
+independently stretch every pose to its own bounding box or require every
+pose's feet to stay at the standing baseline; both can spoil the reference walk.
+
+Latest Rika review assets:
+
+- Overworld: `.release-work/sprite-review/rika/outline-walk-refined/` contains
+  `rika-overworld-144x32.png`, `rika-overworld-grid-48x96.png`, `rika.pal`, and
+  `rika-brendan-walking-8x.gif`. Prefer these over all parent-folder overworld
+  drafts. Its `artwork-spec.json` retains all three correction prompts, source
+  images, crop masks and assembly details; `prepare-previews.ps1`,
+  `validation.json` and `gif-validation.json` retain conversion and checks.
+- Battle: `.release-work/sprite-review/rika/rika-battle-64x64.png`, with the
+  **parent-folder** `rika.pal`. The refined overworld has its own revised
+  palette; do not substitute it for the battle palette. Parent `artwork-spec.json`
+  retains the original battle, overworld and battle-face prompts and references.
+- These are review assets, not installed game graphics. `sPicTable_Rika` still
+  repeats frame 0 nine times. Later integration must install the correct assets
+  and palettes and reference the nine real frames, followed by maintainer-run
+  mGBA testing. All draft artifacts are local and gitignored; this section
+  preserves the iteration history and lessons if those files are later removed.
+
+### Approved nine-trainer integration (2026-10-02)
+
+The maintainer approved the new **Hassel, Olivia, Hop, Turo, Iris, Lusamine,
+Cyrus, N and Ghetsis** battle and overworld sprites and requested installation.
+These nine sets are now installed in `graphics/trainers/` and
+`graphics/object_events/`, with matching palettes, real nine-frame movement,
+and the intended Trick House / Victory Road assignments. Turo and Lusamine
+have dedicated battle picture IDs; Turo, Iris, Lusamine, Cyrus and Ghetsis have
+dedicated overworld IDs instead of borrowing generic NPCs or other celebrities.
+Olivia now uses 16x32 frames. N's palette tag is unique rather than sharing the
+FRLG Green reflection tag. Existing object/picture IDs were preserved by
+appending new IDs.
+
+- Each battle PNG is 64x64; each overworld strip is 144x32 with the standard
+  nine 16x32 frames and mirrored right movement. They use 4-bit indexed PNGs,
+  transparent index 0 and matching 15-color RGB555 JASC palettes.
+- Three parallel Astra agents used built-in image generation and the earlier
+  Larry/Poppy/Rika workflow. Native conversion again erased some eyes. Enlarged
+  generated face crops plus small native masks restored them; check actual eye
+  footprints and skin separation so old marks do not extend a 1x2 eye into a
+  four-pixel stroke. Hassel needed an adult 20-pixel overworld silhouette, not
+  the first draft's 16-pixel height. N's battle outline and Lusamine's overworld
+  outline needed targeted dark contours while preserving the interior colors.
+- The approved source assets, prompts, originals, drafts and validation remain
+  under `.release-work/sprite-review/`. Hassel/Olivia/Hop/Cyrus/N/Ghetsis use
+  their `redo-2026-10-02/` subfolders; Turo/Iris/Lusamine use their character
+  folders directly. `celebrity-batch-2026-10-02/installation.json` records the
+  installed file hashes, and the review pack contains exact 8x comparisons.
+- Right-facing Ghetsis mirrors the left frame, including his red eyepiece.
+  Independent right-facing art would require more than the standard nine-frame
+  set. Artwork approval and compiled-asset checks do not establish mGBA testing;
+  maintainer testing of turns, approach movement and battle entry is still needed.
+- The initial nine-character installation did not include Larry/Poppy/Rika.
+  The follow-up cleanup below installs their retained revisions and supersedes
+  the earlier review-only integration status; their palette distinctions remain
+  applicable.
+- The debug build passed. `celebrity-batch-2026-10-02/compiled-rom-validation.json`
+  verifies all 36 installed source files against approved hashes, all 81
+  overworld frames in the actual ROM, all nine battle conversions and their
+  linked compressed data, and both sets of palettes. The local validation
+  script reads ELF symbols and compares the corresponding ROM bytes.
+- The parallel audit is retained under
+  `.release-work/sprite-review/celebrity-audit-2026-10-02/` (source inventory,
+  exact 8x visual contact sheets and independent integration review). `TODO.md`
+  recorded the then-outstanding work: the three earlier uninstalled review sets,
+  Cynthia's postgame Victory Road object showing Wally, ten older celebrity sets
+  without actual walking poses, and Hala/Kalos as visual cleanup candidates.
+  The follow-up cleanup below resolves these. All Kalos trainers have dedicated
+  battle portraits and nine-frame overworld assets; the former missing Drasna
+  portrait note and blanket Rooms 7–8 "unconverted" note were stale. Historical
+  `BPEDocumentation/n_sprite_research.txt` is provenance, not current status.
+
+### Follow-up celebrity cleanup and installation (2026-10-02)
+
+The maintainer requested fixes for all additional audit findings **except Sinnoh
+overworld proportions**. This follow-up is installed in the game source:
+
+- Larry, Poppy and Rika use their final reviewed nine-frame overworld sets.
+  Larry also uses the accepted battle-face revision; Rika uses the retained
+  battle revision with the parent-folder battle palette and the separate
+  `outline-walk-refined/` overworld palette. Poppy's battle art is unchanged.
+  The earlier sections' statements that these were uninstalled describe the
+  historical review stage, not the current source.
+- Hala, Nessa, Malva, Drasna, Siebold and Wikstrom have new battle portraits and
+  16x32 nine-frame overworld sheets. Their graphics descriptors, tile conversion
+  widths and frame tables all use 256-byte frames. No object or trainer IDs
+  were renumbered. Their final sources and matching shared battle/overworld
+  palettes are in each character's `cleanup-2026-10-02/` review folder.
+- Koga, Bruno, Agatha, Lance, Will, Karen and the original Sidney/Phoebe/Glacia/
+  Drake have real stepping artwork. Their original three standing poses and
+  engine palettes are preserved exactly. Only the `*_original` Hoenn art was
+  changed; the main Elite Four custom identities remain intact. Sources,
+  generated edits and checks are under `walking-completion-2026-10-02/`.
+- Cynthia's postgame Victory Road exit/rematch object now uses Cynthia's
+  graphics, matching her battle identity. Her entrance object was already
+  correct. Other Wally story appearances were not changed.
+- Aaron, Bertha, Flint and Lucian overworld PNGs and palettes are unchanged;
+  eight source hashes in `celebrity-cleanup-2026-10-02/sinnoh-preserved.json`
+  record this explicit exception. The previous nine approved trainers remain
+  unchanged by this follow-up.
+
+Further native conversion lessons: generated walking sheets can retain the
+same leading foot in both poses despite different arms. Check the lowest shoe
+rows and actual animation; Siebold needed a bounded three-row shoe correction
+while keeping his ball hand and upper body fixed. Mirroring a generated lower
+body can produce a complementary stride; never mirror asymmetric heads. Each
+head cutoff is character-specific. Preserve original standing palette indices
+for existing NPC art rather than re-quantizing it. Koga's generated scarf red
+leaked into his legs, and Karen's pale trousers became gold; localized generated
+clothing/foot corrections fixed these without changing standing/head pixels.
+Hala/Nessa/Malva needed a second pass from the converted native sheets to restore
+readable eyes, wider adult bodies and dark contours. Large draft quality alone
+again did not predict native quality.
+
+`celebrity-cleanup-2026-10-02/installation.json` records the 44 copied files,
+19 overworld sets and eight battle revisions. `artwork-prompts.json` indexes the
+built-in image-generation prompts/specifications and retained source revisions.
+All images use transparent index 0 and fixed 16-entry palettes. The ten older
+walking sets retain their existing engine palette colors. Four-direction
+A/stand/B/stand 130 ms GIFs were decoded and checked against native pixels at
+exact 8x. The combined overview retains all 189 colors and has no GIF palette
+reduction. The debug build passed; `compiled-rom-validation.json` verifies all
+171 follow-up overworld frames, eight battle conversions and palettes in the
+ROM, the Cynthia source mapping, and unchanged Sinnoh files. The previous nine
+sets also passed their compiled-ROM verification again. Source reviews and
+build/ROM-byte checks are retained in the cleanup and audit folders.
+Maintainer-run mGBA testing is still required for
+turns, approach movement, battle entry and the postgame Cynthia rematch; native
+art checks and compilation do not establish in-game acceptance.
+
 ## Community bug reports and suggestions
 
 Player reports arrive in the project Discord. `BPETools/fetch_discord.py` pulls them through the official Discord Bot API and writes JSON into `BPETools/discord messages/`, which `parse_bug_reports.py` and `parse_suggestions.py` turn into prioritized `BUG_REPORTS.md` and `SUGGESTIONS.md`.
@@ -193,6 +526,8 @@ BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstre
 
 ### Audio formats
 Upstream samples are `.wav` (since expansion 1.14). BPE's 507 BW/DP expansion samples under `sound/direct_sound_samples/` are still `.aif` and are live build inputs through `audio_rules.mk`. Do not convert or delete them.
+
+N's Victory Road battle uses `MUS_BW_VS_N_FINAL` (617), the BW "Decisive Battle! (N)" MIDI from [CyanSMP64's music expansion](https://github.com/CyanSMP64/pokeemerald/blob/1bad08cef606e001e365856fdaff1e2771b8627e/sound/songs/midi/mus_bw_vs_n_final.mid), imported unchanged with source options `-E -R0 -G274 -V105`. Its SHA256 is `f895465e7f4fc4ea3e1f44576835a8453a9deb37137201f66e29538bea51b981`; the existing `voicegroup274` matches that source. Rival-class music in `GetBattleBGM()` selects Cynthia and N by trainer portrait; other rivals use normal trainer music. Do not restore the old blanket Cynthia theme for the Rival class. Cynthia's overworld approach and rematch encounter theme is a separate selection in the Victory Road script and `PlayTrainerEncounterMusic()`.
 
 ### Battle script macros
 `attackstring` → `printattackstring` (and related renames) in `asm/macros/battle_script.inc`.

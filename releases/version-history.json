@@ -1,6 +1,16 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.14-beta": {
+      "channel": "beta",
+      "changes": [
+        "Trick House celebrities have new battle portraits and overworld sprites with real walking animations: Hassel, Larry, Poppy, Rika, Olivia, Hop, Hala, Nessa, Malva, Drasna, Siebold and Wikstrom.",
+        "Victory Road celebrities Iris, Turo, Lusamine, Cyrus, N and Ghetsis have new battle portraits and walking overworld sprites too.",
+        "Koga, Bruno, Agatha, Lance, Will, Karen and the original Sidney, Phoebe, Glacia and Drake now actually walk instead of sliding.",
+        "Victory Road: Cynthia now looks like herself for her postgame rematch (she showed up as Wally), and her own encounter music plays when she walks up to you.",
+        "N's Victory Road battle now plays \"Decisive Battle! (N)\" from Black and White, and other cameo trainers no longer borrow Cynthia's battle music."
+      ]
+    },
     "2.1.13-beta": {
       "channel": "beta",
       "changes": [

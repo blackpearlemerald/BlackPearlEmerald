@@ -1634,6 +1634,13 @@ void PlayTrainerEncounterMusic(void)
     if (TRAINER_BATTLE_PARAM.mode != TRAINER_BATTLE_CONTINUE_SCRIPT_NO_MUSIC
         && TRAINER_BATTLE_PARAM.mode != TRAINER_BATTLE_CONTINUE_SCRIPT_DOUBLE_NO_MUSIC)
     {
+        // Cynthia's Victory Road encounters and rematches use her own theme.
+        if (GetTrainerPicFromId(trainerId) == TRAINER_PIC_CYNTHIA)
+        {
+            PlayNewMapMusic(MUS_DP_ENCOUNTER_CHAMPION);
+            return;
+        }
+
         switch (GetTrainerEncounterMusicId(trainerId))
         {
         case TRAINER_ENCOUNTER_MUSIC_MALE:

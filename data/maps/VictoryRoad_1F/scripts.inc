@@ -19,6 +19,7 @@ VictoryRoad_1F_EventScript_SetEntranceWallyPos2::
 
 VictoryRoad_1F_EventScript_WallyBattleTrigger1::
 	lockall
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	setvar VAR_0x8008, 1
 	addobject LOCALID_VICTORY_ROAD_ENTRANCE_WALLY
 	applymovement LOCALID_VICTORY_ROAD_ENTRANCE_WALLY, VictoryRoad_1F_Movement_WallyApproachPlayer1
@@ -28,6 +29,7 @@ VictoryRoad_1F_EventScript_WallyBattleTrigger1::
 
 VictoryRoad_1F_EventScript_WallyBattleTrigger2::
 	lockall
+	playbgm MUS_DP_ENCOUNTER_CHAMPION, TRUE
 	setvar VAR_0x8008, 2
 	addobject LOCALID_VICTORY_ROAD_ENTRANCE_WALLY
 	applymovement LOCALID_VICTORY_ROAD_ENTRANCE_WALLY, VictoryRoad_1F_Movement_WallyApproachPlayer2
@@ -45,6 +47,8 @@ VictoryRoad_1F_EventScript_WallyEntranceBattle::
 	copyobjectxytoperm LOCALID_VICTORY_ROAD_ENTRANCE_WALLY
 	setflag FLAG_DEFEATED_WALLY_VICTORY_ROAD
 	copyvar VAR_VICTORY_ROAD_1F_STATE, VAR_0x8008
+	savebgm MUS_DUMMY
+	fadedefaultbgm
 	releaseall
 	end
 
