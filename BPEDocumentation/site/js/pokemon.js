@@ -223,6 +223,45 @@
     return '<table class="learnset-table">' + header + '<tbody>' + rows + '</tbody></table>';
   }
 
+  // Level-up moves only a pre-evolution learns; the Pokémon Center relearner offers them too.
+  function renderPreEvoMoves(pkmn, moveData) {
+    var moves = pkmn.preEvoMoves || [];
+    if (!moves.length) return '';
+    var header = '<thead><tr><th>Lv.</th><th>Move</th><th>Type</th><th>Cat</th><th>Pwr</th><th>Acc</th><th>PP</th><th>From</th></tr></thead>';
+    var rows = moves.map(function (entry) {
+      return '<tr><td class="col-level">' + entry.level + '</td>'
+        + renderMoveRow(entry.move, moveData)
+        + '<td class="col-method">' + esc(entry.from) + '</td></tr>';
+    }).join('');
+    return '<h3 class="learnset-subhead">From pre-evolutions</h3>'
+      + '<p class="learnset-note">The Move Relearner in every Pokémon Center also teaches '
+      + esc(pkmn.name) + ' these, once it reaches the level shown.</p>'
+      + '<div class="learnset-scroll"><table class="learnset-table special-learnset-table">'
+      + header + '<tbody>' + rows + '</tbody></table></div>';
+  }
+
+  // The Egg Move Tutor (the Ditto doll in Wanda's house) teaches every stage its
+  // family's Egg Moves for one Pearl.
+  var EGG_TUTOR_LINK = '<a href="index.html?map=MAP_VERDANTURF_TOWN_WANDAS_HOUSE">Egg Move Tutor (Ditto), Verdanturf</a>';
+
+  function renderEggMovesTable(pkmn, moveData) {
+    var moves = pkmn.eggMoves || [];
+    if (!moves.length) return '<div class="dex-empty" style="padding:16px">None</div>';
+    var how = pkmn.eggMovesFrom ? EGG_TUTOR_LINK : 'Breeding, or the ' + EGG_TUTOR_LINK;
+    var note = pkmn.eggMovesFrom
+      ? '<p class="learnset-note">These are ' + esc(pkmn.eggMovesFrom) + '’s Egg Moves. ' + esc(pkmn.name)
+        + ' learns them from the Ditto Egg Move Tutor in Wanda’s house in Verdanturf, for one Pearl each.</p>'
+      : '<p class="learnset-note">Learned by breeding, or from the Ditto Egg Move Tutor in Wanda’s house in Verdanturf for one Pearl each.</p>';
+    var header = '<thead><tr><th>#</th><th>Move</th><th>Type</th><th>Cat</th><th>Pwr</th><th>Acc</th><th>PP</th><th>How</th></tr></thead>';
+    var rows = moves.map(function (move, i) {
+      return '<tr><td class="col-level" style="color:#3a4a58">' + (i + 1) + '</td>'
+        + renderMoveRow(move, moveData)
+        + '<td class="col-method">' + how + '</td></tr>';
+    }).join('');
+    return note + '<div class="learnset-scroll"><table class="learnset-table special-learnset-table">'
+      + header + '<tbody>' + rows + '</tbody></table></div>';
+  }
+
   function renderSpecialLearnsetTable(moves, moveData) {
     if (!moves || moves.length === 0) return '<div class="dex-empty" style="padding:16px">None</div>';
     var header = '<thead><tr><th>#</th><th>Move</th><th>Type</th><th>Cat</th><th>Pwr</th><th>Acc</th><th>PP</th><th>How obtained</th></tr></thead>';
@@ -460,10 +499,10 @@
     // Need full index for evo chain
     var evoHtml = '<em class="evo-loading" style="color:#4a6070;font-size:13px">Loading…</em>';
 
-    var lvlMoves = renderLearnsetTable(pkmn.levelUpMoves, moves, true);
+    var lvlMoves = renderLearnsetTable(pkmn.levelUpMoves, moves, true) + renderPreEvoMoves(pkmn, moves);
     var tmMoves = renderLearnsetTable(pkmn.tmMoves, moves, false);
     var hmMoves = renderLearnsetTable(pkmn.hmMoves, moves, false);
-    var eggMoves = renderLearnsetTable(pkmn.eggMoves, moves, false);
+    var eggMoves = renderEggMovesTable(pkmn, moves);
     var tutorMoves = renderLearnsetTable(pkmn.tutorMoves, moves, false);
     var specialMoves = renderSpecialLearnsetTable(pkmn.specialMoves, moves);
     var specialTab = (pkmn.specialMoves || []).length

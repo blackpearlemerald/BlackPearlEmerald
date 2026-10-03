@@ -528,6 +528,8 @@
 .learnset-table .col-pp { text-align: right; font-variant-numeric: tabular-nums; color: #9fb3c8; }
 .learnset-table .dash { color: #3a4a58; }
 .learnset-scroll { overflow-x: auto; }
+.learnset-subhead { margin: 18px 0 4px; font-size: 13px; color: #c8d8e8; }
+.learnset-note { margin: 6px 0 10px; font-size: 13px; line-height: 1.5; color: #7e93a8; }
 .special-learnset-table { min-width: 720px; }
 .special-learnset-table .col-method {
   min-width: 260px;

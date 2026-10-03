@@ -361,6 +361,13 @@ static void CB2_InitLearnMove_Basic(void)
     case 3:
         StoreMoveText();
         CreateLearnableMovesList();
+        // BPE: never restore a cursor past the end of the list; the empty rows
+        // behind it are drawn as garbage.
+        if (sMoveRelearnerScrollState.listOffset + sMoveRelearnerScrollState.listRow >= sMoveRelearnerStruct->numMenuChoices)
+        {
+            sMoveRelearnerScrollState.listOffset = 0;
+            sMoveRelearnerScrollState.listRow = 0;
+        }
         sMoveRelearnerStruct->moveListMenuTask = ListMenuInit(&gMultiuseListMenuTemplate, sMoveRelearnerScrollState.listOffset, sMoveRelearnerScrollState.listRow);
         gMain.state++;
         break;
@@ -889,7 +896,8 @@ static u32 GetRelearnerLevelUpMoves(struct BoxPokemon *mon, u16 *moves)
                 if (GetLearnsetMove(species, learnset, i) == moves[j])
                     alreadyInList = TRUE;
             }
-            if (!alreadyInList)
+            // BPE: pre-evolution moves lengthen this list; keep it inside movesToLearn.
+            if (!alreadyInList && numMoves < MAX_RELEARNER_MOVES)
                 moves[numMoves++] = GetLearnsetMove(species, learnset, i);
         }
 
@@ -911,7 +919,7 @@ static u32 GetRelearnerEggMoves(struct BoxPokemon *mon, u16 *moves)
     if (eggMoves[0] == MOVE_UNAVAILABLE)
         return 0;
 
-    for (u32 i = 0; eggMoves[i] != MOVE_UNAVAILABLE; i++)
+    for (u32 i = 0; eggMoves[i] != MOVE_UNAVAILABLE && numMoves < MAX_RELEARNER_MOVES; i++)
     {
         if (!BoxMonKnowsMove(mon, eggMoves[i]))
             moves[numMoves++] = eggMoves[i];
@@ -1108,3 +1116,11 @@ static bool32 IsTutorMoveRelearnerActive(void)
 {
     return (FlagGet(P_FLAG_TUTOR_MOVES) || P_ENABLE_MOVE_RELEARNERS);
 }
+
+#if TESTING
+// For test/move_relearner.c.
+u32 MoveRelearner_Test_GetMoves(struct BoxPokemon *mon, enum MoveRelearnerStates state, u16 *moves)
+{
+    return sRelearnTypes[state].getMoves(mon, moves);
+}
+#endif // TESTING

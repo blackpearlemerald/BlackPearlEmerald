@@ -1495,6 +1495,53 @@ def parse_species_info(dex_numbers, learnsets, egg_moves, teachable, encounters,
 
     return all_species
 
+def _config_enabled(relative, name):
+    try:
+        text = read_file(REPO / relative)
+    except OSError:
+        return False
+    match = re.search(r"#define\s+%s\s+(\w+)" % name, text)
+    return bool(match) and match.group(1) == "TRUE"
+
+
+def apply_relearner_moves(all_species):
+    """List what the in-game relearners teach beyond a species' own learnsets.
+
+    The Egg Move Tutor teaches every stage the Egg Moves of its family's first
+    stage. With P_PRE_EVO_MOVES, the Pokémon Center relearner also offers level-up
+    moves that only a pre-evolution learns, once the Pokémon reaches that level.
+    """
+    pre_evo_moves = _config_enabled("include/config/summary_screen.h", "P_PRE_EVO_MOVES")
+    egg_count = pre_count = 0
+    for key, entry in all_species.items():
+        chain, seen = [], {key}
+        current = entry.get("preEvolution")
+        while current in all_species and current not in seen:
+            chain.append(current)
+            seen.add(current)
+            current = all_species[current].get("preEvolution")
+        if not chain:
+            continue
+        first = all_species[chain[-1]]
+        if first.get("eggMoves"):
+            entry["eggMoves"] = list(first["eggMoves"])
+            entry["eggMovesFrom"] = first["name"]
+            egg_count += 1
+        if not pre_evo_moves:
+            continue
+        own = {move["move"] for move in entry.get("levelUpMoves", [])}
+        extra = []
+        for species in chain:
+            for move in all_species[species].get("levelUpMoves", []):
+                if move["move"] not in own and all(move["move"] != e["move"] for e in extra):
+                    extra.append({"level": move["level"], "move": move["move"],
+                                  "from": all_species[species]["name"]})
+        if extra:
+            entry["preEvoMoves"] = sorted(extra, key=lambda e: e["level"])
+            pre_count += 1
+    return egg_count, pre_count
+
+
 # ── 10. Special move sources ──────────────────────────────────────────────────
 
 _SPECIAL_DISPLAY_NAMES = {
@@ -2485,6 +2532,9 @@ def main():
     all_species = parse_species_info(dex, learnsets, egg_moves, teachable, encounters, tms, hms,
                                      held_rules, moves)
     print(f"       -> {len(all_species)} species")
+
+    egg_count, pre_count = apply_relearner_moves(all_species)
+    print(f"       -> relearners: {egg_count} species get family Egg Moves, {pre_count} pre-evolution moves")
 
     print("  [10] Special move sources ...")
     special_count = apply_special_moves(all_species)

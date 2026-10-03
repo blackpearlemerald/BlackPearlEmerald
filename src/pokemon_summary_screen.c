@@ -1359,7 +1359,11 @@ static bool8 LoadGraphics(void)
         gMain.state++;
         break;
     case 15:
-        UpdateMoveRelearnerState(FALSE);
+        // BPE: when a relearner opens this screen to pick a move to forget, its
+        // mode must survive. Recalculating it here turned a scripted Egg Move
+        // list into a level-up list on return.
+        if (sMonSummaryScreen->mode != SUMMARY_MODE_SELECT_MOVE)
+            UpdateMoveRelearnerState(FALSE);
         PutPageWindowTilemaps(sMonSummaryScreen->currPageIndex);
         gMain.state++;
         break;

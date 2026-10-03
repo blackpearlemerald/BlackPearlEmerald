@@ -1,6 +1,16 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.16-beta": {
+      "channel": "beta",
+      "changes": [
+        "The Egg Move Tutor (the Ditto in Wanda's house, Verdanturf) now teaches Volt Tackle to Pichu, Pikachu and Raichu.",
+        "The Move Relearner in every Pokémon Center also teaches level-up moves that only a Pokémon's pre-evolutions learn.",
+        "Move tutors now teach their move as many times as you like.",
+        "Fixed garbled text in the Egg Move Tutor's list after forgetting a move on a baby or first-stage Pokémon.",
+        "Website: each Pokémon's page lists the Egg Moves it can learn from the Egg Move Tutor, with a map link, and the moves it can relearn from its pre-evolutions."
+      ]
+    },
     "2.1.15-beta": {
       "channel": "beta",
       "changes": [

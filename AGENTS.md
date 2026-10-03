@@ -792,6 +792,28 @@ is used at once; with more, `UseRegisteredKeyItemOnField()` in
 - The bag's "full" message spells out "five"; change it with the limit.
 - Tests: `make check TESTS=test/registered_items.c`.
 
+### Move relearners and tutors
+
+- The relearner in every Pokémon Center (a Dusclops, script in
+  `data/maps/FallarborTown_MoveRelearnersHouse/scripts.inc`) teaches level-up
+  moves. `P_PRE_EVO_MOVES` is `TRUE`, so it also offers moves only a
+  pre-evolution learns, at that pre-evolution's level.
+- The Egg Move Tutor (Ditto doll, `General_EggTutor_EventScript` in Wanda's
+  house, Verdanturf) teaches the Egg Moves of the family's first stage to any
+  stage, for one Pearl. Pichu's list includes Volt Tackle, which otherwise comes
+  only from Light Ball breeding. The egg relearner config (`P_FLAG_EGG_MOVES`)
+  stays off; the script sets the relearner state itself.
+- The summary screen must not recalculate `gMoveRelearnerState` in
+  `SUMMARY_MODE_SELECT_MOVE`: it turned the Egg Move list into a level-up list
+  after the player picked a move to forget (garbage rows on babies and first
+  stages).
+- The ten Emerald move tutors in `data/scripts/move_tutors.inc` have no
+  `FLAG_MOVE_TUTOR_TAUGHT_*` argument, so each teaches its move any number of times.
+- The Pokédex export (`apply_relearner_moves` in `parse_pokemon.py`) gives each
+  stage its family's Egg Moves and lists pre-evolution moves when the source has
+  `P_PRE_EVO_MOVES` on.
+- Tests: `make check TESTS=test/move_relearner.c`.
+
 ### Living dex of every form
 
 Every species and every form that can be kept in the PC must stay obtainable.
