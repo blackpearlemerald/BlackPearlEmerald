@@ -1249,6 +1249,14 @@ async function main() {
     if (el.clientWidth === mapWidth && el.clientHeight === mapHeight) return;
     mapWidth = el.clientWidth; mapHeight = el.clientHeight;
     map.invalidateSize({ pan: false });
+    // The header grows after load (version notice, wrapped links) and shrinks the map
+    // from the top, which would crop the bottom of the world: refit until the visitor
+    // has moved the map or a saved or linked view took over.
+    if (!viewTouched) map.fitBounds(worldBounds.pad(0.05), { animate: false });
+  });
+  let viewTouched = false;
+  ["pointerdown", "wheel", "touchstart"].forEach(function (type) {
+    map.getContainer().addEventListener(type, function () { viewTouched = true; }, { passive: true });
   });
 
   // Honour ?map=MAP_ID (+ optional &item=/&gift=/&mart=) — clicking a location
@@ -1262,9 +1270,11 @@ async function main() {
   viewReady = true;
   map.on("moveend", saveView);
   if (saved && (!focusId || (navEntry && navEntry.type === "back_forward"))) {
+    viewTouched = true;
     restoreView(saved);
     saveView();
   } else if (focusId) {
+    viewTouched = true;
     // Defer so the initial world fitBounds/layout settles first, then fly in.
     setTimeout(() => focusMap(focusId, {
       item: params.get("item"),
