@@ -427,7 +427,8 @@ def main():
     parser.add_argument("--archive-dir", type=Path, default=ROOT / ".release-work/archives")
     parser.add_argument("--github", action="store_true", help="Restore/archive GitHub Releases. Only use from trusted main publication.")
     parser.add_argument("--validate-only", action="store_true")
-    parser.add_argument("--correct-version", type=version)
+    parser.add_argument("--correct-version", type=lambda value: value if value == "all" else version(value),
+                        help="A game version to rebuild, or 'all' to rebuild every version whose snapshot was made by an older exporter.")
     parser.add_argument("--docs-revision", type=int, default=1)
     args = parser.parse_args()
     available = candidates()
@@ -458,7 +459,8 @@ def main():
     missing_history = versions - set(history)
     if missing_history:
         raise ValueError("Missing version history for: " + ", ".join(sorted(missing_history, key=VERSION_KEY)))
-    if args.correct_version and args.correct_version not in available:
+    correct_all = args.correct_version == "all"
+    if args.correct_version and not correct_all and args.correct_version not in available:
         raise ValueError("The selected correction needs its original package/import record.")
     releases, uploads = [], []
     for release_id in sorted(versions, key=VERSION_KEY, reverse=True):
@@ -475,8 +477,13 @@ def main():
                 if any(previous[field] != metadata[field] for field in ("sourceCommit", "baseRom", "outputRom")) or previous["patch"]["sha256"] != metadata["patch"]["sha256"]:
                     raise ValueError(f"Release {release_id} is immutable; choose a new version.")
         revision = args.docs_revision if args.correct_version == release_id else 1
-        requested = directory / f"documentation-r{revision}.zip"
         correction = args.correct_version == release_id
+        if correct_all and previous and release_id in available and previous["exporterCommit"] != exporter:
+            # Each version moves to its own next revision. A version already
+            # rebuilt by this exporter (a resumed run) is left as it is.
+            revision = int(re.search(r"-r(\d+)", latest.name)[1]) + 1
+            correction = True
+        requested = directory / f"documentation-r{revision}.zip"
         if correction and previous and revision < previous["documentationRevision"]:
             raise ValueError("Documentation revision cannot go backwards.")
         if previous and (not correction or requested.exists()):

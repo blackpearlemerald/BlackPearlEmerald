@@ -94,6 +94,15 @@ Calculator teams and battle state are stored separately for each version.
   affected game version and `docs_revision` set to its next revision (2, 3, ...).
   It rebuilds against the same game source and retains the original patch and
   all previous archive revisions. Revisions cannot go backwards or be replaced.
+- To refresh **every** version after an exporter or frontend change, run the
+  same workflow with `correct_version` set to `all` (leave `docs_revision` at
+  `2`; it is ignored). Each version whose newest snapshot was made by a different
+  exporter commit is rebuilt at its own next revision, and its pinned game source
+  and patch stay unchanged. Versions already rebuilt by the running commit are
+  skipped, so a failed run can simply be rerun. Nothing is uploaded or deployed
+  until every version has passed validation. The build is about 3 minutes per
+  version, so expect an hour or two. Curated Features/guides text is still read
+  from each version's pinned source, so it does not change.
 - The pipeline shares identical image directories and checks total Pages size.
   It warns above 700 MiB and stops before 1 GB. Expand hosting before capacity
   is exhausted; do not remove supported history to make room.
