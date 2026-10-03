@@ -1070,8 +1070,20 @@ async function main() {
     `${martCount} shops · ${giftCount} gifts · ${guideCount} guides` +
     (statics.length ? `<br>${statics.length} static Pokémon` : "");
 
+  // The panel starts hidden on mobile ("open" shows it) and shown on desktop
+  // ("collapsed" hides it); the desktop choice is remembered.
+  const panel = document.getElementById("panel");
+  const PANEL_KEY = "bpe-map-panel-collapsed";
+  try {
+    if (localStorage.getItem(PANEL_KEY) === "1") panel.classList.add("collapsed");
+  } catch (e) { /* storage unavailable */ }
   document.getElementById("panel-toggle").addEventListener("click", () => {
-    document.getElementById("panel").classList.toggle("open");
+    if (window.matchMedia("(max-width: 640px)").matches) {
+      panel.classList.toggle("open");
+      return;
+    }
+    const collapsed = panel.classList.toggle("collapsed");
+    try { localStorage.setItem(PANEL_KEY, collapsed ? "1" : "0"); } catch (e) { /* storage unavailable */ }
   });
 
   document.getElementById("loading").style.display = "none";

@@ -22,6 +22,56 @@
     }).observe(errorRow, { attributes: true, childList: true, subtree: true, characterData: true });
   }
 
+  // A validated ROM is kept in this browser's IndexedDB (cookies are far too
+  // small) so a returning visitor need not choose it again. It never leaves the
+  // device, and every failure here just falls back to choosing a file.
+  var savedRom = {
+    key: 'emerald',
+    restoring: false,
+    open: function () {
+      return new Promise(function (resolve, reject) {
+        var request = indexedDB.open('bpe-patcher', 1);
+        request.onupgradeneeded = function () { request.result.createObjectStore('rom'); };
+        request.onsuccess = function () { resolve(request.result); };
+        request.onerror = request.onblocked = function () { reject(request.error); };
+      });
+    },
+    run: function (mode, action) {
+      return savedRom.open().then(function (db) {
+        return new Promise(function (resolve, reject) {
+          var transaction = db.transaction('rom', mode);
+          var request = action(transaction.objectStore('rom'));
+          transaction.oncomplete = function () { db.close(); resolve(request.result); };
+          transaction.onerror = transaction.onabort = function () { db.close(); reject(transaction.error); };
+        });
+      });
+    },
+    save: function (romFile) {
+      try {
+        // Copy the bytes now: the engine hands this buffer to its workers.
+        var record = { name: romFile.fileName, data: new Blob([romFile._u8array]) };
+        savedRom.run('readwrite', function (store) { return store.put(record, savedRom.key); }).catch(function () {});
+      } catch (error) { /* storage unavailable */ }
+    },
+    forget: function () {
+      try {
+        savedRom.run('readwrite', function (store) { return store.delete(savedRom.key); }).catch(function () {});
+      } catch (error) { /* storage unavailable */ }
+    },
+    restore: async function () {
+      try {
+        var record = await savedRom.run('readonly', function (store) { return store.get(savedRom.key); });
+        if (!record || !record.data) return;
+        var bytes = await record.data.arrayBuffer();
+        if (window.BPERelease.leaving || document.getElementById('rom-patcher-input-file-rom').files.length) return;
+        var binFile = new BinFile(bytes);
+        binFile.fileName = record.name || 'Pokemon Emerald.gba';
+        savedRom.restoring = true;
+        RomPatcherWeb.provideRomFile(binFile, true);
+      } catch (error) { /* storage unavailable */ }
+    }
+  };
+
   // The engine supplies the click handler; choosing a ROM only validates it.
   applyButton.addEventListener('click', function (event) {
     if (window.BPERelease.leaving) {
@@ -52,15 +102,29 @@
       if (window.BPERelease.leaving) return;
       var patchUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/zip' }));
       window.addEventListener('pagehide', function () { URL.revokeObjectURL(patchUrl); });
+      var restoreTried = false;
       RomPatcherWeb.initialize({
         language: 'en',
         requireValidation: true,
         allowDropFiles: true,
         onloadrom: function () { setStatus('checking', 'Checking ROM…'); },
-        onloadpatch: function () { setStatus('ready'); },
+        onloadpatch: function () {
+          setStatus('ready');
+          if (!restoreTried) {
+            restoreTried = true;
+            savedRom.restore();
+          }
+        },
         onvalidaterom: function (romFile, isValid) {
-          if (isValid) setStatus('ready');
-          else setStatus('invalid', 'Choose an unmodified Pokémon Emerald (USA) ROM.');
+          var restored = savedRom.restoring;
+          savedRom.restoring = false;
+          if (isValid) {
+            setStatus('ready', restored ? 'Remembered your ROM from last time. Ready to patch.' : '');
+            if (!restored) savedRom.save(romFile);
+          } else {
+            if (restored) savedRom.forget();
+            setStatus('invalid', 'Choose an unmodified Pokémon Emerald (USA) ROM.');
+          }
         },
         onpatch: function () { setStatus('success'); }
       }, {

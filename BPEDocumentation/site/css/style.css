@@ -518,6 +518,12 @@ body.page-search {
   font-size: 20px;
   cursor: pointer;
 }
+/* Desktop: the toggle is always shown, the panel sits below it and starts open. */
+@media (min-width: 641px) {
+  #panel-toggle { display: block; }
+  body.page-map #panel { top: calc(var(--bpe-header-height, 48px) + 60px); }
+  #panel.collapsed { display: none; }
+}
 
 #loading {
   position: absolute;

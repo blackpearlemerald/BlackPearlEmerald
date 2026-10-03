@@ -20,7 +20,10 @@
     '<strong class="bpe-current-version" id="bpe-current-version">Loading version…</strong></div>' +
     '<div class="bpe-version-control"><label for="bpe-version-select">Switch version</label>' +
     '<select id="bpe-version-select" disabled><option>Loading releases…</option></select></div></div>' +
-    '<nav id="site-nav" aria-label="Main navigation"><a class="nav-brand" href="' + prefix + 'index.html">BPE Emerald</a><div class="nav-links">' +
+    '<nav id="site-nav" aria-label="Main navigation"><a class="nav-brand" href="' + prefix + 'index.html">BPE Emerald</a>' +
+    '<span class="nav-current">' + (items.filter(function (item) { return item[2] === current; })[0] || [0, 'Menu'])[1] + '</span>' +
+    '<button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="nav-links"><span></span><span></span><span></span></button>' +
+    '<div class="nav-links" id="nav-links">' +
     items.map(function (item) { return '<a class="nav-link' + (current === item[2] ? ' active' : '') + '" href="' + (item[0] ? prefix + item[0] : calcHref) + '">' + item[1] + '</a>'; }).join('') +
     '</div></nav><p class="bpe-release-notice" role="status" hidden></p>';
   document.body.prepend(header);
@@ -47,7 +50,26 @@
     notice.appendChild(button);
     notice.hidden = false;
   }
-  function resize() { document.documentElement.style.setProperty('--bpe-header-height', header.offsetHeight + 'px'); window.dispatchEvent(new Event('bpe:headerresize')); }
+  // Hamburger menu: used on phones, and on any screen too narrow to show every link in one row.
+  var links = header.querySelector('.nav-links');
+  var toggle = header.querySelector('.nav-toggle');
+  var phone = window.matchMedia('(max-width: 640px)');
+  function setMenuOpen(open) {
+    header.classList.toggle('nav-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function fitNav() {
+    header.classList.remove('nav-collapsed');
+    var collapsed = phone.matches || links.scrollWidth > links.clientWidth + 1;
+    header.classList.toggle('nav-collapsed', collapsed);
+    if (!collapsed) setMenuOpen(false);
+  }
+  toggle.addEventListener('click', function () { setMenuOpen(!header.classList.contains('nav-open')); });
+  document.addEventListener('click', function (event) { if (!event.target.closest('#site-nav')) setMenuOpen(false); });
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && header.classList.contains('nav-open')) { setMenuOpen(false); toggle.focus(); }
+  });
+  function resize() { fitNav(); document.documentElement.style.setProperty('--bpe-header-height', header.offsetHeight + 'px'); window.dispatchEvent(new Event('bpe:headerresize')); }
   if (window.ResizeObserver) new ResizeObserver(resize).observe(header);
   window.addEventListener('resize', resize);
   resize();
