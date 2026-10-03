@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.1.15-beta": {
+      "channel": "beta",
+      "changes": [
+        "Early routes have lower wild Pokémon levels: 2–5 around Oldale Town, rising to about 12 by Rustboro City."
+      ]
+    },
     "2.1.14-beta": {
       "channel": "beta",
       "changes": [
