@@ -4195,6 +4195,9 @@ u32 AbilityBattleEffects(enum AbilityEffect caseID, enum BattlerId battler, enum
                 }
                 else if (TryChangeBattleWeather(battler, BATTLE_WEATHER_SANDSTORM, ABILITY_NONE)) // use ability none since it's not a switch in ability weather setter
                 {
+                    // BPE: ABILITY_NONE leaves animArg1 unset, so BattleScript_WeatherAbilityActivates played
+                    // whatever animation id an earlier effect left there and could freeze the game.
+                    gBattleScripting.animArg1 = B_ANIM_SANDSTORM_CONTINUES;
                     gBattleScripting.battler = battler;
                     BattleScriptCall(BattleScript_WeatherAbilityActivates);
                     effect++;
@@ -5619,6 +5622,10 @@ enum Obedience GetAttackerObedienceForAction(void)
     if (B_OBEDIENCE_MECHANICS < GEN_8 && !IsOtherTrainer(gBattleMons[gBattlerAttacker].otId, gBattleMons[gBattlerAttacker].otName))
         return OBEYS;
     if (FlagGet(FLAG_BADGE08_GET)) // Rain Badge, ignore obedience altogether
+        return OBEYS;
+    // BPE: Standard mode has no obedience. With level caps off, even Pokémon the
+    // player caught disobeyed (Gen 8+ rules judge them by the level they were met at).
+    if (!FlagGet(FLAG_NUZLOCKE))
         return OBEYS;
 
     obedienceLevel = GetObedienceLevel();

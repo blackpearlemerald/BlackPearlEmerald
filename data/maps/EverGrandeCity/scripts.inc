@@ -89,6 +89,37 @@ EverGrandeCity_Pokemart_AbilityPatch:
 	.2byte ITEM_ABILITY_PATCH
 	pokemartlistend
 
+EverGrandeCity_EventScript_Moira::
+	lock
+	faceplayer
+	checktrainerflag TRAINER_MOIRA
+	goto_if TRUE, EverGrandeCity_EventScript_MoiraShop
+	msgbox EverGrandeCity_Text_MoiraIntro, MSGBOX_DEFAULT
+	msgbox EverGrandeCity_Text_MoiraChallenge, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, EverGrandeCity_EventScript_MoiraDeclined
+	trainerbattle_no_intro TRAINER_MOIRA, EverGrandeCity_Text_MoiraDefeat
+	msgbox EverGrandeCity_Text_MoiraPostBattle, MSGBOX_DEFAULT
+	goto EverGrandeCity_EventScript_MoiraShop
+	end
+
+EverGrandeCity_EventScript_MoiraDeclined::
+	msgbox EverGrandeCity_Text_MoiraDeclined, MSGBOX_DEFAULT
+	release
+	end
+
+EverGrandeCity_EventScript_MoiraShop::
+	message EverGrandeCity_Text_MoiraShopGreeting
+	waitmessage
+	pokemart EverGrandeCity_Pokemart_Pearl
+	msgbox EverGrandeCity_Text_MoiraShopFarewell, MSGBOX_DEFAULT
+	release
+	end
+
+	.align 2
+EverGrandeCity_Pokemart_Pearl:
+	.2byte ITEM_PEARL
+	pokemartlistend
+
 EverGrandeCity_Text_EnteringVictoryRoad:
 	.string "ENTERING VICTORY ROAD$"
 
@@ -172,3 +203,38 @@ EverGrandeCity_Text_Furius2ShopGreeting:
 
 EverGrandeCity_Text_Furius2ShopFarewell:
 	.string "Play carefully out there.$"
+
+EverGrandeCity_Text_MoiraIntro:
+	.string "I'm MOIRA.\p"
+	.string "Nobody helped out more than I did\n"
+	.string "during the 2.0 BETA.\p"
+	.string "Every build, bug and crash.\n"
+	.string "I was there for all of it.$"
+
+EverGrandeCity_Text_MoiraChallenge:
+	.string "So how about it? Want to battle\n"
+	.string "the team I tested it all with?\p"
+	.string "Beat it, and I'll be your source of\n"
+	.string "unlimited PEARLS for relearning.\p"
+	.string "Ready?$"
+
+EverGrandeCity_Text_MoiraDeclined:
+	.string "No rush. The offer isn't going\n"
+	.string "anywhere.$"
+
+EverGrandeCity_Text_MoiraDefeat:
+	.string "Hmm. I never ran into that one\n"
+	.string "during testing.$"
+
+EverGrandeCity_Text_MoiraPostBattle:
+	.string "Fair's fair. A deal's a deal.\p"
+	.string "PEARLS are yours, as many as you\n"
+	.string "want. ¥4000 each.\p"
+	.string "Go teach your team some new tricks.$"
+
+EverGrandeCity_Text_MoiraShopGreeting:
+	.string "PEARLS, ¥4000 apiece.\n"
+	.string "How many do you need?$"
+
+EverGrandeCity_Text_MoiraShopFarewell:
+	.string "Thanks for playing the BETA, too.$"

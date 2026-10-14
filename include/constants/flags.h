@@ -93,7 +93,7 @@
 #define FLAG_CAUGHT_RAYQUAZA 0x41
 #define FLAG_CAUGHT_KYOGRE   0x42
 #define FLAG_CAUGHT_GROUDON  0x43
-#define FLAG_UNUSED_0x044    0x44 // Unused Flag
+#define FLAG_RECEIVED_PETALBURG_EGG 0x44 // BPE: formerly unused. The Egg man in Petalburg has handed out his Egg.
 #define FLAG_UNUSED_0x045    0x45 // Unused Flag
 #define FLAG_UNUSED_0x046    0x46 // Unused Flag
 #define FLAG_UNUSED_0x047    0x47 // Unused Flag

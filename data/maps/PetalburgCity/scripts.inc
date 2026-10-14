@@ -818,3 +818,84 @@ PetalburgCity_Text_AbraTeleportPrompt:
 PetalburgCity_Text_AbraDoze:
 	.string "The ABRA yawned and dozed off\n"
 	.string "again.$"
+
+@ BPE: the Egg man gives one Egg per game. Which Pokémon it holds depends on the player's
+@ badge count when they accept (see ChooseBadgeEggSpecies), so they can take it now or wait.
+PetalburgCity_EventScript_EggMan::
+	lock
+	faceplayer
+	goto_if_set FLAG_RECEIVED_PETALBURG_EGG, PetalburgCity_EventScript_EggManAlreadyGave
+	msgbox PetalburgCity_Text_EggManIntro, MSGBOX_DEFAULT
+	msgbox PetalburgCity_Text_EggManTakeItNow, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, PetalburgCity_EventScript_EggManLater
+	special ChooseBadgeEggSpecies
+	giveegg VAR_RESULT
+	goto_if_eq VAR_RESULT, MON_CANT_GIVE, PetalburgCity_EventScript_EggManNoRoom
+	setflag FLAG_RECEIVED_PETALBURG_EGG
+	playfanfare MUS_OBTAIN_ITEM
+	message PetalburgCity_Text_ReceivedEgg
+	waitfanfare
+	call_if_eq VAR_RESULT, MON_GIVEN_TO_PC, PetalburgCity_EventScript_EggManSentToPC
+	msgbox PetalburgCity_Text_EggManFarewell, MSGBOX_DEFAULT
+	release
+	end
+
+PetalburgCity_EventScript_EggManSentToPC::
+	msgbox PetalburgCity_Text_EggManSentToPC, MSGBOX_DEFAULT
+	return
+
+PetalburgCity_EventScript_EggManLater::
+	msgbox PetalburgCity_Text_EggManLater, MSGBOX_DEFAULT
+	release
+	end
+
+PetalburgCity_EventScript_EggManNoRoom::
+	msgbox PetalburgCity_Text_EggManNoRoom, MSGBOX_DEFAULT
+	release
+	end
+
+PetalburgCity_EventScript_EggManAlreadyGave::
+	msgbox PetalburgCity_Text_EggManAlreadyGave, MSGBOX_DEFAULT
+	release
+	end
+
+PetalburgCity_Text_EggManIntro:
+	.string "Hello there, TRAINER!\p"
+	.string "I raise POKéMON EGGS, and I give one\n"
+	.string "to every TRAINER on the road.\p"
+	.string "The EGG I hand over depends on how\n"
+	.string "many GYM BADGES you have.\p"
+	.string "The more BADGES, the stronger the\n"
+	.string "EGG. It'll be a good partner for the\l"
+	.string "next GYM you face, too.\p"
+	.string "You can take it now, or come back\n"
+	.string "later with more BADGES.$"
+
+PetalburgCity_Text_EggManTakeItNow:
+	.string "Would you like your EGG now?$"
+
+PetalburgCity_Text_EggManLater:
+	.string "Take your time!\p"
+	.string "Come back once you've earned more\n"
+	.string "BADGES, and I'll have a better EGG.$"
+
+PetalburgCity_Text_ReceivedEgg:
+	.string "{PLAYER} received an EGG!$"
+
+PetalburgCity_Text_EggManSentToPC:
+	.string "Your party is full, so the EGG was\n"
+	.string "sent to a PC BOX.$"
+
+PetalburgCity_Text_EggManFarewell:
+	.string "Take good care of it!\p"
+	.string "It'll hatch if you keep walking.$"
+
+PetalburgCity_Text_EggManNoRoom:
+	.string "Oh, you have no room for an EGG\n"
+	.string "in your party or your PC.\p"
+	.string "Make some space and come back!$"
+
+PetalburgCity_Text_EggManAlreadyGave:
+	.string "I hope that EGG is hatching well!\p"
+	.string "I only have one to give to each\n"
+	.string "TRAINER, so good luck out there!$"

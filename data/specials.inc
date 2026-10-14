@@ -646,6 +646,8 @@ gSpecials::
 	@ BPE randomizer
 	def_special RandomizeGiftSpecies
 	def_special RandomizeEggSpecies
+	def_special GetChosenStarterEggSpecies
+	def_special ChooseBadgeEggSpecies
 	def_special GetRandomizedJohtoStarter
 	def_special IsReadyForJohtoStarter
 	def_special BufferStarterTypeInfo

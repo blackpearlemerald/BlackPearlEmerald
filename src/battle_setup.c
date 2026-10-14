@@ -508,6 +508,19 @@ void BattleSetup_StartScriptedWildBattle(void)
     TryUpdateGymLeaderRematchFromWild();
 }
 
+// BPE: a scripted wild battle in the Safari Zone (the DexNav) is a Safari battle.
+void BattleSetup_StartScriptedSafariBattle(void)
+{
+    gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
+    LockPlayerFieldControls();
+    gMain.savedCallback = CB2_EndScriptedSafariBattle;
+    gBattleTypeFlags = BATTLE_TYPE_SAFARI;
+    CreateBattleStartTask(GetWildBattleTransition(), 0);
+    IncrementGameStat(GAME_STAT_TOTAL_BATTLES);
+    IncrementGameStat(GAME_STAT_WILD_BATTLES);
+    IncrementDailyWildBattles();
+}
+
 void BattleSetup_StartScriptedDoubleWildBattle(void)
 {
     gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: no stale Nuzlocke clause from an earlier wild battle
@@ -2164,15 +2177,44 @@ u16 CountBattledRematchTeams(u16 trainerId)
     return REMATCHES_COUNT - 1;
 }
 
-static bool32 IsSpeciesLineCaught(enum Species species)
+static bool32 IsSpeciesOrEvolutionCaught(enum Species species, u32 depth)
 {
-    for (u32 guard = 0; species != SPECIES_NONE && guard < 8; guard++)
+    const struct Evolution *evolutions;
+
+    if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+        return TRUE;
+    if (depth >= 4)
+        return FALSE;
+    evolutions = GetSpeciesEvolutions(species);
+    if (evolutions == NULL)
+        return FALSE;
+    for (u32 i = 0; evolutions[i].method != EVOLUTIONS_END; i++)
     {
-        if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+        enum Species target = SanitizeSpeciesId(evolutions[i].targetSpecies);
+        if (target != SPECIES_NONE && target != species && IsSpeciesEnabled(target)
+         && IsSpeciesOrEvolutionCaught(target, depth + 1))
             return TRUE;
-        species = GetSpeciesPreEvolution(species);
     }
     return FALSE;
+}
+
+// BPE: the whole evolutionary family counts, later stages included. Checking only the
+// species and its pre-evolutions let a wild Houndour through after a caught Houndoom,
+// and it then used up the route's real encounter.
+static bool32 IsSpeciesLineCaught(enum Species species)
+{
+    enum Species root = species;
+
+    if (species == SPECIES_NONE)
+        return FALSE;
+    for (u32 guard = 0; guard < 8; guard++)
+    {
+        enum Species preEvo = GetSpeciesPreEvolution(root);
+        if (preEvo == SPECIES_NONE)
+            break;
+        root = preEvo;
+    }
+    return IsSpeciesOrEvolutionCaught(root, 0);
 }
 
 u8 HasWildPokmnOnThisRouteBeenSeen(u8 currLocation, bool8 setVarForThisEnc) {

@@ -122,6 +122,8 @@ WILD_BATTLE_TEST("Thief and Covet steal target's held item and it's added to Bag
         ANIMATION(ANIM_TYPE_MOVE, move, player);
         HP_BAR(opponent);
         ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_ITEM_STEAL, opponent);
+        MESSAGE("Wobbuffet stole the wild Wobbuffet's Hyper Potion!");
+        MESSAGE("The Hyper Potion was sent\nto your Bag!"); // BPE
     } THEN {
         EXPECT_EQ(player->item, ITEM_NONE);
         EXPECT_EQ(opponent->item, ITEM_NONE);

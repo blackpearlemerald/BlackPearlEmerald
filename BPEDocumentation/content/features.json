@@ -36,7 +36,7 @@
         },
         {
           "title": "Badge level caps",
-          "body": "Nuzlocke mode caps levels by progress: 15 before the first badge, rising by 9 with each badge to 78 before the eighth, 90 until you become Champion, then 100. Pokémon at the cap gain no EXP, and Rare Candies and the Day Care respect it. Standard mode has no level cap unless you switch one on with the Level Limiter, and its trainers rise gradually towards each Gym Leader instead of sitting at the cap, so the climb is smoother. In both modes, traded Pokémon obey you up to the badge cap, so one you train alongside your team never disobeys."
+          "body": "Nuzlocke mode caps levels by progress: 15 before the first badge, rising by 9 with each badge to 78 before the eighth, 90 until you become Champion, then 100. Pokémon at the cap gain no EXP, and Rare Candies and the Day Care respect it. Standard mode has no level cap unless you switch one on with the Level Limiter, and its trainers rise gradually towards each Gym Leader instead of sitting at the cap, so the climb is smoother. Standard mode has no obedience: every Pokémon always obeys you. In Nuzlocke mode, traded Pokémon obey you up to the badge cap, so one you train alongside your team never disobeys."
         },
         {
           "title": "Starter kit and Candy Jar",
@@ -56,7 +56,7 @@
         },
         {
           "title": "DexNav",
-          "body": "In Standard mode the DexNav comes with the Pokédex. Open it from the Start menu to see the Pokémon that live in the area, then press A to search for one, or R to register it so R starts a search in the field. Hold A to creep towards the rustling spot: running, cycling or taking too long scares the Pokémon off. Every Pokémon and its Hidden Ability are shown from the start, and every search can turn up an Egg Move, its Hidden Ability, a held item and perfect IVs. Each DexNav Pokémon you defeat or catch in a row adds to your chain, which raises its level and the odds of a shiny. Any other battle, fleeing or leaving the area resets the chain. With the Level Limiter on, DexNav Pokémon never pass your level cap. In dark caves it works once you have used Flash, and the Pokémon appears inside the lit area. Nuzlocke games have no DexNav, and it doesn't work in the Safari Zone or the Battle Frontier's Pike and Pyramid."
+          "body": "In Standard mode the DexNav comes with the Pokédex. Open it from the Start menu to see the Pokémon that live in the area, then press A to search for one, or R to register it so R starts a search in the field. Hold A to creep towards the rustling spot: running, cycling or taking too long scares the Pokémon off. Every Pokémon and its Hidden Ability are shown from the start, and every search can turn up an Egg Move, its Hidden Ability, a held item and perfect IVs. Each DexNav Pokémon you defeat or catch in a row adds to your chain, which raises its level and the odds of a shiny. Any other battle, fleeing or leaving the area resets the chain. With the Level Limiter on, DexNav Pokémon never pass your level cap. In dark caves it works once you have used Flash, and the Pokémon appears inside the lit area. It works in the Safari Zone too, where its Pokémon are caught with Safari Balls as usual. Nuzlocke games have no DexNav, and it doesn't work in the Battle Frontier's Pike and Pyramid."
         },
         {
           "title": "HMs work from the Bag",
@@ -140,7 +140,7 @@
         },
         {
           "title": "Postgame challengers",
-          "body": "Two optional trainers wait in Ever Grande City after you become Champion. Beating them unlocks unlimited Ability Capsule and Ability Patch shops."
+          "body": "Three optional trainers wait in Ever Grande City after you become Champion. Beating them unlocks unlimited Ability Capsule, Ability Patch and Pearl shops."
         }
       ]
     }

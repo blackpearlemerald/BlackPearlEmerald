@@ -3511,14 +3511,16 @@ static enum MoveEndResult MoveEndMoveBlock(struct BattleCalcValues *cv)
             }
             else
             {
-                StealTargetItem(cv->battlerAtk, battlerDef);  // Attacker steals target item
-
-                if (!(GetConfig(B_STEAL_WILD_ITEMS) >= GEN_9
-                 && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_PALACE))))
+                // Attacker steals target item. BPE: say when it went to the Bag.
+                if (StealTargetItem(cv->battlerAtk, battlerDef))
+                {
+                    BattleScriptCall(BattleScript_ItemStealToBag);
+                }
+                else
                 {
                     gBattleMons[cv->battlerAtk].item = gLastUsedItem;
+                    BattleScriptCall(BattleScript_ItemSteal);
                 }
-                BattleScriptCall(BattleScript_ItemSteal);
                 return MOVEEND_RESULT_RUN_SCRIPT;
             }
             break;

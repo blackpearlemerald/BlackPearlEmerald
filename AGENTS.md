@@ -548,7 +548,7 @@ Starting with 2.1.0 the PC has 41 boxes and the save uses a new flash layout. Th
 ### Standard and Nuzlocke mode differences
 
 Birch asks which mode the player wants at the start; `FLAG_NUZLOCKE` records the
-answer and never changes afterwards. The two modes diverge in four places, all
+answer and never changes afterwards. The two modes diverge in five places, all
 gated on that flag:
 
 - **EVs** are disabled in Nuzlocke mode. `GetCurrentEVCap()` returns 0, so no
@@ -583,7 +583,11 @@ that trainer's first team at a higher level. The second refreshes
 map popups read to show both levels as `(nuz:66) [std:45]`.
 
 The fourth difference is the **DexNav**, which only Standard games have (see
-"DexNav" below).
+"DexNav" below). The fifth is **obedience**: Standard mode has none, so
+`GetAttackerObedienceForAction()` returns `OBEYS` outside Nuzlocke mode, level
+caps on or off. In Nuzlocke mode the Gen 8+ rule applies (`B_OBEDIENCE_MECHANICS`):
+a Pokémon over `GetObedienceLevel()` may disobey, judged by its met level if the
+player caught it. Tests: `make check TESTS=test/obedience.c`.
 
 A Pokémon that faints in a Nuzlocke game (after the Pokédex) is marked
 `MON_DATA_DEAD`, an unencrypted header bit that the packed PC record keeps
@@ -601,8 +605,10 @@ The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
 - It unlocks with the Pokédex: `DN_FLAG_DEXNAV_GET` is `FLAG_SYS_POKEDEX_GET`,
   and `IsDexNavUnlocked()` also requires `!FLAG_NUZLOCKE`. The Start menu entry,
   the R-button search and hidden Pokémon all check it. `IsDexNavUsableHere()`
-  keeps it out of the Safari Zone, Battle Pike and Battle Pyramid, whose wild
-  battles have their own rules.
+  keeps it out of the Battle Pike and Battle Pyramid, whose wild battles have
+  their own rules. The Safari Zone allows it: `dowildbattle` starts a Safari
+  battle there (`BattleSetup_StartScriptedSafariBattle`), and
+  `CB2_EndScriptedSafariBattle` returns to the DexNav script afterwards.
 - `DN_FLAG_SEARCHING` is the RAM-only special flag `FLAG_DEXNAV_SEARCHING`, so a
   save never holds a search in progress. `VAR_DEXNAV_SPECIES` (registered
   species) and `VAR_DEXNAV_STEP_COUNTER` use variables no release ever used; the
@@ -721,8 +727,10 @@ Gold Teeth's id, 891 (see "Item numbering"). Tests:
 ### Nuzlocke dupes clause
 
 `HasWildPokmnOnThisRouteBeenSeen()` returns `NUZLOCKE_ENCOUNTER_DUPLICATE` when the
-wild Pokémon's evolutionary line (itself or any pre-evolution) is already caught
-(`IsSpeciesLineCaught`, from the Pokédex caught flags). A duplicate cannot be
+wild Pokémon's evolutionary family is already caught: any stage, earlier or later,
+including other branches (`IsSpeciesLineCaught` walks to the first stage and then
+through every evolution, from the Pokédex caught flags). Through 2.1.16 only earlier
+stages counted, so a Houndour after a caught Houndoom used up the route. A duplicate cannot be
 caught, and it does not set the area's bit in `VAR_WILD_PKMN_ROUTE_SEEN_*`, so the
 route's real encounter is still open.
 

@@ -238,6 +238,7 @@ SlateportCity_Harbor_EventScript_BoardFerry::
 	waitmovement 0
 	delay 30
 	hideobjectat VAR_LAST_TALKED, MAP_SLATEPORT_CITY_HARBOR
+	hidefollower @ BPE: the follower boards with the player instead of staying on the dock
 	call_if_eq VAR_FACING, DIR_NORTH, SlateportCity_Harbor_EventScript_BoardFerryNorth
 	call_if_eq VAR_FACING, DIR_EAST, SlateportCity_Harbor_EventScript_BoardFerryEast
 	delay 30

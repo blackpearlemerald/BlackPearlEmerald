@@ -2530,6 +2530,34 @@ void ShowScrollableMultichoice(void)
         task->tScrollOffset = sElevatorScroll;
         task->tSelectedRow = sElevatorCursorPos;
         break;
+    case SCROLL_MULTI_STARTER_EGG_REGIONS:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = STARTER_EGG_REGION_COUNT;
+        task->tLeft = 1;
+        task->tTop = 1;
+        task->tWidth = 8;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_STARTER_EGG_KANTO:
+    case SCROLL_MULTI_STARTER_EGG_JOHTO:
+    case SCROLL_MULTI_STARTER_EGG_HOENN:
+    case SCROLL_MULTI_STARTER_EGG_SINNOH:
+    case SCROLL_MULTI_STARTER_EGG_UNOVA:
+    case SCROLL_MULTI_STARTER_EGG_KALOS:
+    case SCROLL_MULTI_STARTER_EGG_ALOLA:
+    case SCROLL_MULTI_STARTER_EGG_GALAR:
+    case SCROLL_MULTI_STARTER_EGG_PALDEA:
+        task->tMaxItemsOnScreen = 4;
+        task->tNumItems = 4;
+        task->tLeft = 1;
+        task->tTop = 1;
+        task->tWidth = 12;
+        task->tHeight = 8;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     default:
         gSpecialVar_Result = MULTI_B_PRESSED;
         DestroyTask(taskId);
@@ -2702,6 +2730,81 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_Volcanobadge,
         gText_Earthbadge,
         gText_Exit,
+    },
+    [SCROLL_MULTI_STARTER_EGG_REGIONS] =
+    {
+        COMPOUND_STRING("KANTO"),
+        COMPOUND_STRING("JOHTO"),
+        COMPOUND_STRING("HOENN"),
+        COMPOUND_STRING("SINNOH"),
+        COMPOUND_STRING("UNOVA"),
+        COMPOUND_STRING("KALOS"),
+        COMPOUND_STRING("ALOLA"),
+        COMPOUND_STRING("GALAR"),
+        COMPOUND_STRING("PALDEA"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_KANTO] =
+    {
+        COMPOUND_STRING("BULBASAUR"),
+        COMPOUND_STRING("CHARMANDER"),
+        COMPOUND_STRING("SQUIRTLE"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_JOHTO] =
+    {
+        COMPOUND_STRING("CHIKORITA"),
+        COMPOUND_STRING("CYNDAQUIL"),
+        COMPOUND_STRING("TOTODILE"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_HOENN] =
+    {
+        COMPOUND_STRING("TREECKO"),
+        COMPOUND_STRING("TORCHIC"),
+        COMPOUND_STRING("MUDKIP"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_SINNOH] =
+    {
+        COMPOUND_STRING("TURTWIG"),
+        COMPOUND_STRING("CHIMCHAR"),
+        COMPOUND_STRING("PIPLUP"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_UNOVA] =
+    {
+        COMPOUND_STRING("SNIVY"),
+        COMPOUND_STRING("TEPIG"),
+        COMPOUND_STRING("OSHAWOTT"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_KALOS] =
+    {
+        COMPOUND_STRING("CHESPIN"),
+        COMPOUND_STRING("FENNEKIN"),
+        COMPOUND_STRING("FROAKIE"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_ALOLA] =
+    {
+        COMPOUND_STRING("ROWLET"),
+        COMPOUND_STRING("LITTEN"),
+        COMPOUND_STRING("POPPLIO"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_GALAR] =
+    {
+        COMPOUND_STRING("GROOKEY"),
+        COMPOUND_STRING("SCORBUNNY"),
+        COMPOUND_STRING("SOBBLE"),
+        COMPOUND_STRING("BACK"),
+    },
+    [SCROLL_MULTI_STARTER_EGG_PALDEA] =
+    {
+        COMPOUND_STRING("SPRIGATITO"),
+        COMPOUND_STRING("FUECOCO"),
+        COMPOUND_STRING("QUAXLY"),
+        COMPOUND_STRING("BACK"),
     },
     [SCROLL_MULTI_SILPHCO_FLOORS] =
     {

@@ -4480,6 +4480,15 @@ BattleScript_ItemSteal::
 	tryactivateabilitywithabilityshield BS_ATTACKER, FALSE
 	return
 
+@ BPE: in a wild battle Thief and Covet send the item to the Bag; say so.
+BattleScript_ItemStealToBag::
+	playanimation BS_EFFECT_BATTLER, B_ANIM_ITEM_STEAL
+	printstring STRINGID_PKMNSTOLEITEM
+	waitmessage B_WAIT_TIME_LONG
+	printstring STRINGID_STOLENITEMSENTTOBAG
+	waitmessage B_WAIT_TIME_LONG
+	return
+
 BattleScript_AbilityShieldProtects::
 	saveattacker
 	copybyte gBattlerAttacker, gBattlerAbility

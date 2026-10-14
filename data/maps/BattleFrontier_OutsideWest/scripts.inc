@@ -11,8 +11,8 @@ BattleFrontier_OutsideWest_EventScript_FerryAttendant::
 	lock
 	faceplayer
 	msgbox BattleFrontier_OutsideWest_Text_MayISeeYourTicket, MSGBOX_DEFAULT
-	checkitem ITEM_SS_TICKET
-	goto_if_eq VAR_RESULT, FALSE, BattleFrontier_OutsideWest_EventScript_NoSSTicket
+@ BPE: nothing gives out the SS Ticket item; the harbors rely on the flag Dad's event sets.
+	goto_if_unset FLAG_RECEIVED_SS_TICKET, BattleFrontier_OutsideWest_EventScript_NoSSTicket
 	message BattleFrontier_OutsideWest_Text_WhereWouldYouLikeToGo
 	waitmessage
 	goto BattleFrontier_OutsideWest_EventScript_ChooseFerryDestination

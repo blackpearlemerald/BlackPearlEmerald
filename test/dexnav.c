@@ -57,12 +57,12 @@ TEST("DexNav comes with the Pokedex in Standard mode only")
     FlagClear(FLAG_SYS_POKEDEX_GET);
 }
 
-TEST("DexNav can't be used in the Safari Zone")
+TEST("DexNav can be used in the Safari Zone")
 {
     FlagClear(FLAG_SYS_SAFARI_MODE);
     EXPECT(IsDexNavUsableHere());
     FlagSet(FLAG_SYS_SAFARI_MODE);
-    EXPECT(!IsDexNavUsableHere());
+    EXPECT(IsDexNavUsableHere());
     FlagClear(FLAG_SYS_SAFARI_MODE);
 }
 

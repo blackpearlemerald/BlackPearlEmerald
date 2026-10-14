@@ -320,6 +320,7 @@ LilycoveCity_EventScript_BattleBrendanMudkip::
 
 LilycoveCity_EventScript_DefeatedMay::
 	msgbox LilycoveCity_Text_MayGoingBackToLittleroot, MSGBOX_DEFAULT
+	call LilycoveCity_EventScript_RivalGiftEgg
 	setvar VAR_RESULT, FALSE
 	call_if_set FLAG_BADGE06_GET, LilycoveCity_EventScript_CheckFinalBadge
 	call_if_eq VAR_RESULT, FALSE, LilycoveCity_EventScript_MayCollectBadges
@@ -352,6 +353,7 @@ LilycoveCity_EventScript_MayBattleFrontier::
 
 LilycoveCity_EventScript_DefeatedBrendan::
 	msgbox LilycoveCity_Text_BrendanGoingBackToLittleroot, MSGBOX_DEFAULT
+	call LilycoveCity_EventScript_RivalGiftEgg
 	setvar VAR_RESULT, FALSE
 	call_if_set FLAG_BADGE06_GET, LilycoveCity_EventScript_CheckFinalBadge
 	call_if_eq VAR_RESULT, FALSE, LilycoveCity_EventScript_BrendanCollectBadges
@@ -372,6 +374,50 @@ LilycoveCity_EventScript_BrendanPokemonLeague::
 
 LilycoveCity_EventScript_BrendanBattleFrontier::
 	msgbox LilycoveCity_Text_BrendanYouGoingToBattleFrontier, MSGBOX_DEFAULT
+	return
+
+@ BPE: beating the rival here earns a starter Egg of the player's choice, from any region.
+@ A full party sends it to the PC. Pressing B just reopens the menu, so the rival cannot
+@ leave without handing it over.
+LilycoveCity_EventScript_RivalGiftEgg::
+	msgbox LilycoveCity_Text_RivalGiveEgg, MSGBOX_DEFAULT
+LilycoveCity_EventScript_RivalEggChooseRegion::
+	message LilycoveCity_Text_RivalEggWhichRegion
+	waitmessage
+	setvar VAR_0x8004, SCROLL_MULTI_STARTER_EGG_REGIONS
+	special ShowScrollableMultichoice
+	waitstate
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, LilycoveCity_EventScript_RivalEggChooseRegion
+	copyvar VAR_0x8005, VAR_RESULT
+	message LilycoveCity_Text_RivalEggWhichStarter
+	waitmessage
+	copyvar VAR_0x8004, VAR_0x8005
+	addvar VAR_0x8004, SCROLL_MULTI_STARTER_EGG_KANTO
+	special ShowScrollableMultichoice
+	waitstate
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, LilycoveCity_EventScript_RivalEggChooseRegion
+	goto_if_eq VAR_RESULT, 3, LilycoveCity_EventScript_RivalEggChooseRegion
+	copyvar VAR_0x8006, VAR_RESULT
+	special GetChosenStarterEggSpecies
+	copyvar VAR_0x8007, VAR_RESULT
+	bufferspeciesname STR_VAR_1, VAR_0x8007
+	msgbox LilycoveCity_Text_RivalEggConfirm, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, LilycoveCity_EventScript_RivalEggChooseRegion
+	giveegg VAR_0x8007
+	goto_if_eq VAR_RESULT, MON_CANT_GIVE, LilycoveCity_EventScript_RivalEggNoRoom
+	playfanfare MUS_OBTAIN_ITEM
+	message LilycoveCity_Text_ReceivedStarterEgg
+	waitfanfare
+	call_if_eq VAR_RESULT, MON_GIVEN_TO_PC, LilycoveCity_EventScript_RivalEggSentToPC
+	msgbox LilycoveCity_Text_RivalEggFarewell, MSGBOX_DEFAULT
+	return
+
+LilycoveCity_EventScript_RivalEggSentToPC::
+	msgbox LilycoveCity_Text_RivalEggSentToPC, MSGBOX_DEFAULT
+	return
+
+LilycoveCity_EventScript_RivalEggNoRoom::
+	msgbox LilycoveCity_Text_RivalEggNoRoom, MSGBOX_DEFAULT
 	return
 
 LilycoveCity_EventScript_RivalFlyAway::
@@ -440,6 +486,40 @@ LilycoveCity_Text_MayDefeat:
 	.string "{PLAYER}{KUN}, on ROUTE 103.\p"
 	.string "That battle helped you become this\n"
 	.string "strong, {PLAYER}{KUN}, didn't it?$"
+
+LilycoveCity_Text_RivalGiveEgg:
+	.string "CYNTHIA: Oh, right! Before I forget.\p"
+	.string "I've been collecting STARTER EGGS from\n"
+	.string "every region on my travels.\p"
+	.string "You've earned one, {PLAYER}.\n"
+	.string "Pick whichever one you like!$"
+
+LilycoveCity_Text_RivalEggWhichRegion:
+	.string "CYNTHIA: Which region's STARTER\n"
+	.string "do you want?$"
+
+LilycoveCity_Text_RivalEggWhichStarter:
+	.string "CYNTHIA: And which one?$"
+
+LilycoveCity_Text_RivalEggConfirm:
+	.string "CYNTHIA: The EGG of {STR_VAR_1}.\n"
+	.string "Is that the one you want?$"
+
+LilycoveCity_Text_RivalEggNoRoom:
+	.string "CYNTHIA: Oh, you have no room for\n"
+	.string "an EGG in your party or your PC!\p"
+	.string "Oh well, maybe next time…$"
+
+LilycoveCity_Text_ReceivedStarterEgg:
+	.string "{PLAYER} received an EGG!$"
+
+LilycoveCity_Text_RivalEggSentToPC:
+	.string "Your party is full, so the EGG was\n"
+	.string "sent to a PC BOX.$"
+
+LilycoveCity_Text_RivalEggFarewell:
+	.string "CYNTHIA: Take good care of it!\p"
+	.string "I can't wait to see how it turns out.$"
 
 LilycoveCity_Text_MayGoingBackToLittleroot:
 	.string "CYNTHIA: I'm thinking of going back to\n"

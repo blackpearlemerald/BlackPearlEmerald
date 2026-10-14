@@ -31,6 +31,7 @@
 #include "constants/abilities.h"
 #include "constants/items.h"
 #include "constants/battle_frontier.h"
+#include "constants/field_specials.h"
 
 static void CB2_ReturnFromChooseHalfParty(void);
 static void CB2_ReturnFromChooseBattleFrontierParty(void);
@@ -698,4 +699,93 @@ void Script_GiveRandomBerry(struct ScriptContext *ctx)
     enum BerryId hiBerry = ScriptReadByte(ctx);
 
     gSpecialVar_Result = BerryTypeToItemId(RandomUniform(RNG_RANDOM_BERRY, loBerry, hiBerry));
+}
+
+// BPE: the Petalburg Egg man prefers a Pokémon the player hasn't caught. A family counts as
+// caught when the Pokédex has any member of it, so an owned Gyarados rules out a Magikarp Egg.
+#define OBTAINED_FAMILIES_BYTES ((NUM_SPECIES + 7) / 8)
+
+static void CollectObtainedFamilies(u8 *obtained)
+{
+    memset(obtained, 0, OBTAINED_FAMILIES_BYTES);
+    for (enum Species species = SPECIES_NONE + 1; species < NUM_SPECIES; species++)
+    {
+        if (Randomizer_IsSpeciesInPool(species) && GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+        {
+            enum Species root = Randomizer_GetFamilyRoot(species);
+            obtained[root / 8] |= 1 << (root % 8);
+        }
+    }
+}
+
+static bool32 IsFamilyObtained(const u8 *obtained, enum Species species)
+{
+    enum Species root = Randomizer_GetFamilyRoot(species);
+    return (obtained[root / 8] >> (root % 8)) & 1;
+}
+
+// BPE: the rival's gift in Lilycove, a starter Egg of the player's choice from any region.
+// The script sets VAR_0x8005 to the region (SCROLL_MULTI_STARTER_EGG_REGIONS order) and
+// VAR_0x8006 to the starter's slot in it. VAR_RESULT becomes the species to give; a
+// randomized game swaps it like any gift Egg, and the script names the result.
+static const enum Species sStarterEggSpecies[STARTER_EGG_REGION_COUNT][3] =
+{
+    {SPECIES_BULBASAUR, SPECIES_CHARMANDER, SPECIES_SQUIRTLE},
+    {SPECIES_CHIKORITA, SPECIES_CYNDAQUIL, SPECIES_TOTODILE},
+    {SPECIES_TREECKO, SPECIES_TORCHIC, SPECIES_MUDKIP},
+    {SPECIES_TURTWIG, SPECIES_CHIMCHAR, SPECIES_PIPLUP},
+    {SPECIES_SNIVY, SPECIES_TEPIG, SPECIES_OSHAWOTT},
+    {SPECIES_CHESPIN, SPECIES_FENNEKIN, SPECIES_FROAKIE},
+    {SPECIES_ROWLET, SPECIES_LITTEN, SPECIES_POPPLIO},
+    {SPECIES_GROOKEY, SPECIES_SCORBUNNY, SPECIES_SOBBLE},
+    {SPECIES_SPRIGATITO, SPECIES_FUECOCO, SPECIES_QUAXLY},
+};
+
+void GetChosenStarterEggSpecies(void)
+{
+    gSpecialVar_Result = Randomizer_GetEggSpecies(sStarterEggSpecies[gSpecialVar_0x8005][gSpecialVar_0x8006]);
+}
+
+// BPE: the Petalburg Egg man's gift. Three Pokémon per badge count, picked to do well
+// against the next gym and to climb in strength with the badges. It chooses among the
+// ones the player hasn't caught, or all three if they have them all.
+static const enum Species sBadgeEggSpecies[NUM_BADGES + 1][3] =
+{
+    [0] = {SPECIES_AZURILL, SPECIES_KRABBY, SPECIES_LOTAD},
+    [1] = {SPECIES_GEODUDE, SPECIES_PHANPY, SPECIES_SHIELDON},
+    [2] = {SPECIES_BUIZEL, SPECIES_TRAPINCH, SPECIES_SHELLDER},
+    [3] = {SPECIES_VULPIX, SPECIES_SWINUB, SPECIES_MAGBY},
+    [4] = {SPECIES_DUSKULL, SPECIES_SNEASEL, SPECIES_PAWNIARD},
+    [5] = {SPECIES_DRILBUR, SPECIES_AXEW, SPECIES_GLIGAR},
+    [6] = {SPECIES_MANKEY, SPECIES_RIOLU, SPECIES_GASTLY},
+    [7] = {SPECIES_LARVITAR, SPECIES_DEINO, SPECIES_BELDUM},
+    [8] = {SPECIES_BAGON, SPECIES_DRATINI, SPECIES_DREEPY},
+};
+
+void ChooseBadgeEggSpecies(void)
+{
+    u8 obtained[OBTAINED_FAMILIES_BYTES];
+    enum Species candidates[3];
+    enum Species fresh[3];
+    u32 badges = 0;
+    u32 freshCount = 0;
+
+    for (u32 i = 0; i < NUM_BADGES; i++)
+    {
+        if (FlagGet(FLAG_BADGE01_GET + i))
+            badges++;
+    }
+
+    CollectObtainedFamilies(obtained);
+    for (u32 i = 0; i < ARRAY_COUNT(candidates); i++)
+    {
+        candidates[i] = Randomizer_GetEggSpecies(sBadgeEggSpecies[badges][i]);
+        if (!IsFamilyObtained(obtained, candidates[i]))
+            fresh[freshCount++] = candidates[i];
+    }
+
+    if (freshCount != 0)
+        gSpecialVar_Result = fresh[Random() % freshCount];
+    else
+        gSpecialVar_Result = candidates[Random() % ARRAY_COUNT(candidates)];
 }

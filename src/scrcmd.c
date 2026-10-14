@@ -45,6 +45,7 @@
 #include "pokemon_storage_system.h"
 #include "random.h"
 #include "overworld.h"
+#include "safari_zone.h"
 #include "rotating_tile_puzzle.h"
 #include "rtc.h"
 #include "script.h"
@@ -2560,7 +2561,9 @@ bool8 ScrCmd_dowildbattle(struct ScriptContext *ctx)
 {
     Script_RequestEffects(SCREFF_V1 | SCREFF_HARDWARE);
 
-    if (sIsScriptedWildDouble == FALSE)
+    if (sIsScriptedWildDouble == FALSE && GetSafariZoneFlag())
+        BattleSetup_StartScriptedSafariBattle(); // BPE: the DexNav in the Safari Zone
+    else if (sIsScriptedWildDouble == FALSE)
         BattleSetup_StartScriptedWildBattle();
     else
         BattleSetup_StartScriptedDoubleWildBattle();

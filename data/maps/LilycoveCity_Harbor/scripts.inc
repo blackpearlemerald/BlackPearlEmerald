@@ -337,6 +337,7 @@ LilycoveCity_Harbor_EventScript_OldSeaMapFirstTime::
 	call_if_eq VAR_FACING, DIR_EAST, LilycoveCity_Harbor_EventScript_BrineyFacePlayerEast
 	msgbox EventTicket_Text_BrineyLetsSail, MSGBOX_DEFAULT
 	closemessage
+	hidefollower @ BPE: the follower boards with the player instead of staying on the dock
 	call_if_eq VAR_FACING, DIR_NORTH, LilycoveCity_Harbor_EventScript_BoardFerryWithBrineyAndSailorNorth
 	call_if_eq VAR_FACING, DIR_EAST, LilycoveCity_Harbor_EventScript_BoardFerryWithBrineyAndSailorEast
 	setvar VAR_0x8004, LOCALID_LILYCOVE_HARBOR_SS_TIDAL
@@ -423,6 +424,7 @@ LilycoveCity_Harbor_EventScript_BoardFerryWithSailor::
 	waitmovement 0
 	delay 30
 	removeobject LOCALID_LILYCOVE_HARBOR_FERRY_SAILOR
+	hidefollower @ BPE: the follower boards with the player instead of staying on the dock
 	call_if_eq VAR_FACING, DIR_NORTH, LilycoveCity_Harbor_EventScript_PlayerBoardFerryNorth
 	call_if_eq VAR_FACING, DIR_EAST, LilycoveCity_Harbor_EventScript_PlayerBoardFerryEast
 	delay 30
@@ -483,6 +485,7 @@ LilycoveCity_Harbor_EventScript_BoardFerry::
 	waitmovement 0
 	delay 30
 	hideobjectat VAR_LAST_TALKED, MAP_LILYCOVE_CITY_HARBOR
+	hidefollower @ BPE: the follower boards with the player instead of staying on the dock
 	call_if_eq VAR_FACING, DIR_NORTH, LilycoveCity_Harbor_EventScript_PlayerBoardFerryNorth
 	call_if_eq VAR_FACING, DIR_EAST, LilycoveCity_Harbor_EventScript_PlayerBoardFerryEast
 	delay 30

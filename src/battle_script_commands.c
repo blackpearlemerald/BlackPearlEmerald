@@ -2052,17 +2052,22 @@ u32 GetBattlerRawSpeedOrder(enum BattlerId battler)
 }
 
 // battlerStealer steals the item of itemBattler
-void StealTargetItem(enum BattlerId battlerStealer, enum BattlerId itemBattler)
+// BPE: returns TRUE when the item went to the Bag rather than to the stealer.
+bool32 StealTargetItem(enum BattlerId battlerStealer, enum BattlerId itemBattler)
 {
+    bool32 sentToBag = FALSE;
+
     gLastUsedItem = gBattleMons[itemBattler].item;
     gBattleMons[itemBattler].item = ITEM_NONE;
 
+    // BPE: a full pocket used to lose the item; the stealer holds it instead.
     if (GetConfig(B_STEAL_WILD_ITEMS) >= GEN_9
      && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_PALACE))
      && GetMoveEffect(gCurrentMove) == EFFECT_STEAL_ITEM
-     && battlerStealer == gBattlerAttacker) // ensure that Pickpocket isn't activating this
+     && battlerStealer == gBattlerAttacker // ensure that Pickpocket isn't activating this
+     && AddBagItem(gLastUsedItem, 1))
     {
-        AddBagItem(gLastUsedItem, 1);
+        sentToBag = TRUE;
     }
     else
     {
@@ -2084,6 +2089,7 @@ void StealTargetItem(enum BattlerId battlerStealer, enum BattlerId itemBattler)
         gBattleStruct->choicedMove[itemBattler] = MOVE_NONE;
 
     TrySaveExchangedItem(itemBattler, gLastUsedItem);
+    return sentToBag;
 }
 
 static inline bool32 TrySetReflect(enum BattlerId battler)

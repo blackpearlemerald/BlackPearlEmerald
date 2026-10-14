@@ -3307,13 +3307,13 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Luxray
 Quirky Nature
 Level: 86
-Standard Level: 79
+Standard Level: 80
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 Espeon
 Quirky Nature
 Level: 86
-Standard Level: 79
+Standard Level: 80
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 
 === TRAINER_ALBERT ===
@@ -3328,7 +3328,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Hydreigon @ Wise Glasses
 Quirky Nature
 Level: 87
-Standard Level: 80
+Standard Level: 81
 Ability: Levitate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fire Blast
@@ -3339,7 +3339,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Salamence @ Life Orb
 Quirky Nature
 Level: 87
-Standard Level: 80
+Standard Level: 81
 Ability: Intimidate
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Fire Blast
@@ -3350,7 +3350,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Archeops @ Flying Gem
 Quirky Nature
 Level: 87
-Standard Level: 80
+Standard Level: 81
 Ability: Defeatist
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Acrobatics
@@ -3361,7 +3361,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Aggron @ Muscle Band
 Quirky Nature
 Level: 87
-Standard Level: 80
+Standard Level: 81
 Ability: Sturdy
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Earthquake
@@ -3372,7 +3372,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lapras @ Zoom Lens
 Quirky Nature
 Level: 87
-Standard Level: 80
+Standard Level: 81
 Ability: Water Absorb
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Hydro Pump
@@ -3383,7 +3383,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Haxorus @ Focus Sash
 Quirky Nature
 Level: 87
-Standard Level: 80
+Standard Level: 81
 Ability: Mold Breaker
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Brick Break
@@ -3403,7 +3403,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Reshiram @ Lum Berry
 Quirky Nature
 Level: 87
-Standard Level: 85
+Standard Level: 86
 Ability: Turboblaze
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Hyper Beam
@@ -3414,7 +3414,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Carracosta @ Mystic Water
 Quirky Nature
 Level: 87
-Standard Level: 85
+Standard Level: 86
 Ability: Sturdy
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Stone Edge
@@ -3425,7 +3425,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Vanilluxe @ Occa Berry
 Quirky Nature
 Level: 87
-Standard Level: 85
+Standard Level: 86
 Ability: Ice Body
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Blizzard
@@ -3436,7 +3436,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Archeops @ Yache Berry
 Quirky Nature
 Level: 87
-Standard Level: 85
+Standard Level: 86
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Stone Edge
 - Acrobatics
@@ -3446,7 +3446,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Zoroark @ Expert Belt
 Quirky Nature
 Level: 87
-Standard Level: 85
+Standard Level: 86
 Ability: Illusion
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Flamethrower
@@ -3457,7 +3457,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Klinklang @ Leftovers
 Quirky Nature
 Level: 87
-Standard Level: 85
+Standard Level: 86
 Ability: Plus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Flash Cannon
@@ -18802,7 +18802,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Spiritomb @ Black Glasses
 Quirky Nature
 Level: 87
-Standard Level: 82
+Standard Level: 83
 Ability: Infiltrator
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
@@ -18813,7 +18813,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Roserade @ Black Sludge
 Quirky Nature
 Level: 87
-Standard Level: 82
+Standard Level: 83
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Petal Dance
@@ -18824,7 +18824,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Togekiss @ Kings Rock
 Quirky Nature
 Level: 87
-Standard Level: 82
+Standard Level: 83
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Air Slash
@@ -18835,7 +18835,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lucario @ Life Orb
 Quirky Nature
 Level: 87
-Standard Level: 82
+Standard Level: 83
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aura Sphere
@@ -18846,7 +18846,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Milotic @ Leftovers
 Quirky Nature
 Level: 87
-Standard Level: 82
+Standard Level: 83
 Ability: Competitive
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Surf
@@ -18857,7 +18857,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Garchomp @ Garchompite
 Quirky Nature
 Level: 87
-Standard Level: 82
+Standard Level: 83
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Outrage
@@ -24670,7 +24670,7 @@ AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart 
 Spiritomb @ Black Glasses
 Quirky Nature
 Level: 87
-Standard Level: 83
+Standard Level: 84
 Ability: Infiltrator
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Psychic
@@ -24681,7 +24681,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Roserade @ Black Sludge
 Quirky Nature
 Level: 87
-Standard Level: 83
+Standard Level: 84
 Ability: Poison Point
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Petal Dance
@@ -24692,7 +24692,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Togekiss @ Kings Rock
 Quirky Nature
 Level: 87
-Standard Level: 83
+Standard Level: 84
 Ability: Serene Grace
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Air Slash
@@ -24703,7 +24703,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Lucario @ Life Orb
 Quirky Nature
 Level: 87
-Standard Level: 83
+Standard Level: 84
 Ability: Inner Focus
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Aura Sphere
@@ -24714,7 +24714,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Milotic @ Leftovers
 Quirky Nature
 Level: 87
-Standard Level: 83
+Standard Level: 84
 Ability: Competitive
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Surf
@@ -24725,7 +24725,7 @@ IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 Garchomp @ Garchompite
 Quirky Nature
 Level: 87
-Standard Level: 83
+Standard Level: 84
 Ability: Rough Skin
 IVs: 15 HP / 15 Atk / 15 Def / 15 SpA / 15 SpD / 15 Spe
 - Outrage
@@ -33021,3 +33021,85 @@ EVs: 120 HP / 252 Atk / 136 Spe
 - Bullet Punch
 - Close Combat
 - Knock Off
+
+=== TRAINER_MOIRA ===
+Name: Moira
+Class: Cooltrainer
+Pic: Cooltrainer M
+Gender: Male
+Music: Cool
+Battle Type: Singles
+AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient
+
+Sableye @ Sablenite
+Bold Nature
+Level: 90
+Standard Level: 79
+Ability: Prankster
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 248 HP / 252 Def / 8 SpD
+Shiny: Yes
+- Thunder Wave
+- Foul Play
+- Fake Out
+- Rain Dance
+
+Rillaboom @ Leftovers
+Adamant Nature
+Level: 90
+Standard Level: 79
+Ability: Grassy Surge
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 HP / 252 Atk / 4 SpD
+- Fake Out
+- Knock Off
+- Grassy Glide
+- U-turn
+
+Rotom-Wash @ Assault Vest
+Modest Nature
+Level: 90
+Standard Level: 79
+Ability: Levitate
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 HP / 252 SpA / 4 SpD
+- Hydro Pump
+- Discharge
+- Dark Pulse
+- Shadow Ball
+
+Umbreon @ Leftovers
+Careful Nature
+Level: 90
+Standard Level: 79
+Ability: Inner Focus
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 248 HP / 8 Def / 252 SpD
+- Wish
+- Protect
+- Foul Play
+- Toxic
+
+Arcanine @ Passho Berry
+Jolly Nature
+Level: 90
+Standard Level: 79
+Ability: Intimidate
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 252 Atk / 4 SpD / 252 Spe
+- Will-O-Wisp
+- Fire Fang
+- Wild Charge
+- Aerial Ace
+
+Archaludon @ Air Balloon
+Modest Nature
+Level: 90
+Standard Level: 79
+Ability: Stamina
+IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
+EVs: 248 HP / 8 Def / 252 SpA
+- Electro Shot
+- Iron Head
+- Dragon Tail
+- Body Press

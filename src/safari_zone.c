@@ -121,6 +121,15 @@ void CB2_EndSafariBattle(void)
     }
 }
 
+// BPE: a DexNav battle in the Safari Zone is started from a script, which has to
+// continue afterwards so the DexNav search can finish.
+void CB2_EndScriptedSafariBattle(void)
+{
+    CB2_EndSafariBattle();
+    if (gMain.callback2 == CB2_ReturnToField)
+        SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
+}
+
 static void ClearPokeblockFeeder(u8 index)
 {
     memset(&sPokeblockFeeders[index], 0, sizeof(struct PokeblockFeeder));

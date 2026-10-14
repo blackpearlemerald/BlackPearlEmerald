@@ -121,6 +121,8 @@
 #define TRAINER_CINDY_1                     114
 #define TRAINER_DAPHNE                      115
 #define TRAINER_GRUNT_SPACE_CENTER_2        116
+// BPE: Moira, the third Ever Grande City postgame challenger, reuses the freed id 117.
+#define TRAINER_MOIRA                       117
 #define TRAINER_BRIANNA                     118
 #define TRAINER_NAOMI                       119
 #define TRAINER_CINDY_3                     120
@@ -868,7 +870,7 @@
 //      shifts SYSTEM_FLAGS and breaks existing save files.
 // BPE: dead placeholder/rematch-gap ids removed 2026-07-27 (were empty-party stubs, verified
 //      unreferenced anywhere). Their numbers are free to reassign to a new #define TRAINER_X:
-//      117, 173, 462, 485, 486, 581, 633, 634, 851, 852, 853, 854 (851 freed again 2026-07-27
+//      173, 462, 485, 486, 581, 633, 634, 851, 852, 853, 854 (851 freed again 2026-07-27
 //      when the Route 104 Sean mini-boss was removed). See memory note trainer-id-budget-audit
 //      for the audit method if this list needs re-deriving.
 

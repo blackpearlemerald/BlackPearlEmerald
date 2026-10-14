@@ -59,6 +59,28 @@ TEST("Nuzlocke: a wild evolution of a caught species is a duplicate too")
     TearDownNuzlocke();
 }
 
+TEST("Nuzlocke: a wild pre-evolution of a caught species is a duplicate too")
+{
+    SetUpNuzlocke();
+    GetSetPokedexFlag(SpeciesToNationalPokedexNum(SPECIES_HOUNDOOM), FLAG_SET_CAUGHT);
+
+    // Reported on Discord: a Houndour after a caught Houndoom used up the route's encounter.
+    CreateWildMonForm(SPECIES_HOUNDOUR, 5);
+    EXPECT_EQ(HasWildPokmnOnThisRouteBeenSeen(MAPSEC_ROUTE_102, TRUE), NUZLOCKE_ENCOUNTER_DUPLICATE);
+    EXPECT_EQ(VarGet(VAR_WILD_PKMN_ROUTE_SEEN_0), 0);
+    EXPECT_EQ(VarGet(VAR_WILD_PKMN_ROUTE_SEEN_1), 0);
+
+    // a branch of the same family counts as well
+    GetSetPokedexFlag(SpeciesToNationalPokedexNum(SPECIES_GARDEVOIR), FLAG_SET_CAUGHT);
+    CreateWildMonForm(SPECIES_GALLADE, 30);
+    EXPECT_EQ(HasWildPokmnOnThisRouteBeenSeen(MAPSEC_ROUTE_102, FALSE), NUZLOCKE_ENCOUNTER_DUPLICATE);
+
+    CreateWildMonForm(SPECIES_POOCHYENA, 5);
+    EXPECT_EQ(HasWildPokmnOnThisRouteBeenSeen(MAPSEC_ROUTE_102, TRUE), NUZLOCKE_ENCOUNTER_OPEN);
+
+    TearDownNuzlocke();
+}
+
 TEST("Nuzlocke: the dupes clause does not apply outside Nuzlocke mode")
 {
     SetUpNuzlocke();

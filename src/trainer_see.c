@@ -994,8 +994,13 @@ static void Task_SetBuriedTrainerMovement(u8 taskId)
         ObjectEventClearHeldMovement(objEvent);
         task->data[7]++;
     }
-    sTrainerSeeFuncList2[task->tFuncId](taskId, task, objEvent);
-    if (task->tFuncId == ((int)ARRAY_COUNT(sTrainerSeeFuncList2) - 1) && !FieldEffectActiveListContains(FLDEFF_ASH_PUFF))
+    // BPE: WaitRevealBuriedTrainer moves tFuncId on to TRSEE_MOVE_TO_PLAYER once the ash
+    // puff ends, which is past the end of this list. The old "== last entry" check then never
+    // ended the task, and the next frame jumped through whatever followed the list (a crash
+    // when talking to a buried Route 113 ninja).
+    if (task->tFuncId < (int)ARRAY_COUNT(sTrainerSeeFuncList2))
+        sTrainerSeeFuncList2[task->tFuncId](taskId, task, objEvent);
+    if (task->tFuncId >= ((int)ARRAY_COUNT(sTrainerSeeFuncList2) - 1) && !FieldEffectActiveListContains(FLDEFF_ASH_PUFF))
     {
         SetTrainerMovementType(objEvent, GetTrainerFacingDirectionMovementType(objEvent->facingDirection));
         TryOverrideTemplateCoordsForObjectEvent(objEvent, GetTrainerFacingDirectionMovementType(objEvent->facingDirection));

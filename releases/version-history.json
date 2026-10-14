@@ -1,6 +1,25 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.0": {
+      "channel": "stable",
+      "changes": [
+        "Beat Cynthia in Lilycove City to get a starter Egg of your choice, from any region.",
+        "A new Egg man in Petalburg City gives one Egg per game. The more badges you have, the stronger the Pokémon inside.",
+        "New postgame challenger: Moira waits outside the Pokémon League. Beat him to unlock an unlimited Pearl shop.",
+        "Standard mode: your Pokémon always obey you.",
+        "The DexNav now works in the Safari Zone.",
+        "Thief and Covet now tell you when a stolen item goes to your Bag.",
+        "Fixed a freeze when Sand Spit kicked up a sandstorm, like the Silicobra in the first gym.",
+        "Fixed a crash when talking to the buried Ninja Boys on Route 113.",
+        "Nuzlocke dupes clause: the whole evolutionary family now counts. A Houndour after a caught Houndoom no longer uses up the route.",
+        "Fixed the Battle Frontier ferry saying you had no ticket.",
+        "Your follower Pokémon now boards the ferry with you.",
+        "A stolen item is no longer lost when your Bag is full.",
+        "People in Petalburg City, at the Trainer Fan Club and on Mr. Stone's call now name your dad as Jordan, not Norman.",
+        "Victory Road trainers' Standard-mode levels went up by one."
+      ]
+    },
     "2.1.16-beta": {
       "channel": "beta",
       "changes": [

@@ -162,6 +162,7 @@ extern const u8 BattleScript_MoveEffectRecoil[];
 extern const u8 BattleScript_FaintAttackerForExplosion[];
 extern const u8 BattleScript_MaxHp50Recoil[];
 extern const u8 BattleScript_ItemSteal[];
+extern const u8 BattleScript_ItemStealToBag[];
 extern const u8 BattleScript_WeatherAbilityActivates[];
 extern const u8 BattleScript_OrichalcumPulseActivates[];
 extern const u8 BattleScript_OrichalcumPulseActivatesInSun[];

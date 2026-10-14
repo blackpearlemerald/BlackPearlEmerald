@@ -74,3 +74,24 @@ SINGLE_BATTLE_TEST("Sand Spit triggers even if the user is knocked out by the hi
         MESSAGE("The sandstorm is raging.");
     }
 }
+
+// BPE: Sand Spit left animArg1 unset, so an earlier stat change's animation id was played
+// as a general animation. Reported as a freeze in the first gym (Silicobra).
+SINGLE_BATTLE_TEST("Sand Spit plays the sandstorm animation after an earlier stat change")
+{
+    GIVEN {
+        PLAYER(SPECIES_SANDACONDA) { Ability(ABILITY_SAND_SPIT); }
+        OPPONENT(SPECIES_LANDORUS);
+    } WHEN {
+        TURN { MOVE(opponent, MOVE_GROWL); }
+        TURN { MOVE(opponent, MOVE_SCRATCH); }
+    } SCENE {
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_GROWL, opponent);
+        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_STATS_CHANGE, player);
+        ANIMATION(ANIM_TYPE_MOVE, MOVE_SCRATCH, opponent);
+        ABILITY_POPUP(player, ABILITY_SAND_SPIT);
+        MESSAGE("A sandstorm kicked up!");
+        ANIMATION(ANIM_TYPE_GENERAL, B_ANIM_SANDSTORM_CONTINUES, player);
+        MESSAGE("The sandstorm is raging.");
+    }
+}

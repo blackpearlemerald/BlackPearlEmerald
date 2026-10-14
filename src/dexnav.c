@@ -1006,7 +1006,8 @@ bool32 IsDexNavUnlocked(void)
 // rules, which a DexNav battle would skip.
 bool32 IsDexNavUsableHere(void)
 {
-    return !GetSafariZoneFlag() && !InBattlePike() && !InBattlePyramid_();
+    // BPE: the Safari Zone is allowed; its DexNav battles are Safari battles.
+    return !InBattlePike() && !InBattlePyramid_();
 }
 
 // BPE: while the player sneaks up on a Pokémon the DexNav found, no other wild

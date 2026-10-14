@@ -952,6 +952,7 @@ Movement_UnusedBoardFerry:
 	step_end
 
 Common_EventScript_FerryDepartIsland::
+	hidefollower @ BPE: the follower boards with the player instead of staying on the dock
 	call_if_eq VAR_FACING, DIR_SOUTH, Ferry_EventScript_DepartIslandSouth
 	call_if_eq VAR_FACING, DIR_WEST, Ferry_EventScript_DepartIslandWest
 	delay 30

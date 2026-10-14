@@ -6,5 +6,9 @@
   {
     "trainer": "TRAINER_FURIUS2",
     "note": "<b>The first player to beat Black Pearl Emerald in Nuzlocke mode.</b> Furius2 waits outside the Pokémon League with the team that won that run."
+  },
+  {
+    "trainer": "TRAINER_MOIRA",
+    "note": "<b>The biggest helper during the 2.0 beta.</b> Moira waits outside the Pokémon League with the team behind all that testing."
   }
 ]
