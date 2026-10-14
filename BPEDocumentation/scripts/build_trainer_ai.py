@@ -6,17 +6,34 @@ at the selected game source (like features.json). Releases whose pinned source
 predates that file get no document; the page then says so instead of showing
 another release's AI.
 
+A release whose source predates the document may still use the exporter's
+copy, but only when its battle AI is provably the same: the AI source files and
+every trainer's AI flags must match the exporter's checkout byte for byte. Any
+difference keeps the release without a document rather than describing another
+release's AI.
+
 Each entry's rules are a nested list: a string is one line, and a list
 indents the lines under the string before it, as in "If AI is faster:" followed
 by ["+6"].
 """
+import glob
+import hashlib
 import os
+import re
 
 import common as C
 
 CONTENT_PATH = C.src("BPEDocumentation", "content", "trainer_ai.json")
+EXPORTER_CONTENT_PATH = os.path.join(C.DOC_ROOT, "content", "trainer_ai.json")
 SCHEMA_VERSION = 1
 MAX_DEPTH = 5
+# The files that decide what the document describes. trainers.party
+# contributes only each trainer's AI flags and, for trainers whose flags are
+# not the standard set, their in-game names (the document names them).
+AI_FILE_PATTERNS = ("src/battle_ai_*.c", "include/battle_ai_*.h", "include/config/ai.h",
+                    "include/constants/battle_ai.h")
+TRAINERS_PARTY = os.path.join("src", "data", "trainers.party")
+STANDARD_AI = "AI: Check Bad Move / Try To Faint / Check Viability / Smart Mon Choices / Smart Switching / Omniscient"
 
 
 def _text(value, where, required=True):
@@ -115,8 +132,52 @@ def validate_content(content):
             "sections": out_sections}
 
 
-def build(content_path=CONTENT_PATH, site=C.SITE):
+def _read(path):
+    with open(path, "rb") as handle:
+        return handle.read().replace(b"\r\n", b"\n")
+
+
+def _trainer_ai_flags(path):
+    """Each trainer's id and AI line, plus the name of trainers with other flags."""
+    out = []
+    trainer = name = None
+    for line in _read(path).decode("utf-8").split("\n"):
+        line = line.strip()
+        match = re.fullmatch(r"=== (TRAINER_\w+) ===", line)
+        if match:
+            trainer, name = match.group(1), None
+        elif line.startswith("Name:"):
+            name = line
+        elif line.startswith("AI:") and trainer:
+            out.append(trainer + "\n" + line + ("" if line == STANDARD_AI else "\n" + (name or "")))
+    return out
+
+
+def ai_fingerprint(root):
+    """Hash of everything the document depends on in one source tree, or None."""
+    digest = hashlib.sha256()
+    files = sorted({os.path.relpath(path, root).replace(os.sep, "/")
+                    for pattern in AI_FILE_PATTERNS for path in glob.glob(os.path.join(root, pattern))})
+    party = os.path.join(root, TRAINERS_PARTY)
+    if not files or not os.path.isfile(party):
+        return None
+    for name in files:
+        digest.update(name.encode() + b"\0" + _read(os.path.join(root, name)) + b"\0")
+    digest.update("\0".join(_trainer_ai_flags(party)).encode())
+    return digest.hexdigest()
+
+
+def build(content_path=CONTENT_PATH, site=C.SITE, exporter_content_path=EXPORTER_CONTENT_PATH,
+          source_root=C.SRC_ROOT, exporter_root=C.PROJECT_ROOT):
     content = validate_content(C.load_json(content_path)) if os.path.isfile(content_path) else None
+    if (content is None and os.path.isfile(exporter_content_path)
+            and os.path.abspath(source_root) != os.path.abspath(exporter_root)):
+        source_print = ai_fingerprint(source_root)
+        if source_print and source_print == ai_fingerprint(exporter_root):
+            content = validate_content(C.load_json(exporter_content_path))
+            print("Trainer AI: release source has no document; its AI matches the exporter's, so using that copy")
+        else:
+            print("Trainer AI: release source has no document and its AI differs from the exporter's")
     data = {"schemaVersion": SCHEMA_VERSION, "curated": content is not None}
     if content:
         data.update(content)

@@ -599,6 +599,34 @@ class TrainerAiTests(unittest.TestCase):
         if path.is_file():
             build_trainer_ai.validate_content(json.loads(path.read_text(encoding="utf-8")))
 
+    def test_release_without_document_uses_exporter_copy_only_for_identical_ai(self):
+        party = ("=== TRAINER_A ===\nName: A\n" + build_trainer_ai.STANDARD_AI + "\n\n"
+                 "=== TRAINER_B ===\nName: DAN\nAI: Check Bad Move / Will Suicide\n")
+
+        def tree(root, ai_code, party_text):
+            # Raw bytes, so the CRLF case is not translated again on Windows.
+            for name, text in (("src/battle_ai_main.c", ai_code), ("include/config/ai.h", "#define X 1\n"),
+                               ("src/data/trainers.party", party_text)):
+                (root / name).parent.mkdir(parents=True, exist_ok=True)
+                (root / name).write_bytes(text.encode("utf-8"))
+
+        def build(source_code, source_party):
+            with tempfile.TemporaryDirectory() as folder:
+                root = Path(folder)
+                tree(root / "exporter", "int score;\n", party)
+                tree(root / "source", source_code, source_party)
+                write(root / "exporter/content.json", json.dumps(self.CONTENT))
+                return build_trainer_ai.build(str(root / "source/missing.json"), str(root / "site"),
+                                              str(root / "exporter/content.json"),
+                                              str(root / "source"), str(root / "exporter"))
+
+        self.assertTrue(build("int score;\r\n", party.replace("\n", "\r\n"))["curated"])
+        # A different trainer name with standard flags does not matter.
+        self.assertTrue(build("int score;\n", party.replace("Name: A", "Name: Z"))["curated"])
+        self.assertFalse(build("int score = 1;\n", party)["curated"])
+        self.assertFalse(build("int score;\n", party.replace("Name: DAN", "Name: ROXANNE"))["curated"])
+        self.assertFalse(build("int score;\n", party.replace("Will Suicide", "Ace Pokemon"))["curated"])
+
     def test_snapshot_validation_rejects_malformed_data(self):
         with tempfile.TemporaryDirectory() as folder:
             site = Path(folder)
