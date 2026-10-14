@@ -27,23 +27,26 @@ def main():
     import parse_items
     import build_calc_data
     import build_features
+    import build_trainer_ai
     C.ensure_dirs()
-    print("[1/8] Parsing trainers ...")
+    print("[1/9] Parsing trainers ...")
     parse_trainers.main()
-    print("[2/8] Extracting party Pokemon icons ...")
+    print("[2/9] Extracting party Pokemon icons ...")
     pokemon_sprites.main()
-    print("[3/8] Rendering map images ...")
+    print("[3/9] Rendering map images ...")
     render_maps.main()
-    print("[4/8] Extracting world layout + objects ...")
+    print("[4/9] Extracting world layout + objects ...")
     extract_world.build()
-    print("[5/8] Building Pokedex data ...")
+    print("[5/9] Building Pokedex data ...")
     parse_pokemon.main()
-    print("[6/8] Building Items data ...")
+    print("[6/9] Building Items data ...")
     parse_items.main()
-    print("[7/8] Building damage-calculator data ...")
+    print("[7/9] Building damage-calculator data ...")
     build_calc_data.main()
-    print("[8/8] Building Features page data ...")
+    print("[8/9] Building Features page data ...")
     build_features.main()
+    print("[9/9] Building Trainer AI page data ...")
+    build_trainer_ai.main()
     print("\nDone. Serve with:  py -m http.server -d ../site 8000")
 
 

@@ -26,7 +26,7 @@ REPOSITORY = "blackpearlemerald/BlackPearlEmerald"
 PAGES_LIMIT = 1_000_000_000
 # Serves tracked files with cross-origin access, so the patcher can fetch them.
 RAW_ROOT = "https://raw.githubusercontent.com/" + REPOSITORY + "/"
-LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Converter"}
+LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Converter", "trainer-ai.html": "Trainer AI"}
 # Tools that work on any game version: their entry link always opens the newest release.
 VERSIONLESS_PAGES = {"save-converter.html"}
 
@@ -162,6 +162,18 @@ def validate_features(path):
         raise ValueError("Curated Features page data has no sections.")
 
 
+def validate_trainer_ai(path):
+    """Check the Trainer AI page export built by build_trainer_ai.py."""
+    data = read_json(Path(path) / "data/trainer_ai.json")
+    if not isinstance(data, dict) or data.get("schemaVersion") != 1 or not isinstance(data.get("curated"), bool):
+        raise ValueError("Invalid Trainer AI page data.")
+    if data["curated"]:
+        sections = data.get("sections")
+        if not isinstance(sections, list) or not sections or any(
+                not isinstance(s, dict) or not isinstance(s.get("entries"), list) or not s["entries"] for s in sections):
+            raise ValueError("Trainer AI page data has no sections.")
+
+
 def validate_snapshot(path, shared=False, require_encounters=False, require_history=False, require_features=False):
     path = Path(path)
     required = ["index.html", "pokedex.html", "items.html", "trainers.html", "patcher.html", "search.html",
@@ -185,6 +197,8 @@ def validate_snapshot(path, shared=False, require_encounters=False, require_hist
     validate_map_overview(path, world, shared)
     if (path / "data/features.json").is_file():
         validate_features(path)
+    if (path / "data/trainer_ai.json").is_file():
+        validate_trainer_ai(path)
     if len(pokedex) < 300 or len(items) < 100 or len(world.get("maps", [])) < 100:
         raise ValueError("Documentation export is unexpectedly incomplete.")
     species_with_encounters = 0

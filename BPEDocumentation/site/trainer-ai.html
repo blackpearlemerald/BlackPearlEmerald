@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="How trainers in Pokémon Black Pearl Emerald score their moves, when they switch and which Pokémon they send in." />
+  <title>BPE Emerald — Trainer AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/trainer-ai.css" />
+  <script src="js/release-context.js"></script>
+  <link rel="stylesheet" href="css/header.css" />
+</head>
+<body class="page-trainer-ai">
+  <script src="js/nav.js"></script>
+
+  <main class="ai-page">
+    <header class="ai-hero">
+      <h1 id="ai-title">Trainer AI</h1>
+      <div id="ai-intro"></div>
+    </header>
+
+    <p class="ai-status" id="ai-status" role="status">Loading the Trainer AI document…</p>
+
+    <div class="ai-tools" id="ai-tools" hidden>
+      <nav class="ai-toc" id="ai-toc" aria-label="Sections"></nav>
+      <label class="ai-filter">
+        <span>Find a move</span>
+        <input type="search" id="ai-filter" placeholder="e.g. Stealth Rock, Protect, switch" autocomplete="off" />
+      </label>
+    </div>
+
+    <p class="ai-status" id="ai-empty" hidden>Nothing matches that search.</p>
+    <div id="ai-sections"></div>
+    <noscript>Enable JavaScript to load this version's Trainer AI document.</noscript>
+  </main>
+
+  <script src="js/trainer-ai.js"></script>
+</body>
+</html>

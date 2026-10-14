@@ -8,7 +8,7 @@
   if (current === 'item') current = 'items';
   var items = [
     ['index.html', 'Interactive Map', 'index'], ['features.html', 'Features', 'features'], ['search.html', 'Global Search', 'search'],
-    ['pokedex.html', 'Pokédex', 'pokedex'], ['trainers.html', 'Trainers', 'trainers'],
+    ['pokedex.html', 'Pokédex', 'pokedex'], ['trainers.html', 'Trainers', 'trainers'], ['trainer-ai.html', 'Trainer AI', 'trainer-ai'],
     ['items.html', 'Items', 'items'], [null, 'Damage Calculator', 'calc'],
     ['patcher.html', 'Rom Patcher', 'patcher'], ['save-converter.html', 'Save Converter', 'save-converter'],
     ['version-history.html', 'Version History', 'version-history'],

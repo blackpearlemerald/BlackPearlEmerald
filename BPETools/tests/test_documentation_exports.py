@@ -16,6 +16,7 @@ try:
     import common as C
     import extract_world
     import build_features
+    import build_trainer_ai
     import parse_pokemon
     import parse_trainers
 except ImportError:  # Pillow is required by the sprite helpers.
@@ -549,6 +550,66 @@ class FeaturesTests(unittest.TestCase):
 
 
 @unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+@unittest.skipIf(extract_world is None, "Pillow is not installed")
+class TrainerAiTests(unittest.TestCase):
+    CONTENT = {"schemaVersion": 1, "title": "Trainer AI", "intro": ["Scores start at 100."],
+               "sections": [{"id": "hazards", "title": "Hazards", "entries": [
+                   {"name": "Stealth Rock", "rules": ["If first turn out:", ["+8 (25%), +9 (75%)"], "Else:", ["+6"]],
+                    "notes": ["Never used when already set."]},
+                   {"name": "Common scores", "table": {"columns": ["Case", "Score"], "rows": [["Fast kill", "+6"]]}}]}]}
+
+    def build(self, content):
+        with tempfile.TemporaryDirectory() as folder:
+            site = Path(folder)
+            content_path = site / "content.json"
+            if content is not None:
+                write(content_path, json.dumps(content))
+            data = build_trainer_ai.build(str(content_path), str(site))
+            self.assertEqual(json.loads((site / "data/trainer_ai.json").read_text(encoding="utf-8")), data)
+            releases.validate_trainer_ai(site)
+            return data
+
+    def test_content_keeps_nested_rules(self):
+        data = self.build(self.CONTENT)
+        self.assertTrue(data["curated"])
+        entry = data["sections"][0]["entries"][0]
+        self.assertEqual(entry["rules"], ["If first turn out:", ["+8 (25%), +9 (75%)"], "Else:", ["+6"]])
+        self.assertEqual(data["sections"][0]["entries"][1]["table"]["rows"], [["Fast kill", "+6"]])
+
+    def test_release_without_content_has_no_document(self):
+        self.assertEqual(self.build(None), {"schemaVersion": 1, "curated": False})
+
+    def test_invalid_content_fails_the_export(self):
+        def with_entry(entry):
+            return dict(self.CONTENT, sections=[{"id": "x", "title": "X", "entries": [entry]}])
+        broken = [dict(self.CONTENT, schemaVersion=2), dict(self.CONTENT, sections=[]),
+                  dict(self.CONTENT, title=" padded "),
+                  with_entry({"name": "Empty"}),
+                  with_entry({"name": "Orphan list", "rules": [["+6"]]}),
+                  with_entry({"name": "Double list", "rules": ["If:", ["+6"], ["+7"]]}),
+                  with_entry({"name": "Too deep", "rules": ["a", ["b", ["c", ["d", ["e", ["f"]]]]]]}),
+                  with_entry({"name": "Bad table", "table": {"columns": ["A", "B"], "rows": [["only one"]]}}),
+                  dict(self.CONTENT, sections=self.CONTENT["sections"] * 2)]
+        for content in broken:
+            with self.subTest(content=content), self.assertRaises(ValueError):
+                build_trainer_ai.validate_content(content)
+
+    def test_repository_content_is_valid(self):
+        path = Path(__file__).resolve().parents[2] / "BPEDocumentation/content/trainer_ai.json"
+        if path.is_file():
+            build_trainer_ai.validate_content(json.loads(path.read_text(encoding="utf-8")))
+
+    def test_snapshot_validation_rejects_malformed_data(self):
+        with tempfile.TemporaryDirectory() as folder:
+            site = Path(folder)
+            for data in ({"schemaVersion": 1, "curated": True, "sections": []},
+                         {"schemaVersion": 1, "curated": True, "sections": [{"entries": []}]},
+                         {"schemaVersion": 2, "curated": False}, []):
+                write(site / "data/trainer_ai.json", json.dumps(data))
+                with self.subTest(data=data), self.assertRaises(ValueError):
+                    releases.validate_trainer_ai(site)
+
+
 class WorldLayoutTests(unittest.TestCase):
     @staticmethod
     def _map(mid, w, h, warps=(), connections=()):
