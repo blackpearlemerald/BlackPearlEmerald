@@ -1,6 +1,18 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.1": {
+      "channel": "stable",
+      "changes": [
+        "Trainers no longer set entry hazards against a Pokémon that knows a setup move, or one that can KO them in two hits.",
+        "Trainers no longer use stat-boosting moves when you can KO them first.",
+        "Trainers only use Substitute when your attacks would need five or more hits to KO them.",
+        "Trainers now use Growl, Charm, Screech and other stat-lowering moves when they help, instead of avoiding them.",
+        "Fixed Palafin in Hero Form switching out every turn.",
+        "Updated to pokeemerald-expansion 1.16.4, with its battle and overworld bug fixes.",
+        "Website: new Trainer AI page explaining how trainers choose moves, when they switch and which Pokémon they send in."
+      ]
+    },
     "2.2.0": {
       "channel": "stable",
       "changes": [
