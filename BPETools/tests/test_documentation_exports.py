@@ -627,6 +627,32 @@ class TrainerAiTests(unittest.TestCase):
         self.assertFalse(build("int score;\n", party.replace("Name: DAN", "Name: ROXANNE"))["curated"])
         self.assertFalse(build("int score;\n", party.replace("Will Suicide", "Ace Pokemon"))["curated"])
 
+    def test_archived_document_serves_a_release_whose_ai_has_since_changed(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for name, code in (("exporter", "int score = 2;\n"), ("source", "int score = 1;\n")):
+                for path, text in (("src/battle_ai_main.c", code), ("src/data/trainers.party", "")):
+                    (root / name / path).parent.mkdir(parents=True, exist_ok=True)
+                    (root / name / path).write_bytes(text.encode())
+            write(root / "exporter/content.json", json.dumps(self.CONTENT))
+            old = dict(self.CONTENT, title="Old AI")
+
+            def build():
+                return build_trainer_ai.build(str(root / "source/missing.json"), str(root / "site"),
+                                              str(root / "exporter/content.json"), str(root / "source"),
+                                              str(root / "exporter"), str(root / "archive"))
+
+            self.assertFalse(build()["curated"])
+            write(root / "archive" / (build_trainer_ai.ai_fingerprint(str(root / "source")) + ".json"), json.dumps(old))
+            self.assertEqual(build()["title"], "Old AI")
+
+    def test_repository_archive_is_valid(self):
+        folder = Path(__file__).resolve().parents[2] / "BPEDocumentation/content/trainer_ai_archive"
+        for path in folder.glob("*.json"):
+            with self.subTest(path=path.name):
+                self.assertRegex(path.stem, r"^[0-9a-f]{64}$")
+                build_trainer_ai.validate_content(json.loads(path.read_text(encoding="utf-8")))
+
     def test_snapshot_validation_rejects_malformed_data(self):
         with tempfile.TemporaryDirectory() as folder:
             site = Path(folder)

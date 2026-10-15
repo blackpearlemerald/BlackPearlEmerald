@@ -407,12 +407,14 @@ AI_SINGLE_BATTLE_TEST("AI will Incapacitate -> Substitute -> Focus Punch if able
 {
     GIVEN {
         AI_FLAGS(AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_CHECK_VIABILITY | AI_FLAG_TRY_TO_FAINT);
-        PLAYER(SPECIES_MAGNEZONE) { Moves(MOVE_THUNDER_WAVE, MOVE_FLASH_CANNON, MOVE_DISCHARGE, MOVE_TRI_ATTACK); }
+        // BPE: the AI only uses Substitute when the foe needs 5+ hits to KO it, so Magnezone only
+        // has weak attacks here; Discharge and Flash Cannon KO Breloom too quickly for Substitute.
+        PLAYER(SPECIES_MAGNEZONE) { Moves(MOVE_THUNDER_WAVE, MOVE_POUND); }
         OPPONENT(SPECIES_BRELOOM) { Moves(MOVE_SPORE, MOVE_FOCUS_PUNCH, MOVE_SUBSTITUTE, MOVE_SEED_BOMB); }
     } WHEN {
-        TURN { MOVE(player, MOVE_DISCHARGE); EXPECT_MOVE(opponent, MOVE_SPORE); }
-        TURN { MOVE(player, MOVE_DISCHARGE); EXPECT_MOVE(opponent, MOVE_SUBSTITUTE); }
-        TURN { MOVE(player, MOVE_DISCHARGE); EXPECT_MOVE(opponent, MOVE_FOCUS_PUNCH); }
+        TURN { MOVE(player, MOVE_POUND); EXPECT_MOVE(opponent, MOVE_SPORE); }
+        TURN { MOVE(player, MOVE_POUND); EXPECT_MOVE(opponent, MOVE_SUBSTITUTE); }
+        TURN { MOVE(player, MOVE_POUND); EXPECT_MOVE(opponent, MOVE_FOCUS_PUNCH); }
     }
 }
 

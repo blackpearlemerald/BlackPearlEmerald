@@ -478,6 +478,7 @@
           "rules": [
             "Never sets up (+0) if:",
             [
+              "You can KO it first: in 1 hit while it is faster, or in 2 hits while it is slower. This applies to every stat, Defense and Sp. Def included",
               "You have Unaware or Opportunist",
               "It would faint to residual damage this turn",
               "Any of your Pokémon has used Haze, Clear Smog or Freezy Frost earlier in the battle",
@@ -490,9 +491,9 @@
               "+0 if it is faster, you can KO it in 2 hits or fewer, and you have a priority move or a damaging Speed-lowering move",
               "+0 if it is below 70% HP and you have no damaging move"
             ],
-            "Attack (needs a physical move, and: faster and Hits 2+, or slower and Hits 3+, or you have no attacks):",
+            "Attack (needs a physical move):",
             ["+1 stage: +2", "+2 or more stages: +3", "+6 stages: +4"],
-            "Sp. Atk (needs a special move, same conditions):",
+            "Sp. Atk (needs a special move):",
             ["+1 stage: +2", "+2 or more stages: +3"],
             "Speed (only if it is slower and Hits 3+, or you have no attacks):",
             ["+1 stage: +2", "+2 or more stages: +3"],
@@ -505,7 +506,7 @@
           ],
           "notes": [
             "Simple doubles the stages. Accuracy and Evasion boosts are never scored, so Double Team, Minimize and the accuracy half of Coil and Hone Claws give +0.",
-            "Defense and Sp. Def have no KO check: a defensive boost still scores when you are about to KO the AI."
+            "The KO check also covers attacks that raise the AI's own stats (Flame Charge, Power-Up Punch): their boost adds nothing when you can KO it first."
           ]
         },
         {
@@ -560,10 +561,12 @@
         {
           "name": "Stealth Rock, Spikes, Toxic Spikes, Sticky Web",
           "rules": [
-            "If first turn out: +4",
-            "Else: +2"
+            "+0 if you know a setup move (Swords Dance, Dragon Dance, Calm Mind, Iron Defense...)",
+            "+0 if you can KO the AI in 2 hits or fewer",
+            "Otherwise:",
+            ["If first turn out: +4", "Else: +2"]
           ],
-          "notes": ["Only if you have a Pokémon in the back and none of your Pokémon has Rapid Spin, Defog, Court Change, Tidy Up or Mortal Spin. Magic Coat or Magic Bounce also stop it. Stone Axe and Ceaseless Edge get the same score."]
+          "notes": ["Only if you have a Pokémon in the back and none of your Pokémon has Rapid Spin, Defog, Court Change, Tidy Up or Mortal Spin. Magic Coat or Magic Bounce also stop it. Stone Axe and Ceaseless Edge get the same +4 / +2, without the setup-move and 2-hit checks."]
         },
         {
           "name": "Defog",
@@ -621,7 +624,7 @@
               "Additional +1 if it has more than 70% HP"
             ],
             "Already behind a Substitute, or you have Infiltrator or a move that goes through Substitute: -8",
-            "At 25% HP or less: -10"
+            "If you can KO it in 4 hits or fewer: -10"
           ]
         },
         {

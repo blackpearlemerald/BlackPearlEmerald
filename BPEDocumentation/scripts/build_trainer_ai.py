@@ -8,9 +8,10 @@ another release's AI.
 
 A release whose source predates the document may still use the exporter's
 copy, but only when its battle AI is provably the same: the AI source files and
-every trainer's AI flags must match the exporter's checkout byte for byte. Any
-difference keeps the release without a document rather than describing another
-release's AI.
+every trainer's AI flags must match the exporter's checkout byte for byte, or an
+archived document must be recorded for exactly that AI (trainer_ai_archive/).
+Any difference keeps the release without a document rather than describing
+another release's AI.
 
 Each entry's rules are a nested list: a string is one line, and a list
 indents the lines under the string before it, as in "If AI is faster:" followed
@@ -25,6 +26,10 @@ import common as C
 
 CONTENT_PATH = C.src("BPEDocumentation", "content", "trainer_ai.json")
 EXPORTER_CONTENT_PATH = os.path.join(C.DOC_ROOT, "content", "trainer_ai.json")
+# Documents for released AI versions that predate the in-source file, named by
+# ai_fingerprint() of that release's source, so a later AI change on main does
+# not take the document away from an older release's corrections.
+ARCHIVE_DIR = os.path.join(C.DOC_ROOT, "content", "trainer_ai_archive")
 SCHEMA_VERSION = 1
 MAX_DEPTH = 5
 # The files that decide what the document describes. trainers.party
@@ -168,12 +173,15 @@ def ai_fingerprint(root):
 
 
 def build(content_path=CONTENT_PATH, site=C.SITE, exporter_content_path=EXPORTER_CONTENT_PATH,
-          source_root=C.SRC_ROOT, exporter_root=C.PROJECT_ROOT):
+          source_root=C.SRC_ROOT, exporter_root=C.PROJECT_ROOT, archive_dir=ARCHIVE_DIR):
     content = validate_content(C.load_json(content_path)) if os.path.isfile(content_path) else None
-    if (content is None and os.path.isfile(exporter_content_path)
-            and os.path.abspath(source_root) != os.path.abspath(exporter_root)):
+    if content is None and os.path.abspath(source_root) != os.path.abspath(exporter_root):
         source_print = ai_fingerprint(source_root)
-        if source_print and source_print == ai_fingerprint(exporter_root):
+        archived = os.path.join(archive_dir, f"{source_print}.json") if source_print else None
+        if archived and os.path.isfile(archived):
+            content = validate_content(C.load_json(archived))
+            print("Trainer AI: release source has no document; using the archived one for its AI")
+        elif source_print and os.path.isfile(exporter_content_path) and source_print == ai_fingerprint(exporter_root):
             content = validate_content(C.load_json(exporter_content_path))
             print("Trainer AI: release source has no document; its AI matches the exporter's, so using that copy")
         else:

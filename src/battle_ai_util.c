@@ -2864,6 +2864,32 @@ bool32 HasMoveThatRaisesOwnStats(enum BattlerId battlerId)
     return FALSE;
 }
 
+// BPE: a status move that raises the user's own stats (Swords Dance, Dragon Dance, Calm Mind...).
+bool32 HasSetupStatusMove(enum BattlerId battlerId)
+{
+    enum Move *moves = GetMovesArray(battlerId);
+
+    for (u32 moveIndex = 0; moveIndex < MAX_MON_MOVES; moveIndex++)
+    {
+        enum Move move = moves[moveIndex];
+        if (move == MOVE_NONE || move == MOVE_UNAVAILABLE || !IsBattleMoveStatus(move))
+            continue;
+        if (GetMoveEffect(move) == EFFECT_ACUPRESSURE)
+            return TRUE;
+
+        enum MoveTarget target = GetMoveTarget(move);
+        if (target != TARGET_USER && target != TARGET_USER_AND_ALLY && target != TARGET_USER_OR_ALLY)
+            continue;
+        u32 additionalEffectCount = GetMoveAdditionalEffectCount(move);
+        for (u32 effectIndex = 0; effectIndex < additionalEffectCount; effectIndex++)
+        {
+            if (GetMoveAdditionalEffectById(move, effectIndex)->moveEffect == STAT_CHANGE_EFFECT_PLUS)
+                return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 bool32 HasMoveWithLowAccuracy(enum BattlerId battlerAtk, enum BattlerId battlerDef, u32 accCheck, bool32 ignoreStatus)
 {
     enum Move *moves = GetMovesArray(battlerAtk);
@@ -4636,6 +4662,11 @@ static enum AIScore IncreaseStatUpScoreInternal(enum BattlerId battlerAtk, enum 
 
     // This should be now redundant
     if (considerContrary && gAiLogicData->abilities[battlerAtk] == ABILITY_CONTRARY)
+        return NO_INCREASE;
+
+    // BPE (from 1.0.1): never reward a boost of any stat, defensive ones included, when the
+    // foe KOs first: in one hit while the AI is faster, or in two while it is slower.
+    if (!shouldSetUp)
         return NO_INCREASE;
 
     if (!ShouldRaiseAnyStat(battlerAtk, battlerDef))

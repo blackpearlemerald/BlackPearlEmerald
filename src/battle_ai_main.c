@@ -1816,7 +1816,9 @@ static s32 AI_CheckBadMove(enum BattlerId battlerAtk, enum BattlerId battlerDef,
     case EFFECT_SUBSTITUTE:
         if (gBattleMons[battlerAtk].volatiles.substitute || aiData->abilities[battlerDef] == ABILITY_INFILTRATOR)
             ADJUST_SCORE(-8);
-        else if (aiData->hpPercents[battlerAtk] <= 25)
+        // BPE (from 1.0.1): only Substitute when the foe needs five or more hits to KO the AI,
+        // instead of upstream's "above 25% HP".
+        else if (NoOfHitsForTargetToFaintBattler(battlerDef, battlerAtk, AI_DEFENDING, DONT_CONSIDER_ENDURE) <= 4)
             ADJUST_SCORE(-10);
         else if (HasMoveWithFlag(battlerDef, MoveIgnoresSubstitute))
             ADJUST_SCORE(-8);
@@ -4756,12 +4758,18 @@ static s32 AI_CalcMoveEffectScore(enum BattlerId battlerAtk, enum BattlerId batt
                 ADJUST_SCORE(GOOD_EFFECT);
         }
         break;
-    case EFFECT_CEASELESS_EDGE:
     case EFFECT_SPIKES:
     case EFFECT_STEALTH_ROCK:
     case EFFECT_STICKY_WEB:
-    case EFFECT_STONE_AXE:
     case EFFECT_TOXIC_SPIKES:
+        // BPE (from 1.0.1): no hazards against a foe that can set up, or that KOs the AI in
+        // two hits or fewer; the AI should attack instead.
+        if (HasSetupStatusMove(battlerDef)
+         || NoOfHitsForTargetToFaintBattler(battlerDef, battlerAtk, AI_DEFENDING, DONT_CONSIDER_ENDURE) <= 2)
+            break;
+        // fallthrough
+    case EFFECT_CEASELESS_EDGE:
+    case EFFECT_STONE_AXE:
         if (AI_ShouldSetUpHazards(battlerAtk, battlerDef, move, aiData))
         {
             if (IsBattlersFirstTurn(battlerAtk))
