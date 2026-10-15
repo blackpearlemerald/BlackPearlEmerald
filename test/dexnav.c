@@ -187,7 +187,7 @@ TEST("DexNav levels grow with the chain but stop at the Level Limiter's cap")
     land = GetRoute101LandMons();
     ASSUME(land != NULL);
     species = land->wildPokemon[0].species;
-    for (i = 0; i < LAND_WILD_COUNT; i++)
+    for (i = 0; i < NUM_LAND_MONS_ENCOUNTER_SLOTS; i++)
     {
         if (land->wildPokemon[i].species != species)
             continue;
@@ -215,7 +215,7 @@ TEST("DexNav lists and finds the randomizer's wild Pokemon")
 {
     struct RandomizerSettings settings;
     const struct WildPokemonInfo *land;
-    enum Species listed[LAND_WILD_COUNT];
+    enum Species listed[NUM_LAND_MONS_ENCOUNTER_SLOTS];
     u32 i, j, count;
     bool32 changed = FALSE;
 
@@ -228,7 +228,7 @@ TEST("DexNav lists and finds the randomizer's wild Pokemon")
 
     count = DexNav_Test_GetListedLandSpecies(listed);
     EXPECT_GT(count, 0);
-    for (i = 0; i < LAND_WILD_COUNT; i++)
+    for (i = 0; i < NUM_LAND_MONS_ENCOUNTER_SLOTS; i++)
     {
         enum Species species = GetWildEncounterSpecies(land->wildPokemon[i].species, WILD_AREA_LAND);
         if (species != land->wildPokemon[i].species)
@@ -250,7 +250,7 @@ TEST("DexNav lists and finds the randomizer's wild Pokemon")
 // merge Pokemon that share a Pokedex number, so only one Zigzagoon was listed.
 TEST("DexNav lists a regional form apart from the original")
 {
-    enum Species listed[LAND_WILD_COUNT];
+    enum Species listed[NUM_LAND_MONS_ENCOUNTER_SLOTS];
     u32 i, count;
     bool32 original = FALSE, galar = FALSE;
 
