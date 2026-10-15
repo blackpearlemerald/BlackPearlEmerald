@@ -6,12 +6,13 @@ at the selected game source (like features.json). Releases whose pinned source
 predates that file get no document; the page then says so instead of showing
 another release's AI.
 
-A release whose source predates the document may still use the exporter's
-copy, but only when its battle AI is provably the same: the AI source files and
-every trainer's AI flags must match the exporter's checkout byte for byte, or an
-archived document must be recorded for exactly that AI (trainer_ai_archive/).
-Any difference keeps the release without a document rather than describing
-another release's AI.
+Because the document describes the AI rather than the release, a later text
+correction applies to every release whose battle AI is provably the same: when
+the AI source files and every trainer's AI flags match the exporter's checkout
+byte for byte, the exporter's current copy is used, even over the release's own.
+Otherwise an archived document recorded for exactly that AI (trainer_ai_archive/)
+is used, then the release's own copy. A release with none of these gets no
+document rather than a description of another release's AI.
 
 Each entry's rules are a nested list: a string is one line, and a list
 indents the lines under the string before it, as in "If AI is faster:" followed
@@ -26,9 +27,9 @@ import common as C
 
 CONTENT_PATH = C.src("BPEDocumentation", "content", "trainer_ai.json")
 EXPORTER_CONTENT_PATH = os.path.join(C.DOC_ROOT, "content", "trainer_ai.json")
-# Documents for released AI versions that predate the in-source file, named by
+# Documents for released AI versions that main no longer has, named by
 # ai_fingerprint() of that release's source, so a later AI change on main does
-# not take the document away from an older release's corrections.
+# not take the document, or its corrections, away from an older release.
 ARCHIVE_DIR = os.path.join(C.DOC_ROOT, "content", "trainer_ai_archive")
 SCHEMA_VERSION = 1
 MAX_DEPTH = 5
@@ -174,18 +175,23 @@ def ai_fingerprint(root):
 
 def build(content_path=CONTENT_PATH, site=C.SITE, exporter_content_path=EXPORTER_CONTENT_PATH,
           source_root=C.SRC_ROOT, exporter_root=C.PROJECT_ROOT, archive_dir=ARCHIVE_DIR):
-    content = validate_content(C.load_json(content_path)) if os.path.isfile(content_path) else None
-    if content is None and os.path.abspath(source_root) != os.path.abspath(exporter_root):
+    content = None
+    if os.path.abspath(source_root) != os.path.abspath(exporter_root):
+        # The document describes the AI, so a text correction made later applies to
+        # every release whose AI is identical: prefer the exporter's current copy, then
+        # an archived copy for that exact AI, and only then the release's own copy.
         source_print = ai_fingerprint(source_root)
         archived = os.path.join(archive_dir, f"{source_print}.json") if source_print else None
-        if archived and os.path.isfile(archived):
-            content = validate_content(C.load_json(archived))
-            print("Trainer AI: release source has no document; using the archived one for its AI")
-        elif source_print and os.path.isfile(exporter_content_path) and source_print == ai_fingerprint(exporter_root):
+        if source_print and os.path.isfile(exporter_content_path) and source_print == ai_fingerprint(exporter_root):
             content = validate_content(C.load_json(exporter_content_path))
-            print("Trainer AI: release source has no document; its AI matches the exporter's, so using that copy")
-        else:
-            print("Trainer AI: release source has no document and its AI differs from the exporter's")
+            print("Trainer AI: the release's AI matches the exporter's, so using the current document")
+        elif archived and os.path.isfile(archived):
+            content = validate_content(C.load_json(archived))
+            print("Trainer AI: using the archived document for the release's AI")
+    if content is None and os.path.isfile(content_path):
+        content = validate_content(C.load_json(content_path))
+    elif content is None:
+        print("Trainer AI: release source has no document and its AI differs from the exporter's")
     data = {"schemaVersion": SCHEMA_VERSION, "curated": content is not None}
     if content:
         data.update(content)

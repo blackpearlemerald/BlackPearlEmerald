@@ -138,11 +138,14 @@ locations and the pre-Elite Four group are extracted from that source's map
 scripts. A release whose source has no `features.json` shows only those
 extracted legendaries, and snapshots published before the page existed have no
 Features tab until a documentation correction rebuilds them. The Trainer AI
-document (`content/trainer_ai.json`) is pinned the same way, with one exception:
-a release whose source has none uses the exporter's copy when its battle AI
-files and every trainer's AI flags match the exporter's checkout exactly
-(`build_trainer_ai.py`). Any difference leaves that release without the
-document. Existing calculator mechanics remain those of the bundled engine;
+document (`content/trainer_ai.json`) describes the AI rather than the release,
+so text corrections can reach published releases: a correction run uses the
+exporter's current copy for every release whose battle AI files and trainer AI
+flags match the exporter's checkout exactly, an archived copy from
+`content/trainer_ai_archive/<AI fingerprint>.json` for an older AI, and
+otherwise the release's own copy (`build_trainer_ai.py`). When main's AI
+changes, archive the current text under the old fingerprint first, so the
+previous release keeps its document. Existing calculator mechanics remain those of the bundled engine;
 versioning preserves its code and inputs, not a promise of perfect game parity.
 
 For map rendering corrections, check pinch zoom on iPhone Safari as well as

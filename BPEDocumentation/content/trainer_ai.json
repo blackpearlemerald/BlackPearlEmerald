@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "title": "Trainer AI",
   "intro": [
-    "This document explains what a trainer will do on a given turn: how it scores its moves, when it switches, and which Pokémon it sends in. It follows the layout of the Pokémon Run & Bun AI document, but every number here comes from Black Pearl Emerald's own battle code (the pokeemerald-expansion AI plus BPE's changes). Black Pearl Emerald's AI is different from Run & Bun's, so their scores do not carry over.",
+    "This document explains what a trainer will do on a given turn: how it scores its moves, when it switches, and which Pokémon it sends in. Black Pearl Emerald uses the battle AI of pokeemerald-expansion, with its own changes on top, and every number here comes from the game's code.",
     "Every move starts with a score of 100. The rules below add to or subtract from it: \"+6\" means 106 if nothing else applies. The trainer uses the move with the highest final score, and picks at random between moves that tie.",
     "This is not an exhaustive list of every move. The AI also has a basic check that throws out moves that would fail or do nothing (Stealth Rock when it is already up, Thunder Wave on a Pokémon that is already paralyzed, and so on). Those obvious cases are not listed; the ones that are not obvious are in \"Moves the AI avoids\"."
   ],
@@ -95,7 +95,7 @@
           },
           "notes": [
             "*The AI sees speed ties as it being faster.",
-            "Unlike Run & Bun, the strongest attack only gets +1. A status move with a +2 or better bonus therefore beats an attack that does not KO, which is why trainers often set up, set hazards or inflict status when they cannot KO you."
+            "The strongest attack only gets +1, so a status move with a +2 or better bonus beats an attack that does not KO, which is why trainers often set up, set hazards or inflict status when they cannot KO you."
           ]
         }
       ]

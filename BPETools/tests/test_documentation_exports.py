@@ -646,6 +646,32 @@ class TrainerAiTests(unittest.TestCase):
             write(root / "archive" / (build_trainer_ai.ai_fingerprint(str(root / "source")) + ".json"), json.dumps(old))
             self.assertEqual(build()["title"], "Old AI")
 
+    def test_corrected_document_replaces_a_releases_own_copy_only_for_identical_ai(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+
+            def tree(name, code):
+                for path, text in (("src/battle_ai_main.c", code), ("src/data/trainers.party", "")):
+                    (root / name / path).parent.mkdir(parents=True, exist_ok=True)
+                    (root / name / path).write_bytes(text.encode())
+
+            write(root / "exporter/content.json", json.dumps(dict(self.CONTENT, title="Corrected")))
+            write(root / "source/content.json", json.dumps(dict(self.CONTENT, title="As released")))
+
+            def build():
+                return build_trainer_ai.build(str(root / "source/content.json"), str(root / "site"),
+                                              str(root / "exporter/content.json"), str(root / "source"),
+                                              str(root / "exporter"), str(root / "archive"))
+
+            tree("exporter", "int score;\n")
+            tree("source", "int score;\n")
+            self.assertEqual(build()["title"], "Corrected")
+            tree("source", "int score = 1;\n")
+            self.assertEqual(build()["title"], "As released")
+            write(root / "archive" / (build_trainer_ai.ai_fingerprint(str(root / "source")) + ".json"),
+                  json.dumps(dict(self.CONTENT, title="Archived correction")))
+            self.assertEqual(build()["title"], "Archived correction")
+
     def test_repository_archive_is_valid(self):
         folder = Path(__file__).resolve().parents[2] / "BPEDocumentation/content/trainer_ai_archive"
         for path in folder.glob("*.json"):
