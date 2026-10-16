@@ -378,14 +378,15 @@ static void CreateHandSprite()
     return;
 }
 
+// BPE: this used to destroy the ball sprites a second time, after DestroyPokeballSprites
+// had set their ids to SPRITE_NONE, so it ran DestroySprite on &gSprites[0xFF], far past
+// the end of gSprites. Whatever EWRAM sat there was treated as a sprite and "freed", which
+// froze the game on a black screen once 2.2.1's memory layout put live data there.
 static void DestroyHandSprite()
 {
-    u8 i = 0;
-    for(i = 0; i < 9; i++)
-    {
-        DestroySprite(&gSprites[sBirchCaseDataPtr->pokeballSpriteIds[i]]);
-        sBirchCaseDataPtr->pokeballSpriteIds[i] = SPRITE_NONE;
-    }
+    if (sBirchCaseDataPtr->handSpriteId != SPRITE_NONE)
+        DestroySprite(&gSprites[sBirchCaseDataPtr->handSpriteId]);
+    sBirchCaseDataPtr->handSpriteId = SPRITE_NONE;
 }
 
 //
@@ -431,7 +432,9 @@ static void DestroyPokeballSprites()
     u8 i = 0;
     for(i = 0; i < 9; i++)
     {
-        DestroySprite(&gSprites[sBirchCaseDataPtr->pokeballSpriteIds[i]]);
+        // BPE: an empty slot never had a sprite (see DestroyHandSprite)
+        if (sBirchCaseDataPtr->pokeballSpriteIds[i] != SPRITE_NONE)
+            DestroySprite(&gSprites[sBirchCaseDataPtr->pokeballSpriteIds[i]]);
         sBirchCaseDataPtr->pokeballSpriteIds[i] = SPRITE_NONE;
     }
 }

@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.2": {
+      "channel": "stable",
+      "changes": [
+        "Fixed the game freezing on a black screen after choosing your starter from Professor Birch's bag."
+      ]
+    },
     "2.2.1": {
       "channel": "stable",
       "changes": [
