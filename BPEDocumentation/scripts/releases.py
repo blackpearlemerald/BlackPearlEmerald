@@ -13,6 +13,7 @@ import shutil
 import subprocess
 import struct
 import sys
+import time
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -31,8 +32,21 @@ LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Convert
 VERSIONLESS_PAGES = {"save-converter.html"}
 
 
+# GitHub's API occasionally answers with a 5xx; one of those stopped a whole publication.
+# Only read-only calls are retried, never uploads or release edits.
+def run_read_retrying(command, attempts=4, delay=15, **kwargs):
+    for attempt in range(1, attempts + 1):
+        try:
+            return subprocess.run(command, check=True, **kwargs)
+        except subprocess.CalledProcessError:
+            if attempt == attempts:
+                raise
+            print(f"{command[0]} {command[1]} failed (attempt {attempt} of {attempts}); retrying in {delay * attempt}s", flush=True)
+            time.sleep(delay * attempt)
+
+
 def gh(*args):
-    return subprocess.check_output(["gh", *args], cwd=ROOT).decode("utf-8")
+    return run_read_retrying(["gh", *args], cwd=ROOT, stdout=subprocess.PIPE).stdout.decode("utf-8")
 
 
 def read_json(path):
@@ -294,7 +308,7 @@ def download_archives(archive_dir):
         for asset in assets:
             path = target / asset["name"]
             if not path.exists():
-                subprocess.run(["gh", "release", "download", record["tag_name"], "--repo", REPOSITORY, "--pattern", asset["name"], "--dir", str(target)], check=True)
+                run_read_retrying(["gh", "release", "download", record["tag_name"], "--repo", REPOSITORY, "--pattern", asset["name"], "--dir", str(target), "--clobber"])
 
 
 def upload_archive(release, archive, work):

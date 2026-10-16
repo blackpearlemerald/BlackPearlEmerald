@@ -690,6 +690,7 @@ class TrainerAiTests(unittest.TestCase):
                     releases.validate_trainer_ai(site)
 
 
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
 class WorldLayoutTests(unittest.TestCase):
     @staticmethod
     def _map(mid, w, h, warps=(), connections=()):

@@ -26,6 +26,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      # Without these the exporter tests are skipped, as on a bare local Python.
+      - name: Install documentation dependencies
+        run: python -m pip install -r BPEDocumentation/requirements.txt
       - name: Test package integrity and version behavior
         run: python -m unittest discover -s BPETools/tests -v
       - name: Test website version routing and calculator storage
