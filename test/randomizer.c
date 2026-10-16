@@ -753,3 +753,35 @@ TEST("Fixed seeds keep giving the same results")
     EXPECT_EQ(Randomizer_GetEvolutionTarget(SPECIES_TREECKO, SPECIES_GROVYLE), 726);
     Randomizer_ClearSettings();
 }
+
+// Players asked for random wild Pokémon with the normal trainers: that is a Custom mix
+// with Regular trainers off and Boss trainers unchanged.
+TEST("Wild Pokemon can be random while every trainer keeps their team")
+{
+    struct RandomizerSettings settings;
+    struct Trainer youngster, leader;
+    struct TrainerMon mons[3] = {0};
+    bool32 wildChanged = FALSE;
+
+    mons[0].species = SPECIES_ZIGZAGOON;
+    mons[1].species = SPECIES_POOCHYENA;
+    mons[2].species = SPECIES_NOSEPASS;
+    FillTrainer(&youngster, mons, ARRAY_COUNT(mons), TRAINER_CLASS_YOUNGSTER, COMPOUND_STRING("CALVIN"));
+    FillTrainer(&leader, mons, ARRAY_COUNT(mons), TRAINER_CLASS_LEADER, COMPOUND_STRING("ROXANNE"));
+
+    Randomizer_ApplyPreset(&settings, RANDOMIZER_PRESET_RANDOMLOCKE);
+    settings.seed = SEED_A;
+    settings.options[RANDOMIZER_OPTION_REGULAR_TRAINERS] = FALSE;
+    settings.options[RANDOMIZER_OPTION_BOSS_TRAINERS] = RANDOMIZER_BOSSES_UNCHANGED;
+    UseSettings(&settings);
+
+    for (u32 i = 0; i < ARRAY_COUNT(mons); i++)
+    {
+        EXPECT_EQ(Randomizer_GetTrainerSpecies(&youngster, i), mons[i].species);
+        EXPECT_EQ(Randomizer_GetTrainerSpecies(&leader, i), mons[i].species);
+        if (Randomizer_GetWildSpecies(mons[i].species, MAP_ROUTE101, WILD_AREA_LAND) != mons[i].species)
+            wildChanged = TRUE;
+    }
+    EXPECT(wildChanged);
+    Randomizer_ClearSettings();
+}

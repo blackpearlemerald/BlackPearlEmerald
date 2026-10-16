@@ -16,7 +16,7 @@
         },
         {
           "title": "Randomizer presets",
-          "body": "What each preset randomizes. Randomlocke suits a randomized Nuzlocke: the Pokémon you meet are random, but Gym Leaders and other bosses keep their teams. Full also randomizes bosses, abilities, moves, TMs and items. Chaos randomizes everything, including types and the type chart. Changing any option makes the preset Custom.",
+          "body": "What each preset randomizes. Randomlocke suits a randomized Nuzlocke: the Pokémon you meet are random, but Gym Leaders and other bosses keep their teams. Full also randomizes bosses, abilities, moves, TMs and items. Chaos randomizes everything, including types and the type chart. Changing any option makes the preset Custom. Want random wild Pokémon but the normal trainers? Pick a preset, then set Regular trainers to Off and Boss trainers to Unchanged: every trainer keeps their usual team.",
           "table": {
             "columns": ["Option", "Randomlocke", "Full", "Chaos"],
             "rows": [
