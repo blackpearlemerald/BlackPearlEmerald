@@ -23,7 +23,7 @@ SlateportCity_NameRatersHouse_EventScript_DeclineNameRate::
 	end
 
 SlateportCity_NameRatersHouse_EventScript_RateMonNickname::
-	specialvar VAR_RESULT, ScriptGetPartyMonSpecies
+	specialvar VAR_RESULT, ScriptGetSelectedMonSpecies
 	goto_if_eq VAR_RESULT, SPECIES_EGG, SlateportCity_NameRatersHouse_EventScript_CantRateEgg
 	special BufferMonNickname
 	special IsMonOTIDNotPlayers
@@ -109,3 +109,48 @@ SlateportCity_NameRatersHouse_Text_ThatIsMerelyAnEgg:
 	.string "Now, now.\n"
 	.string "That is merely an EGG!$"
 
+@ BPE: the Name Rater's friend reads out a party Pokémon's exact friendship.
+SlateportCity_NameRatersHouse_EventScript_FriendshipChecker::
+	lock
+	faceplayer
+	msgbox SlateportCity_NameRatersHouse_Text_FriendshipCheckerIntro, MSGBOX_DEFAULT
+	special ChoosePartyMon
+	lock
+	faceplayer
+	goto_if_ge VAR_0x8004, PARTY_SIZE, SlateportCity_NameRatersHouse_EventScript_FriendshipCheckerDecline
+	specialvar VAR_RESULT, ScriptGetPartyMonSpecies
+	goto_if_eq VAR_RESULT, SPECIES_EGG, SlateportCity_NameRatersHouse_EventScript_FriendshipCheckerEgg
+	bufferpartymonnick STR_VAR_1, VAR_0x8004
+	specialvar VAR_RESULT, ScriptGetPartyMonFriendship
+	buffernumberstring STR_VAR_2, VAR_RESULT
+	msgbox SlateportCity_NameRatersHouse_Text_FriendshipValue, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_NameRatersHouse_EventScript_FriendshipCheckerEgg::
+	msgbox SlateportCity_NameRatersHouse_Text_FriendshipCheckerEgg, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_NameRatersHouse_EventScript_FriendshipCheckerDecline::
+	msgbox SlateportCity_NameRatersHouse_Text_FriendshipCheckerDecline, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_NameRatersHouse_Text_FriendshipCheckerIntro:
+	.string "My friend rates names, but I can\n"
+	.string "tell how much a POKéMON loves you!\p"
+	.string "Which one should I look at?$"
+
+SlateportCity_NameRatersHouse_Text_FriendshipValue:
+	.string "{STR_VAR_1}'s friendship is\n"
+	.string "{STR_VAR_2} out of 255.\p"
+	.string "POKéMON that evolve through\n"
+	.string "friendship need at least 160.$"
+
+SlateportCity_NameRatersHouse_Text_FriendshipCheckerEgg:
+	.string "That's an EGG! It hasn't met\n"
+	.string "you yet.$"
+
+SlateportCity_NameRatersHouse_Text_FriendshipCheckerDecline:
+	.string "Come back any time!$"

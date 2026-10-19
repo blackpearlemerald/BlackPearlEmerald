@@ -1677,6 +1677,56 @@ enum Species ScriptGetSelectedMonSpecies(void)
     return GetBoxMonData(boxmon, MON_DATA_SPECIES_OR_EGG);
 }
 
+// BPE: the Pokémon Center status coach burns or poisons the party Pokémon in
+// VAR_0x8004, for strategies that want it before a battle (Guts, Flame Orb
+// sets, Nuzlocke pre-burns). VAR_0x8005 picks the status (COACH_STATUS_*).
+// It refuses what a Flame or Toxic Orb couldn't do either.
+u16 ScriptCoachInflictStatus(void)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004];
+    enum Species species = GetMonData(mon, MON_DATA_SPECIES);
+    enum Ability ability = GetMonAbility(mon);
+    u32 status;
+
+    if (GetMonData(mon, MON_DATA_IS_EGG))
+        return COACH_RESULT_EGG;
+    if (GetMonData(mon, MON_DATA_HP) == 0)
+        return COACH_RESULT_FAINTED;
+    if (GetMonData(mon, MON_DATA_STATUS) != STATUS1_NONE)
+        return COACH_RESULT_HAS_STATUS;
+    if (ability == ABILITY_COMATOSE || ability == ABILITY_PURIFYING_SALT)
+        return COACH_RESULT_IMMUNE;
+
+    if (gSpecialVar_0x8005 == COACH_STATUS_BURN)
+    {
+        if (IsSpeciesOfType(species, TYPE_FIRE)
+         || ability == ABILITY_WATER_VEIL
+         || ability == ABILITY_WATER_BUBBLE
+         || ability == ABILITY_THERMAL_EXCHANGE)
+            return COACH_RESULT_IMMUNE;
+        status = STATUS1_BURN;
+    }
+    else
+    {
+        if (IsSpeciesOfType(species, TYPE_POISON)
+         || IsSpeciesOfType(species, TYPE_STEEL)
+         || ability == ABILITY_IMMUNITY
+         || ability == ABILITY_PASTEL_VEIL)
+            return COACH_RESULT_IMMUNE;
+        status = (gSpecialVar_0x8005 == COACH_STATUS_TOXIC) ? STATUS1_TOXIC_POISON : STATUS1_POISON;
+    }
+
+    SetMonData(mon, MON_DATA_STATUS, &status);
+    return COACH_RESULT_DONE;
+}
+
+// BPE: the friendship checker beside the Name Rater reads out a party
+// Pokémon's exact friendship.
+u16 ScriptGetPartyMonFriendship(void)
+{
+    return GetMonData(&gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004], MON_DATA_FRIENDSHIP);
+}
+
 // Removed for Emerald
 void TryInitBattleTowerAwardManObjectEvent(void)
 {

@@ -193,6 +193,17 @@ void LoadPlayerParty(void)
         data = gParties[B_TRAINER_PLAYER][i].status;
         SetBoxMonData(&gParties[B_TRAINER_PLAYER][i].box, MON_DATA_STATUS, &data);
 
+        // BPE: through 2.2.2 a Candy Jar that taught a move part-way up closed the
+        // party menu with the level still at that step, below what the Exp gives
+        // (stats were already the final level's). Battles then froze. Repair it.
+        if (GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_SANITY_HAS_SPECIES)
+         && !GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_IS_EGG))
+        {
+            data = GetLevelFromMonExp(&gParties[B_TRAINER_PLAYER][i]);
+            if (data != GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_LEVEL))
+                SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_LEVEL, &data);
+        }
+
         // BPE Nuzlocke: older releases never stored the dead flag (MON_DATA_DEAD sat
         // in the encrypted field range), so a Pokémon that fainted in an older save
         // is only at 0 HP. Mark it as battles do.

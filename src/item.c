@@ -18,6 +18,7 @@
 #include "shop_criteria.h"
 #include "constants/battle.h"
 #include "constants/items.h"
+#include "constants/maps.h"
 #include "constants/moves.h"
 #include "constants/item_effects.h"
 #include "constants/hold_effects.h"
@@ -1131,9 +1132,89 @@ bool32 ItemHasVolatileFlag(enum Item itemId, enum Volatile _volatile)
     }
 }
 
+// BPE: the Verdanturf mart is the game's catch-all shop and sells cheaply, so
+// players can buy what they want without grinding money: berries ₽50,
+// evolution items ₽200, Gimmighoul Coins ₽10 (Gholdengo needs 999), and
+// nothing above ₽500.
+extern const u16 VerdanturfTown_Mart_Pokemart_Basic[];
+extern const u16 VerdanturfTown_Mart_Pokemart_Expanded3[];
+extern const u16 VerdanturfTown_Mart_Pokemart_Expanded4[];
+extern const u16 VerdanturfTown_Mart_Pokemart_Postgame[];
+
+static const u16 *const sVerdanturfMartLists[] =
+{
+    VerdanturfTown_Mart_Pokemart_Basic,
+    VerdanturfTown_Mart_Pokemart_Expanded3,
+    VerdanturfTown_Mart_Pokemart_Expanded4,
+    VerdanturfTown_Mart_Pokemart_Postgame,
+};
+
+static bool32 IsSoldInVerdanturfMart(enum Item itemId)
+{
+    for (u32 i = 0; i < ARRAY_COUNT(sVerdanturfMartLists); i++)
+    {
+        for (const u16 *item = sVerdanturfMartLists[i]; *item != ITEM_NONE; item++)
+        {
+            if (*item == itemId)
+                return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+static bool32 IsEvolutionItem(enum Item itemId)
+{
+    if (GetItemFieldFunc(itemId) == ItemUseOutOfBattle_EvolutionStone)
+        return TRUE;
+    // Milcery's sweets are held through its spin, not used like a stone.
+    switch (itemId)
+    {
+    case ITEM_STRAWBERRY_SWEET:
+    case ITEM_LOVE_SWEET:
+    case ITEM_BERRY_SWEET:
+    case ITEM_CLOVER_SWEET:
+    case ITEM_FLOWER_SWEET:
+    case ITEM_STAR_SWEET:
+    case ITEM_RIBBON_SWEET:
+        return TRUE;
+    default:
+        return FALSE;
+    }
+}
+
+u32 GetVerdanturfMartPrice(enum Item itemId)
+{
+    u32 price = GetItemPrice(itemId);
+    u32 cap = 500;
+
+    if (itemId == ITEM_GIMMIGHOUL_COIN)
+        cap = 10;
+    else if (GetItemPocket(itemId) == POCKET_BERRIES)
+        cap = 50;
+    else if (IsEvolutionItem(itemId))
+        cap = 200;
+    return min(price, cap);
+}
+
+// BPE: what a mart charges. Only the Verdanturf mart has its own prices.
+u32 GetMartItemPrice(enum Item itemId)
+{
+    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_VERDANTURF_TOWN_MART)
+     && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_VERDANTURF_TOWN_MART))
+        return GetVerdanturfMartPrice(itemId);
+    return GetItemPrice(itemId);
+}
+
 u32 GetItemSellPrice(enum Item itemId)
 {
-    return GetItemPrice(itemId) / ITEM_SELL_FACTOR;
+    // BPE: anything Verdanturf sells cheaply sells back for half that price
+    // too, or buying there and selling elsewhere would print money.
+    u32 price = IsSoldInVerdanturfMart(itemId) ? GetVerdanturfMartPrice(itemId) : GetItemPrice(itemId);
+
+    // A sellable item never sells for nothing: the Bag divides by this price.
+    if (price != 0 && price < ITEM_SELL_FACTOR)
+        return 1;
+    return price / ITEM_SELL_FACTOR;
 }
 
 bool32 IsHoldEffectChoice(enum HoldEffect holdEffect)

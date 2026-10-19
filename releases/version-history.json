@@ -1,6 +1,18 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.3": {
+      "channel": "stable",
+      "changes": [
+        "New status coach in every Pokémon Center: burns or poisons a Pokémon for you.",
+        "New friendship checker next to the Name Rater in Slateport.",
+        "Verdanturf Mart is now cheap: nothing over ₽500, evolution items ₽200, berries ₽50.",
+        "Verdanturf Mart now sells the Flame Orb and Toxic Orb.",
+        "DexNav search level now grows with your chain instead of starting maxed.",
+        "Fixed the Name Rater calling every PC Pokémon an Egg.",
+        "Fixed the Candy Jar leaving Pokémon at the wrong level, which could freeze battles."
+      ]
+    },
     "2.2.2": {
       "channel": "stable",
       "changes": [

@@ -19,6 +19,7 @@ VerdanturfTown_Mart_EventScript_PokemartBasic::
 	end
 
 	.align 2
+	.global VerdanturfTown_Mart_Pokemart_Basic @ BPE: priced by GetVerdanturfMartPrice
 VerdanturfTown_Mart_Pokemart_Basic:
 	.2byte ITEM_POKE_BALL
 	.2byte ITEM_GREAT_BALL
@@ -68,6 +69,8 @@ VerdanturfTown_Mart_Pokemart_Basic:
 	.2byte ITEM_CHERI_BERRY
 	.2byte ITEM_CHESTO_BERRY
 	.2byte ITEM_ENIGMA_BERRY
+	.2byte ITEM_FLAME_ORB
+	.2byte ITEM_TOXIC_ORB
 	pokemartlistend
 
 VerdanturfTown_Mart_EventScript_PokemartExpanded3::
@@ -77,6 +80,7 @@ VerdanturfTown_Mart_EventScript_PokemartExpanded3::
 	end
 
 	.align 2
+	.global VerdanturfTown_Mart_Pokemart_Expanded3 @ BPE: priced by GetVerdanturfMartPrice
 VerdanturfTown_Mart_Pokemart_Expanded3:
 	.2byte ITEM_POKE_BALL
 	.2byte ITEM_GREAT_BALL
@@ -135,6 +139,8 @@ VerdanturfTown_Mart_Pokemart_Expanded3:
 	.2byte ITEM_CHERI_BERRY
 	.2byte ITEM_CHESTO_BERRY
 	.2byte ITEM_ENIGMA_BERRY
+	.2byte ITEM_FLAME_ORB
+	.2byte ITEM_TOXIC_ORB
 	pokemartlistend
 
 VerdanturfTown_Mart_EventScript_PokemartExpanded4::
@@ -144,6 +150,7 @@ VerdanturfTown_Mart_EventScript_PokemartExpanded4::
 	end
 
 	.align 2
+	.global VerdanturfTown_Mart_Pokemart_Expanded4 @ BPE: priced by GetVerdanturfMartPrice
 VerdanturfTown_Mart_Pokemart_Expanded4:
 	.2byte ITEM_POKE_BALL
 	.2byte ITEM_GREAT_BALL
@@ -225,6 +232,8 @@ VerdanturfTown_Mart_Pokemart_Expanded4:
 	.2byte ITEM_CHERI_BERRY
 	.2byte ITEM_CHESTO_BERRY
 	.2byte ITEM_ENIGMA_BERRY
+	.2byte ITEM_FLAME_ORB
+	.2byte ITEM_TOXIC_ORB
 	pokemartlistend
 
 VerdanturfTown_Mart_EventScript_PokemartPostgame::
@@ -236,6 +245,7 @@ VerdanturfTown_Mart_EventScript_PokemartPostgame::
 @ After the Champion: the held items that change the forms of Arceus, Silvally,
 @ Genesect, Ogerpon, Dialga, Palkia and Giratina.
 	.align 2
+	.global VerdanturfTown_Mart_Pokemart_Postgame @ BPE: priced by GetVerdanturfMartPrice
 VerdanturfTown_Mart_Pokemart_Postgame:
 	.2byte ITEM_POKE_BALL
 	.2byte ITEM_GREAT_BALL
@@ -366,6 +376,8 @@ VerdanturfTown_Mart_Pokemart_Postgame:
 	.2byte ITEM_RED_ORB
 	.2byte ITEM_BLUE_ORB
 	.2byte ITEM_ULTRANECROZIUM_Z
+	.2byte ITEM_FLAME_ORB
+	.2byte ITEM_TOXIC_ORB
 	pokemartlistend
 
 VerdanturfTown_Mart_EventScript_Boy::

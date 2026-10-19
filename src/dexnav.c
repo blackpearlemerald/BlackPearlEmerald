@@ -827,11 +827,10 @@ static u8 GetSearchLevel(enum Species species)
 #if USE_DEXNAV_SEARCH_LEVELS == TRUE
     searchLevel = gSaveBlock3Ptr->dexNavSearchLevels[species];
 #else
-    // BPE: the save has no room for a level per species, and the DexNav is meant to
-    // be complete from the start, so every species searches at the maximum level
-    // (Egg Moves, Hidden Abilities, held items and perfect IVs at their best odds).
-    // The chain still adds its own level bonus and is shown on screen.
-    searchLevel = DEXNAV_CHAIN_MAX;
+    // BPE: the save has no room for a level per species, so the chain is the search
+    // level: Egg Moves, Hidden Abilities, held items and perfect IVs improve as the
+    // player chains. Every species can still be searched for from the start.
+    searchLevel = gSaveBlock3Ptr->dexNavChain;
 #endif
     return searchLevel;
 }

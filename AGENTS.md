@@ -620,11 +620,12 @@ The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
   Once Flash is used (level 1) it works, and the Pokémon only hides inside the
   lit circle (4 tiles around the player).
 - `USE_DEXNAV_SEARCH_LEVELS` stays `FALSE`: a byte per species does not fit in the
-  save. `GetSearchLevel()` returns `DEXNAV_CHAIN_MAX` for every species, so the
-  Egg Move, Hidden Ability, held item and perfect IV bonuses are available from
-  the first search. The DexNav also shows every species and its hidden ability
-  from the start: nothing is hidden behind `FLAG_GET_SEEN` or a catch. The chain
-  itself (`dexNavChain`) still grows and adds its level bonus.
+  save. `GetSearchLevel()` returns the chain (`dexNavChain`, up to
+  `DEXNAV_CHAIN_MAX`) for every species, so the Egg Move, Hidden Ability, held
+  item and perfect IV odds improve as the player chains. 2.1.13 through 2.2.2
+  returned `DEXNAV_CHAIN_MAX` instead; the maintainer only meant every species to
+  be searchable at once, not maxed. The DexNav shows every species and its hidden
+  ability from the start: nothing is hidden behind `FLAG_GET_SEEN` or a catch.
 - It reads the wild tables through `GetWildEncounterSpecies()`, so it lists and
   spawns the randomizer's Pokémon. The form (`GetWildFormVariant()`) is chosen
   when a search starts and created with `CreateWildMonForm()`, so the battle
@@ -749,7 +750,7 @@ Tests: `make check TESTS=test/nuzlocke_dupes.c`.
 Gimmighoul (both forms) evolves into Gholdengo on level up with 999 Gimmighoul Coins
 in the bag, and the evolution uses the coins up (`IF_BAG_ITEM_COUNT`). Nothing gave
 out coins, so the documented evolution could never happen. The Verdanturf mart sells
-them (the Expanded4 and Postgame lists, 400 each). Tests:
+them (the Expanded4 and Postgame lists, ₽10 each; see "Verdanturf mart prices"). Tests:
 `make check TESTS=test/gimmighoul_evolution.c`.
 
 ### Gimmick prompt
@@ -786,6 +787,52 @@ and the stats use, so the personality never changes. EVs stay within
 `MAX_PER_STAT_EVS` and `GetCurrentEVCap()`, and the ability cycles the slots of
 `GetSpeciesAbility`, which follows the randomizer, skipping empty and repeated
 ones. Tests: `make check TESTS=test/stat_editor.c`.
+
+### Status coach
+
+An Expert (`Common_EventScript_StatusCoach`, `data/scripts/status_coach.inc`)
+stands at (12,4) in every Pokémon Center, beside the relearner. He burns,
+poisons or badly poisons a party Pokémon (for Guts or Nuzlocke pre-burns).
+`ScriptCoachInflictStatus` in `src/field_specials.c` refuses Eggs, fainted
+Pokémon, one that already has a status, and whatever a Flame or Toxic Orb
+couldn't affect (types and abilities). Nothing is saved. The Verdanturf mart
+sells both orbs at every tier.
+
+The exact friendship of a party Pokémon comes from a separate NPC, the woman at
+(5,5) beside the Name Rater in Slateport
+(`SlateportCity_NameRatersHouse_EventScript_FriendshipChecker`, special
+`ScriptGetPartyMonFriendship`). The maintainer did not want the coach to do it.
+She is on the website map as a guide note in `BPEDocumentation/content/guides.json`.
+Tests: `make check TESTS=test/status_coach.c`.
+
+### Verdanturf mart prices
+
+The Verdanturf mart is meant to be cheap enough that money never matters.
+`GetVerdanturfMartPrice()` in `src/item.c` caps everything on its four lists at
+₽500, evolution items (a stone-style field use, plus Milcery's sweets) at ₽200,
+berries at ₽50 and Gimmighoul Coins at ₽10; an item already cheaper keeps its
+price. `GetMartItemPrice()` applies this only while the player stands in that
+mart, so `src/shop.c` uses it instead of `GetItemPrice()`. `GetItemSellPrice()`
+sells anything on those lists back for half the Verdanturf price everywhere, or
+buying there and selling elsewhere would print money. The lists are exported
+with `.global` (the docs parser needs single-colon labels). The item pages on
+the website still show the normal price. Tests:
+`make check TESTS=test/verdanturf_mart.c`.
+
+### Picking a Pokémon from the PC
+
+`chooseboxmon` (used by the Name Rater, relearner, Frontier judges and trades)
+can return a PC Pokémon: `VAR_0x8004` is then `PC_MON_CHOSEN` and the slot is in
+`gSpecialVar_MonBoxId`/`MonBoxPos`. Follow it with specials that use
+`GetSelectedBoxMonFromPcOrParty()` (`ScriptGetSelectedMonSpecies`), never
+`ScriptGetPartyMonSpecies`, which reads out of the party array. Through 2.2.2 the
+Name Rater called every PC Pokémon an Egg this way.
+
+Expansion 1.16.4 also broke `Task_LearnNextMoveOrClosePartyMenu` in
+`src/party_menu.c` (it tested `data1`, the move, instead of `learnMoveState`), so
+a Candy Jar that taught a move part-way closed the menu with the level left at
+that step. It is fixed, and `LoadPlayerParty()` repairs a party level that does
+not match the Exp. Check that function again after the next upstream merge.
 
 ### Registered items
 

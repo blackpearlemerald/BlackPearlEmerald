@@ -31,7 +31,7 @@ BattleFrontier_Lounge1_EventScript_AlreadyMetBreeder::
 @ VAR_0x8006: Stat id of highest IV stat
 @ VAR_0x8007: IV of the highest IV stat
 BattleFrontier_Lounge1_EventScript_ShowMonToBreeder::
-	specialvar VAR_RESULT, ScriptGetPartyMonSpecies
+	specialvar VAR_RESULT, ScriptGetSelectedMonSpecies
 	goto_if_eq VAR_RESULT, SPECIES_EGG, BattleFrontier_Lounge1_EventScript_ShowEggToBreeder
 	special BufferVarsForIVRater
 	goto_if_le VAR_0x8005, 90, BattleFrontier_Lounge1_EventScript_AverageTotalIVs       @ Average of 15

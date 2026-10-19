@@ -130,4 +130,15 @@ enum {
     TEMPLATE_POSITION
 };
 
+// BPE: Pokémon Center status coach (ScriptCoachInflictStatus)
+#define COACH_STATUS_BURN   0
+#define COACH_STATUS_POISON 1
+#define COACH_STATUS_TOXIC  2
+
+#define COACH_RESULT_DONE       0
+#define COACH_RESULT_EGG        1
+#define COACH_RESULT_FAINTED    2
+#define COACH_RESULT_HAS_STATUS 3
+#define COACH_RESULT_IMMUNE     4
+
 #endif // GUARD_CONSTANTS_FIELD_SPECIALS_H
