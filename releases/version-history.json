@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.4": {
+      "channel": "stable",
+      "changes": [
+        "Karrablast and Shelmet can now evolve with a Linking Cord, so every trade evolution works without trading."
+      ]
+    },
     "2.2.3": {
       "channel": "stable",
       "changes": [
