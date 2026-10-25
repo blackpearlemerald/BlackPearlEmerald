@@ -95,6 +95,7 @@ enum {
     ACTION_BY_TYPE,
     ACTION_BY_AMOUNT,
     ACTION_BY_INDEX,
+    ACTION_SWAP_BIKE,
     ACTION_DUMMY,
 };
 
@@ -208,6 +209,7 @@ static void ItemMenu_Cancel(u8);
 static void ItemMenu_UseInBattle(u8);
 static void ItemMenu_CheckTag(u8);
 static void ItemMenu_Show(u8);
+static void ItemMenu_SwapBike(u8);
 static void ItemMenu_GiveFavorLady(u8);
 static void ItemMenu_ConfirmQuizLady(u8);
 static void Task_ItemContext_Normal(u8);
@@ -228,6 +230,7 @@ static const u8 sText_NoRoomForItems[] = _("There's no room to\nstore items.");
 static const u8 sText_CantStoreImportantItems[] = _("Important items\ncan't be stored in\nthe PC!");
 // Keep the number in step with MAX_REGISTERED_ITEMS.
 static const u8 sText_RegisteredItemsFull[] = _("Only five items can be\nregistered at a time.");
+static const u8 sText_SwappedToVar1[] = _("Swapped to the {STR_VAR_1}.");
 
 static void Task_LoadBagSortOptions(u8 taskId);
 static void ItemMenu_SortByName(u8 taskId);
@@ -309,6 +312,7 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_CHECK_TAG]         = {COMPOUND_STRING("CHECK TAG"), {ItemMenu_CheckTag}},
     [ACTION_CONFIRM]           = {gMenuText_Confirm,            {Task_FadeAndCloseBagMenu}},
     [ACTION_SHOW]              = {COMPOUND_STRING("SHOW"),      {ItemMenu_Show}},
+    [ACTION_SWAP_BIKE]         = {COMPOUND_STRING("SWAP"),      {ItemMenu_SwapBike}},
     [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,              {ItemMenu_GiveFavorLady}},
     [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,            {ItemMenu_ConfirmQuizLady}},
     [ACTION_BY_NAME]           = {COMPOUND_STRING("Name"),      {ItemMenu_SortByName}},
@@ -1708,6 +1712,9 @@ static void OpenContextMenu(u8 taskId)
                 {
                     if (TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE))
                         gBagMenu->contextMenuItemsBuffer[0] = ACTION_WALK;
+                    // BPE: Rydel's bike switch from the Bag, but never for the bike being ridden.
+                    else if (gSpecialVar_ItemId != ITEM_BICYCLE)
+                        gBagMenu->contextMenuItemsBuffer[2] = ACTION_SWAP_BIKE;
                 }
                 break;
             case POCKET_POKE_BALLS:
@@ -2603,6 +2610,41 @@ static void Task_WallyTutorialBagMenu(u8 taskId)
 }
 
 #undef tTimer
+
+// BPE: swaps the Mach Bike for the Acro Bike (or back) in the same Bag slot,
+// as Rydel does in his shop, and moves its SELECT registration with it.
+static void ItemMenu_SwapBike(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+    u16 *scrollPos = &gBagPosition.scrollPosition[gBagPosition.pocket];
+    u16 *cursorPos = &gBagPosition.cursorPosition[gBagPosition.pocket];
+    enum Item newBike = (gSpecialVar_ItemId == ITEM_MACH_BIKE) ? ITEM_ACRO_BIKE : ITEM_MACH_BIKE;
+    struct BagPocket *pocket = &gBagPockets[POCKET_KEY_ITEMS];
+    u32 i;
+
+    for (i = 0; i < pocket->capacity; i++)
+    {
+        struct ItemSlot slot = BagPocket_GetSlotData(pocket, i);
+        if (slot.itemId == gSpecialVar_ItemId)
+        {
+            slot.itemId = newBike;
+            BagPocket_SetSlotData(pocket, i, slot);
+            break;
+        }
+    }
+    SwapRegisteredBike();
+    IncrementGameStat(GAME_STAT_TRADED_BIKES);
+    gSpecialVar_ItemId = newBike;
+
+    RemoveContextWindow();
+    DestroyListMenuTask(tListTaskId, scrollPos, cursorPos);
+    LoadBagItemListBuffers(gBagPosition.pocket);
+    tListTaskId = ListMenuInit(&gMultiuseListMenuTemplate, *scrollPos, *cursorPos);
+    ScheduleBgCopyTilemapToVram(0);
+    CopyItemName(newBike, gStringVar1);
+    StringExpandPlaceholders(gStringVar4, sText_SwappedToVar1);
+    DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, HandleErrorMessage);
+}
 
 // This action is used to show the Apprentice an item when
 // they ask what item they should make their Pokémon hold

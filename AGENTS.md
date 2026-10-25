@@ -727,6 +727,15 @@ treats it like Nuzlocke's guaranteed catch (`CAPTURE_GUARANTEED`). It reuses the
 Gold Teeth's id, 891 (see "Item numbering"). Tests:
 `make check TESTS=test/battle/capture.c`.
 
+### Swapping bikes from the Bag
+
+The Mach Bike and Acro Bike have a SWAP action in the Bag (`ItemMenu_SwapBike`
+in `src/item_menu.c`, in the Key Items menu's empty slot), which does Rydel's
+switch anywhere: the other bike takes the same Bag slot, `SwapRegisteredBike()`
+moves a SELECT registration with it, and it counts toward
+`GAME_STAT_TRADED_BIKES`. It is hidden while the player rides, since the bike in
+use would be swapped out. No item, flag or variable is used.
+
 ### Nuzlocke dupes clause
 
 `HasWildPokmnOnThisRouteBeenSeen()` returns `NUZLOCKE_ENCOUNTER_DUPLICATE` when the
@@ -858,7 +867,8 @@ is used at once; with more, `UseRegisteredKeyItemOnField()` in
 - The Egg Move Tutor (Ditto doll, `General_EggTutor_EventScript` in Wanda's
   house, Verdanturf) teaches the Egg Moves of the family's first stage to any
   stage, for one Pearl. Pichu's list includes Volt Tackle, which otherwise comes
-  only from Light Ball breeding. The egg relearner config (`P_FLAG_EGG_MOVES`)
+  only from Light Ball breeding, and Zap Cannon, so the whole Pikachu line
+  (Alolan Raichu included) can learn it. The egg relearner config (`P_FLAG_EGG_MOVES`)
   stays off; the script sets the relearner state itself.
 - The summary screen must not recalculate `gMoveRelearnerState` in
   `SUMMARY_MODE_SELECT_MOVE`: it turned the Egg Move list into a level-up list

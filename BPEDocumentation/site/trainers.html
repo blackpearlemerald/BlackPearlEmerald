@@ -19,6 +19,11 @@
         <input type="checkbox" id="tr-map-only" checked />
         Map trainers only
       </label>
+      <div class="tr-sort" role="group" aria-label="Sort trainers">
+        <span class="tr-sort-label">Sort</span>
+        <button type="button" class="tr-sort-btn active" data-sort="name" aria-pressed="true">Name</button>
+        <button type="button" class="tr-sort-btn" data-sort="route" aria-pressed="false">Route order</button>
+      </div>
     </div>
     <div id="trainer-count" class="tr-count"></div>
     <div id="trainer-grid" class="trainer-grid">

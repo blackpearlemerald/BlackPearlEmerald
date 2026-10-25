@@ -39,6 +39,14 @@ TEST("The Egg Move Tutor teaches Volt Tackle to the Pikachu line")
     EXPECT(ListHasMove(SPECIES_RAICHU, 40, MOVE_RELEARNER_EGG_MOVES, MOVE_VOLT_TACKLE));
 }
 
+TEST("The Egg Move Tutor teaches Zap Cannon to the whole Pikachu line")
+{
+    EXPECT(ListHasMove(SPECIES_PICHU, 5, MOVE_RELEARNER_EGG_MOVES, MOVE_ZAP_CANNON));
+    EXPECT(ListHasMove(SPECIES_PIKACHU, 20, MOVE_RELEARNER_EGG_MOVES, MOVE_ZAP_CANNON));
+    EXPECT(ListHasMove(SPECIES_RAICHU, 40, MOVE_RELEARNER_EGG_MOVES, MOVE_ZAP_CANNON));
+    EXPECT(ListHasMove(SPECIES_RAICHU_ALOLA, 40, MOVE_RELEARNER_EGG_MOVES, MOVE_ZAP_CANNON));
+}
+
 TEST("Relearner move lists fit the relearner menu")
 {
     u32 species = 0, j;

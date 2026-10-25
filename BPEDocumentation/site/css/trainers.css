@@ -38,6 +38,39 @@
 }
 .tr-toggle-label input[type="checkbox"] { accent-color: #4db87a; }
 
+/* Sort switch: Name / Route order */
+.tr-sort {
+  display: inline-flex;
+  align-items: center;
+}
+.tr-sort-label {
+  margin-right: 8px;
+  font-size: 13px;
+  color: #5a7080;
+}
+.tr-sort-btn {
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #9fb3c8;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+}
+.tr-sort-btn:first-of-type { border-radius: 16px 0 0 16px; }
+.tr-sort-btn:last-of-type { border-radius: 0 16px 16px 0; margin-left: -1px; }
+.tr-sort-btn:hover:not(:disabled) { color: #e8eef5; border-color: rgba(255, 255, 255, 0.25); }
+.tr-sort-btn.active {
+  color: #4db87a;
+  background: rgba(77, 184, 122, 0.14);
+  border-color: rgba(77, 184, 122, 0.45);
+  position: relative;
+}
+.tr-sort-btn:disabled { opacity: 0.4; cursor: default; }
+.tr-sort-btn:focus-visible { outline: 2px solid #4db87a; outline-offset: 2px; }
+
 .tr-count {
   font-size: 13px;
   color: #5a7080;

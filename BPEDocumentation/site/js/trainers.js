@@ -14,11 +14,51 @@
     return s.replace(/([A-Za-z])(\d)/g, '$1 $2');
   }
 
+  // "name": map trainers first, then by class and name (the original order).
+  // "route": story order, from each map's "progress" rank in world.json.
+  var SORT_KEY = 'bpe:trainers:sort';
   var state = {
     all: [],
     query: '',
     mapOnly: true,
+    sort: 'name',
+    hasRoute: false,
+    loaded: false,
   };
+
+  function storedSort() {
+    try { return window.localStorage.getItem(SORT_KEY); } catch (e) { return null; }
+  }
+
+  function rememberSort(value) {
+    try { window.localStorage.setItem(SORT_KEY, value); } catch (e) { /* storage unavailable */ }
+  }
+
+  function byClassName(a, b) {
+    var ka = (a.trClass + ' ' + a.name).toLowerCase();
+    var kb = (b.trClass + ' ' + b.name).toLowerCase();
+    return ka < kb ? -1 : ka > kb ? 1 : 0;
+  }
+
+  function compareName(a, b) {
+    if ((a.locs.length > 0) !== (b.locs.length > 0)) {
+      return a.locs.length > 0 ? -1 : 1;
+    }
+    return byClassName(a, b);
+  }
+
+  // Trainers without a story position (script-only, or on a map with no
+  // rank) go last, in name order.
+  function compareRoute(a, b) {
+    var ra = a.route == null ? Infinity : a.route;
+    var rb = b.route == null ? Infinity : b.route;
+    if (ra !== rb) return ra < rb ? -1 : 1;
+    return compareName(a, b);
+  }
+
+  function sortAll() {
+    state.all.sort(state.sort === 'route' ? compareRoute : compareName);
+  }
 
   function applyFilters() {
     var q = state.query.toLowerCase();
@@ -136,9 +176,40 @@
 
   // ── Bootstrap ───────────────────────────────────────────────────────────────
 
+  function syncSortButtons() {
+    document.querySelectorAll('.tr-sort-btn').forEach(function (btn) {
+      var on = btn.getAttribute('data-sort') === state.sort;
+      btn.classList.toggle('active', on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (btn.getAttribute('data-sort') === 'route') {
+        var unavailable = state.loaded && !state.hasRoute;
+        btn.disabled = unavailable;
+        btn.title = !unavailable
+          ? 'The order you meet trainers in the story'
+          : 'Route order is not available for this version';
+      }
+    });
+  }
+
   function init() {
+    state.sort = storedSort() === 'route' ? 'route' : 'name';
+    syncSortButtons();
     var searchEl = document.getElementById('trainer-search');
     var mapOnlyEl = document.getElementById('tr-map-only');
+
+    document.querySelectorAll('.tr-sort-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var value = btn.getAttribute('data-sort');
+        if (value === state.sort || btn.disabled) return;
+        state.sort = value;
+        rememberSort(value);
+        syncSortButtons();
+        if (state.all.length) {
+          sortAll();
+          render(applyFilters());
+        }
+      });
+    });
 
     searchEl.addEventListener('input', function () {
       state.query = this.value.trim();
@@ -187,6 +258,26 @@
       var trainersData = results[0];
       var world = results[1];
 
+      // Story rank per map. Older releases' data has none: route order is
+      // then unavailable and the page keeps name order.
+      var progress = {};
+      (world.maps || []).forEach(function (m) {
+        if (typeof m.progress === 'number') progress[m.id] = m.progress;
+      });
+      state.hasRoute = Object.keys(progress).length > 0;
+      state.loaded = true;
+
+      // Route position: TRAINER_ID -> earliest (map rank, map object order).
+      // world.trainers lists each map's trainers in object order.
+      var routeIndex = {};
+      (world.trainers || []).forEach(function (t, i) {
+        if (!(t.mapId in progress)) return;
+        var key = progress[t.mapId] * 100000 + i;
+        if (!(t.trainerId in routeIndex) || key < routeIndex[t.trainerId]) {
+          routeIndex[t.trainerId] = key;
+        }
+      });
+
       // Location index: TRAINER_ID -> [{mapId, mapName}] (deduplicated by mapId)
       var locIndex = {};
       (world.trainers || []).forEach(function (t) {
@@ -222,18 +313,13 @@
             party: t.party || [],
             locs: locIndex[id] || [],
             sprite: spriteIndex[id] || null,
+            route: id in routeIndex ? routeIndex[id] : null,
           };
-        })
-        .sort(function (a, b) {
-          // Map trainers first, then by class+name
-          if ((a.locs.length > 0) !== (b.locs.length > 0)) {
-            return a.locs.length > 0 ? -1 : 1;
-          }
-          var ka = (a.trClass + ' ' + a.name).toLowerCase();
-          var kb = (b.trClass + ' ' + b.name).toLowerCase();
-          return ka < kb ? -1 : ka > kb ? 1 : 0;
         });
 
+      if (state.sort === 'route' && !state.hasRoute) state.sort = 'name';
+      syncSortButtons();
+      sortAll();
       render(applyFilters());
       applyDeepLink();
     }).catch(function () {

@@ -171,6 +171,7 @@ static const u16 sPichuEggMoveLearnset[] = {
     MOVE_DISARMING_VOICE,
     MOVE_ELECTRIC_TERRAIN,
     MOVE_VOLT_TACKLE, // BPE: so the Egg Move Tutor teaches it, not only Light Ball breeding
+    MOVE_ZAP_CANNON, // BPE: the Egg Move Tutor teaches it to the whole family, Alolan Raichu included
     MOVE_UNAVAILABLE,
 };
 #endif //P_GEN_2_CROSS_EVOS

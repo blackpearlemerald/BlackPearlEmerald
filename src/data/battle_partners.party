@@ -13,32 +13,32 @@ Gender: Male
 Music: Male
 AI: Basic Trainer
 
-Metang
-Brave Nature
-Level: 42
+Metagross
+Adamant Nature
+Level: 78
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-EVs: 252 Atk / 252 Def / 6 SpA
-- Light Screen
-- Psychic
-- Reflect
-- Metal Claw
+EVs: 252 HP / 252 Atk / 4 SpD
+- Meteor Mash
+- Zen Headbutt
+- Rock Slide
+- Bullet Punch
 
 Skarmory
 Impish Nature
-Level: 43
+Level: 78
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-EVs: 252 HP / 6 SpA / 252 SpD
-- Toxic
-- Aerial Ace
+EVs: 252 HP / 252 Def / 4 SpD
+- Brave Bird
+- Iron Head
+- Tailwind
 - Protect
-- Steel Wing
 
 Aggron
 Adamant Nature
-Level: 44
+Level: 78
 IVs: 31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe
-EVs: 252 Atk / 252 SpA / 6 SpD
-- Thunder
+EVs: 252 HP / 252 Atk / 4 SpD
+- Stone Edge
+- Rock Slide
+- Heavy Slam
 - Protect
-- Solar Beam
-- Dragon Claw

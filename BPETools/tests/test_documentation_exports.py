@@ -381,6 +381,55 @@ class DefaultTrainerMovesTests(unittest.TestCase):
 
 
 @unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
+class RouteOrderTests(unittest.TestCase):
+    TIERS = {
+        "sections": {"MAPSEC_PETALBURG_CITY": 0, "MAPSEC_RUSTBORO_CITY": 0,
+                     "MAPSEC_DYNAMIC": 0, "MAPSEC_FORTREE_CITY": 5,
+                     "MAPSEC_EVER_GRANDE_CITY": 8, "MAPSEC_VICTORY_ROAD": 8},
+        "maps": {"MAP_SS_TIDAL_ROOMS": 5},
+        "gyms": {"MAP_RUSTBORO_CITY_GYM": 1, "MAP_LAVARIDGE_TOWN_GYM_1F": 4,
+                 "MAP_PETALBURG_CITY_GYM": 5},
+    }
+    MAPS = [
+        ("MAP_PETALBURG_CITY", "MAPSEC_PETALBURG_CITY"),
+        ("MAP_RUSTBORO_CITY", "MAPSEC_RUSTBORO_CITY"),
+        ("MAP_FORTREE_CITY", "MAPSEC_FORTREE_CITY"),
+        ("MAP_EVER_GRANDE_CITY", "MAPSEC_EVER_GRANDE_CITY"),
+        ("MAP_PETALBURG_CITY_GYM", "MAPSEC_PETALBURG_CITY"),
+        ("MAP_RUSTBORO_CITY_GYM", "MAPSEC_RUSTBORO_CITY"),
+        ("MAP_RUSTBORO_CITY_HOUSE", "MAPSEC_RUSTBORO_CITY"),
+        ("MAP_LAVARIDGE_TOWN_GYM_B1F", "MAPSEC_LAVARIDGE_TOWN"),
+        ("MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM", "MAPSEC_EVER_GRANDE_CITY"),
+        ("MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM", "MAPSEC_EVER_GRANDE_CITY"),
+        ("MAP_VICTORY_ROAD_1F", "MAPSEC_VICTORY_ROAD"),
+        ("MAP_SS_TIDAL_ROOMS", "MAPSEC_DYNAMIC"),
+        ("MAP_SECRET_PLACE", "MAPSEC_NOWHERE"),
+    ]
+
+    def test_maps_follow_badge_tiers_in_story_order(self):
+        rank = parse_trainers.map_progression(self.TIERS, self.MAPS)
+        order = sorted(rank, key=rank.get)
+        self.assertEqual(order, [
+            "MAP_PETALBURG_CITY", "MAP_RUSTBORO_CITY", "MAP_RUSTBORO_CITY_HOUSE",
+            # A gym follows its town in the tier before its badge...
+            "MAP_RUSTBORO_CITY_GYM",
+            # ...and its other floors share its place.
+            "MAP_LAVARIDGE_TOWN_GYM_B1F",
+            # Petalburg's town is tier 0 but Norman gives the fifth badge.
+            "MAP_PETALBURG_CITY_GYM",
+            "MAP_FORTREE_CITY", "MAP_SS_TIDAL_ROOMS",
+            "MAP_EVER_GRANDE_CITY", "MAP_VICTORY_ROAD_1F",
+            "MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM", "MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM",
+        ])
+        self.assertNotIn("MAP_SECRET_PLACE", rank)
+        self.assertEqual(sorted(rank.values()), list(range(1, len(rank) + 1)))
+
+    def test_no_tier_file_means_no_route_order(self):
+        with mock_patch.object(parse_trainers, "load_badge_tiers", return_value=None):
+            self.assertEqual(parse_trainers.map_progression(maps=self.MAPS), {})
+
+
+@unittest.skipIf(extract_world is None, "Install BPEDocumentation/requirements.txt to test exporters")
 class EvolutionLabelTests(unittest.TestCase):
     ITEMS = """const struct ItemInfo gItemsInfo[] =
 {

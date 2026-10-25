@@ -1,6 +1,19 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.5": {
+      "channel": "stable",
+      "changes": [
+        "Swap between the Mach Bike and Acro Bike anywhere from the Bag.",
+        "The Egg Move Tutor now teaches Zap Cannon to the whole Pikachu line.",
+        "Steven's Space Center team is now level 78, with Metagross and stronger moves.",
+        "Mega Golisopod now has Tough Claws.",
+        "Golisopite, Raichunite Y and Absolite Z now come after the 7th gym.",
+        "Water routes now have much more variety.",
+        "Fishing routes now have much more variety.",
+        "Website: sort trainers by name or by the order you battle them."
+      ]
+    },
     "2.2.4": {
       "channel": "stable",
       "changes": [

@@ -378,6 +378,85 @@ def build_legacy():
     return out
 
 
+# The Pokémon League rooms share MAPSEC_EVER_GRANDE_CITY, which the badge tier
+# file lists before Victory Road; the player reaches them last, in this order.
+LEAGUE_ROOMS = (
+    "MAP_EVER_GRANDE_CITY_SIDNEYS_ROOM",
+    "MAP_EVER_GRANDE_CITY_PHOEBES_ROOM",
+    "MAP_EVER_GRANDE_CITY_GLACIAS_ROOM",
+    "MAP_EVER_GRANDE_CITY_DRAKES_ROOM",
+    "MAP_EVER_GRANDE_CITY_CHAMPIONS_ROOM",
+)
+BADGE_TIERS = os.path.join("BPETools", "randomizer_badge_tiers.json")
+
+
+def load_badge_tiers():
+    """The source's badge tier file, else the exporter's own copy.
+
+    Releases before the randomizer have no tier file. Region map sections keep
+    their names across releases, so the exporter's copy still orders them.
+    """
+    for path in (C.src(BADGE_TIERS), os.path.join(C.PROJECT_ROOT, BADGE_TIERS)):
+        if os.path.isfile(path):
+            return C.load_json(path)
+    return None
+
+
+def ordered_maps():
+    """[(MAP_ID, MAPSEC)] in map_groups.json order: outdoor maps first, then each
+    town's interiors, then the remaining maps by folder name."""
+    groups_path = C.src("data", "maps", "map_groups.json")
+    groups = C.load_json(groups_path) if os.path.isfile(groups_path) else {}
+    position = {}
+    for group in groups.get("group_order", []):
+        for name in groups.get(group, []):
+            position.setdefault(name, len(position))
+    found = [(position.get(name, len(position)), name, mj) for name, mj in C.iter_map_jsons()]
+    found.sort(key=lambda entry: (entry[0], entry[1]))
+    return [(mj.get("id"), mj.get("region_map_section")) for _, _, mj in found if mj.get("id")]
+
+
+def map_progression(tiers=None, maps=None):
+    """MAP_ID -> 1-based story rank, for the Trainers page's route order.
+
+    Maps follow their region map section's badge tier, then the section's
+    position in the tier file, which lists each tier in Hoenn story order.
+    A gym comes right after its town when the town's tier is the one before its
+    badge, otherwise (Petalburg) at the end of that tier. The League rooms come
+    after Victory Road. Maps in no known section get no rank.
+    """
+    tiers = load_badge_tiers() if tiers is None else tiers
+    if not tiers:
+        return {}
+    maps = ordered_maps() if maps is None else maps
+    sections = {name: (tier, index) for index, (name, tier)
+                in enumerate(tiers.get("sections", {}).items())}
+    gym_badges = {re.sub(r"_B?\d+F$", "", map_id): badge
+                  for map_id, badge in tiers.get("gyms", {}).items()}
+    end = len(sections)
+    league_tier = sections.get("MAPSEC_EVER_GRANDE_CITY", (None,))[0]
+    slots = []
+    for order, (map_id, mapsec) in enumerate(maps):
+        tier, index = sections.get(mapsec, (None, None))
+        gym = gym_badges.get(re.sub(r"_B?\d+F$", "", map_id))
+        if map_id in LEAGUE_ROOMS and league_tier is not None:
+            key = (league_tier, end + 2, LEAGUE_ROOMS.index(map_id))
+        elif gym is not None:
+            if tier == gym - 1:
+                key = (tier, index, 1)
+            else:
+                key = (gym - 1, end + 1, 0)
+        elif map_id in tiers.get("maps", {}):
+            key = (tiers["maps"][map_id], end, 0)
+        elif tier is not None:
+            key = (tier, index, 0)
+        else:
+            continue
+        slots.append((key, order, map_id))
+    slots.sort()
+    return {map_id: rank for rank, (_, _, map_id) in enumerate(slots, 1)}
+
+
 def main():
     C.ensure_dirs()
     out = build()

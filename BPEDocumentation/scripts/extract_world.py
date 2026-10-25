@@ -1680,6 +1680,8 @@ def build():
     placed, warp_links = assemble(maps)
     trainers_db = parse_trainers.build()
     encounters = build_encounters()
+    # Story rank of each map: the Trainers page's "route order" sort.
+    progression = parse_trainers.map_progression()
 
     out_maps, out_trainers, out_items, out_gifts = [], [], [], []
     out_statics = []
@@ -1692,6 +1694,8 @@ def build():
         entry = {"id": mid, "name": m["name"], "img": m["img"],
                  "type": m.get("type"),
                  "x": ox, "y": oy, "w": m["wPx"], "h": m["hPx"]}
+        if mid in progression:
+            entry["progress"] = progression[mid]
         if mid in encounters:
             entry["enc"] = encounters[mid]
             enc_count += 1
