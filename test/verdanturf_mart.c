@@ -2,7 +2,6 @@
 #include "item.h"
 #include "item_use.h"
 #include "constants/items.h"
-#include "constants/maps.h"
 #include "test/test.h"
 
 // BPE: the Verdanturf mart sells everything cheaply (see GetVerdanturfMartPrice).
@@ -44,17 +43,17 @@ TEST("Nothing in the Verdanturf mart costs more than 500, and berries and evolut
     EXPECT_EQ(GetVerdanturfMartPrice(ITEM_POKE_BALL), GetItemPrice(ITEM_POKE_BALL));
 }
 
-TEST("Only the Verdanturf mart charges its own prices")
+TEST("Whatever the Verdanturf mart sells costs its price everywhere")
 {
-    struct WarpData saved = gSaveBlock1Ptr->location;
-
-    gSaveBlock1Ptr->location.mapGroup = MAP_GROUP(MAP_VERDANTURF_TOWN_MART);
-    gSaveBlock1Ptr->location.mapNum = MAP_NUM(MAP_VERDANTURF_TOWN_MART);
-    EXPECT_EQ(GetMartItemPrice(ITEM_FLAME_ORB), 500);
-
-    gSaveBlock1Ptr->location.mapGroup = MAP_GROUP(MAP_LILYCOVE_CITY_DEPARTMENT_STORE_2F);
-    gSaveBlock1Ptr->location.mapNum = MAP_NUM(MAP_LILYCOVE_CITY_DEPARTMENT_STORE_2F);
-    EXPECT_EQ(GetMartItemPrice(ITEM_FLAME_ORB), GetItemPrice(ITEM_FLAME_ORB));
-
-    gSaveBlock1Ptr->location = saved;
+    for (u32 i = 0; i < ARRAY_COUNT(sLists); i++)
+    {
+        for (const u16 *item = sLists[i]; *item != ITEM_NONE; item++)
+            EXPECT_EQ(GetItemPrice(*item), GetVerdanturfMartPrice(*item));
+    }
+    // Also stocked by other marts, which must not charge more.
+    EXPECT_EQ(GetItemPrice(ITEM_GREAT_BALL), 500);
+    EXPECT_EQ(GetItemPrice(ITEM_ULTRA_BALL), 500);
+    EXPECT_EQ(GetItemSellPrice(ITEM_FLAME_ORB), 500 / ITEM_SELL_FACTOR);
+    // Items it doesn't sell keep their own price.
+    EXPECT_EQ(GetItemPrice(ITEM_NUGGET), gItemsInfo[ITEM_NUGGET].price);
 }

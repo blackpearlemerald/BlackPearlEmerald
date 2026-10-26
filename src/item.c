@@ -987,8 +987,14 @@ const u8 *GetItemName(enum Item itemId)
     return name == NULL ? gQuestionMarksItemName : name;
 }
 
+static bool32 IsSoldInVerdanturfMart(enum Item itemId);
+
+// BPE: whatever the Verdanturf mart sells costs its price everywhere, in
+// every shop and when sold back.
 u32 GetItemPrice(enum Item itemId)
 {
+    if (IsSoldInVerdanturfMart(itemId))
+        return GetVerdanturfMartPrice(itemId);
     return gItemsInfo[SanitizeItemId(itemId)].price;
 }
 
@@ -1184,7 +1190,7 @@ static bool32 IsEvolutionItem(enum Item itemId)
 
 u32 GetVerdanturfMartPrice(enum Item itemId)
 {
-    u32 price = GetItemPrice(itemId);
+    u32 price = gItemsInfo[SanitizeItemId(itemId)].price;
     u32 cap = 500;
 
     if (itemId == ITEM_GIMMIGHOUL_COIN)
@@ -1196,20 +1202,11 @@ u32 GetVerdanturfMartPrice(enum Item itemId)
     return min(price, cap);
 }
 
-// BPE: what a mart charges. Only the Verdanturf mart has its own prices.
-u32 GetMartItemPrice(enum Item itemId)
-{
-    if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_VERDANTURF_TOWN_MART)
-     && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_VERDANTURF_TOWN_MART))
-        return GetVerdanturfMartPrice(itemId);
-    return GetItemPrice(itemId);
-}
-
 u32 GetItemSellPrice(enum Item itemId)
 {
-    // BPE: anything Verdanturf sells cheaply sells back for half that price
-    // too, or buying there and selling elsewhere would print money.
-    u32 price = IsSoldInVerdanturfMart(itemId) ? GetVerdanturfMartPrice(itemId) : GetItemPrice(itemId);
+    // BPE: GetItemPrice is already the Verdanturf price for what that mart
+    // sells, so buying there and selling elsewhere can't print money.
+    u32 price = GetItemPrice(itemId);
 
     // A sellable item never sells for nothing: the Bag divides by this price.
     if (price != 0 && price < ITEM_SELL_FACTOR)

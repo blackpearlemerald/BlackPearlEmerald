@@ -820,21 +820,22 @@ The Verdanturf mart is meant to be cheap enough that money never matters.
 `GetVerdanturfMartPrice()` in `src/item.c` caps everything on its four lists at
 ₽500, evolution items (a stone-style field use, plus Milcery's sweets) at ₽200,
 berries at ₽50 and Gimmighoul Coins at ₽10; an item already cheaper keeps its
-price. `GetMartItemPrice()` applies this only while the player stands in that
-mart, so `src/shop.c` uses it instead of `GetItemPrice()`. `GetItemSellPrice()`
-sells anything on those lists back for the Verdanturf price divided by
-`ITEM_SELL_FACTOR` (4) everywhere, or buying there and selling elsewhere would
-print money. The lists are exported with `.global` (the docs parser needs
-single-colon labels).
+price. That capped price is the item's **global** price: `GetItemPrice()`
+returns it for anything on those lists, so every mart charges it and
+`GetItemSellPrice()` sells it back for that price divided by `ITEM_SELL_FACTOR`
+(4). The maintainer wants one price per item, not a Verdanturf-only price.
+2.2.3-2.2.5 applied it only inside the Verdanturf mart (Great and Ultra Balls
+cost more in other marts there). The lists are exported with `.global` (the
+docs parser needs single-colon labels).
 
 The website reads all of this from source through
 `BPEDocumentation/scripts/item_prices.py`, which evaluates `items.h` with the
 game's config (`#if` branches, `I_PRICE`/`I_BERRY_PRICE`, `GEM_PRICE`,
 `TREASURE_FACTOR`) and reads the caps out of `GetVerdanturfMartPrice()`. Item
-pages show the normal price, the Verdanturf price and the sell value; map shop
-popups show what each shop charges. If you change the shape of those functions,
-update `item_prices.py`: it refuses caps it can no longer read rather than
-publish wrong prices. Tests: `make check TESTS=test/verdanturf_mart.c` and
+pages show one price (the Verdanturf price for what that mart sells) and the
+sell value; map shop popups show what each shop charges. If you change the
+shape of those functions, update `item_prices.py`: it refuses caps it can no
+longer read rather than publish wrong prices. Tests: `make check TESTS=test/verdanturf_mart.c` and
 `python -m unittest BPETools/tests/test_item_prices.py`.
 
 ### Picking a Pokémon from the PC

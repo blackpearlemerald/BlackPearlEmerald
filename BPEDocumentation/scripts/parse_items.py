@@ -159,11 +159,9 @@ def parse_items(shared_descs, prices):
             item["name"] = key.replace("_", " ").title()
 
         # ── Price ─────────────────────────────────────────────────────────────
-        # Evaluated with the game's config (item_prices.py): what a mart
-        # charges, the Verdanturf mart's own price, and the sell-back value.
+        # Evaluated with the game's config (item_prices.py). Anything the
+        # Verdanturf mart sells shows that mart's price.
         item["price"] = prices.price(key)
-        if key in prices.verdanturf_items:
-            item["verdanturfPrice"] = prices.verdanturf_price(key)
         item["sellPrice"] = prices.sell_price(key)
 
         # ── Description ───────────────────────────────────────────────────────

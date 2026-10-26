@@ -644,7 +644,7 @@ static void BuyMenuPrintPriceInList(u8 windowId, u32 itemId, u8 y)
         {
             ConvertIntToDecimalStringN(
                 gStringVar1,
-                GetMartItemPrice(itemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT),
+                GetItemPrice(itemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT),
                 STR_CONV_MODE_LEFT_ALIGN,
                 6);
         }
@@ -1017,7 +1017,7 @@ static void Task_BuyMenu(u8 taskId)
             BuyMenuPrintCursor(tListTaskId, COLORID_GRAY_CURSOR);
 
             if (sMartInfo.martType == MART_TYPE_NORMAL)
-                sShopData->totalCost = (GetMartItemPrice(itemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT));
+                sShopData->totalCost = (GetItemPrice(itemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT));
             else
                 sShopData->totalCost = gDecorations[itemId].price;
 
@@ -1037,7 +1037,7 @@ static void Task_BuyMenu(u8 taskId)
                         ConvertIntToDecimalStringN(gStringVar2, sShopData->totalCost, STR_CONV_MODE_LEFT_ALIGN, 6);
                         StringExpandPlaceholders(gStringVar4, gText_YouWantedVar1ThatllBeVar2);
                         tItemCount = 1;
-                        sShopData->totalCost = (GetMartItemPrice(tItemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT)) * tItemCount;
+                        sShopData->totalCost = (GetItemPrice(tItemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT)) * tItemCount;
                         BuyMenuDisplayMessage(taskId, gStringVar4, BuyMenuConfirmPurchase);
                     }
                     else if (GetItemPocket(itemId) == POCKET_TM_HM)
@@ -1104,7 +1104,7 @@ static void Task_BuyHowManyDialogueHandleInput(u8 taskId)
 
     if (AdjustQuantityAccordingToDPadInput(&tItemCount, sShopData->maxQuantity) == TRUE)
     {
-        sShopData->totalCost = (GetMartItemPrice(tItemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT)) * tItemCount;
+        sShopData->totalCost = (GetItemPrice(tItemId) >> IsPokeNewsActive(POKENEWS_SLATEPORT)) * tItemCount;
         BuyMenuPrintItemQuantityAndPrice(taskId);
     }
     else

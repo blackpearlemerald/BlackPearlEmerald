@@ -807,8 +807,8 @@ def parse_money_sales(content):
 
 def add_mart_prices(marts, prices):
     """Give each money inventory its {item: price} as that shop charges it
-    (GetMartItemPrice: the Verdanturf mart has its own). Script sales already
-    carry the amount their script takes."""
+    (item_prices.Prices.mart_price). Script sales already carry the amount
+    their script takes."""
     for map_id, mart in marts.items():
         if mart.get("kind") == "prizes":
             continue

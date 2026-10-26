@@ -6,9 +6,10 @@ src/data/items.h writes many prices as config expressions (`(I_PRICE >= GEN_7)
 branches and the expression are evaluated with the game's own config. This
 module does that with a small C preprocessor and expression evaluator.
 
-Since 2.2.3 the Verdanturf mart has its own, capped prices, and everything it
-sells also sells back at a fraction of that capped price (GetVerdanturfMartPrice
-and GetItemSellPrice in src/item.c). Older sources have neither, which
+Since 2.2.3 everything the Verdanturf mart sells has a capped price
+(GetVerdanturfMartPrice in src/item.c), which the site shows as that item's
+price; it is also what the item sells back for. 2.2.3-2.2.5 charged it only in
+that mart, later sources everywhere. Older sources have no caps, which
 verdanturf_rules() reports as None.
 """
 import re
@@ -294,8 +295,6 @@ def verdanturf_rules(repo=None):
                                      function_body(text, "IsEvolutionItem") or ""))
     lists = re.search(r"sVerdanturfMartLists\[\]\s*=\s*\{(.*?)\}", text, re.S)
     rules["lists"] = re.findall(r"\w+", lists.group(1)) if lists else []
-    sell = function_body(text, "GetItemSellPrice") or ""
-    rules["sellUsesVerdanturf"] = "IsSoldInVerdanturfMart" in sell
     return rules
 
 
@@ -315,8 +314,8 @@ def mart_list_items(repo, labels):
 
 
 class Prices:
-    """Buy and sell prices of every item, matching GetItemPrice,
-    GetMartItemPrice and GetItemSellPrice."""
+    """Buy and sell prices of every item, matching GetItemPrice, what each
+    mart charges and GetItemSellPrice."""
 
     def __init__(self, repo=None):
         repo = Path(repo or REPO)
@@ -328,20 +327,25 @@ class Prices:
             if m:
                 self.sell_factor = evaluate(m.group(1), macros)
                 break
-        # BPE 2.2.3 made a cheap sellable item sell for at least 1.
         item_c = repo / "src/item.c"
-        sell = function_body(read_source(item_c), "GetItemSellPrice") if item_c.is_file() else None
+        text = read_source(item_c) if item_c.is_file() else ""
+        # BPE 2.2.3 made a cheap sellable item sell for at least 1.
+        sell = function_body(text, "GetItemSellPrice")
         self.sell_minimum = bool(sell and "price < ITEM_SELL_FACTOR" in sell)
         self.verdanturf = verdanturf_rules(repo)
         self.verdanturf_items = (mart_list_items(repo, self.verdanturf["lists"])
                                  if self.verdanturf else set())
+        # 2.2.3-2.2.5 charged the Verdanturf price only inside that mart; later
+        # sources make it the item's price everywhere (GetItemPrice).
+        self.verdanturf_everywhere = "IsSoldInVerdanturfMart" in (
+            function_body(text, "GetItemPrice") or "")
 
-    def price(self, key):
-        """What a normal mart charges (GetItemPrice)."""
+    def base_price(self, key):
+        """The .price in items.h."""
         return self.items.get(key, {}).get("price", 0)
 
     def verdanturf_price(self, key):
-        """What the Verdanturf mart charges, or None without its own prices."""
+        """The Verdanturf mart's price, or None for a source without one."""
         if not self.verdanturf:
             return None
         rules, item = self.verdanturf, self.items.get(key, {})
@@ -354,23 +358,26 @@ class Prices:
             cap = rules["evolution"]
         else:
             cap = rules["cap"]
-        return min(self.price(key), cap)
+        return min(self.base_price(key), cap)
+
+    def price(self, key):
+        """The item's price: the Verdanturf price for anything that mart
+        sells (which is also what it sells back for), else items.h."""
+        if key in self.verdanturf_items:
+            return self.verdanturf_price(key)
+        return self.base_price(key)
 
     def mart_price(self, key, map_id):
-        """What the mart on map_id charges (GetMartItemPrice)."""
-        if map_id == "MAP_VERDANTURF_TOWN_MART" and self.verdanturf:
-            return self.verdanturf_price(key)
-        return self.price(key)
+        """What the mart on map_id charges."""
+        if self.verdanturf_everywhere or map_id == "MAP_VERDANTURF_TOWN_MART":
+            return self.price(key)
+        return self.base_price(key)
 
     def sell_price(self, key):
         """What the player gets for one, or 0 when it cannot be sold."""
-        item = self.items.get(key, {})
-        if not self.price(key) or item.get("importance"):
-            return 0
         price = self.price(key)
-        if (self.verdanturf and self.verdanturf["sellUsesVerdanturf"]
-                and key in self.verdanturf_items):
-            price = self.verdanturf_price(key)
-        if self.sell_minimum and price and price < self.sell_factor:
+        if not price or self.items.get(key, {}).get("importance"):
+            return 0
+        if self.sell_minimum and price < self.sell_factor:
             return 1
         return price // self.sell_factor

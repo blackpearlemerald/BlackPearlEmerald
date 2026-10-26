@@ -216,12 +216,32 @@ class PriceTests(unittest.TestCase):
         self.assertEqual(prices.verdanturf_price("ORAN_BERRY"), 20)   # already cheaper
         self.assertEqual(prices.verdanturf_price("GIMMIGHOUL_COIN"), 10)
         self.assertEqual(prices.verdanturf_price("FLAME_ORB"), 500)
-        self.assertEqual(prices.mart_price("FLAME_ORB", "MAP_SLATEPORT_CITY_MART"), 15000)
-        self.assertEqual(prices.mart_price("FLAME_ORB", "MAP_VERDANTURF_TOWN_MART"), 500)
+        # The site gives one price: Verdanturf's, for anything it sells.
+        self.assertEqual(prices.price("FLAME_ORB"), 500)
+        self.assertEqual(prices.price("PEARL"), 4000)             # not sold there
         self.assertEqual(prices.sell_price("FLAME_ORB"), 125)     # 500 / 4, anywhere
         self.assertEqual(prices.sell_price("GIMMIGHOUL_COIN"), 2)
-        self.assertEqual(prices.sell_price("PEARL"), 1000)        # not sold there
+        self.assertEqual(prices.sell_price("PEARL"), 1000)
         self.assertEqual(prices.sell_price("MACH_BIKE"), 0)       # key item
+
+    def test_other_marts_charge_by_source(self):
+        # 2.2.3-2.2.5: only the Verdanturf mart charged its price.
+        source(self.root)
+        prices = P.Prices(self.root)
+        self.assertEqual(prices.mart_price("FLAME_ORB", "MAP_SLATEPORT_CITY_MART"), 15000)
+        self.assertEqual(prices.mart_price("FLAME_ORB", "MAP_VERDANTURF_TOWN_MART"), 500)
+        # Later: GetItemPrice is the Verdanturf price everywhere.
+        source(self.root, item_c=ITEM_C + """
+u32 GetItemPrice(enum Item itemId)
+{
+    if (IsSoldInVerdanturfMart(itemId))
+        return GetVerdanturfMartPrice(itemId);
+    return gItemsInfo[SanitizeItemId(itemId)].price;
+}
+""")
+        prices = P.Prices(self.root)
+        self.assertEqual(prices.mart_price("FLAME_ORB", "MAP_SLATEPORT_CITY_MART"), 500)
+        self.assertEqual(prices.mart_price("PEARL", "MAP_SLATEPORT_CITY_MART"), 4000)
 
     def test_source_without_verdanturf_prices(self):
         source(self.root, item_c="u32 GetItemPrice(u16 itemId) { return 0; }\n")

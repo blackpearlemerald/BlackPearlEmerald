@@ -120,10 +120,6 @@
       ['Pocket',    item.pocketLabel || '—'],
       ['Price',     fmtPrice(item.price, sold)],
     ];
-    // The Verdanturf mart caps its own prices (exports since 2.2.3).
-    if (item.verdanturfPrice !== undefined && item.verdanturfPrice !== item.price) {
-      metaRows.push(['Verdanturf Mart', fmtPrice(item.verdanturfPrice, true)]);
-    }
     if (item.sellPrice !== undefined) {
       metaRows.push(['Sells for', item.sellPrice ? fmtPrice(item.sellPrice) : 'Can\'t be sold']);
     }
