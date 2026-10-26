@@ -8,8 +8,8 @@
       .replace(/>/g, '&gt;');
   }
 
-  function fmtPrice(price) {
-    if (!price || price === 0) return 'Not for sale';
+  function fmtPrice(price, sold) {
+    if (!price) return sold ? 'Free' : 'Not for sale';
     return '₽' + price.toLocaleString();
   }
 
@@ -114,10 +114,19 @@
     var badge = '<span class="item-pocket-badge pocket-' + esc(item.pocket) + '">'
       + esc(item.pocketLabel) + '</span>';
 
+    // A mart can stock an item at no cost (Verdanturf's Rare Candy).
+    var sold = ((item.locations || {}).marts || []).length > 0;
     var metaRows = [
       ['Pocket',    item.pocketLabel || '—'],
-      ['Price',     fmtPrice(item.price)],
+      ['Price',     fmtPrice(item.price, sold)],
     ];
+    // The Verdanturf mart caps its own prices (exports since 2.2.3).
+    if (item.verdanturfPrice !== undefined && item.verdanturfPrice !== item.price) {
+      metaRows.push(['Verdanturf Mart', fmtPrice(item.verdanturfPrice, true)]);
+    }
+    if (item.sellPrice !== undefined) {
+      metaRows.push(['Sells for', item.sellPrice ? fmtPrice(item.sellPrice) : 'Can\'t be sold']);
+    }
     if (item.sortType) {
       metaRows.push(['Category', item.sortType]);
     }

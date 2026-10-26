@@ -41,7 +41,7 @@ function trainerPopup(t, spriteFile) {
   // Some trainers stay on the map as a shop once beaten.
   if (t.shop && t.shop.length) {
     html += `<div class="trainer-shop"><div class="mart-cond">🛒 Becomes a shop once beaten</div>` +
-      `<div class="mart-list">${t.shop.map(it => itemRow(it, 1)).join("")}</div></div>`;
+      `<div class="mart-list">${t.shop.map(it => itemRow(it, 1, priceTag(t.shopPrices, it))).join("")}</div></div>`;
   }
   for (const m of t.party || []) {
     // Trainer mons deep-link into the damage calculator: clicking loads this
@@ -103,6 +103,13 @@ function itemRow(itemConst, qty, trailing = "") {
     : `<div class="pop-item-row">${inner}</div>`;
 }
 
+// What a shop charges for an item; empty for exports without prices.
+function priceTag(prices, itemConst) {
+  const price = prices && prices[itemConst];
+  if (price === undefined) return "";
+  return `<span class="pop-item-qty">${price ? "₽" + price.toLocaleString() : "Free"}</span>`;
+}
+
 function itemPopup(it) {
   const tag = it.hidden ? "<small>Hidden item</small>" : "<small>Item Ball</small>";
   const id = itemPageId(it.item);
@@ -147,7 +154,7 @@ function martPopup(mart) {
     if (inv.prizes) {
       for (const p of inv.prizes) html += prizeRow(p);
     } else {
-      for (const item of inv.items) html += itemRow(item, 1);
+      for (const item of inv.items) html += itemRow(item, 1, priceTag(inv.prices, item));
     }
     html += `</div>`;
   }

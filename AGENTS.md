@@ -822,11 +822,20 @@ The Verdanturf mart is meant to be cheap enough that money never matters.
 berries at ₽50 and Gimmighoul Coins at ₽10; an item already cheaper keeps its
 price. `GetMartItemPrice()` applies this only while the player stands in that
 mart, so `src/shop.c` uses it instead of `GetItemPrice()`. `GetItemSellPrice()`
-sells anything on those lists back for half the Verdanturf price everywhere, or
-buying there and selling elsewhere would print money. The lists are exported
-with `.global` (the docs parser needs single-colon labels). The item pages on
-the website still show the normal price. Tests:
-`make check TESTS=test/verdanturf_mart.c`.
+sells anything on those lists back for the Verdanturf price divided by
+`ITEM_SELL_FACTOR` (4) everywhere, or buying there and selling elsewhere would
+print money. The lists are exported with `.global` (the docs parser needs
+single-colon labels).
+
+The website reads all of this from source through
+`BPEDocumentation/scripts/item_prices.py`, which evaluates `items.h` with the
+game's config (`#if` branches, `I_PRICE`/`I_BERRY_PRICE`, `GEM_PRICE`,
+`TREASURE_FACTOR`) and reads the caps out of `GetVerdanturfMartPrice()`. Item
+pages show the normal price, the Verdanturf price and the sell value; map shop
+popups show what each shop charges. If you change the shape of those functions,
+update `item_prices.py`: it refuses caps it can no longer read rather than
+publish wrong prices. Tests: `make check TESTS=test/verdanturf_mart.c` and
+`python -m unittest BPETools/tests/test_item_prices.py`.
 
 ### Picking a Pokémon from the PC
 

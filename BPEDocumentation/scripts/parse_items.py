@@ -12,6 +12,7 @@ Usage:  py parse_items.py
 import re, json, os
 from pathlib import Path
 import common as C
+import item_prices
 import pokemon_sprites
 from PIL import Image
 
@@ -58,19 +59,6 @@ def extract_string_literals(text):
     joined = re.sub(r"\\n", " ", joined)
     joined = re.sub(r"\s{2,}", " ", joined).strip()
     return joined
-
-def parse_price(raw):
-    """Return the modern-gen price from a .price = <expr> value string."""
-    raw = raw.strip()
-    # Simple integer
-    m = re.match(r"^(\d+)$", raw)
-    if m:
-        return int(m.group(1))
-    # Conditional: take first numeric after '?'
-    m = re.search(r"\?\s*(\d+)", raw)
-    if m:
-        return int(m.group(1))
-    return 0
 
 def read_jasc_pal(path):
     """Parse a JASC-PAL file into a list of (r, g, b) tuples."""
@@ -142,7 +130,7 @@ def extract_block(content, start_pos):
         i += 1
     return content[start_pos : i - 1]
 
-def parse_items(shared_descs):
+def parse_items(shared_descs, prices):
     raw     = read_file(ITEMS_H)
     content = strip_c_comments(raw)
 
@@ -171,8 +159,12 @@ def parse_items(shared_descs):
             item["name"] = key.replace("_", " ").title()
 
         # ── Price ─────────────────────────────────────────────────────────────
-        pm = re.search(r"\.price\s*=\s*([^,\n]+)", block)
-        item["price"] = parse_price(pm.group(1)) if pm else 0
+        # Evaluated with the game's config (item_prices.py): what a mart
+        # charges, the Verdanturf mart's own price, and the sell-back value.
+        item["price"] = prices.price(key)
+        if key in prices.verdanturf_items:
+            item["verdanturfPrice"] = prices.verdanturf_price(key)
+        item["sellPrice"] = prices.sell_price(key)
 
         # ── Description ───────────────────────────────────────────────────────
         # Inline COMPOUND_STRING
@@ -472,7 +464,7 @@ def main():
     print(f"       -> {len(shared)} shared descriptions")
 
     print("  [2] Parsing items …")
-    items = parse_items(shared)
+    items = parse_items(shared, item_prices.Prices(REPO))
     # Drop the NONE placeholder
     items = [i for i in items if i["id"] != "NONE" and i["name"] != "????????"]
     print(f"       -> {len(items)} items")

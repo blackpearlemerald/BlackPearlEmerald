@@ -20,6 +20,7 @@ import sys
 from collections import defaultdict, deque
 
 import common as C
+import item_prices
 import parse_trainers
 import pokemon_sprites
 import sprites
@@ -765,12 +766,14 @@ def parse_money_sales(content):
     for m in re.finditer(r"^(\w+)::(.*?)(?=^\w+::|\Z)",
                          content, re.MULTILINE | re.DOTALL):
         scripts[m.group(1)] = m.group(2)
-    sales = {}
+    sales, prices = {}, {}
     for label, body in scripts.items():
         items = {m.group(1) for m in GIVEITEM_RE.finditer(body)}
-        if REMOVEMONEY_RE.search(body) and len(items) == 1 \
-                and not ADDCOINS_RE.search(body):
+        money = REMOVEMONEY_RE.search(body)
+        if money and len(items) == 1 and not ADDCOINS_RE.search(body):
             sales[label] = items.pop()
+            if money.group(1).isdigit():
+                prices[label] = int(money.group(1))
     if not sales:
         return []
 
@@ -794,9 +797,27 @@ def parse_money_sales(content):
                             if target == cur)
                 condition = _describe_condition(flag, gate)
             cur = parent
-        out.append({"vendor": _spaced(re.sub(r"^.*?EventScript_", "", cur)),
-                    "condition": condition, "items": [item]})
+        sale = {"vendor": _spaced(re.sub(r"^.*?EventScript_", "", cur)),
+                "condition": condition, "items": [item]}
+        if label in prices:
+            sale["prices"] = {item: prices[label]}
+        out.append(sale)
     return out
+
+
+def add_mart_prices(marts, prices):
+    """Give each money inventory its {item: price} as that shop charges it
+    (GetMartItemPrice: the Verdanturf mart has its own). Script sales already
+    carry the amount their script takes."""
+    for map_id, mart in marts.items():
+        if mart.get("kind") == "prizes":
+            continue
+        for inv in mart["inventories"]:
+            charged = inv.setdefault("prices", {})
+            for item in inv["items"]:
+                key = item.replace("ITEM_", "", 1)
+                if item not in charged and key in prices.items:
+                    charged[item] = prices.mart_price(key, map_id)
 
 
 def parse_marts(trainer_names=None):
@@ -1614,6 +1635,8 @@ def annotate_trainer_shops(trainers, marts):
             if tid in trainers:
                 t = trainers[tid] = dict(trainers[tid])
                 t["shop"] = t.get("shop", []) + list(inv["items"])
+                if inv.get("prices"):
+                    t["shopPrices"] = {**t.get("shopPrices", {}), **inv["prices"]}
 
 
 def apply_trainer_notes(trainers, notes):
@@ -1789,6 +1812,7 @@ def build():
         gfx_ids, os.path.join(C.SITE, "img", "sprites"))
 
     marts = parse_marts(trainers_db)
+    add_mart_prices(marts, item_prices.Prices())
     annotate_trainer_shops(trainers_ship, marts)
     for tid in apply_trainer_notes(trainers_ship, TRAINER_NOTES):
         print(f"  ! trainer note '{tid}' matches no trainer on the map - skipped")
