@@ -1,6 +1,26 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.6": {
+      "channel": "stable",
+      "changes": [
+        "You now run by default. Hold B to walk.",
+        "New Running Shoes key item switches back to holding B to run.",
+        "Bottle Caps now max one IV of your choice.",
+        "Every gym now gives 2 Bottle Caps.",
+        "Furius2 now sells Bottle Caps for ₽500.",
+        "Chakajacek now sells Ability Capsules and Ability Patches.",
+        "Verdanturf Mart now sells every ball except the Master Ball.",
+        "Marts up to Mauville add more balls as you travel.",
+        "All balls now cost ₽50-300.",
+        "Each item now has one price in every mart.",
+        "DexNav Pokémon no longer move in caves or on water.",
+        "Revival Blessing can no longer revive dead Nuzlocke Pokémon.",
+        "Fixed winning the Space Center fight sending you to a Pokémon Center.",
+        "Fixed Battle Tower multi rooms blocking switches and send-outs.",
+        "Website: item pages and shop popups now show real prices."
+      ]
+    },
     "2.2.5": {
       "channel": "stable",
       "changes": [

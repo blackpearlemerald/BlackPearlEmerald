@@ -527,6 +527,7 @@ PetalburgCity_Gym_EventScript_GiveFacade::
 
 	giveitem ITEM_ASSAULT_VEST
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_FACADE
 	msgbox PetalburgCity_Gym_Text_ExplainFacade, MSGBOX_DEFAULT
 	return

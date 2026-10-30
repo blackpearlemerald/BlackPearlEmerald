@@ -9889,8 +9889,10 @@ bool32 AreMultiPartiesFullTeams(void)
 	if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER))
 		return TRUE;
 		
+    // BPE: Frontier trainers are not in gTrainers. Their id is a facility index, so reading
+    // gTrainers with it picked up an unrelated trainer's team size.
     if (TRAINER_BATTLE_PARAM.opponentA == TRAINER_LINK_OPPONENT
-     || gBattleTypeFlags & BATTLE_TYPE_TOWER_LINK_MULTI
+     || gBattleTypeFlags & (BATTLE_TYPE_TOWER_LINK_MULTI | BATTLE_TYPE_FRONTIER)
      || (gTrainers[difficulty][TRAINER_BATTLE_PARAM.opponentA].multiTeamSize == MULTI_TEAM_SIZE_HALF)
      || (gTrainers[difficulty][TRAINER_BATTLE_PARAM.opponentB].multiTeamSize == MULTI_TEAM_SIZE_HALF))
     {

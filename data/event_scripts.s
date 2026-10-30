@@ -845,6 +845,58 @@ EventScript_RegionMap::
 	releaseall
 	end
 
+EventScript_BottleCap::
+	lockall
+	msgbox BottleCap_Text_ChooseMon, MSGBOX_DEFAULT
+	special ChoosePartyMon
+	goto_if_ge VAR_0x8004, PARTY_SIZE, EventScript_BottleCap_Cancel
+	specialvar VAR_RESULT, ScriptGetPartyMonSpecies
+	goto_if_eq VAR_RESULT, SPECIES_EGG, EventScript_BottleCap_Egg
+	bufferpartymonnick STR_VAR_1, VAR_0x8004
+EventScript_BottleCap_ChooseStat::
+	message BottleCap_Text_ChooseStat
+	waitmessage
+	multichoicedefault 21, 2, MULTI_BOTTLE_CAP, 0, FALSE
+	goto_if_ge VAR_RESULT, 6, EventScript_BottleCap_Cancel
+	callnative ScriptBottleCapRaiseIV
+	goto_if_eq VAR_RESULT, FALSE, EventScript_BottleCap_AlreadyMaxed
+	removeitem ITEM_BOTTLE_CAP
+	playse SE_USE_ITEM
+	msgbox BottleCap_Text_Raised, MSGBOX_DEFAULT
+	checkitem ITEM_BOTTLE_CAP
+	goto_if_eq VAR_RESULT, TRUE, EventScript_BottleCap_ChooseStat
+	goto EventScript_BottleCap_Cancel
+
+EventScript_BottleCap_AlreadyMaxed::
+	msgbox BottleCap_Text_AlreadyMaxed, MSGBOX_DEFAULT
+	goto EventScript_BottleCap_ChooseStat
+
+EventScript_BottleCap_Egg::
+	msgbox BottleCap_Text_Egg, MSGBOX_DEFAULT
+EventScript_BottleCap_Cancel::
+	closemessage
+	releaseall
+	end
+
+BottleCap_Text_ChooseMon:
+	.string "Use the BOTTLE CAP on which\n"
+	.string "POKéMON?$"
+
+BottleCap_Text_ChooseStat:
+	.string "Which of {STR_VAR_1}'s IVs\n"
+	.string "should be maxed out?$"
+
+BottleCap_Text_Raised:
+	.string "{STR_VAR_1}'s IV is now\n"
+	.string "at its maximum!$"
+
+BottleCap_Text_AlreadyMaxed:
+	.string "That IV is already at its\n"
+	.string "maximum!$"
+
+BottleCap_Text_Egg:
+	.string "It can't be used on an EGG.$"
+
 EventScript_PocketWatch::
 	lockall
 	message PocketWatch_Text_SetTimeQuestion

@@ -147,6 +147,7 @@ MauvilleCity_Gym_EventScript_GiveShockWave2::
 	giveitem ITEM_LIFE_ORB
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_SHOCK_WAVE
 	release
 	end
@@ -187,6 +188,7 @@ MauvilleCity_Gym_EventScript_GiveShockWave::
 	giveitem ITEM_LIFE_ORB
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox MauvilleCity_Gym_Text_ExplainShockWave, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_SHOCK_WAVE
 	return
 

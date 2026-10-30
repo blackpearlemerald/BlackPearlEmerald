@@ -37,6 +37,7 @@ PetalburgCity_Mart_EventScript_ExpandedItems::
 PetalburgCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_POKE_BALL
 	.2byte ITEM_GREAT_BALL
+	.2byte ITEM_HEAL_BALL
 	.2byte ITEM_POTION
 	.2byte ITEM_SUPER_POTION
 	.2byte ITEM_ANTIDOTE

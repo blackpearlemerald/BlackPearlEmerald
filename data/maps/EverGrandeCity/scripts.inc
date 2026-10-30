@@ -56,6 +56,7 @@ EverGrandeCity_EventScript_ChakaJacekShop::
 	.align 2
 EverGrandeCity_Pokemart_AbilityCapsule:
 	.2byte ITEM_ABILITY_CAPSULE
+	.2byte ITEM_ABILITY_PATCH
 	pokemartlistend
 
 EverGrandeCity_EventScript_Furius2::
@@ -79,14 +80,14 @@ EverGrandeCity_EventScript_Furius2Declined::
 EverGrandeCity_EventScript_Furius2Shop::
 	message EverGrandeCity_Text_Furius2ShopGreeting
 	waitmessage
-	pokemart EverGrandeCity_Pokemart_AbilityPatch
+	pokemart EverGrandeCity_Pokemart_BottleCap
 	msgbox EverGrandeCity_Text_Furius2ShopFarewell, MSGBOX_DEFAULT
 	release
 	end
 
 	.align 2
-EverGrandeCity_Pokemart_AbilityPatch:
-	.2byte ITEM_ABILITY_PATCH
+EverGrandeCity_Pokemart_BottleCap:
+	.2byte ITEM_BOTTLE_CAP
 	pokemartlistend
 
 EverGrandeCity_EventScript_Moira::
@@ -142,8 +143,9 @@ EverGrandeCity_Text_ChakaJacekIntro:
 EverGrandeCity_Text_ChakaJacekChallenge:
 	.string "So how about it? Want to battle\n"
 	.string "the team I won with?\p"
-	.string "Beat it, and I'll be your source of\n"
-	.string "unlimited ABILITY CAPSULES.\p"
+	.string "Beat it, and I'll sell you unlimited\n"
+	.string "ABILITY CAPSULES and ABILITY\l"
+	.string "PATCHES.\p"
 	.string "Ready?$"
 
 EverGrandeCity_Text_ChakaJacekDeclined:
@@ -155,14 +157,14 @@ EverGrandeCity_Text_ChakaJacekDefeat:
 
 EverGrandeCity_Text_ChakaJacekPostBattle:
 	.string "Ha! A deal's a deal.\p"
-	.string "From here on, ABILITY CAPSULES are\n"
-	.string "yours. As many as you want.\p"
-	.string "¥1000 each. Go build something\n"
-	.string "unstoppable.$"
+	.string "From here on, ABILITY CAPSULES and\n"
+	.string "PATCHES are yours. As many as you\l"
+	.string "want.\p"
+	.string "Go build something unstoppable.$"
 
 EverGrandeCity_Text_ChakaJacekShopGreeting:
-	.string "ABILITY CAPSULES, ¥1000 apiece.\n"
-	.string "How many do you need?$"
+	.string "ABILITY CAPSULES and PATCHES.\n"
+	.string "What do you need?$"
 
 EverGrandeCity_Text_ChakaJacekShopFarewell:
 	.string "Come back any time.$"
@@ -178,7 +180,7 @@ EverGrandeCity_Text_Furius2Challenge:
 	.string "So how about it? Want to battle\n"
 	.string "the team I won with?\p"
 	.string "Beat it, and I'll be your source of\n"
-	.string "unlimited ABILITY PATCHES.\p"
+	.string "unlimited BOTTLE CAPS.\p"
 	.string "Ready?$"
 
 EverGrandeCity_Text_Furius2Declined:
@@ -192,13 +194,13 @@ EverGrandeCity_Text_Furius2Defeat:
 EverGrandeCity_Text_Furius2PostBattle:
 	.string "I lost them all fair and square.\n"
 	.string "A deal's a deal.\p"
-	.string "ABILITY PATCHES, as many as you\n"
-	.string "want. ¥2000 each.\p"
-	.string "Drag those hidden abilities out\n"
-	.string "into the light.$"
+	.string "BOTTLE CAPS, as many as you want.\n"
+	.string "¥500 each.\p"
+	.string "Each one maxes out one IV on\n"
+	.string "one POKéMON.$"
 
 EverGrandeCity_Text_Furius2ShopGreeting:
-	.string "ABILITY PATCHES, ¥2000 apiece.\n"
+	.string "BOTTLE CAPS, ¥500 apiece.\n"
 	.string "How many do you need?$"
 
 EverGrandeCity_Text_Furius2ShopFarewell:

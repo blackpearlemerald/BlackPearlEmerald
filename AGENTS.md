@@ -524,7 +524,7 @@ The enum in `include/constants/species.h` uses upstream's short regional-form na
 Upstream builds the FRLG object graphics (pics, frame tables, `gObjectEventGraphicsInfo_*` and their `gObjectEventGraphicsInfoPointers` entries) only `#if IS_FRLG`, so in BPE those `OBJ_EVENT_GFX_*` ids have a NULL entry even though the constants exist and maps compile. BPE uses two of them, Giovanni (Victory Road 1F) and Blue (B2F), and moved them above the `IS_FRLG` blocks in all four `src/data/object_events/` files; their palettes are already outside the gate. Do the same for any other FRLG character a map or script uses. `GetObjectEventGraphicsInfo()` now falls back to the Ninja Boy for a NULL entry, and `test/map_objects.c` fails if any map object has no graphics or a trainer stands inside a wall.
 
 ### Item numbering
-BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`). BPE's `ITEM_LEVEL_LIMITER` follows at 1021 and `ITEM_INFINITE_REPEL` at 1022, so `ITEMS_COUNT` is 1023. New upstream items must be placed after the BPE HM block, never on top of it. **`ITEMS_COUNT` cannot grow past 1023:** `heldItem` is a 10-bit field (the assert in `src/pokemon.c`), and widening it changes the save layout. A new item must reuse an id nothing needs: `ITEM_CATCH_CHARM` took the FRLG-only Gold Teeth's id 891.
+BPE's custom HM layout puts `ITEM_HM01` through `ITEM_HM08` at 824–831. Upstream 1.14 Mega Stones (`CLEFABLITE` through `FALINKSITE`) were renumbered to 976–1001, and the 1.15 Legends Z-A Mega Stones sit at 1002–1020 (ending at `ITEM_GLIMMORANITE`). BPE's `ITEM_LEVEL_LIMITER` follows at 1021 and `ITEM_INFINITE_REPEL` at 1022, so `ITEMS_COUNT` is 1023. New upstream items must be placed after the BPE HM block, never on top of it. **`ITEMS_COUNT` cannot grow past 1023:** `heldItem` is a 10-bit field (the assert in `src/pokemon.c`), and widening it changes the save layout. A new item must reuse an id nothing needs: `ITEM_CATCH_CHARM` took the FRLG-only Gold Teeth's id 891, and `ITEM_RUNNING_SHOES` the Bike Voucher's 890.
 
 ### Audio formats
 Upstream samples are `.wav` (since expansion 1.14). BPE's 507 BW/DP expansion samples under `sound/direct_sound_samples/` are still `.aif` and are live build inputs through `audio_rules.mk`. Do not convert or delete them.
@@ -533,6 +533,21 @@ N's Victory Road battle uses `MUS_BW_VS_N_FINAL` (617), the BW "Decisive Battle!
 
 ### Battle script macros
 `attackstring` → `printattackstring` (and related renames) in `asm/macros/battle_script.inc`.
+
+### Multi battles
+
+`multi_do` calls `AreMultiPartiesFullTeams` before the battle starts and reads its
+answer from `VAR_RESULT`, and the function writes `VAR_RESULT` every time it runs.
+Expansion 1.16.4 made it depend on `gBattleTypeFlags`, which in the field still
+held the last battle's flags: after a wild battle or a reload, the Space Center
+fight skipped `ReducePlayerPartyToSelectedMons`, so the player's other Pokémon kept
+the battle running with nobody on the field (the Slaking report), and the call in
+`HandleSpecialTrainerBattleEnd` then overwrote the outcome, so a win whited out.
+`SetMultiTrainerBattle` now sets the flags, and that handler keeps the outcome.
+Frontier trainer ids are facility indexes, not `gTrainers` ids, so the function also
+treats Frontier battles as half teams; Battle Tower multi rooms read an unrelated
+trainer's team size before that. Check all of this again after the next upstream
+merge.
 
 ### Save format (2.1)
 Starting with 2.1.0 the PC has 41 boxes and the save uses a new flash layout. The header comments in `include/save_engine.h` and `include/packed_box_mon.h` are the specification.
@@ -638,14 +653,13 @@ The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
   Pokémon check that could never run, and a search started from the menu that
   returned to the field mid-fade (sprites flashed untinted for a frame). BPE's
   wild tables have no hidden Pokémon.
-- Caves and water (reported on Discord for Meteor Falls): there the Pokémon moves
-  up to twice when the player gets close. `DexNavPickTile()` only picks tiles on
-  screen, centred on the player, that a flood fill from the player can reach
-  (collision, elevation, water vs land, no ledges or waterfalls); upstream
-  scanned off-screen, moved the Pokémon only down and right, and often put it
-  across a river or wall. Each move restarts the 15-second timer, and
-  `IsDexNavStalkingPokemon()` turns off random encounters while a revealed search
-  runs, since a random battle ends the search.
+- Caves and water: the Pokémon stays where it first appears, as it does in grass.
+  Upstream moved it up to twice when the player got close; the maintainer removed
+  that after 2.2.5. `DexNavPickTile()` only picks tiles on screen, centred on the
+  player, that a flood fill from the player can reach (collision, elevation,
+  water vs land, no ledges or waterfalls). `IsDexNavStalkingPokemon()` turns off
+  random encounters while a revealed search runs, since a random battle ends the
+  search.
 - Found through DexNav but game-wide: the weather color maps in
   `src/field_weather.c` copy the unfaded palettes into the faded buffer and then
   darken them in place. On a heavy frame the VBlank interrupt could send the
@@ -703,6 +717,29 @@ clock. It changes `GetTimeOfDay()` (tint, evolutions, wild encounters), not the
 clock itself, so berries, daily events and the clock displays keep the real time.
 Tests: `make check TESTS=test/time_evolutions.c`, which also checks every
 time-of-day evolution.
+
+### Running by default
+
+The player runs unless B is held. The Running Shoes key item (id 890, the FRLG Bike
+Voucher's id) toggles `FLAG_CLASSIC_RUNNING` (0x45) back to holding B to run, in the
+Bag or from SELECT. A flag clear on every older save means they run by default too.
+A DexNav search always uses the classic controls, because running near the hidden
+Pokémon scares it off (`SNEAKING_PROXIMITY` in `src/dexnav.c`). Mom's starter kit
+gives the item, and Mom at home gives it to older saves
+(`FLAG_RECEIVED_SHOES_KEY_ITEM`, 0x46). `FLAG_RECEIVED_RUNNING_SHOES` is the older
+story flag and means something else. Tests: `make check TESTS="The Running Shoes"`.
+
+### Bottle Caps
+
+A Bottle Cap maxes one IV of a chosen party Pokémon, in either mode. Using one
+closes the Bag and runs `EventScript_BottleCap` in `data/event_scripts.s`, which
+keeps asking for a stat while the player has caps. Each Gym Leader's reward adds
+two (`additem ITEM_BOTTLE_CAP, 2`), and Furius2 in Ever Grande City sells them;
+Chakajacek sells both Ability Capsules and Ability Patches. The price is ₽500 in
+`items.h`, not the vanilla ₽20000, so that the sell price can't turn a profit.
+Its type must stay `ITEM_USE_FIELD`: `SetUpItemUseCallback` has no `ITEM_USE_BAG_MENU`
+entry, and with that type the Bag drops back to the Start menu.
+Pickup can also find them. Tests: `make check TESTS="A Bottle Cap"`.
 
 ### Infinite Repel
 
@@ -837,6 +874,15 @@ sell value; map shop popups show what each shop charges. If you change the
 shape of those functions, update `item_prices.py`: it refuses caps it can no
 longer read rather than publish wrong prices. Tests: `make check TESTS=test/verdanturf_mart.c` and
 `python -m unittest BPETools/tests/test_item_prices.py`.
+
+### Buying Poké Balls
+
+Balls scale by town up to Verdanturf, and its four lists sell every ball except the
+Master Ball, so all of them are available from there on: Oldale adds the Premier,
+Petalburg Great and Heal, Rustboro Great, Nest, Repeat and Timer, Slateport Net and
+Dive, Mauville Ultra, Quick and Dusk. Marts after Verdanturf keep their old stock. All
+balls cost ₽50-300, set in `items.h`; a ball with `.price = 0` would be free. Tests:
+`make check TESTS=test/verdanturf_mart.c`.
 
 ### Picking a Pokémon from the PC
 

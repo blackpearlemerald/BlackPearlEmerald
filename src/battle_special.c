@@ -45,6 +45,9 @@ static void HandleSpecialTrainerBattleEnd(void)
         CopyEReaderTrainerFarewellMessage();
         break;
     case SPECIAL_BATTLE_MULTI:
+    {
+        // BPE: AreMultiPartiesFullTeams writes VAR_RESULT, which holds the outcome by now
+        u16 outcome = gSpecialVar_Result;
         if (!AreMultiPartiesFullTeams())
         {
             for (i = 0; i < 3; i++)
@@ -53,7 +56,9 @@ static void HandleSpecialTrainerBattleEnd(void)
                     gSaveBlock1Ptr->playerParty[i] = gParties[B_TRAINER_PLAYER][i];
             }
         }
+        gSpecialVar_Result = outcome;
         break;
+    }
     }
 
     SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);

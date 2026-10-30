@@ -98,6 +98,7 @@ MossdeepCity_Gym_EventScript_GiveCalmMind2::
 
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox MossdeepCity_Gym_Text_ExplainCalmMind, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_CALM_MIND
 	release
 	end
@@ -106,6 +107,7 @@ MossdeepCity_Gym_EventScript_GiveCalmMind::
 
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox MossdeepCity_Gym_Text_ExplainCalmMind, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_CALM_MIND
 	return
 

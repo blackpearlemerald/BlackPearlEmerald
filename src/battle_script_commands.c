@@ -11148,7 +11148,8 @@ u8 GetFirstFaintedPartyIndex(enum BattlerId battler)
         enum Species species = GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG);
         if (species != SPECIES_NONE
             && species != SPECIES_EGG
-            && GetMonData(&party[i], MON_DATA_HP) == 0)
+            && GetMonData(&party[i], MON_DATA_HP) == 0
+            && !IsMonDeadInNuzlocke(&party[i])) // BPE Nuzlocke: Revival Blessing can't bring it back
         {
             return i;
         }

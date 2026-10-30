@@ -951,6 +951,31 @@ void ItemUseOutOfBattle_LevelLimiter(u8 taskId)
         DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
 }
 
+static const u8 sText_RunningShoesAuto[] = _("You now run all the time.\nHold B to walk.{PAUSE_UNTIL_PRESS}");
+static const u8 sText_RunningShoesClassic[] = _("You now walk all the time.\nHold B to run.{PAUSE_UNTIL_PRESS}");
+
+// BPE: FLAG_CLASSIC_RUNNING is clear on every older save, so they run by default too.
+void ItemUseOutOfBattle_RunningShoes(u8 taskId)
+{
+    const u8 *text;
+
+    if (FlagGet(FLAG_CLASSIC_RUNNING))
+    {
+        FlagClear(FLAG_CLASSIC_RUNNING);
+        text = sText_RunningShoesAuto;
+    }
+    else
+    {
+        FlagSet(FLAG_CLASSIC_RUNNING);
+        text = sText_RunningShoesClassic;
+    }
+    PlaySE(SE_SELECT);
+    if (gTasks[taskId].tUsingRegisteredKeyItem)
+        DisplayItemMessageOnField(taskId, text, Task_CloseCantUseKeyItemMessage);
+    else if (gTasks[taskId].data[3] == 0)
+        DisplayItemMessage(taskId, FONT_NORMAL, text, CloseItemMessage);
+}
+
 static const u8 sText_InfiniteRepelOn[] = _("The Infinite Repel is now ON.\nWeak wild Pokémon will stay away.{PAUSE_UNTIL_PRESS}");
 static const u8 sText_InfiniteRepelOff[] = _("The Infinite Repel is now OFF.{PAUSE_UNTIL_PRESS}");
 
@@ -1751,6 +1776,38 @@ void ItemUseOutOfBattle_PokeVial(u8 taskId)
         sItemUseOnFieldCB = ItemUseOnFieldCB_PokeVial;
         SetUpItemUseOnFieldCallback(taskId);
     // }
+}
+
+static void ItemUseOnFieldCB_BottleCap(u8 taskId)
+{
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(EventScript_BottleCap);
+    DestroyTask(taskId);
+}
+
+// BPE: the party and stat menus are script menus, so the Bag closes first.
+void ItemUseOutOfBattle_BottleCap(u8 taskId)
+{
+    sItemUseOnFieldCB = ItemUseOnFieldCB_BottleCap;
+    SetUpItemUseOnFieldCallback(taskId);
+}
+
+// BPE: VAR_0x8004 is the party slot and VAR_RESULT the stat, in the order of
+// MultichoiceList_BottleCap (the MON_DATA_*_IV order). VAR_RESULT is TRUE if the IV rose.
+void ScriptBottleCapRaiseIV(void)
+{
+    struct Pokemon *mon = &gParties[B_TRAINER_PLAYER][gSpecialVar_0x8004];
+    u32 field = MON_DATA_HP_IV + gSpecialVar_Result;
+    u32 iv = MAX_PER_STAT_IVS;
+
+    if (GetMonData(mon, field) == MAX_PER_STAT_IVS)
+    {
+        gSpecialVar_Result = FALSE;
+        return;
+    }
+    SetMonData(mon, field, &iv);
+    CalculateMonStats(mon);
+    gSpecialVar_Result = TRUE;
 }
 
 void SetTimeOfDayFromPocketWatch(void)

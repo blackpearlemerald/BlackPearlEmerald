@@ -43,6 +43,28 @@ TEST("Nothing in the Verdanturf mart costs more than 500, and berries and evolut
     EXPECT_EQ(GetVerdanturfMartPrice(ITEM_POKE_BALL), GetItemPrice(ITEM_POKE_BALL));
 }
 
+TEST("Every Verdanturf list sells every ball except the Master Ball, for 300 at most")
+{
+    for (u32 i = 0; i < ARRAY_COUNT(sLists); i++)
+    {
+        for (enum Item ball = ITEM_NONE + 1; ball < ITEMS_COUNT; ball++)
+        {
+            const u16 *item = sLists[i];
+
+            if (GetItemPocket(ball) != POCKET_POKE_BALLS)
+                continue;
+            while (*item != ITEM_NONE && *item != ball)
+                item++;
+            EXPECT_EQ(*item == ball, ball != ITEM_MASTER_BALL);
+            if (ball != ITEM_MASTER_BALL)
+            {
+                EXPECT_NE(GetItemPrice(ball), 0);
+                EXPECT_LE(GetItemPrice(ball), 300);
+            }
+        }
+    }
+}
+
 TEST("Whatever the Verdanturf mart sells costs its price everywhere")
 {
     for (u32 i = 0; i < ARRAY_COUNT(sLists); i++)
@@ -51,8 +73,8 @@ TEST("Whatever the Verdanturf mart sells costs its price everywhere")
             EXPECT_EQ(GetItemPrice(*item), GetVerdanturfMartPrice(*item));
     }
     // Also stocked by other marts, which must not charge more.
-    EXPECT_EQ(GetItemPrice(ITEM_GREAT_BALL), 500);
-    EXPECT_EQ(GetItemPrice(ITEM_ULTRA_BALL), 500);
+    EXPECT_EQ(GetItemPrice(ITEM_GREAT_BALL), 100);
+    EXPECT_EQ(GetItemPrice(ITEM_ULTRA_BALL), 200);
     EXPECT_EQ(GetItemSellPrice(ITEM_FLAME_ORB), 500 / ITEM_SELL_FACTOR);
     // Items it doesn't sell keep their own price.
     EXPECT_EQ(GetItemPrice(ITEM_NUGGET), gItemsInfo[ITEM_NUGGET].price);

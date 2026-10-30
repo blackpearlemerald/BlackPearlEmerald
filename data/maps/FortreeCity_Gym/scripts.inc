@@ -54,6 +54,7 @@ FortreeCity_Gym_EventScript_GiveAerialAce2::
 
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox FortreeCity_Gym_Text_ExplainAerialAce, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_AERIAL_ACE
 	release
 	end
@@ -62,6 +63,7 @@ FortreeCity_Gym_EventScript_GiveAerialAce::
 
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox FortreeCity_Gym_Text_ExplainAerialAce, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_AERIAL_ACE
 	return
 

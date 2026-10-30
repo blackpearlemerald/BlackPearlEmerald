@@ -23,6 +23,8 @@ void ItemUseOutOfBattle_PPUp(u8 taskId);
 void ItemUseOutOfBattle_Ball(u8 taskId); // BPE
 void ItemUseOutOfBattle_LevelLimiter(u8 taskId); // BPE
 void ItemUseOutOfBattle_InfiniteRepel(u8 taskId); // BPE
+void ItemUseOutOfBattle_RunningShoes(u8 taskId); // BPE
+void ItemUseOutOfBattle_BottleCap(u8 taskId); // BPE
 void ItemUseOutOfBattle_CatchCharm(u8 taskId); // BPE
 void ItemUseOutOfBattle_RareCandy(u8 taskId);
 void ItemUseOutOfBattle_DynamaxCandy(u8 taskId);

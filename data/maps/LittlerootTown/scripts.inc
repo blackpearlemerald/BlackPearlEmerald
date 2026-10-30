@@ -913,6 +913,14 @@ LittlerootTown_EventScript_GiveInfiniteRepel::
 LittlerootTown_EventScript_GiveInfiniteRepelDone::
 	return
 
+@ BPE: switches between always running and holding B. Guarded like the others.
+LittlerootTown_EventScript_GiveShoesKeyItem::
+	goto_if_set FLAG_RECEIVED_SHOES_KEY_ITEM, LittlerootTown_EventScript_GiveShoesKeyItemDone
+	giveitem ITEM_RUNNING_SHOES
+	setflag FLAG_RECEIVED_SHOES_KEY_ITEM
+LittlerootTown_EventScript_GiveShoesKeyItemDone::
+	return
+
 @ BPE: Standard mode's switch for a guaranteed catch. Guarded like the others.
 LittlerootTown_EventScript_GiveCatchCharm::
 	goto_if_set FLAG_RECEIVED_CATCH_CHARM, LittlerootTown_EventScript_GiveCatchCharmDone
@@ -948,6 +956,7 @@ LittlerootTown_EventScript_GiveStarterKit::
 	giveitem ITEM_ESCAPE_ROPE
 	giveitem ITEM_POCKET_WATCH
 	call LittlerootTown_EventScript_GiveInfiniteRepel
+	call LittlerootTown_EventScript_GiveShoesKeyItem
 	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveLevelLimiter
 	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveCatchCharm
 	setflag FLAG_RECEIVED_OLD_ROD

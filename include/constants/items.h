@@ -1059,7 +1059,7 @@ enum __attribute__((packed)) Item
     ITEM_PARCEL = 888,
     ITEM_OAKS_PARCEL = ITEM_PARCEL, // Pre-Gen IV name
     ITEM_SECRET_KEY = 889,
-    ITEM_BIKE_VOUCHER = 890,
+    ITEM_RUNNING_SHOES = 890, // BPE: the FRLG Bike Voucher's id, reused because ITEMS_COUNT is capped at 1023 (10-bit heldItem)
     ITEM_CATCH_CHARM = 891, // BPE: the FRLG Gold Teeth's id, reused because ITEMS_COUNT is capped at 1023 (10-bit heldItem)
     ITEM_CARD_KEY = 892,
     ITEM_LIFT_KEY = 893,

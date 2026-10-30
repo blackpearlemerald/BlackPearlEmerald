@@ -6,6 +6,17 @@ static const struct MenuAction MultichoiceList_BrineyOnDewford[] =
     {gText_Exit},
 };
 
+static const struct MenuAction MultichoiceList_BottleCap[] =
+{
+    {COMPOUND_STRING("HP")},
+    {COMPOUND_STRING("ATTACK")},
+    {COMPOUND_STRING("DEFENSE")},
+    {COMPOUND_STRING("SPEED")},
+    {COMPOUND_STRING("SP. ATK")},
+    {COMPOUND_STRING("SP. DEF")},
+    {gText_Exit},
+};
+
 static const struct MenuAction MultichoiceList_PocketWatch[] =
 {
     {COMPOUND_STRING("MORNING")},
@@ -1308,6 +1319,7 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_EGGS_VICTORIES_QUIT]                        = MULTICHOICE(sMultichoiceList_Eggs_Victories_Quit),
     [MULTI_HOF_EGGS_VICTORIES_QUIT]                    = MULTICHOICE(sMultichoiceList_HOF_Eggs_Victories_Quit),
     [MULTI_POCKET_WATCH]                               = MULTICHOICE(MultichoiceList_PocketWatch),
+    [MULTI_BOTTLE_CAP]                                 = MULTICHOICE(MultichoiceList_BottleCap),
 };
 
 const u8 *const gStdStrings[] =

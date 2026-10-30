@@ -908,8 +908,10 @@ static void PlayerNotOnBikeMoving(enum Direction direction, u16 heldKeys)
         return;
     }
 
+    // BPE: the Running Shoes key item picks which way B works. A DexNav search keeps
+    // the classic controls, because running near the hidden Pokémon scares it off.
     if (!(gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_UNDERWATER)
-     && (heldKeys & B_BUTTON)
+     && ((heldKeys & B_BUTTON) != 0) == (FlagGet(FLAG_CLASSIC_RUNNING) || FlagGet(DN_FLAG_SEARCHING))
      && FlagGet(FLAG_SYS_B_DASH)
      && IsRunningDisallowed(gObjectEvents[gPlayerAvatar.objectEventId].currentMetatileBehavior) == 0
      && !FollowerNPCComingThroughDoor()

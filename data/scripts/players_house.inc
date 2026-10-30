@@ -306,6 +306,7 @@ PlayersHouse_1F_EventScript_Mom::
 	goto_if_unset FLAG_V1PATCH, PlayersHouse_1F_EventScript_V1PATCH
 	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveLevelLimiter
 	call PlayersHouse_1F_EventScript_TryGiveInfiniteRepel
+	call PlayersHouse_1F_EventScript_TryGiveShoesKeyItem
 	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveCatchCharm
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_MAY, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_BRENDAN, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
@@ -331,6 +332,22 @@ PlayersHouse_1F_Text_HereIsLevelLimiter:
 	.string "This LEVEL LIMITER turns the badge\n"
 	.string "level caps on or off, whenever you\l"
 	.string "like. Take it with you!$"
+
+@ BPE: saves made before the Running Shoes key item existed get it from Mom.
+PlayersHouse_1F_EventScript_TryGiveShoesKeyItem::
+	goto_if_set FLAG_RECEIVED_SHOES_KEY_ITEM, PlayersHouse_1F_EventScript_TryGiveShoesKeyItemDone
+	msgbox PlayersHouse_1F_Text_HereIsShoesKeyItem, MSGBOX_DEFAULT
+	giveitem ITEM_RUNNING_SHOES
+	setflag FLAG_RECEIVED_SHOES_KEY_ITEM
+PlayersHouse_1F_EventScript_TryGiveShoesKeyItemDone::
+	return
+
+PlayersHouse_1F_Text_HereIsShoesKeyItem:
+	.string "MOM: Oh, honey, one more thing!\p"
+	.string "You run everywhere now, so hold B\n"
+	.string "when you want to walk. If you'd\l"
+	.string "rather hold B to run, change it\l"
+	.string "with your RUNNING SHOES!$"
 
 @ BPE: saves made before the Infinite Repel existed get it from Mom.
 PlayersHouse_1F_EventScript_TryGiveInfiniteRepel::

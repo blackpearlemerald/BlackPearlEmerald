@@ -122,6 +122,7 @@ SootopolisCity_Gym_1F_EventScript_GiveWaterPulse::
 	call_if_eq VAR_RESULT, TRUE, SootopolisCity_Gym_1F_EventScript_EnableSouthernIsland
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_BagIsFull
 	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_WATER_PULSE
 	return
 
@@ -132,6 +133,7 @@ SootopolisCity_Gym_1F_EventScript_GiveWaterPulse2::
 	call_if_eq VAR_RESULT, TRUE, SootopolisCity_Gym_1F_EventScript_EnableSouthernIsland
 	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
 	msgbox SootopolisCity_Gym_1F_Text_ExplainWaterPulse, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_WATER_PULSE
 	release
 	end

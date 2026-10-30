@@ -94,8 +94,8 @@
 #define FLAG_CAUGHT_KYOGRE   0x42
 #define FLAG_CAUGHT_GROUDON  0x43
 #define FLAG_RECEIVED_PETALBURG_EGG 0x44 // BPE: formerly unused. The Egg man in Petalburg has handed out his Egg.
-#define FLAG_UNUSED_0x045    0x45 // Unused Flag
-#define FLAG_UNUSED_0x046    0x46 // Unused Flag
+#define FLAG_CLASSIC_RUNNING          0x45 // BPE: formerly unused. The Running Shoes are set to hold B to run.
+#define FLAG_RECEIVED_SHOES_KEY_ITEM 0x46 // BPE: formerly unused. The Running Shoes key item has been handed out.
 #define FLAG_UNUSED_0x047    0x47 // Unused Flag
 #define FLAG_UNUSED_0x048    0x48 // Unused Flag
 #define FLAG_UNUSED_0x049    0x49 // Unused Flag

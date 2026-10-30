@@ -201,6 +201,7 @@ DewfordTown_Gym_EventScript_GiveBulkUp::
 	giveitem ITEM_FOCUS_SASH
 	goto_if_eq VAR_RESULT, 0, Common_EventScript_BagIsFull
 	msgbox DewfordTown_Gym_Text_ExplainBulkUp, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_BULK_UP
 	return
 
@@ -238,6 +239,7 @@ DewfordTown_Gym_EventScript_GiveBulkUp2:
 	giveitem ITEM_FOCUS_SASH
 	goto_if_eq VAR_RESULT, 0, Common_EventScript_ShowBagIsFull
 	msgbox DewfordTown_Gym_Text_ExplainBulkUp, MSGBOX_DEFAULT
+	additem ITEM_BOTTLE_CAP, 2
 	setflag FLAG_RECEIVED_TM_BULK_UP
 	release
 	end

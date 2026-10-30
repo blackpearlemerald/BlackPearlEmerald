@@ -103,7 +103,6 @@ struct DexNavSearch
     s16 tileY;
     u8 fldEffSpriteId;
     u8 fldEffId;
-    u8 movementCount;
     u8 windowId;
     u8 iconSpriteId;
     u8 eyeSpriteId;
@@ -1063,16 +1062,6 @@ static void EndDexNavSearchSetupScript(const u8 *script)
     ScriptContext_SetupScript(script);
 }
 
-static u8 GetMovementProximityBySearchLevel(void)
-{
-    if (sDexNavSearchDataPtr->searchLevel < 20)
-        return 2;
-    else if (sDexNavSearchDataPtr->searchLevel < 50)
-        return 3;
-    else
-        return 4;
-}
-
 static void RevealHiddenMon(void)
 {
     enum Species species = sDexNavSearchDataPtr->species;
@@ -1176,25 +1165,6 @@ bool32 OnStep_DexNavSearch(void)
     {
         RevealHiddenSearch();
         return FALSE;
-    }
-
-    //Caves and water the Pokémon moves around
-    if ((sDexNavSearchDataPtr->environment == ENCOUNTER_TYPE_WATER || GetCurrentMapType() == MAP_TYPE_UNDERGROUND)
-        && sDexNavSearchDataPtr->proximity < GetMovementProximityBySearchLevel() && sDexNavSearchDataPtr->movementCount < 2
-        && !sDexNavSearchDataPtr->hiddenSearch)
-    {
-        FieldEffectStop(&gSprites[sDexNavSearchDataPtr->fldEffSpriteId], sDexNavSearchDataPtr->fldEffId);
-
-        if (!TryStartHiddenMonFieldEffect(sDexNavSearchDataPtr->environment, 5, 4))
-        {
-            EndDexNavSearchSetupScript(EventScript_PokemonGotAway);
-            return TRUE;
-        }
-
-        // BPE: the player gets the full time again to reach the new spot. Upstream kept
-        // the old timer, so after a move or two the Pokémon usually got away.
-        sDexNavSearchDataPtr->startingTime = gMain.vblankCounter1;
-        sDexNavSearchDataPtr->movementCount++;
     }
     return FALSE;
 }

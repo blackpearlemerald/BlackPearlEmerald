@@ -2672,4 +2672,8 @@ void SetMultiTrainerBattle(struct ScriptContext *ctx)
     TRAINER_BATTLE_PARAM.opponentB = ScriptReadHalfword(ctx);
     TRAINER_BATTLE_PARAM.defeatTextB = (u8*)ScriptReadWord(ctx);
     gPartnerTrainerId = TRAINER_PARTNER(ScriptReadHalfword(ctx));
+
+    // BPE: multi_do calls AreMultiPartiesFullTeams before the battle starts, which reads
+    // these flags. Left alone they are whatever the last battle or a reloaded save had.
+    gBattleTypeFlags = TRAINER_BATTLE_PARAM.opponentA != TRAINER_NONE ? BATTLE_TYPE_TRAINER : 0;
 }

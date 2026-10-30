@@ -1,4 +1,6 @@
 #include "global.h"
+#include "battle_script_commands.h"
+#include "event_data.h"
 #include "test/battle.h"
 
 ASSUMPTIONS
@@ -123,4 +125,23 @@ SINGLE_BATTLE_TEST("Revival Blessing keeps Mimikyu Busted forms and Eiscue Noice
         NOT ABILITY_POPUP(player, ability);
         HP_BAR(player);
     }
+}
+
+TEST("Revival Blessing cannot choose a dead Nuzlocke Pokémon")
+{
+    bool8 dead = TRUE;
+    u32 hp = 0;
+
+    ZeroPlayerPartyMons();
+    CreateMon(&gParties[B_TRAINER_PLAYER][0], SPECIES_WOBBUFFET, 50, 0, OTID_STRUCT_PLAYER_ID);
+    CreateMon(&gParties[B_TRAINER_PLAYER][1], SPECIES_WYNAUT, 50, 0, OTID_STRUCT_PLAYER_ID);
+    CalculateMonStats(&gParties[B_TRAINER_PLAYER][0]);
+    SetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_HP, &hp);
+    SetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_DEAD, &dead);
+
+    FlagClear(FLAG_NUZLOCKE);
+    EXPECT_EQ(GetFirstFaintedPartyIndex((enum BattlerId)0), 1);
+    FlagSet(FLAG_NUZLOCKE);
+    EXPECT_EQ(GetFirstFaintedPartyIndex((enum BattlerId)0), PARTY_SIZE);
+    FlagClear(FLAG_NUZLOCKE);
 }
