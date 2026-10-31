@@ -20,7 +20,6 @@
 #include "battle.h"
 #include "battle_controllers.h"
 #include "battle_main.h"
-#include "palette.h"
 #include "sprite.h"
 #include "text.h"
 #include "intro.h"
@@ -148,8 +147,11 @@ static bool32 IsFastForwardScreen(void)
     if (gReceivedRemoteLinkPlayers || gLinkTransferringData || gWirelessCommType != 0)
         return FALSE;
 
-    // Menus stay at normal speed: their held-button repeat runs on logic frames
-    return gMain.callback2 == CB2_Overworld || gMain.callback2 == BattleMainCB2;
+    // CB2_OverworldBasic is the transition into a battle. Menus stay at normal
+    // speed: their held-button repeat runs on logic frames.
+    return gMain.callback2 == CB2_Overworld
+        || gMain.callback2 == CB2_OverworldBasic
+        || gMain.callback2 == BattleMainCB2;
 }
 
 bool32 IsFastForwardMutingBattleSfx(void)
@@ -168,11 +170,6 @@ static bool32 ShouldRunAnotherLogicPass(void)
     u32 speed;
 
     if (!IsFastForwardScreen())
-        return FALSE;
-
-    // A palette fade takes one step per VBlank, so at full speed the code waiting
-    // on it would be left behind: a Poke Ball's fade could outlast the battle
-    if (gPaletteFade.active)
         return FALSE;
 
     // Both queues empty at VBlank and drop new requests when full

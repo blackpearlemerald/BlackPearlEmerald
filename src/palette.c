@@ -1,5 +1,6 @@
 #include "global.h"
 #include "palette.h"
+#include "main.h"
 #include "util.h"
 #include "decompress.h"
 #include "field_weather.h"
@@ -81,7 +82,10 @@ u32 UpdatePaletteFade(void)
 {
     u32 result;
 
-    if (sPlttBufferTransferPending)
+    // BPE: on fast forward's extra passes a fade skips ahead instead of waiting
+    // for VBlank, so it keeps pace with the code around it. Only the last step
+    // before each VBlank reaches the screen.
+    if (sPlttBufferTransferPending && !IsFastForwardExtraPass())
         return PALETTE_FADE_STATUS_LOADING;
 
     if (gPaletteFade.mode == NORMAL_FADE)

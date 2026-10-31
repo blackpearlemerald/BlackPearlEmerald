@@ -808,11 +808,13 @@ skips only the wait. Audio runs from the VBlank and VCount interrupts, so music
 keeps its tempo and pitch. On a real GBA the speed is a ceiling: a pass that takes
 too long just gets fewer passes in.
 
-- It runs on `CB2_Overworld` and `BattleMainCB2` only. Menus keep 1x because their
+- It runs on `CB2_Overworld`, `CB2_OverworldBasic` (the transition into a battle)
+  and `BattleMainCB2` only. Menus keep 1x because their
   held-button repeat runs on logic frames. Link play is always 1x.
-- Move animations stay sped up, unlike Wishes of Tomorrow. The game drops to 1x
-  while a palette fade runs, since fades take one step per VBlank and the code
-  around them would outrun them, or when the DMA or sprite copy queue is half full (`IsDma3QueueHalfFull`, `IsSpriteCopyQueueHalfFull`), since both drop
+- Move animations stay sped up, unlike Wishes of Tomorrow. `UpdatePaletteFade` does
+  not wait for VBlank on an extra pass, so fades keep pace with the code around
+  them; a fade stuck at 1x let a Poke Ball's fade outlast the battle. The game drops
+  to 1x only when the DMA or sprite copy queue is half full (`IsDma3QueueHalfFull`, `IsSpriteCopyQueueHalfFull`), since both drop
   requests silently when full.
 - On the battle screen `IsFastForwardMutingBattleSfx()` mutes cries, the panned sound
   effects and everything else played during an animation. Otherwise sounds would

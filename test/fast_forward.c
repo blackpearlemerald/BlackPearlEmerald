@@ -1,12 +1,17 @@
 #include "global.h"
 #include "battle_main.h"
+#include "battle_setup.h"
+#include "battle_transition.h"
 #include "dma3.h"
 #include "link.h"
 #include "main.h"
 #include "overworld.h"
+#include "palette.h"
 #include "sound.h"
 #include "sprite.h"
+#include "task.h"
 #include "test/test.h"
+#include "constants/opponents.h"
 #include "constants/songs.h"
 
 // BPE: fast forward runs the game logic 2 or 4 times per VBlank. These cover the
@@ -101,4 +106,36 @@ TEST("The sprite copy queue reports half full before it can drop requests")
     }
     EXPECT(IsSpriteCopyQueueHalfFull());
     ClearSpriteCopyRequests();
+}
+
+TEST("Every battle transition finishes at 4 logic passes per VBlank")
+{
+    u32 transition = 0, frame, pass;
+    bool32 done = FALSE;
+
+    for (u32 i = 0; i < B_TRANSITION_COUNT; i++)
+    {
+        PARAMETRIZE { transition = i; }
+    }
+
+    TRAINER_BATTLE_PARAM.opponentA = TRAINER_SIDNEY; // the mugshots read these
+    TRAINER_BATTLE_PARAM.opponentB = TRAINER_NONE;
+    // The field's VBlank callback does this for the transitions without their own
+    SetVBlankCallback(TransferPlttBuffer);
+    BattleTransition_Start(transition);
+    for (frame = 0; frame < 1000 && !done; frame++)
+    {
+        for (pass = 0; pass < 4 && !done; pass++)
+        {
+            RunTasks();
+            AnimateSprites();
+            BuildOamBuffer();
+            UpdatePaletteFade();
+            done = IsBattleTransitionDone();
+        }
+        VBlankIntrWait();
+    }
+    SetVBlankCallback(NULL);
+    SetHBlankCallback(NULL);
+    EXPECT(done);
 }
