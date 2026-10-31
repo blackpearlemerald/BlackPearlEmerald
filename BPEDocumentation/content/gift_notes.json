@@ -13,7 +13,7 @@
   },
   {
     "script": "LittlerootTown_EventScript_Mom",
-    "note": "<b>Automatic, after the Pokédex.</b> Once Professor Birch gives you the Pokédex, Mom stops you on your way out of Littleroot Town with her starter kit: Picnic Basket, Portable PC, Taxi Ticket, Candy Jar, Exp. Share, Old Rod, Escape Rope, Pocket Watch and Infinite Repel. In Standard mode the kit also includes the Level Limiter. It can't be missed."
+    "note": "<b>Automatic, after the Pokédex.</b> Once Professor Birch gives you the Pokédex, Mom stops you on your way out of Littleroot Town with her starter kit: Picnic Basket, Portable PC, Taxi Ticket, Candy Jar, Exp. Share, Old Rod, Escape Rope, Pocket Watch, Infinite Repel and Speed Boy. In Standard mode the kit also includes the Level Limiter. It can't be missed."
   },
   {
     "script": "PlayersHouse_1F_EventScript_Mom",

@@ -1,6 +1,16 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.7": {
+      "channel": "stable",
+      "changes": [
+        "Added the Speed Boy, a key item from Mom that speeds up the game at 2x, 3x or 4x.",
+        "Music stays at normal speed while sped up; battle sounds and cries speed up with the game.",
+        "Use the Speed Boy or press SELECT to switch it on or off, and pick SWAP in the Bag to change speed.",
+        "Works on the overworld, in battles and during battle transitions.",
+        "Fixed the Kalos, Unova and Alola Elite Four themes stopping partway through a battle."
+      ]
+    },
     "2.2.6": {
       "channel": "stable",
       "changes": [
