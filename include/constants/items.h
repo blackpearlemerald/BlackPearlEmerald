@@ -1066,7 +1066,7 @@ enum __attribute__((packed)) Item
     ITEM_SILPH_SCOPE = 894,
     ITEM_TRI_PASS = 895,
     ITEM_RAINBOW_PASS = 896,
-    ITEM_TEA = 897,
+    ITEM_SPEED_BOY = 897, // BPE: the FRLG Tea's id, reused because ITEMS_COUNT is capped at 1023 (10-bit heldItem)
     ITEM_RUBY = 898,
     ITEM_SAPPHIRE = 899,
 

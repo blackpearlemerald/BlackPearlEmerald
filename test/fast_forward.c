@@ -3,7 +3,11 @@
 #include "battle_setup.h"
 #include "battle_transition.h"
 #include "dma3.h"
+#include "event_data.h"
+#include "gba/m4a_internal.h"
 #include "link.h"
+#include "item.h"
+#include "m4a.h"
 #include "main.h"
 #include "overworld.h"
 #include "palette.h"
@@ -11,64 +15,101 @@
 #include "sprite.h"
 #include "task.h"
 #include "test/test.h"
+#include "constants/items.h"
 #include "constants/opponents.h"
 #include "constants/songs.h"
 
-// BPE: fast forward runs the game logic 2 or 4 times per VBlank. These cover the
+// BPE: the Speed Boy runs the game logic 2 to 4 times per VBlank. These cover the
 // rules around it; the frame loop itself is measured with a headless build.
 
-TEST("The fast forward option uses padding, so older saves read it as off")
+TEST("The Speed Boy is a key item")
 {
-    EXPECT_EQ(offsetof(struct SaveBlock2, pokedex), 0x18);
-    EXPECT_EQ(OPTIONS_FAST_FORWARD_OFF, 0);
+    EXPECT_EQ(GetItemPocket(ITEM_SPEED_BOY), POCKET_KEY_ITEMS);
+    EXPECT_EQ(GetItemImportance(ITEM_SPEED_BOY), 1);
 }
 
-TEST("Fast forward only mutes battle sounds on the battle screen")
+TEST("The Speed Boy cycles through 2x, 3x and 4x")
+{
+    FlagClear(FLAG_SPEED_BOY_SPEED_LO);
+    FlagClear(FLAG_SPEED_BOY_SPEED_HI);
+    EXPECT_EQ(GetFastForwardSpeed(), 2);
+    CycleFastForwardSpeed();
+    EXPECT_EQ(GetFastForwardSpeed(), 3);
+    CycleFastForwardSpeed();
+    EXPECT_EQ(GetFastForwardSpeed(), 4);
+    CycleFastForwardSpeed();
+    EXPECT_EQ(GetFastForwardSpeed(), 2);
+}
+
+TEST("Fast forward only speeds up sounds on the battle screen")
 {
     MainCallback callback2 = gMain.callback2;
-    u32 option = gSaveBlock2Ptr->optionsFastForward;
 
+    FlagClear(FLAG_SPEED_BOY_SPEED_LO);
+    FlagClear(FLAG_SPEED_BOY_SPEED_HI);
     gMain.callback2 = BattleMainCB2;
-    gSaveBlock2Ptr->optionsFastForward = OPTIONS_FAST_FORWARD_OFF;
-    EXPECT(!IsFastForwardMutingBattleSfx());
+    FlagClear(FLAG_SPEED_BOY_ON);
+    EXPECT_EQ(GetFastForwardBattleSoundSpeed(), 1);
 
-    gSaveBlock2Ptr->optionsFastForward = OPTIONS_FAST_FORWARD_2X;
-    EXPECT(IsFastForwardMutingBattleSfx());
+    FlagSet(FLAG_SPEED_BOY_ON);
+    EXPECT_EQ(GetFastForwardBattleSoundSpeed(), 2);
+
+    CycleFastForwardSpeed();
+    EXPECT_EQ(GetFastForwardBattleSoundSpeed(), 3);
 
     gMain.callback2 = CB2_Overworld;
-    EXPECT(!IsFastForwardMutingBattleSfx());
+    EXPECT_EQ(GetFastForwardBattleSoundSpeed(), 1);
 
+    FlagClear(FLAG_SPEED_BOY_ON);
     gMain.callback2 = callback2;
-    gSaveBlock2Ptr->optionsFastForward = option;
 }
 
 TEST("Fast forward stays off during link play")
 {
     MainCallback callback2 = gMain.callback2;
-    u32 option = gSaveBlock2Ptr->optionsFastForward;
 
     gMain.callback2 = BattleMainCB2;
-    gSaveBlock2Ptr->optionsFastForward = OPTIONS_FAST_FORWARD_4X;
+    FlagSet(FLAG_SPEED_BOY_ON);
     gReceivedRemoteLinkPlayers = TRUE;
-    EXPECT(!IsFastForwardMutingBattleSfx());
+    EXPECT_EQ(GetFastForwardBattleSoundSpeed(), 1);
 
     gReceivedRemoteLinkPlayers = FALSE;
+    FlagClear(FLAG_SPEED_BOY_ON);
     gMain.callback2 = callback2;
-    gSaveBlock2Ptr->optionsFastForward = option;
 }
 
-TEST("Muted battle cries do not make the battle wait")
+TEST("The wireless state left by a Pokemon Center does not stop fast forward")
 {
     MainCallback callback2 = gMain.callback2;
-    u32 option = gSaveBlock2Ptr->optionsFastForward;
 
     gMain.callback2 = BattleMainCB2;
-    gSaveBlock2Ptr->optionsFastForward = OPTIONS_FAST_FORWARD_4X;
-    PlayCry_ByMode(SPECIES_WOBBUFFET, 0, CRY_MODE_NORMAL);
-    EXPECT(IsCryFinished());
+    FlagSet(FLAG_SPEED_BOY_ON);
+    gWirelessCommType = 1;
+    EXPECT_GT(GetFastForwardBattleSoundSpeed(), 1);
 
+    gWirelessCommType = 0;
+    FlagClear(FLAG_SPEED_BOY_ON);
     gMain.callback2 = callback2;
-    gSaveBlock2Ptr->optionsFastForward = option;
+}
+
+TEST("Panned battle sounds play at the fast forward tempo")
+{
+    MainCallback callback2 = gMain.callback2;
+
+    FlagClear(FLAG_SPEED_BOY_SPEED_LO);
+    FlagSet(FLAG_SPEED_BOY_SPEED_HI);
+    gMain.callback2 = BattleMainCB2;
+    FlagSet(FLAG_SPEED_BOY_ON);
+    PlaySE12WithPanning(SE_M_HARDEN, 0);
+    EXPECT_EQ(gMPlayInfo_SE1.tempoU, 4 << 8);
+
+    FlagClear(FLAG_SPEED_BOY_ON);
+    PlaySE12WithPanning(SE_M_HARDEN, 0);
+    EXPECT_EQ(gMPlayInfo_SE1.tempoU, 1 << 8);
+
+    m4aMPlayStop(&gMPlayInfo_SE1);
+    m4aMPlayStop(&gMPlayInfo_SE2);
+    gMain.callback2 = callback2;
 }
 
 TEST("The DMA queue reports half full before it can drop requests")

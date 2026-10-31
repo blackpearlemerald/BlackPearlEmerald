@@ -12,11 +12,14 @@
 #include "play_time.h"
 #include "random.h"
 #include "dma3.h"
+#include "event_data.h"
 #include "gba/flash_internal.h"
 #include "load_save.h"
 #include "gpu_regs.h"
 #include "agb_flash.h"
 #include "sound.h"
+#include "start_menu.h"
+#include "task.h"
 #include "battle.h"
 #include "battle_controllers.h"
 #include "battle_main.h"
@@ -25,6 +28,7 @@
 #include "intro.h"
 #include "main.h"
 #include "trainer_hill.h"
+#include "union_room.h"
 #include "test_runner.h"
 #include "constants/rgb.h"
 
@@ -74,6 +78,7 @@ COMMON_DATA u8 gLinkVSyncDisabled = 0;
 COMMON_DATA s8 gPcmDmaCounter = 0;
 COMMON_DATA void *gAgbMainLoop_sp = NULL;
 static u8 sFastForwardPass;
+static u32 sFastForwardVBlank;
 
 static EWRAM_DATA u16 sTrainerId = 0;
 
@@ -91,6 +96,8 @@ static void WaitForVBlank(void);
 void EnableVCountIntrAtLine150(void);
 
 #define B_START_SELECT (B_BUTTON | START_BUTTON | SELECT_BUTTON)
+#define MIN_FAST_FORWARD_SPEED 2
+#define MAX_FAST_FORWARD_SPEED 4
 
 void AgbMain(void)
 {
@@ -140,23 +147,49 @@ void AgbMain(void)
 // its callbacks. See "Fast forward" in AGENTS.md.
 static bool32 IsFastForwardScreen(void)
 {
-    if (gSaveBlock2Ptr->optionsFastForward == OPTIONS_FAST_FORWARD_OFF)
-        return FALSE;
-
-    // Two linked games must agree on how many frames have passed
-    if (gReceivedRemoteLinkPlayers || gLinkTransferringData || gWirelessCommType != 0)
+    // Two linked games must agree on how many frames have passed. Not
+    // gWirelessCommType: every Pokemon Center sets it, and it stays set afterwards.
+    if (gReceivedRemoteLinkPlayers || gLinkTransferringData
+     || IsOverworldLinkActive() || InUnionRoom())
         return FALSE;
 
     // CB2_OverworldBasic is the transition into a battle. Menus stay at normal
     // speed: their held-button repeat runs on logic frames.
-    return gMain.callback2 == CB2_Overworld
-        || gMain.callback2 == CB2_OverworldBasic
-        || gMain.callback2 == BattleMainCB2;
+    if (gMain.callback2 != CB2_Overworld
+     && gMain.callback2 != CB2_OverworldBasic
+     && gMain.callback2 != BattleMainCB2)
+        return FALSE;
+
+    // It runs on the field, but it redraws the clock every frame
+    if (FuncIsActiveTask(Task_ShowStartMenu))
+        return FALSE;
+
+    return FlagGet(FLAG_SPEED_BOY_ON);
 }
 
-bool32 IsFastForwardMutingBattleSfx(void)
+// The speed the Speed Boy is set to, on or off: 2, 3 or 4
+u32 GetFastForwardSpeed(void)
 {
-    return gMain.callback2 == BattleMainCB2 && IsFastForwardScreen();
+    return MIN_FAST_FORWARD_SPEED + FlagGet(FLAG_SPEED_BOY_SPEED_LO) + 2 * FlagGet(FLAG_SPEED_BOY_SPEED_HI);
+}
+
+void CycleFastForwardSpeed(void)
+{
+    u32 speed = GetFastForwardSpeed() + 1;
+
+    if (speed > MAX_FAST_FORWARD_SPEED)
+        speed = MIN_FAST_FORWARD_SPEED;
+    speed -= MIN_FAST_FORWARD_SPEED;
+    (speed & 1) ? FlagSet(FLAG_SPEED_BOY_SPEED_LO) : FlagClear(FLAG_SPEED_BOY_SPEED_LO);
+    (speed & 2) ? FlagSet(FLAG_SPEED_BOY_SPEED_HI) : FlagClear(FLAG_SPEED_BOY_SPEED_HI);
+}
+
+// 1 away from the battle screen or with fast forward off
+u32 GetFastForwardBattleSoundSpeed(void)
+{
+    if (gMain.callback2 == BattleMainCB2 && IsFastForwardScreen())
+        return GetFastForwardSpeed();
+    return 1;
 }
 
 // True on every pass but the first after a VBlank, for what must keep real time
@@ -167,8 +200,6 @@ bool32 IsFastForwardExtraPass(void)
 
 static bool32 ShouldRunAnotherLogicPass(void)
 {
-    u32 speed;
-
     if (!IsFastForwardScreen())
         return FALSE;
 
@@ -176,12 +207,22 @@ static bool32 ShouldRunAnotherLogicPass(void)
     if (IsDma3QueueHalfFull() || IsSpriteCopyQueueHalfFull())
         return FALSE;
 
-    speed = gSaveBlock2Ptr->optionsFastForward == OPTIONS_FAST_FORWARD_2X ? 2 : 4;
-    return sFastForwardPass + 1u < speed;
+    return sFastForwardPass + 1u < GetFastForwardSpeed();
+}
+
+// True when another pass follows before the VBlank, for what only the screen
+// reads. This must stop with the passes: BuildOamBuffer is what lets VBlank empty
+// the sprite copy queue, so skipping it while that queue holds the game at one
+// pass would keep it full for good.
+bool32 IsFastForwardEarlyPass(void)
+{
+    return ShouldRunAnotherLogicPass();
 }
 
 void AgbMainLoop(void)
 {
+    bool32 missedVBlank;
+
     for (;;)
     {
         ReadKeys();
@@ -223,10 +264,15 @@ void AgbMainLoop(void)
             continue;
         }
 
+        // A set of passes that ran past a VBlank must not wait for the next one
+        // as well: 4 passes that just miss would otherwise take two refreshes.
+        missedVBlank = sFastForwardPass != 0 && gMain.vblankCounter2 != sFastForwardVBlank;
         sFastForwardPass = 0;
         PlayTimeCounter_Update();
         MapMusicMain();
-        WaitForVBlank();
+        if (!missedVBlank)
+            WaitForVBlank();
+        sFastForwardVBlank = gMain.vblankCounter2;
     }
 }
 

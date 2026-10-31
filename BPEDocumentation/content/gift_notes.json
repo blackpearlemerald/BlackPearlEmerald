@@ -19,7 +19,7 @@
     "script": "PlayersHouse_1F_EventScript_Mom",
     "note": "<b>Talk to Mom at home.</b> Mom is on the ground floor of your house.<br><b>Amulet Coin:</b> once you have the PokéNav, talk to her once so she registers her number. After you earn Badge 5 from your Dad at the Petalburg Gym, talk to her again for the Amulet Coin. <b>Can be missed:</b> once your Dad has visited after the Hall of Fame, she no longer gives it.<br><b>Level Limiter:</b> Standard players already get it in her starter kit. A Nuzlocke challenge ends after the Hall of Fame; talk to her after that and she gives it to you.<br><b>Infinite Repel:</b> every new game gets it in her starter kit. A save from before it existed gets it the next time you talk to her.",
     "exclude": ["ITEM_CANDY_JAR", "ITEM_EXP_SHARE"],
-    "add": [{"item": "ITEM_AMULET_COIN"}, {"item": "ITEM_LEVEL_LIMITER"}, {"item": "ITEM_INFINITE_REPEL"}]
+    "add": [{"item": "ITEM_AMULET_COIN"}, {"item": "ITEM_LEVEL_LIMITER"}, {"item": "ITEM_INFINITE_REPEL"}, {"item": "ITEM_SPEED_BOY"}]
   },
   {
     "script": "LittlerootTown_BrendansHouse_1F_MapScripts",

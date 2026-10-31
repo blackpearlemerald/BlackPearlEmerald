@@ -96,10 +96,10 @@
 #define FLAG_RECEIVED_PETALBURG_EGG 0x44 // BPE: formerly unused. The Egg man in Petalburg has handed out his Egg.
 #define FLAG_CLASSIC_RUNNING          0x45 // BPE: formerly unused. The Running Shoes are set to hold B to run.
 #define FLAG_RECEIVED_SHOES_KEY_ITEM 0x46 // BPE: formerly unused. The Running Shoes key item has been handed out.
-#define FLAG_UNUSED_0x047    0x47 // Unused Flag
-#define FLAG_UNUSED_0x048    0x48 // Unused Flag
-#define FLAG_UNUSED_0x049    0x49 // Unused Flag
-#define FLAG_UNUSED_0x04A    0x4A // Unused Flag
+#define FLAG_SPEED_BOY_ON        0x47 // BPE: formerly unused. The Speed Boy is switched on.
+#define FLAG_SPEED_BOY_SPEED_LO  0x48 // BPE: formerly unused. With _HI, the speed the Speed Boy is set to.
+#define FLAG_SPEED_BOY_SPEED_HI  0x49 // BPE: formerly unused
+#define FLAG_RECEIVED_SPEED_BOY  0x4A // BPE: formerly unused. The Speed Boy has been handed out.
 #define FLAG_UNUSED_0x04B    0x4B // Unused Flag
 #define FLAG_UNUSED_0x04C    0x4C // Unused Flag
 #define FLAG_UNUSED_0x04D    0x4D // Unused Flag

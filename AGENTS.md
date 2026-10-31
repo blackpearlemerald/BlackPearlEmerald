@@ -531,6 +531,8 @@ Upstream samples are `.wav` (since expansion 1.14). BPE's 507 BW/DP expansion sa
 
 N's Victory Road battle uses `MUS_BW_VS_N_FINAL` (617), the BW "Decisive Battle! (N)" MIDI from [CyanSMP64's music expansion](https://github.com/CyanSMP64/pokeemerald/blob/1bad08cef606e001e365856fdaff1e2771b8627e/sound/songs/midi/mus_bw_vs_n_final.mid), imported unchanged with source options `-E -R0 -G274 -V105`. Its SHA256 is `f895465e7f4fc4ea3e1f44576835a8453a9deb37137201f66e29538bea51b981`; the existing `voicegroup274` matches that source. Rival-class music in `GetBattleBGM()` selects Cynthia and N by trainer portrait; other rivals use normal trainer music. Do not restore the old blanket Cynthia theme for the Rival class. Cynthia's overworld approach and rematch encounter theme is a separate selection in the Victory Road script and `PlayTrainerEncounterMusic()`.
 
+A battle theme needs `[` and `]` markers in its first MIDI track, or it stops for good when it ends. The Unova, Kalos and Alola Elite Four themes shipped without them through 2.2.6; `BPETools/tests/test_battle_music_loops.py` checks every `mus_*vs_*.mid`. `BPETools/build_bw_e4_midi.py` does not write the markers, so add them back if it is ever rerun (3072 to 14208 at 48 ticks per beat). The BGM player has 10 tracks (`NUM_TRACKS_BGM`), so tracks beyond that in the 13-track Unova and 11-track Alola themes never play.
+
 ### Battle script macros
 `attackstring` → `printattackstring` (and related renames) in `asm/macros/battle_script.inc`.
 
@@ -801,29 +803,41 @@ them (the Expanded4 and Postgame lists, ₽10 each; see "Verdanturf mart prices"
 
 ### Fast forward
 
-OPTION > FAST FORWARD picks OFF, 2x or 4x (`optionsFastForward`, two padding bits in
-SaveBlock2, zero in every older save, so the layout did not change). It follows
+The Speed Boy key item (id 897, the FRLG Tea's id) turns fast forward on. USE and SELECT
+switch it on or off, and SWAP in the Bag (`ItemMenu_SwapSpeed`) picks 2x, 3x or 4x. Mom's starter kit gives it in both modes, and Mom at home gives
+it to older saves. `FLAG_SPEED_BOY_ON`, `_SPEED_LO/HI` and `FLAG_RECEIVED_SPEED_BOY`
+(0x47-0x4A) are flags no release used, so the save layout did not change. It follows
 Wishes of Tomorrow's method: `AgbMainLoop` runs 2 or 4 logic passes per VBlank and
 skips only the wait. Audio runs from the VBlank and VCount interrupts, so music
 keeps its tempo and pitch. On a real GBA the speed is a ceiling: a pass that takes
 too long just gets fewer passes in.
 
 - It runs on `CB2_Overworld`, `CB2_OverworldBasic` (the transition into a battle)
-  and `BattleMainCB2` only. Menus keep 1x because their
-  held-button repeat runs on logic frames. Link play is always 1x.
+  and `BattleMainCB2` only, and never with the Start menu open, which redraws its
+  clock window every frame and flickers otherwise. Menus keep 1x because their
+  held-button repeat runs on logic frames. Link play and the Union Room are always
+  1x; do not test `gWirelessCommType` for that, since entering any Pokemon Center
+  sets it with no link running, and it stays set after leaving.
 - Move animations stay sped up, unlike Wishes of Tomorrow. `UpdatePaletteFade` does
   not wait for VBlank on an extra pass, so fades keep pace with the code around
   them; a fade stuck at 1x let a Poke Ball's fade outlast the battle. The game drops
   to 1x only when the DMA or sprite copy queue is half full (`IsDma3QueueHalfFull`, `IsSpriteCopyQueueHalfFull`), since both drop
   requests silently when full.
-- On the battle screen `IsFastForwardMutingBattleSfx()` mutes cries, the panned sound
-  effects and everything else played during an animation. Otherwise sounds would
-  pile up at 4x and waits on cries would stay real-time. Menu sounds, fanfares and
-  the low HP beep still play.
+- On the battle screen cries, the panned sound effects and everything else played
+  during an animation run at `GetFastForwardBattleSoundSpeed()`: tempo and length
+  scale with the speed and pitch rises an octave per doubling, so they do not pile
+  up and waits on them shorten too. Menu sounds, fanfares and the low HP beep stay
+  normal. It is deliberately chipmunk-like; a sample cannot play faster without it.
 - What measures real time uses `IsFastForwardExtraPass()`: fanfare counters and
   tileset animations. Those animations pick tiles by frame number, so at 2x or 4x
   water and flowers would freeze without it. The play timer and `MapMusicMain` run
   once per VBlank in `AgbMainLoop`.
+- The field's speed is limited by the CPU: rain took a pass to about 60 of the 228
+  scanlines in a refresh, clear weather about 26. So weather sprites run once per
+  refresh (`AnimateSprites` skips the weather palette tags on an extra pass),
+  `OverworldBasic` builds OAM on the last pass only (`IsFastForwardEarlyPass`), and a
+  set of passes that overruns a VBlank does not wait for the next one, or 4 passes
+  that just miss would drop the game to about 2x.
 - `UpdateHardwarePaletteFade` returns early once `hardwareFadeFinishing` is set. It is
   a 1-bit field, and a second step before VBlank flips it back and hangs the fade.
 - Tests: `make check TESTS=test/fast_forward.c`. To stress it, force 4x in `main.c`

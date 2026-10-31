@@ -6,6 +6,7 @@
 #include "string_util.h"
 #include "text.h"
 #include "battle_anim.h"
+#include "field_weather.h"
 #include "test/test.h"
 
 #define MAX_SPRITE_COPY_REQUESTS 64
@@ -290,12 +291,20 @@ void ResetSpriteData(void)
 void AnimateSprites(void)
 {
     u32 i;
+    bool32 extraPass = IsFastForwardExtraPass();
+
     for (i = 0; i < MAX_SPRITES; i++)
     {
         struct Sprite *sprite = &gSprites[i];
 
         if (sprite->inUse)
         {
+            // BPE: weather falls at its normal speed under fast forward, and
+            // rain is the most expensive thing on the field
+            if (extraPass && (sprite->template->paletteTag == PALTAG_WEATHER
+                           || sprite->template->paletteTag == PALTAG_WEATHER_2))
+                continue;
+
             sprite->callback(sprite);
 
             if (sprite->inUse)

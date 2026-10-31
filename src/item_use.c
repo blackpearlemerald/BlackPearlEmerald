@@ -976,6 +976,35 @@ void ItemUseOutOfBattle_RunningShoes(u8 taskId)
         DisplayItemMessage(taskId, FONT_NORMAL, text, CloseItemMessage);
 }
 
+static const u8 sText_SpeedBoyOn[] = _("The Speed Boy is now ON at {STR_VAR_1}x.{PAUSE_UNTIL_PRESS}");
+static const u8 sText_SpeedBoyOff[] = _("The Speed Boy is now OFF.{PAUSE_UNTIL_PRESS}");
+
+// BPE: switches fast forward on or off. SWAP in the Bag changes the speed.
+void ItemUseOutOfBattle_SpeedBoy(u8 taskId)
+{
+    const u8 *text;
+
+    if (FlagGet(FLAG_SPEED_BOY_ON))
+    {
+        FlagClear(FLAG_SPEED_BOY_ON);
+        text = sText_SpeedBoyOff;
+    }
+    else
+    {
+        FlagSet(FLAG_SPEED_BOY_ON);
+        text = sText_SpeedBoyOn;
+    }
+
+    PlaySE(SE_SELECT);
+    ConvertIntToDecimalStringN(gStringVar1, GetFastForwardSpeed(), STR_CONV_MODE_LEFT_ALIGN, 1);
+    StringExpandPlaceholders(gStringVar4, text);
+
+    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+        DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, CloseItemMessage);
+    else
+        DisplayItemMessageOnField(taskId, gStringVar4, Task_CloseCantUseKeyItemMessage);
+}
+
 static const u8 sText_InfiniteRepelOn[] = _("The Infinite Repel is now ON.\nWeak wild Pokémon will stay away.{PAUSE_UNTIL_PRESS}");
 static const u8 sText_InfiniteRepelOff[] = _("The Infinite Repel is now OFF.{PAUSE_UNTIL_PRESS}");
 

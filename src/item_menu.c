@@ -96,6 +96,7 @@ enum {
     ACTION_BY_AMOUNT,
     ACTION_BY_INDEX,
     ACTION_SWAP_BIKE,
+    ACTION_SWAP_SPEED,
     ACTION_DUMMY,
 };
 
@@ -210,6 +211,7 @@ static void ItemMenu_UseInBattle(u8);
 static void ItemMenu_CheckTag(u8);
 static void ItemMenu_Show(u8);
 static void ItemMenu_SwapBike(u8);
+static void ItemMenu_SwapSpeed(u8);
 static void ItemMenu_GiveFavorLady(u8);
 static void ItemMenu_ConfirmQuizLady(u8);
 static void Task_ItemContext_Normal(u8);
@@ -231,6 +233,7 @@ static const u8 sText_CantStoreImportantItems[] = _("Important items\ncan't be s
 // Keep the number in step with MAX_REGISTERED_ITEMS.
 static const u8 sText_RegisteredItemsFull[] = _("Only five items can be\nregistered at a time.");
 static const u8 sText_SwappedToVar1[] = _("Swapped to the {STR_VAR_1}.");
+static const u8 sText_SpeedBoySetToVar1[] = _("The Speed Boy is set to {STR_VAR_1}x.");
 
 static void Task_LoadBagSortOptions(u8 taskId);
 static void ItemMenu_SortByName(u8 taskId);
@@ -313,6 +316,7 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_CONFIRM]           = {gMenuText_Confirm,            {Task_FadeAndCloseBagMenu}},
     [ACTION_SHOW]              = {COMPOUND_STRING("SHOW"),      {ItemMenu_Show}},
     [ACTION_SWAP_BIKE]         = {COMPOUND_STRING("SWAP"),      {ItemMenu_SwapBike}},
+    [ACTION_SWAP_SPEED]        = {COMPOUND_STRING("SWAP"),      {ItemMenu_SwapSpeed}},
     [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,              {ItemMenu_GiveFavorLady}},
     [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,            {ItemMenu_ConfirmQuizLady}},
     [ACTION_BY_NAME]           = {COMPOUND_STRING("Name"),      {ItemMenu_SortByName}},
@@ -1716,6 +1720,8 @@ static void OpenContextMenu(u8 taskId)
                     else if (gSpecialVar_ItemId != ITEM_BICYCLE)
                         gBagMenu->contextMenuItemsBuffer[2] = ACTION_SWAP_BIKE;
                 }
+                if (gSpecialVar_ItemId == ITEM_SPEED_BOY)
+                    gBagMenu->contextMenuItemsBuffer[2] = ACTION_SWAP_SPEED;
                 break;
             case POCKET_POKE_BALLS:
                 gBagMenu->contextMenuItemsPtr = sContextMenuItems_BallsPocket;
@@ -2613,6 +2619,15 @@ static void Task_WallyTutorialBagMenu(u8 taskId)
 
 // BPE: swaps the Mach Bike for the Acro Bike (or back) in the same Bag slot,
 // as Rydel does in his shop, and moves its SELECT registration with it.
+static void ItemMenu_SwapSpeed(u8 taskId)
+{
+    CycleFastForwardSpeed();
+    RemoveContextWindow();
+    ConvertIntToDecimalStringN(gStringVar1, GetFastForwardSpeed(), STR_CONV_MODE_LEFT_ALIGN, 1);
+    StringExpandPlaceholders(gStringVar4, sText_SpeedBoySetToVar1);
+    DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, HandleErrorMessage);
+}
+
 static void ItemMenu_SwapBike(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;

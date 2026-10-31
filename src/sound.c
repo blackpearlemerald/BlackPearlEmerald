@@ -191,6 +191,13 @@ void PlayFanfareByFanfareNum(u8 fanfareNum)
     m4aSongNumStart(songNum);
 }
 
+static s16 FastForwardSoundPitch(u32 speed)
+{
+    static const u8 sSemitones[] = {[2] = 12, [3] = 19, [4] = 24};
+
+    return sSemitones[speed] * 256;
+}
+
 bool8 WaitFanfare(bool8 stop)
 {
     if (sFanfareCounter)
@@ -316,9 +323,6 @@ bool8 IsBGMStopped(void)
 
 void PlayCry_Normal(enum Species species, s8 pan)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 85);
     PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, CRY_MODE_NORMAL);
     gPokemonCryBGMDuckingCounter = 2;
@@ -327,18 +331,12 @@ void PlayCry_Normal(enum Species species, s8 pan)
 
 void PlayCry_NormalNoDucking(enum Species species, s8 pan, s8 volume, u8 priority)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     PlayCryInternal(species, pan, volume, priority, CRY_MODE_NORMAL);
 }
 
 // Assuming it's not CRY_MODE_DOUBLES, this is equivalent to PlayCry_Normal except it allows other modes.
 void PlayCry_ByMode(enum Species species, s8 pan, u8 mode)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -355,9 +353,6 @@ void PlayCry_ByMode(enum Species species, s8 pan, u8 mode)
 // Used when releasing multiple Pokémon at once in battle.
 void PlayCry_ReleaseDouble(enum Species species, s8 pan, u8 mode)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -373,9 +368,6 @@ void PlayCry_ReleaseDouble(enum Species species, s8 pan, u8 mode)
 // Duck the BGM but don't restore it. Not present in R/S
 void PlayCry_DuckNoRestore(enum Species species, s8 pan, u8 mode)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -403,6 +395,7 @@ void PlayCryInternal(enum Species species, s8 pan, s8 volume, u8 priority, u8 mo
     u32 length;
     u32 pitch;
     u32 chorus;
+    u32 speed;
 
     // Set default values
     // May be overridden depending on mode.
@@ -489,6 +482,14 @@ void PlayCryInternal(enum Species species, s8 pan, s8 volume, u8 priority, u8 mo
         pitch = 12150;
         chorus = 200;
         break;
+    }
+
+    // BPE: battle cries keep pace with fast forward
+    speed = GetFastForwardBattleSoundSpeed();
+    if (speed > 1)
+    {
+        pitch += FastForwardSoundPitch(speed);
+        length /= speed;
     }
 
     SetPokemonCryVolume(volume);
@@ -583,45 +584,60 @@ void PlayBGM(u16 songNum)
     m4aSongNumStart(songNum);
 }
 
+// BPE: battle sounds keep pace with fast forward. The tempo shortens the song and
+// the pitch shortens its samples, one octave for each doubling.
+static void FastForwardSE(struct MusicPlayerInfo *mplayInfo)
+{
+    u32 speed = GetFastForwardBattleSoundSpeed();
+
+    if (speed > 1)
+    {
+        m4aMPlayTempoControl(mplayInfo, speed << 8);
+        m4aMPlayPitchControl(mplayInfo, TRACKS_ALL, FastForwardSoundPitch(speed));
+    }
+}
+
 void PlaySE(u16 songNum)
 {
-    if (gAnimScriptActive && IsFastForwardMutingBattleSfx())
-        return;
-
     if (gDisableMapMusicChangeOnMapLoad == MUSIC_DISABLE_OFF)
+    {
         m4aSongNumStart(songNum);
+        // Everything else on the battle screen with plain PlaySE is a menu sound
+        if (gAnimScriptActive)
+        {
+            m4aMPlayImmInit(&gMPlayInfo_SE1);
+            m4aMPlayImmInit(&gMPlayInfo_SE2);
+            FastForwardSE(&gMPlayInfo_SE1);
+            FastForwardSE(&gMPlayInfo_SE2);
+        }
+    }
 }
 
 void PlaySE12WithPanning(u16 songNum, s8 pan)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE1);
     m4aMPlayImmInit(&gMPlayInfo_SE2);
     m4aMPlayPanpotControl(&gMPlayInfo_SE1, TRACKS_ALL, pan);
     m4aMPlayPanpotControl(&gMPlayInfo_SE2, TRACKS_ALL, pan);
+    FastForwardSE(&gMPlayInfo_SE1);
+    FastForwardSE(&gMPlayInfo_SE2);
 }
 
 void PlaySE1WithPanning(u16 songNum, s8 pan)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE1);
     m4aMPlayPanpotControl(&gMPlayInfo_SE1, TRACKS_ALL, pan);
+    FastForwardSE(&gMPlayInfo_SE1);
 }
 
 void PlaySE2WithPanning(u16 songNum, s8 pan)
 {
-    if (IsFastForwardMutingBattleSfx())
-        return;
-
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE2);
     m4aMPlayPanpotControl(&gMPlayInfo_SE2, TRACKS_ALL, pan);
+    FastForwardSE(&gMPlayInfo_SE2);
 }
 
 void SE12PanpotControl(s8 pan)

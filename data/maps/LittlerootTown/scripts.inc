@@ -904,6 +904,15 @@ LittlerootTown_EventScript_GiveLevelLimiter::
 LittlerootTown_EventScript_GiveLevelLimiterDone::
 	return
 
+@ BPE: both modes get the Speed Boy. Guarded so a save that already got it from
+@ Mom at home is not given a second one.
+LittlerootTown_EventScript_GiveSpeedBoy::
+	goto_if_set FLAG_RECEIVED_SPEED_BOY, LittlerootTown_EventScript_GiveSpeedBoyDone
+	giveitem ITEM_SPEED_BOY
+	setflag FLAG_RECEIVED_SPEED_BOY
+LittlerootTown_EventScript_GiveSpeedBoyDone::
+	return
+
 @ BPE: both modes get the Infinite Repel. Guarded so a save that already got it
 @ from Mom at home is not given a second one.
 LittlerootTown_EventScript_GiveInfiniteRepel::
@@ -956,6 +965,7 @@ LittlerootTown_EventScript_GiveStarterKit::
 	giveitem ITEM_ESCAPE_ROPE
 	giveitem ITEM_POCKET_WATCH
 	call LittlerootTown_EventScript_GiveInfiniteRepel
+	call LittlerootTown_EventScript_GiveSpeedBoy
 	call LittlerootTown_EventScript_GiveShoesKeyItem
 	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveLevelLimiter
 	call_if_unset FLAG_NUZLOCKE, LittlerootTown_EventScript_GiveCatchCharm

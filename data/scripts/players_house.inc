@@ -306,6 +306,7 @@ PlayersHouse_1F_EventScript_Mom::
 	goto_if_unset FLAG_V1PATCH, PlayersHouse_1F_EventScript_V1PATCH
 	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveLevelLimiter
 	call PlayersHouse_1F_EventScript_TryGiveInfiniteRepel
+	call PlayersHouse_1F_EventScript_TryGiveSpeedBoy
 	call PlayersHouse_1F_EventScript_TryGiveShoesKeyItem
 	call_if_unset FLAG_NUZLOCKE, PlayersHouse_1F_EventScript_TryGiveCatchCharm
 	goto_if_eq VAR_LITTLEROOT_HOUSES_STATE_MAY, 4, PlayersHouse_1F_EventScript_DontPushYourselfTooHard
@@ -364,6 +365,22 @@ PlayersHouse_1F_Text_HereIsInfiniteRepel:
 	.string "wild POKéMON away, and it never\l"
 	.string "runs out. Switch it on or off\l"
 	.string "whenever you like!$"
+
+@ BPE: saves made before the Speed Boy existed get it from Mom.
+PlayersHouse_1F_EventScript_TryGiveSpeedBoy::
+	goto_if_set FLAG_RECEIVED_SPEED_BOY, PlayersHouse_1F_EventScript_TryGiveSpeedBoyDone
+	msgbox PlayersHouse_1F_Text_HereIsSpeedBoy, MSGBOX_DEFAULT
+	giveitem ITEM_SPEED_BOY
+	setflag FLAG_RECEIVED_SPEED_BOY
+PlayersHouse_1F_EventScript_TryGiveSpeedBoyDone::
+	return
+
+PlayersHouse_1F_Text_HereIsSpeedBoy:
+	.string "MOM: Oh, honey, one more thing!\p"
+	.string "This SPEED BOY makes everything\n"
+	.string "go faster! Use it to switch it on\l"
+	.string "or off, and SWAP it in your BAG\l"
+	.string "to change the speed!$"
 
 @ BPE: Standard saves made before the Catch Charm existed get it from Mom.
 PlayersHouse_1F_EventScript_TryGiveCatchCharm::

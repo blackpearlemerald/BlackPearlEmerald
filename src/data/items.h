@@ -16197,21 +16197,20 @@ const struct ItemInfo gItemsInfo[] =
         .iconPalette = gItemIconPalette_RainbowPass,
     },
 
-    [ITEM_TEA] =
+    [ITEM_SPEED_BOY] =
     {
-        .name = ITEM_NAME("Tea"),
-        .pluralName = ITEM_PLURAL_NAME("Tea"),
+        .name = ITEM_NAME("Speed Boy"),
         .price = 0,
         .description = COMPOUND_STRING(
-            "A thirst-quenching\n"
-            "tea prepared by an\n"
-            "old lady."),
+            "Speeds up the game.\n"
+            "USE: on or off.\n"
+            "SWAP: change speed."),
         .importance = 1,
         .pocket = POCKET_KEY_ITEMS,
         .type = ITEM_USE_BAG_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
-        .iconPic = gItemIcon_Tea,
-        .iconPalette = gItemIconPalette_Tea,
+        .fieldUseFunc = ItemUseOutOfBattle_SpeedBoy,
+        .iconPic = gItemIcon_SpeedBoy,
+        .iconPalette = gItemIconPalette_SpeedBoy,
     },
 
     [ITEM_RUBY] =
