@@ -2617,8 +2617,7 @@ static void Task_WallyTutorialBagMenu(u8 taskId)
 
 #undef tTimer
 
-// BPE: swaps the Mach Bike for the Acro Bike (or back) in the same Bag slot,
-// as Rydel does in his shop, and moves its SELECT registration with it.
+// BPE: changes the speed the Speed Boy runs at, whether it is on or off.
 static void ItemMenu_SwapSpeed(u8 taskId)
 {
     CycleFastForwardSpeed();
@@ -2628,6 +2627,8 @@ static void ItemMenu_SwapSpeed(u8 taskId)
     DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, HandleErrorMessage);
 }
 
+// BPE: swaps the Mach Bike for the Acro Bike (or back) in the same Bag slot,
+// as Rydel does in his shop, and moves its SELECT registration with it.
 static void ItemMenu_SwapBike(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;

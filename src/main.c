@@ -142,7 +142,7 @@ void AgbMain(void)
 }
 
 // BPE: one pass of AgbMainLoop is one logic frame. Audio runs from the VBlank and
-// VCount interrupts, so running 2 or 4 passes per VBlank speeds the game up while
+// VCount interrupts, so running 2 to 4 passes per VBlank speeds the game up while
 // the music keeps its tempo and pitch. Only the wait is skipped: every pass runs
 // its callbacks. See "Fast forward" in AGENTS.md.
 static bool32 IsFastForwardScreen(void)
@@ -182,6 +182,11 @@ void CycleFastForwardSpeed(void)
     speed -= MIN_FAST_FORWARD_SPEED;
     (speed & 1) ? FlagSet(FLAG_SPEED_BOY_SPEED_LO) : FlagClear(FLAG_SPEED_BOY_SPEED_LO);
     (speed & 2) ? FlagSet(FLAG_SPEED_BOY_SPEED_HI) : FlagClear(FLAG_SPEED_BOY_SPEED_HI);
+}
+
+bool32 IsFastForwardRunning(void)
+{
+    return IsFastForwardScreen();
 }
 
 // 1 away from the battle screen or with fast forward off

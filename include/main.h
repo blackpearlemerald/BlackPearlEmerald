@@ -60,6 +60,7 @@ void AgbMainLoop(void);
 u32 GetFastForwardSpeed(void);
 void CycleFastForwardSpeed(void);
 u32 GetFastForwardBattleSoundSpeed(void);
+bool32 IsFastForwardRunning(void);
 bool32 IsFastForwardExtraPass(void);
 bool32 IsFastForwardEarlyPass(void);
 void SetMainCallback2(MainCallback callback);

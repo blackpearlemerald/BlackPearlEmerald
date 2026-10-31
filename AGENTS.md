@@ -807,15 +807,16 @@ The Speed Boy key item (id 897, the FRLG Tea's id) turns fast forward on. USE an
 switch it on or off, and SWAP in the Bag (`ItemMenu_SwapSpeed`) picks 2x, 3x or 4x. Mom's starter kit gives it in both modes, and Mom at home gives
 it to older saves. `FLAG_SPEED_BOY_ON`, `_SPEED_LO/HI` and `FLAG_RECEIVED_SPEED_BOY`
 (0x47-0x4A) are flags no release used, so the save layout did not change. It follows
-Wishes of Tomorrow's method: `AgbMainLoop` runs 2 or 4 logic passes per VBlank and
+Wishes of Tomorrow's method: `AgbMainLoop` runs 2 to 4 logic passes per VBlank and
 skips only the wait. Audio runs from the VBlank and VCount interrupts, so music
 keeps its tempo and pitch. On a real GBA the speed is a ceiling: a pass that takes
 too long just gets fewer passes in.
 
 - It runs on `CB2_Overworld`, `CB2_OverworldBasic` (the transition into a battle)
   and `BattleMainCB2` only, and never with the Start menu open, which redraws its
-  clock window every frame and flickers otherwise. Menus keep 1x because their
-  held-button repeat runs on logic frames. Link play and the Union Room are always
+  clock window every frame and flickers otherwise. Full-screen menus keep 1x because
+  their held-button repeat runs on logic frames; lists and Yes/No boxes on the field
+  run at speed, so their repeat is faster. Link play and the Union Room are always
   1x; do not test `gWirelessCommType` for that, since entering any Pokemon Center
   sets it with no link running, and it stays set after leaving.
 - Move animations stay sped up, unlike Wishes of Tomorrow. `UpdatePaletteFade` does
@@ -838,6 +839,10 @@ too long just gets fewer passes in.
   `OverworldBasic` builds OAM on the last pass only (`IsFastForwardEarlyPass`), and a
   set of passes that overruns a VBlank does not wait for the next one, or 4 passes
   that just miss would drop the game to about 2x.
+- `CB2_Overworld` keeps the VBlank callback during fades while fast forward runs: a
+  set of passes that overruns a VBlank would otherwise lose that VBlank's work, and
+  a hardware fade only ends in `TransferPlttBuffer`. `UpdateBlendRegisters` sets the
+  weather's blend when a fade from black ends, since it can end in about 6 VBlanks.
 - `UpdateHardwarePaletteFade` returns early once `hardwareFadeFinishing` is set. It is
   a 1-bit field, and a second step before VBlank flips it back and hangs the fade.
 - Tests: `make check TESTS=test/fast_forward.c`. To stress it, force 4x in `main.c`

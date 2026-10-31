@@ -793,6 +793,13 @@ static void UpdateBlendRegisters(void)
         {
         case FADE_FROM_BLACK:
             // increment each target until reaching weather's values
+            // BPE: a fast forward fade ends too soon to get there one step per
+            // VBlank, and nothing else sets them back afterwards.
+            if (gPaletteFade.hardwareFadeFinishing)
+            {
+                tgt1 = gWeatherPtr->currBlendEVA;
+                tgt2 = gWeatherPtr->currBlendEVB;
+            }
             SetGpuReg(
                 REG_OFFSET_BLDALPHA,
                 BLDALPHA_BLEND(

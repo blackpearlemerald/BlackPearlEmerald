@@ -1942,7 +1942,9 @@ void CB2_OverworldBasic(void)
 
 void CB2_Overworld(void)
 {
-    bool32 fading = (gPaletteFade.active != 0);
+    // BPE: not under fast forward. A set of passes can overrun a VBlank, which
+    // would lose all of that VBlank's work, and a hardware fade ends there.
+    bool32 fading = (gPaletteFade.active != 0) && !IsFastForwardRunning();
     if (fading)
         SetVBlankCallback(NULL);
     OverworldBasic();

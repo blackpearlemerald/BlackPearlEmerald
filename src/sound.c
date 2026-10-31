@@ -585,12 +585,14 @@ void PlayBGM(u16 songNum)
 }
 
 // BPE: battle sounds keep pace with fast forward. The tempo shortens the song and
-// the pitch shortens its samples, one octave for each doubling.
-static void FastForwardSE(struct MusicPlayerInfo *mplayInfo)
+// the pitch shortens its samples, one octave for each doubling. This changes only
+// the player the song runs on, and not if a higher priority song kept that player.
+static void FastForwardSE(u16 songNum)
 {
     u32 speed = GetFastForwardBattleSoundSpeed();
+    struct MusicPlayerInfo *mplayInfo = gMPlayTable[gSongTable[songNum].ms].info;
 
-    if (speed > 1)
+    if (speed > 1 && mplayInfo->songHeader == gSongTable[songNum].header)
     {
         m4aMPlayTempoControl(mplayInfo, speed << 8);
         m4aMPlayPitchControl(mplayInfo, TRACKS_ALL, FastForwardSoundPitch(speed));
@@ -603,12 +605,10 @@ void PlaySE(u16 songNum)
     {
         m4aSongNumStart(songNum);
         // Everything else on the battle screen with plain PlaySE is a menu sound
-        if (gAnimScriptActive)
+        if (gAnimScriptActive && GetFastForwardBattleSoundSpeed() > 1)
         {
-            m4aMPlayImmInit(&gMPlayInfo_SE1);
-            m4aMPlayImmInit(&gMPlayInfo_SE2);
-            FastForwardSE(&gMPlayInfo_SE1);
-            FastForwardSE(&gMPlayInfo_SE2);
+            m4aMPlayImmInit(gMPlayTable[gSongTable[songNum].ms].info);
+            FastForwardSE(songNum);
         }
     }
 }
@@ -620,8 +620,7 @@ void PlaySE12WithPanning(u16 songNum, s8 pan)
     m4aMPlayImmInit(&gMPlayInfo_SE2);
     m4aMPlayPanpotControl(&gMPlayInfo_SE1, TRACKS_ALL, pan);
     m4aMPlayPanpotControl(&gMPlayInfo_SE2, TRACKS_ALL, pan);
-    FastForwardSE(&gMPlayInfo_SE1);
-    FastForwardSE(&gMPlayInfo_SE2);
+    FastForwardSE(songNum);
 }
 
 void PlaySE1WithPanning(u16 songNum, s8 pan)
@@ -629,7 +628,7 @@ void PlaySE1WithPanning(u16 songNum, s8 pan)
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE1);
     m4aMPlayPanpotControl(&gMPlayInfo_SE1, TRACKS_ALL, pan);
-    FastForwardSE(&gMPlayInfo_SE1);
+    FastForwardSE(songNum);
 }
 
 void PlaySE2WithPanning(u16 songNum, s8 pan)
@@ -637,7 +636,7 @@ void PlaySE2WithPanning(u16 songNum, s8 pan)
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE2);
     m4aMPlayPanpotControl(&gMPlayInfo_SE2, TRACKS_ALL, pan);
-    FastForwardSE(&gMPlayInfo_SE2);
+    FastForwardSE(songNum);
 }
 
 void SE12PanpotControl(s8 pan)

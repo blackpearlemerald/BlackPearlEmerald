@@ -4,6 +4,8 @@
 #include "battle_transition.h"
 #include "dma3.h"
 #include "event_data.h"
+#include "field_weather.h"
+#include "gpu_regs.h"
 #include "gba/m4a_internal.h"
 #include "link.h"
 #include "item.h"
@@ -92,20 +94,45 @@ TEST("The wireless state left by a Pokemon Center does not stop fast forward")
     gMain.callback2 = callback2;
 }
 
+TEST("A fade from black that ends early still restores the shadow blend")
+{
+    u32 eva = gWeatherPtr->currBlendEVA, evb = gWeatherPtr->currBlendEVB;
+
+    gWeatherPtr->currBlendEVA = 8;
+    gWeatherPtr->currBlendEVB = 12;
+    SetGpuReg(REG_OFFSET_BLDALPHA, BLDALPHA_BLEND(0, 0));
+    BeginHardwarePaletteFade(BLDCNT_TGT2_ALL | BLDCNT_EFFECT_DARKEN, 0, 1, 0, FALSE);
+    for (u32 i = 0; i < 8 && gPaletteFade.active; i++)
+    {
+        UpdatePaletteFade();
+        TransferPlttBuffer();
+    }
+    EXPECT(!gPaletteFade.active);
+    EXPECT_EQ(GetGpuReg(REG_OFFSET_BLDALPHA), BLDALPHA_BLEND(8, 12));
+
+    gWeatherPtr->currBlendEVA = eva;
+    gWeatherPtr->currBlendEVB = evb;
+    ResetPaletteFade();
+}
+
 TEST("Panned battle sounds play at the fast forward tempo")
 {
     MainCallback callback2 = gMain.callback2;
+    struct MusicPlayerInfo *player = gMPlayTable[gSongTable[SE_M_HARDEN].ms].info;
+    struct MusicPlayerInfo *other = player == &gMPlayInfo_SE1 ? &gMPlayInfo_SE2 : &gMPlayInfo_SE1;
 
     FlagClear(FLAG_SPEED_BOY_SPEED_LO);
     FlagSet(FLAG_SPEED_BOY_SPEED_HI);
     gMain.callback2 = BattleMainCB2;
     FlagSet(FLAG_SPEED_BOY_ON);
+    other->tempoU = 1 << 8;
     PlaySE12WithPanning(SE_M_HARDEN, 0);
-    EXPECT_EQ(gMPlayInfo_SE1.tempoU, 4 << 8);
+    EXPECT_EQ(player->tempoU, 4 << 8);
+    EXPECT_EQ(other->tempoU, 1 << 8);
 
     FlagClear(FLAG_SPEED_BOY_ON);
     PlaySE12WithPanning(SE_M_HARDEN, 0);
-    EXPECT_EQ(gMPlayInfo_SE1.tempoU, 1 << 8);
+    EXPECT_EQ(player->tempoU, 1 << 8);
 
     m4aMPlayStop(&gMPlayInfo_SE1);
     m4aMPlayStop(&gMPlayInfo_SE2);
