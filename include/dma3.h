@@ -47,6 +47,7 @@
 #define Dma3FillLarge32_(value, dest, size) Dma3FillLarge_(value, dest, size, 32)
 
 void ClearDma3Requests(void);
+bool32 IsDma3QueueHalfFull(void);
 void ProcessDma3Requests(void);
 s16 RequestDma3Copy(const void *src, void *dest, u16 size, u32 mode);
 s16 RequestDma3Fill(s32 value, void *dest, u16 size, u32 mode);

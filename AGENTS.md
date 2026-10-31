@@ -799,6 +799,34 @@ out coins, so the documented evolution could never happen. The Verdanturf mart s
 them (the Expanded4 and Postgame lists, ₽10 each; see "Verdanturf mart prices"). Tests:
 `make check TESTS=test/gimmighoul_evolution.c`.
 
+### Fast forward
+
+OPTION > FAST FORWARD picks OFF, 2x or 4x (`optionsFastForward`, two padding bits in
+SaveBlock2, zero in every older save, so the layout did not change). It follows
+Wishes of Tomorrow's method: `AgbMainLoop` runs 2 or 4 logic passes per VBlank and
+skips only the wait. Audio runs from the VBlank and VCount interrupts, so music
+keeps its tempo and pitch. On a real GBA the speed is a ceiling: a pass that takes
+too long just gets fewer passes in.
+
+- It runs on `CB2_Overworld` and `BattleMainCB2` only. Menus keep 1x because their
+  held-button repeat runs on logic frames. Link play is always 1x.
+- Move animations stay sped up, unlike Wishes of Tomorrow. The game drops to 1x
+  while a palette fade runs, since fades take one step per VBlank and the code
+  around them would outrun them, or when the DMA or sprite copy queue is half full (`IsDma3QueueHalfFull`, `IsSpriteCopyQueueHalfFull`), since both drop
+  requests silently when full.
+- On the battle screen `IsFastForwardMutingBattleSfx()` mutes cries, the panned sound
+  effects and everything else played during an animation. Otherwise sounds would
+  pile up at 4x and waits on cries would stay real-time. Menu sounds, fanfares and
+  the low HP beep still play.
+- What measures real time uses `IsFastForwardExtraPass()`: fanfare counters and
+  tileset animations. Those animations pick tiles by frame number, so at 2x or 4x
+  water and flowers would freeze without it. The play timer and `MapMusicMain` run
+  once per VBlank in `AgbMainLoop`.
+- `UpdateHardwarePaletteFade` returns early once `hardwareFadeFinishing` is set. It is
+  a 1-bit field, and a second step before VBlank flips it back and hangs the fade.
+- Tests: `make check TESTS=test/fast_forward.c`. To stress it, force 4x in `main.c`
+  temporarily and run `test/battle/move_animations/all_anims.c`.
+
 ### Gimmick prompt
 
 `CreateGimmickPrompt()` in `src/battle_gimmick.c` puts a small "START" label

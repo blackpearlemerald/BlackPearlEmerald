@@ -1,5 +1,6 @@
 #include "global.h"
 #include "graphics.h"
+#include "main.h"
 #include "palette.h"
 #include "util.h"
 #include "battle_transition.h"
@@ -585,6 +586,12 @@ void InitSecondaryTilesetAnimation(void)
 
 void UpdateTilesetAnimations(void)
 {
+    // BPE: these keep real time under fast forward. Their timers pick tiles by
+    // frame number and the buffer holds one frame, so at an even speed the same
+    // numbers would reach the screen every time and most tiles would freeze.
+    if (IsFastForwardExtraPass())
+        return;
+
     ResetTilesetAnimBuffer();
     if (++sPrimaryTilesetAnimCounter >= sPrimaryTilesetAnimCounterMax)
         sPrimaryTilesetAnimCounter = 0;

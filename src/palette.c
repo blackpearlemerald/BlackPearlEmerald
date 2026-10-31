@@ -719,6 +719,12 @@ static u32 UpdateHardwarePaletteFade(void)
     if (!gPaletteFade.active)
         return PALETTE_FADE_STATUS_DONE;
 
+    // BPE: VBlank ends the fade after its last step. With several logic frames
+    // per VBlank (fast forward) another step would flip this 1-bit field back
+    // to 0, and the fade would never end.
+    if (gPaletteFade.hardwareFadeFinishing)
+        return PALETTE_FADE_STATUS_ACTIVE;
+
     if (gPaletteFade.delayCounter < gPaletteFadeDelay)
     {
         gPaletteFade.delayCounter++;

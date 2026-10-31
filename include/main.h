@@ -57,6 +57,8 @@ extern s8 gPcmDmaCounter;
 
 void AgbMain(void);
 void AgbMainLoop(void);
+bool32 IsFastForwardMutingBattleSfx(void);
+bool32 IsFastForwardExtraPass(void);
 void SetMainCallback2(MainCallback callback);
 void InitKeys(void);
 void SetVBlankCallback(IntrCallback callback);

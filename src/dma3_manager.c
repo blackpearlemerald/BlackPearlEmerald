@@ -93,6 +93,13 @@ void ProcessDma3Requests(void)
     }
 }
 
+// BPE: fast forward stops adding logic frames once this is true, because a full
+// queue drops requests silently. Requests fill up from the cursor.
+bool32 IsDma3QueueHalfFull(void)
+{
+    return sDma3Requests[(sDma3RequestCursor + MAX_DMA_REQUESTS / 2) % MAX_DMA_REQUESTS].size != 0;
+}
+
 s16 RequestDma3Copy(const void *src, void *dest, u16 size, u32 mode)
 {
     int cursor;

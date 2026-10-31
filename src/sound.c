@@ -2,6 +2,7 @@
 #include "gba/m4a_internal.h"
 #include "sound.h"
 #include "battle.h"
+#include "battle_anim.h"
 #include "m4a.h"
 #include "main.h"
 #include "overworld.h"
@@ -194,7 +195,9 @@ bool8 WaitFanfare(bool8 stop)
 {
     if (sFanfareCounter)
     {
-        sFanfareCounter--;
+        // BPE: the counter measures the song, so it stays on real time under fast forward
+        if (!IsFastForwardExtraPass())
+            sFanfareCounter--;
         return FALSE;
     }
     else
@@ -251,7 +254,8 @@ static void Task_Fanfare(u8 taskId)
 
     if (sFanfareCounter)
     {
-        sFanfareCounter--;
+        if (!IsFastForwardExtraPass())
+            sFanfareCounter--;
     }
     else
     {
@@ -312,6 +316,9 @@ bool8 IsBGMStopped(void)
 
 void PlayCry_Normal(enum Species species, s8 pan)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 85);
     PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, CRY_MODE_NORMAL);
     gPokemonCryBGMDuckingCounter = 2;
@@ -320,12 +327,18 @@ void PlayCry_Normal(enum Species species, s8 pan)
 
 void PlayCry_NormalNoDucking(enum Species species, s8 pan, s8 volume, u8 priority)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     PlayCryInternal(species, pan, volume, priority, CRY_MODE_NORMAL);
 }
 
 // Assuming it's not CRY_MODE_DOUBLES, this is equivalent to PlayCry_Normal except it allows other modes.
 void PlayCry_ByMode(enum Species species, s8 pan, u8 mode)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -342,6 +355,9 @@ void PlayCry_ByMode(enum Species species, s8 pan, u8 mode)
 // Used when releasing multiple Pokémon at once in battle.
 void PlayCry_ReleaseDouble(enum Species species, s8 pan, u8 mode)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -357,6 +373,9 @@ void PlayCry_ReleaseDouble(enum Species species, s8 pan, u8 mode)
 // Duck the BGM but don't restore it. Not present in R/S
 void PlayCry_DuckNoRestore(enum Species species, s8 pan, u8 mode)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     if (mode == CRY_MODE_DOUBLES)
     {
         PlayCryInternal(species, pan, CRY_VOLUME, CRY_PRIORITY_NORMAL, mode);
@@ -566,12 +585,18 @@ void PlayBGM(u16 songNum)
 
 void PlaySE(u16 songNum)
 {
+    if (gAnimScriptActive && IsFastForwardMutingBattleSfx())
+        return;
+
     if (gDisableMapMusicChangeOnMapLoad == MUSIC_DISABLE_OFF)
         m4aSongNumStart(songNum);
 }
 
 void PlaySE12WithPanning(u16 songNum, s8 pan)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE1);
     m4aMPlayImmInit(&gMPlayInfo_SE2);
@@ -581,6 +606,9 @@ void PlaySE12WithPanning(u16 songNum, s8 pan)
 
 void PlaySE1WithPanning(u16 songNum, s8 pan)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE1);
     m4aMPlayPanpotControl(&gMPlayInfo_SE1, TRACKS_ALL, pan);
@@ -588,6 +616,9 @@ void PlaySE1WithPanning(u16 songNum, s8 pan)
 
 void PlaySE2WithPanning(u16 songNum, s8 pan)
 {
+    if (IsFastForwardMutingBattleSfx())
+        return;
+
     m4aSongNumStart(songNum);
     m4aMPlayImmInit(&gMPlayInfo_SE2);
     m4aMPlayPanpotControl(&gMPlayInfo_SE2, TRACKS_ALL, pan);

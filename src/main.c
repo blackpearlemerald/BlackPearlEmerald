@@ -19,6 +19,9 @@
 #include "sound.h"
 #include "battle.h"
 #include "battle_controllers.h"
+#include "battle_main.h"
+#include "palette.h"
+#include "sprite.h"
 #include "text.h"
 #include "intro.h"
 #include "main.h"
@@ -71,6 +74,7 @@ COMMON_DATA IntrFunc gIntrTable[INTR_COUNT] = {0};
 COMMON_DATA u8 gLinkVSyncDisabled = 0;
 COMMON_DATA s8 gPcmDmaCounter = 0;
 COMMON_DATA void *gAgbMainLoop_sp = NULL;
+static u8 sFastForwardPass;
 
 static EWRAM_DATA u16 sTrainerId = 0;
 
@@ -131,6 +135,54 @@ void AgbMain(void)
     AgbMainLoop();
 }
 
+// BPE: one pass of AgbMainLoop is one logic frame. Audio runs from the VBlank and
+// VCount interrupts, so running 2 or 4 passes per VBlank speeds the game up while
+// the music keeps its tempo and pitch. Only the wait is skipped: every pass runs
+// its callbacks. See "Fast forward" in AGENTS.md.
+static bool32 IsFastForwardScreen(void)
+{
+    if (gSaveBlock2Ptr->optionsFastForward == OPTIONS_FAST_FORWARD_OFF)
+        return FALSE;
+
+    // Two linked games must agree on how many frames have passed
+    if (gReceivedRemoteLinkPlayers || gLinkTransferringData || gWirelessCommType != 0)
+        return FALSE;
+
+    // Menus stay at normal speed: their held-button repeat runs on logic frames
+    return gMain.callback2 == CB2_Overworld || gMain.callback2 == BattleMainCB2;
+}
+
+bool32 IsFastForwardMutingBattleSfx(void)
+{
+    return gMain.callback2 == BattleMainCB2 && IsFastForwardScreen();
+}
+
+// True on every pass but the first after a VBlank, for what must keep real time
+bool32 IsFastForwardExtraPass(void)
+{
+    return sFastForwardPass != 0;
+}
+
+static bool32 ShouldRunAnotherLogicPass(void)
+{
+    u32 speed;
+
+    if (!IsFastForwardScreen())
+        return FALSE;
+
+    // A palette fade takes one step per VBlank, so at full speed the code waiting
+    // on it would be left behind: a Poke Ball's fade could outlast the battle
+    if (gPaletteFade.active)
+        return FALSE;
+
+    // Both queues empty at VBlank and drop new requests when full
+    if (IsDma3QueueHalfFull() || IsSpriteCopyQueueHalfFull())
+        return FALSE;
+
+    speed = gSaveBlock2Ptr->optionsFastForward == OPTIONS_FAST_FORWARD_2X ? 2 : 4;
+    return sFastForwardPass + 1u < speed;
+}
+
 void AgbMainLoop(void)
 {
     for (;;)
@@ -167,6 +219,14 @@ void AgbMainLoop(void)
             }
         }
 
+        // Everything above runs per logic frame. The rest measures real time.
+        if (ShouldRunAnotherLogicPass())
+        {
+            sFastForwardPass++;
+            continue;
+        }
+
+        sFastForwardPass = 0;
         PlayTimeCounter_Update();
         MapMusicMain();
         WaitForVBlank();

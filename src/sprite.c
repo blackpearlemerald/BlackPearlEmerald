@@ -786,6 +786,12 @@ void ProcessSpriteCopyRequests(void)
     }
 }
 
+// BPE: see IsDma3QueueHalfFull
+bool32 IsSpriteCopyQueueHalfFull(void)
+{
+    return sSpriteCopyRequestCount >= MAX_SPRITE_COPY_REQUESTS / 2;
+}
+
 void RequestSpriteFrameImageCopy(u16 index, u16 tileNum, const struct SpriteFrameImage *images)
 {
     if (sSpriteCopyRequestCount < MAX_SPRITE_COPY_REQUESTS)
