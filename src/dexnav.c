@@ -627,7 +627,7 @@ static void FindDexNavReachableTiles(u8 *reached)
 {
     struct ObjectEvent *player = &gObjectEvents[gPlayerAvatar.objectEventId];
     static const s8 sSteps[][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
-    bool32 surfing = TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING);
+    bool32 surfing = TestPlayerAvatarFlags(PLAYER_AVATAR_FLAG_SURFING) != 0;
     s16 originX = player->currentCoords.x - PICK_RADIUS_X_MAX;
     s16 originY = player->currentCoords.y - PICK_RADIUS_Y_MAX;
     u8 queue[PICK_WIDTH * PICK_HEIGHT];
@@ -2782,5 +2782,31 @@ void DexNav_Test_SetSearch(bool32 searching, bool32 hiddenSearch)
     sDexNavSearchDataPtr = AllocZeroed(sizeof(struct DexNavSearch));
     sDexNavSearchDataPtr->hiddenSearch = hiddenSearch;
     FlagSet(DN_FLAG_SEARCHING);
+}
+
+// Picks a water tile for a player at (x, y) on the map in the save block.
+bool32 DexNav_Test_PickWaterTile(s16 x, s16 y, u8 avatarFlags, s16 *tileX, s16 *tileY)
+{
+    bool32 found;
+
+    gMapHeader = *Overworld_GetMapHeaderByGroupAndId(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum);
+    gMapHeader.mapLayout = GetMapLayout(gMapHeader.mapLayoutId);
+    InitMap();
+    ResetObjectEvents();
+    gPlayerAvatar.objectEventId = 0;
+    gPlayerAvatar.flags = avatarFlags;
+    gObjectEvents[0].active = TRUE;
+    gObjectEvents[0].currentCoords.x = x + MAP_OFFSET;
+    gObjectEvents[0].currentCoords.y = y + MAP_OFFSET;
+    gObjectEvents[0].currentElevation = MapGridGetElevationAt(x + MAP_OFFSET, y + MAP_OFFSET);
+
+    sDexNavSearchDataPtr = AllocZeroed(sizeof(struct DexNavSearch));
+    found = DexNavPickTile(ENCOUNTER_TYPE_WATER, 6, 4);
+    *tileX = sDexNavSearchDataPtr->tileX;
+    *tileY = sDexNavSearchDataPtr->tileY;
+    FREE_AND_SET_NULL(sDexNavSearchDataPtr);
+    ResetObjectEvents();
+    gPlayerAvatar.flags = 0;
+    return found;
 }
 #endif // TESTING

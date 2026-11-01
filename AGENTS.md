@@ -661,7 +661,9 @@ The upstream DexNav (`src/dexnav.c`) is on for Standard mode only.
   player, that a flood fill from the player can reach (collision, elevation,
   water vs land, no ledges or waterfalls). `IsDexNavStalkingPokemon()` turns off
   random encounters while a revealed search runs, since a random battle ends the
-  search.
+  search. `TestPlayerAvatarFlags()` returns the flag's bit, not `TRUE`, so compare it
+  with `!= 0` before storing it as a bool: 2.1.9 through 2.2.8 made every water tile
+  look unreachable this way, and no search on water could find anything.
 - Found through DexNav but game-wide: the weather color maps in
   `src/field_weather.c` copy the unfaded palettes into the faded buffer and then
   darken them in place. On a heavy frame the VBlank interrupt could send the

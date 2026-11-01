@@ -2,6 +2,8 @@
 #include "caps.h"
 #include "dexnav.h"
 #include "event_data.h"
+#include "fieldmap.h"
+#include "metatile_behavior.h"
 #include "pokemon.h"
 #include "randomizer.h"
 #include "wild_encounter.h"
@@ -19,6 +21,7 @@ void DexNav_Test_GenerateMoveset(enum Species species, u8 searchLevel, u8 level,
 u8 DexNav_Test_GenerateMonLevel(enum Species species, enum EncounterType environment);
 u32 DexNav_Test_GetListedLandSpecies(enum Species *dst);
 void DexNav_Test_SetSearch(bool32 searching, bool32 hiddenSearch);
+bool32 DexNav_Test_PickWaterTile(s16 x, s16 y, u8 avatarFlags, s16 *tileX, s16 *tileY);
 
 static void GoToRoute101(void)
 {
@@ -267,6 +270,22 @@ TEST("DexNav lists a regional form apart from the original")
     }
     EXPECT(original);
     EXPECT(galar);
+}
+
+// Through 2.2.8 the surfing check compared a flag bit with TRUE, so every water
+// tile looked unreachable and no search on water found anything.
+TEST("A DexNav search on water finds a tile while surfing")
+{
+    s16 x, y;
+
+    gSaveBlock1Ptr->location.mapGroup = MAP_GROUP(MAP_ROUTE124);
+    gSaveBlock1Ptr->location.mapNum = MAP_NUM(MAP_ROUTE124);
+
+    EXPECT(DexNav_Test_PickWaterTile(7, 59, PLAYER_AVATAR_FLAG_SURFING, &x, &y));
+    EXPECT(MetatileBehavior_IsWaterWildEncounter(MapGridGetMetatileBehaviorAt(x, y)));
+
+    // the player can't reach the water without surfing
+    EXPECT(!DexNav_Test_PickWaterTile(7, 59, PLAYER_AVATAR_FLAG_ON_FOOT, &x, &y));
 }
 
 TEST("A DexNav Pokemon keeps the form its search showed")

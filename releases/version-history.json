@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.9": {
+      "channel": "stable",
+      "changes": [
+        "Fixed DexNav searches on water always saying no Pokémon were nearby while surfing."
+      ]
+    },
     "2.2.8": {
       "channel": "stable",
       "changes": [
