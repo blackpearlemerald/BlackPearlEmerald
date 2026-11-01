@@ -51,6 +51,14 @@ enum {
 #define CONTEST_INFO 1
 #define RETURN_FROM_MOVE_SELECT 2
 
+struct RestoredTutorMove
+{
+    u16 move;
+    u8 badges;
+};
+
+#include "data/pokemon/restored_tutor_moves.h"
+
 struct RelearnType
 {
     bool32 (*isActive)(void);
@@ -954,16 +962,48 @@ static u32 GetRelearnerTMMoves(struct BoxPokemon *mon, u16 *moves)
     return numMoves;
 }
 
+bool32 IsRestoredTutorMove(enum Move move)
+{
+    s32 low = 0, high = ARRAY_COUNT(sRestoredTutorMoves) - 1;
+
+    while (low <= high)
+    {
+        s32 mid = (low + high) / 2;
+
+        if (sRestoredTutorMoves[mid].move == move)
+            return TRUE;
+        if (sRestoredTutorMoves[mid].move < move)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+    return FALSE;
+}
+
+static u32 CountOwnedBadges(void)
+{
+    u32 count = 0;
+
+    for (u32 i = FLAG_BADGE01_GET; i < FLAG_BADGE01_GET + NUM_BADGES; i++)
+    {
+        if (FlagGet(i))
+            count++;
+    }
+    return count;
+}
+
+// BPE: only the restored moves. The Emerald and Frontier tutors keep teaching theirs.
 static u32 GetRelearnerTutorMoves(struct BoxPokemon *mon, u16 *moves)
 {
     enum Species species = GetBoxMonData(mon, MON_DATA_SPECIES);
+    u32 badges = CountOwnedBadges();
     u32 numMoves = 0;
 
-    for (u32 i = 0; gTutorMoves[i] != MOVE_UNAVAILABLE; i++)
+    for (u32 i = 0; i < ARRAY_COUNT(sRestoredTutorMoves) && numMoves < MAX_RELEARNER_MOVES; i++)
     {
-        enum Move move = gTutorMoves[i];
+        enum Move move = sRestoredTutorMoves[i].move;
 
-        if (!CanLearnTeachableMove(species, move))
+        if (sRestoredTutorMoves[i].badges > badges || !CanLearnTeachableMove(species, move))
             continue;
 
         if (!BoxMonKnowsMove(mon, move))
@@ -1082,19 +1122,9 @@ static bool32 HasRelearnerTMMoves(struct BoxPokemon *boxMon)
 
 static bool32 HasRelearnerTutorMoves(struct BoxPokemon *boxMon)
 {
-    enum Species species = GetBoxMonData(boxMon, MON_DATA_SPECIES);
-    for (u32 i = 0; gTutorMoves[i] != MOVE_UNAVAILABLE; i++)
-    {
-        enum Move move = gTutorMoves[i];
+    u16 moves[MAX_RELEARNER_MOVES];
 
-        if (!CanLearnTeachableMove(species, move))
-            continue;
-
-        if (!BoxMonKnowsMove(boxMon, move))
-            return TRUE;
-    }
-
-    return FALSE;
+    return GetRelearnerTutorMoves(boxMon, moves) != 0;
 }
 
 static bool32 IsLevelUpMoveRelearnerActive(void)

@@ -16,12 +16,36 @@ FallarborTown_MoveRelearnersHouse_EventScript_AskTeachMove::
 	msgbox FallarborTown_MoveRelearnersHouse_Text_ThatsAHeartScaleWantMeToTeachMove, MSGBOX_YESNO
 	switch VAR_RESULT
 	case NO, FallarborTown_MoveRelearnersHouse_EventScript_ComeBackWithHeartScale
+	goto FallarborTown_MoveRelearnersHouse_EventScript_ChooseKind
+	end
+
+@ BPE: Dusclops also teaches the moves BPE has no TM or tutor for.
+FallarborTown_MoveRelearnersHouse_EventScript_ChooseKind::
+	message FallarborTown_MoveRelearnersHouse_Text_WhichKindOfMove
+	waitmessage
+	dynmultipush MoveRelearner_Text_LevelUpMoves, 0
+	dynmultipush MoveRelearner_Text_TutormoveMoves, 1
+	dynmultipush MoveRelearner_Text_SeeYa, 2
+	dynmultistack 0, 0, FALSE, 3, 0, 0, DYN_MULTICHOICE_CB_NONE
+	closemessage
+	switch VAR_RESULT
+	case 0, FallarborTown_MoveRelearnersHouse_EventScript_ChooseLevelUp
+	case 1, FallarborTown_MoveRelearnersHouse_EventScript_ChooseTutor
+	goto FallarborTown_MoveRelearnersHouse_EventScript_ComeBackWithHeartScale
+	end
+
+FallarborTown_MoveRelearnersHouse_EventScript_ChooseLevelUp::
+	setmoverelearnerstate MOVE_RELEARNER_LEVEL_UP_MOVES
+	goto FallarborTown_MoveRelearnersHouse_EventScript_ChooseMon
+	end
+
+FallarborTown_MoveRelearnersHouse_EventScript_ChooseTutor::
+	setmoverelearnerstate MOVE_RELEARNER_TUTOR_MOVES
 	goto FallarborTown_MoveRelearnersHouse_EventScript_ChooseMon
 	end
 
 FallarborTown_MoveRelearnersHouse_EventScript_ChooseMon::
 	msgbox FallarborTown_MoveRelearnersHouse_Text_TutorWhichMon, MSGBOX_DEFAULT
-	setmoverelearnerstate MOVE_RELEARNER_LEVEL_UP_MOVES @ Specifically supposed to teach level up moves
 	chooseboxmon SELECT_PC_MON_MOVE_RELEARNER
 	waitstate
 	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, FallarborTown_MoveRelearnersHouse_EventScript_ComeBackWithHeartScale
@@ -68,6 +92,9 @@ FallarborTown_MoveRelearnersHouse_Text_ImTheMoveTutor:
 FallarborTown_MoveRelearnersHouse_Text_ThatsAHeartScaleWantMeToTeachMove:
 	.string "Let me guess, you want me to teach\n"
 	.string "a move?$"
+
+FallarborTown_MoveRelearnersHouse_Text_WhichKindOfMove:
+	.string "Which kind of move would you like?$"
 
 FallarborTown_MoveRelearnersHouse_Text_TutorWhichMon:
 	.string "Which POKéMON needs tutoring?$"

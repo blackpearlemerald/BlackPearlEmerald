@@ -615,6 +615,11 @@ the Day Care and Revives cannot restore it. `MON_DATA_DEAD` must stay before
 `MON_DATA_ENCRYPT_SEPARATOR` in `enum MonData`; after it, `Get/SetMonData`
 silently ignore the field, which is how every release before this fix lost the
 flag. `LoadPlayerParty()` marks fainted party Pokémon from those saves.
+The Frontier, Battle Tents and Trainer Hill never affect the run
+(`IsNuzlockeExemptBattle()`): a loss doesn't end it and a faint doesn't kill.
+`LoadPlayerParty()` therefore repairs old saves only once (`FLAG_NUZLOCKE_DEAD_REPAIRED`),
+and `HealPlayerParty()` goes by the dead flag, not by 0 HP. Dead Pokémon can't enter,
+and Tent prizes stay off until the Hall of Fame, because the Tents open during the run.
 Tests: `make check TESTS="Nuzlocke"`.
 
 ### DexNav
@@ -978,6 +983,15 @@ is used at once; with more, `UseRegisteredKeyItemOnField()` in
   `data/maps/FallarborTown_MoveRelearnersHouse/scripts.inc`) teaches level-up
   moves. `P_PRE_EVO_MOVES` is `TRUE`, so it also offers moves only a
   pre-evolution learns, at that pre-evolution's level.
+- The relearner also has a Tutor Moves list: `sRestoredTutorMoves` in
+  `src/data/pokemon/restored_tutor_moves.h`, moves the official games taught by TM
+  or tutor that BPE has no TM or tutor for, Roost and Superpower among them. Each
+  opens at a badge count, weakest first, and all are open by the third badge. BPE
+  has no room for real TMs: `ITEMS_COUNT` is capped and `BAG_TMHM_COUNT` (250) is
+  exactly the 242 TMs plus 8 HMs. Add a move to that table and to `extraTutors` in
+  `src/data/pokemon/special_movesets.json`, which makes it teachable with no NPC;
+  the table stays sorted by move id. `Randomizer_CanLearnTeachableMove` leaves these
+  moves out of its count, so existing seeds keep their odds.
 - The Egg Move Tutor (Ditto doll, `General_EggTutor_EventScript` in Wanda's
   house, Verdanturf) teaches the Egg Moves of the family's first stage to any
   stage, for one Pearl. Pichu's list includes Volt Tackle, which otherwise comes

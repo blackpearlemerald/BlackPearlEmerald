@@ -12,6 +12,7 @@
 #include "event_data.h"
 #include "item.h"
 #include "move.h"
+#include "move_relearner.h"
 #include "pokedex.h"
 #include "pokemon.h"
 #include "random.h"
@@ -2149,7 +2150,11 @@ bool32 Randomizer_CanLearnTeachableMove(enum Species species, enum Move move, bo
         return canLearn;
     learnset = gSpeciesInfo[species].teachableLearnset;
     for (u32 i = 0; learnset != NULL && learnset[i] != MOVE_UNAVAILABLE; i++)
-        count++;
+    {
+        // The moves restored after version 3 must not change an existing seed's odds.
+        if (!IsRestoredTutorMove(learnset[i]))
+            count++;
+    }
     // About 150 moves are teachable, so this keeps the species' usual share.
     chance = min(count * 100 / 150, 90);
     if (HasType(species, GetMoveType(move)))
