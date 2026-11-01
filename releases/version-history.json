@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.10": {
+      "channel": "stable",
+      "changes": [
+        "Battle sounds and cries keep their normal pitch with the Speed Boy on, instead of sounding high and squeaky."
+      ]
+    },
     "2.2.9": {
       "channel": "stable",
       "changes": [

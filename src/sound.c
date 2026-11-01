@@ -191,13 +191,6 @@ void PlayFanfareByFanfareNum(u8 fanfareNum)
     m4aSongNumStart(songNum);
 }
 
-static s16 FastForwardSoundPitch(u32 speed)
-{
-    static const u8 sSemitones[] = {[2] = 12, [3] = 19, [4] = 24};
-
-    return sSemitones[speed] * 256;
-}
-
 bool8 WaitFanfare(bool8 stop)
 {
     if (sFanfareCounter)
@@ -395,7 +388,6 @@ void PlayCryInternal(enum Species species, s8 pan, s8 volume, u8 priority, u8 mo
     u32 length;
     u32 pitch;
     u32 chorus;
-    u32 speed;
 
     // Set default values
     // May be overridden depending on mode.
@@ -484,13 +476,8 @@ void PlayCryInternal(enum Species species, s8 pan, s8 volume, u8 priority, u8 mo
         break;
     }
 
-    // BPE: battle cries keep pace with fast forward
-    speed = GetFastForwardBattleSoundSpeed();
-    if (speed > 1)
-    {
-        pitch += FastForwardSoundPitch(speed);
-        length /= speed;
-    }
+    // BPE: battle cries keep pace with fast forward, at their normal pitch
+    length /= GetFastForwardBattleSoundSpeed();
 
     SetPokemonCryVolume(volume);
     SetPokemonCryPanpot(pan);
@@ -584,19 +571,17 @@ void PlayBGM(u16 songNum)
     m4aSongNumStart(songNum);
 }
 
-// BPE: battle sounds keep pace with fast forward. The tempo shortens the song and
-// the pitch shortens its samples, one octave for each doubling. This changes only
-// the player the song runs on, and not if a higher priority song kept that player.
+// BPE: battle sounds keep pace with fast forward. The tempo shortens the song, and
+// a sample still playing when its note ends is cut off, so the pitch stays normal.
+// This changes only the player the song runs on, and not if a higher priority song
+// kept that player.
 static void FastForwardSE(u16 songNum)
 {
     u32 speed = GetFastForwardBattleSoundSpeed();
     struct MusicPlayerInfo *mplayInfo = gMPlayTable[gSongTable[songNum].ms].info;
 
     if (speed > 1 && mplayInfo->songHeader == gSongTable[songNum].header)
-    {
         m4aMPlayTempoControl(mplayInfo, speed << 8);
-        m4aMPlayPitchControl(mplayInfo, TRACKS_ALL, FastForwardSoundPitch(speed));
-    }
 }
 
 void PlaySE(u16 songNum)

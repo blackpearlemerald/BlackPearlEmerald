@@ -828,9 +828,11 @@ too long just gets fewer passes in.
   requests silently when full.
 - On the battle screen cries, the panned sound effects and everything else played
   during an animation run at `GetFastForwardBattleSoundSpeed()`: tempo and length
-  scale with the speed and pitch rises an octave per doubling, so they do not pile
-  up and waits on them shorten too. Menu sounds, fanfares and the low HP beep stay
-  normal. It is deliberately chipmunk-like; a sample cannot play faster without it.
+  scale with the speed, so they do not pile up and waits on them shorten too. Pitch
+  stays normal: a sample cannot play faster without rising in pitch, so a long one
+  is cut off when its note ends. Through 2.2.9 pitch rose an octave per doubling to
+  fit the whole sample in, and the maintainer rejected the helium sound. Menu sounds,
+  fanfares and the low HP beep stay normal.
 - What measures real time uses `IsFastForwardExtraPass()`: fanfare counters and
   tileset animations. Those animations pick tiles by frame number, so at 2x or 4x
   water and flowers would freeze without it. The play timer and `MapMusicMain` run

@@ -129,6 +129,8 @@ TEST("Panned battle sounds play at the fast forward tempo")
     PlaySE12WithPanning(SE_M_HARDEN, 0);
     EXPECT_EQ(player->tempoU, 4 << 8);
     EXPECT_EQ(other->tempoU, 1 << 8);
+    EXPECT_EQ(player->tracks[0].keyShiftX, 0);
+    EXPECT_EQ(player->tracks[0].pitX, 0);
 
     FlagClear(FLAG_SPEED_BOY_ON);
     PlaySE12WithPanning(SE_M_HARDEN, 0);
@@ -136,6 +138,33 @@ TEST("Panned battle sounds play at the fast forward tempo")
 
     m4aMPlayStop(&gMPlayInfo_SE1);
     m4aMPlayStop(&gMPlayInfo_SE2);
+    gMain.callback2 = callback2;
+}
+
+TEST("Battle cries are shorter under fast forward but keep their pitch")
+{
+    MainCallback callback2 = gMain.callback2;
+    u32 key, tune, length;
+
+    FlagClear(FLAG_SPEED_BOY_SPEED_LO);
+    FlagSet(FLAG_SPEED_BOY_SPEED_HI);
+    gMain.callback2 = BattleMainCB2;
+    FlagClear(FLAG_SPEED_BOY_ON);
+    PlayCry_ByMode(SPECIES_PIKACHU, 0, CRY_MODE_NORMAL);
+    key = gPokemonCrySong.tieKeyValue;
+    tune = gPokemonCrySong.tuneValue;
+    length = gPokemonCrySong.length;
+    StopCryAndClearCrySongs();
+
+    FlagSet(FLAG_SPEED_BOY_ON);
+    PlayCry_ByMode(SPECIES_PIKACHU, 0, CRY_MODE_NORMAL);
+    EXPECT_EQ(gPokemonCrySong.tieKeyValue, key);
+    EXPECT_EQ(gPokemonCrySong.tuneValue, tune);
+    EXPECT_EQ(gPokemonCrySong.length, length / 4);
+    StopCryAndClearCrySongs();
+    DestroyTask(FindTaskIdByFunc(Task_DuckBGMForPokemonCry));
+
+    FlagClear(FLAG_SPEED_BOY_ON);
     gMain.callback2 = callback2;
 }
 
