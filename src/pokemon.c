@@ -6992,6 +6992,13 @@ void UpdateMonPersonality(struct BoxPokemon *boxMon, u32 personality)
     SetBoxMonData(boxMon, MON_DATA_TERA_TYPE, &teraType);
 }
 
+// BPE Nuzlocke: the Frontier, Tents and Trainer Hill are optional fun. A loss or a
+// faint there has no effect on the run.
+bool32 IsNuzlockeExemptBattle(void)
+{
+    return (gBattleTypeFlags & (BATTLE_TYPE_FRONTIER | BATTLE_TYPE_TRAINER_HILL)) != 0;
+}
+
 bool32 IsMonDeadInNuzlocke(struct Pokemon *mon)
 {
     return FlagGet(FLAG_NUZLOCKE) && GetMonData(mon, MON_DATA_DEAD);

@@ -146,9 +146,15 @@ static void SaveVerdanturfTentChallenge(void)
     SaveGameFrontier();
 }
 
+// BPE Nuzlocke: the Tents are open during the run, and a risk-free prize would help it.
+static bool32 AreTentPrizesOff(void)
+{
+    return FlagGet(FLAG_NUZLOCKE) && !FlagGet(FLAG_SYS_GAME_CLEAR);
+}
+
 static void SetRandomVerdanturfTentPrize(void)
 {
-    gSaveBlock2Ptr->frontier.verdanturfTentPrize = sVerdanturfTentRewards[Random() % ARRAY_COUNT(sVerdanturfTentRewards)];
+    gSaveBlock2Ptr->frontier.verdanturfTentPrize = AreTentPrizesOff() ? ITEM_NONE : sVerdanturfTentRewards[Random() % ARRAY_COUNT(sVerdanturfTentRewards)];
 }
 
 static void GiveVerdanturfTentPrize(void)
@@ -199,7 +205,7 @@ static void SaveFallarborTentChallenge(void)
 
 static void SetRandomFallarborTentPrize(void)
 {
-    gSaveBlock2Ptr->frontier.fallarborTentPrize = sFallarborTentRewards[Random() % ARRAY_COUNT(sFallarborTentRewards)];
+    gSaveBlock2Ptr->frontier.fallarborTentPrize = AreTentPrizesOff() ? ITEM_NONE : sFallarborTentRewards[Random() % ARRAY_COUNT(sFallarborTentRewards)];
 }
 
 static void GiveFallarborTentPrize(void)
@@ -255,7 +261,7 @@ static void SaveSlateportTentChallenge(void)
 
 static void SetRandomSlateportTentPrize(void)
 {
-    gSaveBlock2Ptr->frontier.slateportTentPrize = sSlateportTentRewards[Random() % ARRAY_COUNT(sSlateportTentRewards)];
+    gSaveBlock2Ptr->frontier.slateportTentPrize = AreTentPrizesOff() ? ITEM_NONE : sSlateportTentRewards[Random() % ARRAY_COUNT(sSlateportTentRewards)];
 }
 
 static void GiveSlateportTentPrize(void)

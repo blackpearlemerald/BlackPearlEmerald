@@ -43,7 +43,17 @@ SlateportCity_BattleTentLobby_EventScript_WonChallenge::
 	slateporttent_save 0
 	playse SE_SAVE
 	waitse
+SlateportCity_BattleTentLobby_EventScript_NoPrize::
+	frontier_set FRONTIER_DATA_CHALLENGE_STATUS, 0
+	msgbox SlateportCity_BattleTentLobby_Text_NoPrizeInNuzlocke, MSGBOX_DEFAULT
+	closemessage
+	setvar VAR_TEMP_CHALLENGE_STATUS, 255
+	releaseall
+	end
+
 SlateportCity_BattleTentLobby_EventScript_GivePrize::
+	slateporttent_getprize
+	goto_if_eq VAR_RESULT, ITEM_NONE, SlateportCity_BattleTentLobby_EventScript_NoPrize
 	msgbox SlateportCity_BattleTentLobby_Text_AwardYouThisPrize, MSGBOX_DEFAULT
 	slateporttent_giveprize
 	switch VAR_RESULT
@@ -305,3 +315,6 @@ SlateportCity_BattleTentLobby_Text_NiceIfMoreSelection:
 	.string "Wouldn't it be nice if they had more of\n"
 	.string "a selection?$"
 
+SlateportCity_BattleTentLobby_Text_NoPrizeInNuzlocke:
+	.string "Nuzlocke challengers can win prizes\n"
+	.string "here after the HALL OF FAME.$"

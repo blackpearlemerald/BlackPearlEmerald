@@ -7609,7 +7609,7 @@ static bool8 GetBattleEntryEligibility(struct Pokemon *mon)
         return TRUE;
     default: // Battle Frontier
         species = GetMonData(mon, MON_DATA_SPECIES);
-        if (gSpeciesInfo[species].isFrontierBanned)
+        if (gSpeciesInfo[species].isFrontierBanned || IsMonDeadInNuzlocke(mon))
             return FALSE;
         return TRUE;
     }

@@ -5671,7 +5671,7 @@ enum Obedience GetAttackerObedienceForAction(void)
 
     if (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && GetBattlerPosition(gBattlerAttacker) == B_POSITION_PLAYER_RIGHT)
         return OBEYS;
-    if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER)
+    if (gBattleTypeFlags & (BATTLE_TYPE_FRONTIER | BATTLE_TYPE_TRAINER_HILL))
         return OBEYS;
     if (gBattleTypeFlags & BATTLE_TYPE_RECORDED)
         return OBEYS;
@@ -11137,7 +11137,7 @@ void SetValuesOnFaint(enum BattlerId battler)
 
     if (IsOnPlayerSide(battler))
     {
-        if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET)) // BPE Nuzlocke: fainted mons are marked dead
+        if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET) && !IsNuzlockeExemptBattle()) // BPE Nuzlocke: fainted mons are marked dead
         {
             bool8 dead = TRUE;
             SetMonData(GetBattlerMon(battler), MON_DATA_DEAD, &dead);

@@ -45,7 +45,17 @@ VerdanturfTown_BattleTentLobby_EventScript_WonChallenge::
 	playse SE_SAVE
 	waitse
 
+VerdanturfTown_BattleTentLobby_EventScript_NoPrize::
+	frontier_set FRONTIER_DATA_CHALLENGE_STATUS, 0
+	msgbox VerdanturfTown_BattleTentLobby_Text_NoPrizeInNuzlocke, MSGBOX_DEFAULT
+	closemessage
+	setvar VAR_TEMP_CHALLENGE_STATUS, 255
+	releaseall
+	end
+
 VerdanturfTown_BattleTentLobby_EventScript_GivePrize::
+	verdanturftent_getprize
+	goto_if_eq VAR_RESULT, ITEM_NONE, VerdanturfTown_BattleTentLobby_EventScript_NoPrize
 	msgbox VerdanturfTown_BattleTentLobby_Text_PresentYouWithPrize, MSGBOX_DEFAULT
 	verdanturftent_giveprize
 	switch VAR_RESULT
@@ -377,3 +387,7 @@ VerdanturfTown_BattleTentLobby_Text_ScottVisitRegularly:
 	.string "SCOTT: I visit here regularly in hopes\n"
 	.string "of seeing tough TRAINERS in action\l"
 	.string "in whatever the situation.$"
+
+VerdanturfTown_BattleTentLobby_Text_NoPrizeInNuzlocke:
+	.string "Nuzlocke challengers can win prizes\n"
+	.string "here after the HALL OF FAME.$"

@@ -947,6 +947,7 @@ enum Species SanitizeSpeciesId(enum Species species);
 bool32 IsSpeciesEnabled(enum Species species);
 enum PokemonCry GetCryIdBySpecies(enum Species species);
 enum Species GetSpeciesPreEvolution(enum Species species);
+bool32 IsNuzlockeExemptBattle(void);
 bool32 IsMonDeadInNuzlocke(struct Pokemon *mon);
 void HealPokemon(struct Pokemon *mon);
 void HealBoxPokemon(struct BoxPokemon *boxMon);

@@ -340,7 +340,10 @@ static bool8 CheckSilphScopeInPokemonTower(u16 mapGroup, u16 mapNum)
 void BattleSetup_StartWildBattle(void)
 {
     //gNuzlockeCannotCatch = HasWildPokmnOnThisRouteBeenSeen(GetCurrentRegionMapSectionId(), FALSE);
-    gNuzlockeCannotCatch = HasWildPokmnOnThisRouteBeenSeen(GetCurrentRegionMapSectionId(), TRUE);
+    if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE)
+        gNuzlockeCannotCatch = NUZLOCKE_ENCOUNTER_OPEN; // BPE: facilities never use up a route's encounter
+    else
+        gNuzlockeCannotCatch = HasWildPokmnOnThisRouteBeenSeen(GetCurrentRegionMapSectionId(), TRUE);
     if (GetSafariZoneFlag())
         DoSafariBattle();
     else if (CheckSilphScopeInPokemonTower(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum))

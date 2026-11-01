@@ -50,7 +50,7 @@ void HealPlayerParty(void)
                 bool8 dead = FALSE;
                 SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_DEAD, &dead);
             }
-            else
+            else if (GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_DEAD))
             {
                 continue;
             }

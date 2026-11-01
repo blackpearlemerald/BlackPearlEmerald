@@ -5456,7 +5456,7 @@ static void HandleEndTurn_BattleLost(void)
         {
             gBattleCommunication[MULTISTRING_CHOOSER] = 0;
             // BPE Nuzlocke: losing a battle fails the challenge (scripted early-rival losses excluded above)
-            if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET))
+            if (FlagGet(FLAG_NUZLOCKE) && FlagGet(FLAG_SYS_POKEDEX_GET) && !IsNuzlockeExemptBattle())
             {
                 gBattlescriptCurrInstr = BattleScript_LocalBattleLost;
                 gBattleMainFunc = BattleLostNuzlocke;

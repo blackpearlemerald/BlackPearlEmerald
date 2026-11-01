@@ -45,7 +45,17 @@ FallarborTown_BattleTentLobby_EventScript_WonChallenge::
 	playse SE_SAVE
 	waitse
 
+FallarborTown_BattleTentLobby_EventScript_NoPrize::
+	frontier_set FRONTIER_DATA_CHALLENGE_STATUS, 0
+	msgbox FallarborTown_BattleTentLobby_Text_NoPrizeInNuzlocke, MSGBOX_DEFAULT
+	closemessage
+	setvar VAR_TEMP_CHALLENGE_STATUS, 255
+	releaseall
+	end
+
 FallarborTown_BattleTentLobby_EventScript_GivePrize::
+	fallarbortent_getprize
+	goto_if_eq VAR_RESULT, ITEM_NONE, FallarborTown_BattleTentLobby_EventScript_NoPrize
 	msgbox FallarborTown_BattleTentLobby_Text_PresentYouWithPrize, MSGBOX_DEFAULT
 	fallarbortent_giveprize
 	switch VAR_RESULT
@@ -343,3 +353,6 @@ FallarborTown_BattleTentLobby_Text_ScottMakeChallenge:
 	.string "time with the likes of me, why not\l"
 	.string "make a challenge?$"
 
+FallarborTown_BattleTentLobby_Text_NoPrizeInNuzlocke:
+	.string "Nuzlocke challengers can win prizes\n"
+	.string "here after the HALL OF FAME.$"
