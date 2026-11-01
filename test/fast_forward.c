@@ -139,6 +139,23 @@ TEST("Panned battle sounds play at the fast forward tempo")
     gMain.callback2 = callback2;
 }
 
+TEST("A sound counts as playing before the sound engine first reads it")
+{
+    struct MusicPlayerInfo *player = gMPlayTable[gSongTable[SE_M_HARDEN].ms].info;
+    u32 ime = REG_IME;
+    bool32 playing;
+
+    // No VBlank here, as between two fast forward passes. A cry that reads as
+    // stopped now has its song data cleared, and the sound engine hangs on it.
+    REG_IME = 0;
+    m4aSongNumStart(SE_M_HARDEN);
+    playing = IsPokemonCryPlaying(player);
+    REG_IME = ime;
+
+    EXPECT(playing);
+    m4aMPlayStop(player);
+}
+
 TEST("The DMA queue reports half full before it can drop requests")
 {
     static const u32 sData = 0;

@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.2.8": {
+      "channel": "stable",
+      "changes": [
+        "Fixed the game freezing when your Pokémon comes out in battle with the Speed Boy on."
+      ]
+    },
     "2.2.7": {
       "channel": "stable",
       "changes": [

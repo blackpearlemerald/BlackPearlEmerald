@@ -1733,6 +1733,12 @@ bool32 IsPokemonCryPlaying(struct MusicPlayerInfo *mplayInfo)
 {
     struct MusicPlayerTrack *track = mplayInfo->tracks;
 
+    // BPE: a cry has no channel until the sound engine first reads it at VBlank.
+    // Fast forward can ask before then, and "not playing" clears its song data,
+    // which leaves the engine reading zeros and hangs the game in the interrupt.
+    if (mplayInfo != NULL && (track->flags & MPT_FLG_START))
+        return TRUE;
+
     if (track->chan && track->chan->track == track)
         return TRUE;
     else

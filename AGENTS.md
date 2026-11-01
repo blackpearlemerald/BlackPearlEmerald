@@ -843,6 +843,11 @@ too long just gets fewer passes in.
   set of passes that overruns a VBlank would otherwise lose that VBlank's work, and
   a hardware fade only ends in `TransferPlttBuffer`. `UpdateBlendRegisters` sets the
   weather's blend when a fade from black ends, since it can end in about 6 VBlanks.
+- `IsPokemonCryPlaying` counts a cry whose track still has `MPT_FLG_START`. A cry gets
+  its channel at the next VBlank, and a check on an extra pass before that would call
+  `ClearPokemonCrySongs` on data the sound engine is about to read, which hangs it
+  inside VBlankIntr. Watch for this pattern: logic that starts something at VBlank
+  and tests it the next pass. 2.2.7 froze on the first send-out because of it.
 - `UpdateHardwarePaletteFade` returns early once `hardwareFadeFinishing` is set. It is
   a 1-bit field, and a second step before VBlank flips it back and hangs the fade.
 - Tests: `make check TESTS=test/fast_forward.c`. To stress it, force 4x in `main.c`
