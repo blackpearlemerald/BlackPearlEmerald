@@ -61,6 +61,9 @@ static void LoadLinkMultiOpponentsData(void);
 static void TowerTryCloseLink(void);
 static void SetMultiPartnerGfx(void);
 static void SetTowerInterviewData(void);
+// BPE: friends' teams from record mixing are gone; that space holds rule set data.
+#define TOWER_RECORDS_IN_USE 0
+
 static void ValidateBattleTowerRecordChecksums(void);
 static void SaveCurrentWinStreak(void);
 static void ValidateApprenticesChecksums(void);
@@ -797,7 +800,7 @@ static bool8 ChooseSpecialBattleTowerTrainer(void)
         return FALSE;
 
     winStreak = GetCurrentBattleTowerWinStreak(lvlMode, battleMode);
-    for (i = 0; i < BATTLE_TOWER_RECORD_COUNT; i++)
+    for (i = 0; i < TOWER_RECORDS_IN_USE; i++)
     {
         u32 *record = (u32 *)(&gSaveBlock2Ptr->frontier.towerRecords[i]);
         u32 recordHasData = 0;
@@ -913,6 +916,11 @@ void PutNewBattleTowerRecord(struct EmeraldBattleTowerRecord *newRecordEm)
     u16 slotIds[6];
     s32 i, j, k;
     s32 slotsCount = 0;
+
+    // BPE: this space now holds rule set data.
+    if (TOWER_RECORDS_IN_USE == 0)
+        return;
+
     struct EmeraldBattleTowerRecord *newRecord = newRecordEm; // Needed to match.
 
     // Find a record slot of the same player and replace it.
@@ -1271,7 +1279,7 @@ static void LoadMultiPartnerCandidatesData(void)
     }
 
     r10 = 0;
-    for (i = 0; i < BATTLE_TOWER_RECORD_COUNT; i++)
+    for (i = 0; i < TOWER_RECORDS_IN_USE; i++)
     {
         u32 *record = (u32 *)(&gSaveBlock2Ptr->frontier.towerRecords[i]);
         u32 recordHasData = 0;
@@ -1599,7 +1607,7 @@ static void ValidateBattleTowerRecordChecksums(void)
     if (gSaveBlock2Ptr->frontier.towerPlayer.checksum != checksum)
         ClearBattleTowerRecord(&gSaveBlock2Ptr->frontier.towerPlayer);
 
-    for (i = 0; i < BATTLE_TOWER_RECORD_COUNT; i++)
+    for (i = 0; i < TOWER_RECORDS_IN_USE; i++)
     {
         record = (u32 *)(&gSaveBlock2Ptr->frontier.towerRecords[i]);
         checksum = 0;
@@ -2039,6 +2047,9 @@ bool32 ValidateBattleTowerRecord(u8 recordId) // unused
     u32 *record = (u32 *)(&gSaveBlock2Ptr->frontier.towerRecords[recordId]);
     u32 checksum = 0;
     u32 hasData = 0;
+
+    if (TOWER_RECORDS_IN_USE == 0)
+        return FALSE;
     for (i = 0; i < offsetof(struct EmeraldBattleTowerRecord, checksum) / sizeof(u32); i++)
     {
         checksum += record[i];

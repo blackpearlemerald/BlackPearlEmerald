@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "agb_flash.h"
 #include "gba/flash_internal.h"
 #include "fieldmap.h"
@@ -467,6 +468,7 @@ u8 LoadGameSave(u8 saveType)
             CopyPartyAndObjectsFromSave();
             // Saves from before 2.1.7 have no extra bag slots yet.
             RepairEmptyBagSlots();
+            ResetFrontierRuleDataOnce();
         }
         // BPE gives the National Pokédex with the regular Pokédex. Upgrade
         // saves created before this behavior was introduced.

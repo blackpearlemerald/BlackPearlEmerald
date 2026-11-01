@@ -11,6 +11,7 @@
 #include "fpmath.h"
 #include "metaprogram.h"
 #include "constants/global.h"
+#include "constants/frontier_rules.h"
 #include "constants/flags.h"
 #include "constants/vars.h"
 #include "constants/species.h"
@@ -452,10 +453,28 @@ struct BattleDomeTrainer
 #define DOME_TOURNAMENT_TRAINERS_COUNT 16
 #define BATTLE_TOWER_RECORD_COUNT 5
 
+// BPE: battle facility rule sets. See src/frontier_rules.c.
+struct FrontierRuleData
+{
+    u8 bestStreaks[FRONTIER_RULE_FACILITY_COUNT][FRONTIER_RULE_MODE_COUNT][FRONTIER_TEAM_SIZE_COUNT][FRONTIER_GEN_COUNT][FRONTIER_TIER_COUNT];
+    u16 currentRule[FRONTIER_RULE_FACILITY_COUNT][FRONTIER_RULE_MODE_COUNT];
+    u16 currentStreak[FRONTIER_RULE_FACILITY_COUNT][FRONTIER_RULE_MODE_COUNT];
+    u16 fullDexStreaks[13][FRONTIER_LVL_MODE_COUNT][2]; // Every facility mode: current, then best
+    u32 fullDexHillTimes[NUM_TRAINER_HILL_MODES];
+    struct RentalMon extraRentalMons[FRONTIER_PARTY_SIZE * 2]; // 6v6 needs 12 rentals
+    u16 extraSelectedMons[2]; // 6v6 needs 6 selected Pokémon
+    u16 extraDomeMonIds[DOME_TOURNAMENT_TRAINERS_COUNT][FRONTIER_PARTY_SIZE];
+    struct DomeMonData extraDomePlayerPartyData[FRONTIER_PARTY_SIZE];
+};
+
 struct BattleFrontier
 {
     /*0x64C*/ struct EmeraldBattleTowerRecord towerPlayer;
-    /*0x738*/ struct EmeraldBattleTowerRecord towerRecords[BATTLE_TOWER_RECORD_COUNT]; // From record mixing.
+    /*0x738*/ union
+    {
+        struct EmeraldBattleTowerRecord towerRecords[BATTLE_TOWER_RECORD_COUNT]; // BPE: no longer used, see ruleData
+        struct FrontierRuleData ruleData;
+    };
     /*0xBEB*/ struct BattleTowerInterview towerInterview;
 #if FREE_BATTLE_TOWER_E_READER == FALSE
     /*0xBEC*/ struct BattleTowerEReaderTrainer ereaderTrainer;  //188 bytes
@@ -492,7 +511,7 @@ struct BattleFrontier
     /*0xD1C*/ u16 domeTotalChampionships[2][FRONTIER_LVL_MODE_COUNT];
     /*0xD24*/ struct BattleDomeTrainer domeTrainers[DOME_TOURNAMENT_TRAINERS_COUNT];
     /*0xD64*/ u16 domeMonIds[DOME_TOURNAMENT_TRAINERS_COUNT][FRONTIER_PARTY_SIZE];
-    /*0xDC4*/ u16 unused_DC4;
+    /*0xDC4*/ u16 activeRule; // BPE: the current challenge's rule set, see FRONTIER_RULE()
     /*0xDC6*/ u16 palacePrize;
     /*0xDC8*/ u16 palaceWinStreaks[2][FRONTIER_LVL_MODE_COUNT];
     /*0xDD0*/ u16 palaceRecordWinStreaks[2][FRONTIER_LVL_MODE_COUNT];

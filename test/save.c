@@ -595,6 +595,7 @@ static void StartTestGame(void)
     ClearSav1();
     ClearSav2();
     ClearSav3();
+    FlagSet(FLAG_FRONTIER_RULE_DATA_READY); // Or loading clears that part of SaveBlock2
     ResetPokemonStorageSystem();
     // ZeroMonData keeps an HP-lost value from the slot's previous Pokémon,
     // which LoadPlayerParty then resets; start from truly empty slots so a
@@ -961,6 +962,7 @@ static void Change_NewGame(void)
     ResetPokemonStorageSystem();
     memset(gParties[B_TRAINER_PLAYER], 0, sizeof(gParties[B_TRAINER_PLAYER]));
     gPartiesCount[B_TRAINER_PLAYER] = 0;
+    FlagSet(FLAG_FRONTIER_RULE_DATA_READY);
     Save_StartNewGameIdentity();
     GiveRandomPartyMon();
     for (i = 0; i < 3; i++)

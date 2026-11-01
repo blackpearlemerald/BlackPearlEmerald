@@ -101,7 +101,7 @@
 #define FLAG_SPEED_BOY_SPEED_HI  0x49 // BPE: formerly unused
 #define FLAG_RECEIVED_SPEED_BOY  0x4A // BPE: formerly unused. The Speed Boy has been handed out.
 #define FLAG_NUZLOCKE_DEAD_REPAIRED  0x4B // BPE: formerly unused. Older saves' fainted party has been marked dead.
-#define FLAG_UNUSED_0x04C    0x4C // Unused Flag
+#define FLAG_FRONTIER_RULE_DATA_READY  0x4C // BPE: formerly unused. Old record mixing teams have been cleared.
 #define FLAG_UNUSED_0x04D    0x4D // Unused Flag
 #define FLAG_UNUSED_0x04E    0x4E // Unused Flag
 #define FLAG_UNUSED_0x04F    0x4F // Unused Flag

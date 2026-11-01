@@ -536,6 +536,17 @@ A battle theme needs `[` and `]` markers in its first MIDI track, or it stops fo
 ### Battle script macros
 `attackstring` → `printattackstring` (and related renames) in `asm/macros/battle_script.inc`.
 
+### Frontier rule sets
+
+A battle facility challenge runs under a rule set: Vanilla, Full Dex or Smogon, with a
+generation, tier and team size. `FRONTIER_RULE()` packs one into a u16, and
+`frontier.activeRule` holds the current challenge's. `src/frontier_rules.c` owns the
+streak storage, `struct FrontierRuleData` in `include/global.h`. It shares a union with
+`towerRecords`, so record mixing Tower teams are gone: `TOWER_RECORDS_IN_USE` is 0 and
+nothing may read that space as records. Older saves' copy is cleared once on load
+(`FLAG_FRONTIER_RULE_DATA_READY`). The save layout and EWRAM use did not change.
+Tests: `make check TESTS=test/frontier_rules.c`.
+
 ### Multi battles
 
 `multi_do` calls `AreMultiPartiesFullTeams` before the battle starts and reads its

@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "clock.h"
 #include "new_game.h"
 #include "random.h"
@@ -240,6 +241,7 @@ void NewGameInitData(void)
     ResetDexNav();
     ClearFollowerNPCData();
     FlagSet(FLAG_SYS_B_DASH); // BPE: Running Shoes from the first step, not from Mom
+    InitFrontierRuleData();
     nuzlockePrev ? FlagSet(FLAG_NUZLOCKE) : FlagClear(FLAG_NUZLOCKE); // BPE: restore Nuzlocke mode choice
     Randomizer_SaveSettings(&randomizer); // BPE: restore the randomizer choice
 }
