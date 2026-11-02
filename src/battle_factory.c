@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "battle.h"
 #include "battle_factory.h"
 #include "battle_factory_screen.h"
@@ -136,9 +138,13 @@ static void InitFactoryChallenge(void)
     gSaveBlock2Ptr->frontier.curChallengeBattleNum = 0;
     gSaveBlock2Ptr->frontier.challengePaused = FALSE;
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
-    if (!(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]))
+    if (FrontierUsesSetPools())
     {
-        gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] = 0;
+        StartFrontierRuleStreak(FRONTIER_FACILITY_FACTORY, battleMode);
+    }
+    else if (!(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]))
+    {
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) = 0;
         gSaveBlock2Ptr->frontier.factoryRentsCount[battleMode][lvlMode] = 0;
     }
 
@@ -160,7 +166,7 @@ static void GetBattleFactoryData(void)
     switch (gSpecialVar_0x8005)
     {
     case FACTORY_DATA_WIN_STREAK:
-        gSpecialVar_Result = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode];
+        gSpecialVar_Result = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode);
         break;
     case FACTORY_DATA_WIN_STREAK_ACTIVE:
         gSpecialVar_Result = ((gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]) != 0);
@@ -179,10 +185,15 @@ static void SetBattleFactoryData(void)
     switch (gSpecialVar_0x8005)
     {
     case FACTORY_DATA_WIN_STREAK:
-        gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] = gSpecialVar_0x8006;
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) = gSpecialVar_0x8006;
         break;
     case FACTORY_DATA_WIN_STREAK_ACTIVE:
-        if (gSpecialVar_0x8006)
+        if (FrontierUsesSetPools())
+        {
+            if (!gSpecialVar_0x8006)
+                *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) = 0;
+        }
+        else if (gSpecialVar_0x8006)
             gSaveBlock2Ptr->frontier.winStreakActiveFlags |= sWinStreakFlags[battleMode][lvlMode];
         else
             gSaveBlock2Ptr->frontier.winStreakActiveFlags &= sWinStreakMasks[battleMode][lvlMode];
@@ -241,7 +252,7 @@ static void GenerateOpponentMons(void)
     u16 trainerId = 0;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     u32 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    u32 winStreak = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode];
+    u32 winStreak = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode);
     u32 challengeNum = winStreak / FRONTIER_STAGES_PER_CHALLENGE;
     gFacilityTrainers = gBattleFrontierTrainers;
 
@@ -279,7 +290,7 @@ static void GenerateOpponentMons(void)
             continue;
 
         // "High tier" Pokémon are only allowed on open level mode
-        if (lvlMode == FRONTIER_LVL_50 && monId > FRONTIER_MONS_HIGH_TIER)
+        if (!FrontierUsesSetPools() && lvlMode == FRONTIER_LVL_50 && monId > FRONTIER_MONS_HIGH_TIER)
             continue;
 
         // Ensure this species hasn't already been chosen for the opponent
@@ -294,7 +305,7 @@ static void GenerateOpponentMons(void)
         // Ensure held items don't repeat on the opponent's team
         for (k = firstMonId; k < firstMonId + i; k++)
         {
-            if (heldItems[k] != ITEM_NONE && heldItems[k] == gFacilityTrainerMons[monId].heldItem)
+            if (IsFrontierItemClauseOn() && heldItems[k] != ITEM_NONE && heldItems[k] == gFacilityTrainerMons[monId].heldItem)
                 break;
         }
         if (k != firstMonId + i)
@@ -318,7 +329,7 @@ static void SetRentalsToOpponentParty(void)
     u8 i;
 
     if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_TENT)
-        gFacilityTrainerMons = gBattleFrontierMons;
+        gFacilityTrainerMons = GetFrontierMonTable();
     else
         gFacilityTrainerMons = gSlateportBattleTentMons;
 
@@ -346,7 +357,7 @@ static void SetPlayerAndOpponentParties(void)
     }
     else
     {
-        gFacilityTrainerMons = gBattleFrontierMons;
+        gFacilityTrainerMons = GetFrontierMonTable();
         if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_50)
             monLevel = FRONTIER_MAX_LEVEL_OPEN;
         else
@@ -404,13 +415,13 @@ static void GenerateInitialRentalMons(void)
     }
     lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+    challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
     if (VarGet(VAR_FRONTIER_BATTLE_MODE) == FRONTIER_MODE_DOUBLES)
         factoryBattleMode = FRONTIER_MODE_DOUBLES;
     else
         factoryBattleMode = FRONTIER_MODE_SINGLES;
 
-    gFacilityTrainerMons = gBattleFrontierMons;
+    gFacilityTrainerMons = GetFrontierMonTable();
     if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_50)
     {
         factoryLvlMode = FRONTIER_LVL_OPEN;
@@ -455,7 +466,7 @@ static void GenerateInitialRentalMons(void)
         // Cannot have two same held items.
         for (j = firstMonId; j < firstMonId + i; j++)
         {
-            if (heldItems[j] != ITEM_NONE && heldItems[j] == gFacilityTrainerMons[monId].heldItem)
+            if (IsFrontierItemClauseOn() && heldItems[j] != ITEM_NONE && heldItems[j] == gFacilityTrainerMons[monId].heldItem)
             {
                 if (gFacilityTrainerMons[monId].species == currSpecies)
                     currSpecies = SPECIES_NONE;
@@ -483,7 +494,7 @@ static void GetOpponentMostCommonMonType(void)
     u8 typeCounts[NUMBER_OF_MON_TYPES];
     u8 mostCommonTypes[2];
 
-    gFacilityTrainerMons = gBattleFrontierMons;
+    gFacilityTrainerMons = GetFrontierMonTable();
 
     // Count the number of times each type occurs in the opponent's party.
     for (i = TYPE_NORMAL; i < NUMBER_OF_MON_TYPES; i++)
@@ -533,7 +544,7 @@ static void GetOpponentBattleStyle(void)
     u8 stylePoints[FACTORY_NUM_STYLES];
 
     count = 0;
-    gFacilityTrainerMons = gBattleFrontierMons;
+    gFacilityTrainerMons = GetFrontierMonTable();
     for (i = 0; i < FACTORY_NUM_STYLES; i++)
         stylePoints[i] = 0;
 
@@ -611,7 +622,7 @@ static void RestorePlayerPartyHeldItems(void)
     u8 i;
 
     if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_TENT)
-        gFacilityTrainerMons = gBattleFrontierMons;
+        gFacilityTrainerMons = GetFrontierMonTable();
     else
         gFacilityTrainerMons = gSlateportBattleTentMons;
 
@@ -635,6 +646,9 @@ u8 GetFactoryMonFixedIV(u8 challengeNum, bool8 isLastBattle)
 {
     u8 ivSet;
     bool8 useHigherIV = isLastBattle ? TRUE : FALSE;
+
+    if (FrontierUsesSetPools())
+        return MAX_PER_STAT_IVS;
 
 // The Factory has an out-of-bounds access when generating the rental draft for round 9 (challengeNum==8),
 // or the "elevated" rentals from round 8 (challengeNum+1==8)
@@ -662,7 +676,7 @@ void FillFactoryBrainParty(void)
 
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    u8 challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+    u8 challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
     fixedIV = GetFactoryMonFixedIV(challengeNum + 2, FALSE);
     monLevel = SetFacilityPtrsGetLevel();
     i = 0;
@@ -674,7 +688,7 @@ void FillFactoryBrainParty(void)
 
         if (gFacilityTrainerMons[monId].species == SPECIES_UNOWN)
             continue;
-        if (monLevel == FRONTIER_MAX_LEVEL_50 && monId > FRONTIER_MONS_HIGH_TIER)
+        if (!FrontierUsesSetPools() && monLevel == FRONTIER_MAX_LEVEL_50 && monId > FRONTIER_MONS_HIGH_TIER)
             continue;
 
         for (j = 0; j < (int)ARRAY_COUNT(gSaveBlock2Ptr->frontier.rentalMons); j++)
@@ -695,7 +709,7 @@ void FillFactoryBrainParty(void)
 
         for (k = 0; k < i; k++)
         {
-            if (heldItems[k] != ITEM_NONE && heldItems[k] == gFacilityTrainerMons[monId].heldItem)
+            if (IsFrontierItemClauseOn() && heldItems[k] != ITEM_NONE && heldItems[k] == gFacilityTrainerMons[monId].heldItem)
                 break;
         }
         if (k != i)
@@ -714,6 +728,9 @@ static u16 GetFactoryMonId(enum FrontierLevelMode lvlMode, u8 challengeNum, bool
 {
     u16 numMons, monId;
     u16 adder; // Used to skip past early mons for open level
+
+    if (FrontierUsesSetPools())
+        return GetRandomFrontierSetId();
 
     if (lvlMode == FRONTIER_LVL_50)
         adder = 0;
@@ -781,7 +798,7 @@ u64 GetAiScriptsInBattleFactory(void)
     else
     {
         int battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-        int challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+        int challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
 
         if (TRAINER_BATTLE_PARAM.opponentA == TRAINER_FRONTIER_BRAIN)
             return AI_FLAG_CHECK_BAD_MOVE | AI_FLAG_TRY_TO_FAINT | AI_FLAG_CHECK_VIABILITY;
@@ -815,7 +832,7 @@ static void FillFactoryFrontierTrainerParty(u16 trainerId, u8 firstMonId)
     #ifdef BUGFIX
         enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
         u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-        u8 challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+        u8 challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
     #else
         enum FrontierLevelMode UNUSED lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
         u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);

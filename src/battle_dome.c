@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "battle_dome.h"
 #include "battle.h"
 #include "battle_ai_util.h"
@@ -1767,8 +1769,10 @@ static void InitDomeChallenge(void)
     gSaveBlock2Ptr->frontier.curChallengeBattleNum = 0;
     gSaveBlock2Ptr->frontier.challengePaused = FALSE;
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
-    if (!(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]))
-        gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode] = 0;
+    if (FrontierUsesSetPools())
+        StartFrontierRuleStreak(FRONTIER_FACILITY_DOME, battleMode);
+    else if (!(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]))
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode) = 0;
 
     SetDynamicWarp(0, gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum, WARP_ID_NONE);
     TRAINER_BATTLE_PARAM.opponentA = 0;
@@ -1782,10 +1786,13 @@ static void GetDomeData(void)
     switch (gSpecialVar_0x8005)
     {
     case DOME_DATA_WIN_STREAK:
-        gSpecialVar_Result = gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode];
+        gSpecialVar_Result = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode);
         break;
     case DOME_DATA_WIN_STREAK_ACTIVE:
-        gSpecialVar_Result = ((gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]) != 0);
+        if (FrontierUsesSetPools())
+            gSpecialVar_Result = (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode) != 0);
+        else
+            gSpecialVar_Result = ((gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]) != 0);
         break;
     case DOME_DATA_ATTEMPTED_SINGLES_50:
         gSpecialVar_Result = gSaveBlock2Ptr->frontier.domeAttemptedSingles50;
@@ -1850,10 +1857,15 @@ static void SetDomeData(void)
     switch (gSpecialVar_0x8005)
     {
     case DOME_DATA_WIN_STREAK:
-        gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode] = gSpecialVar_0x8006;
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode) = gSpecialVar_0x8006;
         break;
     case DOME_DATA_WIN_STREAK_ACTIVE:
-        if (gSpecialVar_0x8006)
+        if (FrontierUsesSetPools())
+        {
+            if (!gSpecialVar_0x8006)
+                *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode) = 0;
+        }
+        else if (gSpecialVar_0x8006)
             gSaveBlock2Ptr->frontier.winStreakActiveFlags |= sWinStreakFlags[battleMode][lvlMode];
         else
             gSaveBlock2Ptr->frontier.winStreakActiveFlags &= sWinStreakMasks[battleMode][lvlMode];
@@ -1989,7 +2001,7 @@ static void InitDomeTrainers(void)
                     if (alreadySelectedMonId == monId
                         || species[0] == gFacilityTrainerMons[monId].species
                         || species[1] == gFacilityTrainerMons[monId].species
-                        || gFacilityTrainerMons[alreadySelectedMonId].heldItem == gFacilityTrainerMons[monId].heldItem)
+                        || (IsFrontierItemClauseOn() && gFacilityTrainerMons[alreadySelectedMonId].heldItem == gFacilityTrainerMons[monId].heldItem))
                         break;
                 }
             } while (k != j);
@@ -2504,6 +2516,9 @@ static u8 GetDomeTrainerMonIvs(u16 trainerId)
 {
     u8 fixedIv;
 
+    if (FrontierUsesSetPools())
+        return MAX_PER_STAT_IVS;
+
     if (trainerId <= FRONTIER_TRAINER_JILL)         // 0 - 99
         fixedIv = 3;
     else if (trainerId <= FRONTIER_TRAINER_CHLOE)   // 100 - 119
@@ -2594,13 +2609,15 @@ static void IncrementDomeStreaks(void)
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
 
-    if (gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode] < 999)
-        gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode]++;
+    if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode) < 999)
+        (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode))++;
     if (gSaveBlock2Ptr->frontier.domeTotalChampionships[battleMode][lvlMode] < 999)
         gSaveBlock2Ptr->frontier.domeTotalChampionships[battleMode][lvlMode]++;
 
-    if (gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode] > gSaveBlock2Ptr->frontier.domeRecordWinStreaks[battleMode][lvlMode])
-        gSaveBlock2Ptr->frontier.domeRecordWinStreaks[battleMode][lvlMode] = gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode];
+    if (FrontierUsesSetPools())
+        RecordFrontierRuleStreak(FRONTIER_FACILITY_DOME, battleMode, lvlMode);
+    else if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode) > gSaveBlock2Ptr->frontier.domeRecordWinStreaks[battleMode][lvlMode])
+        gSaveBlock2Ptr->frontier.domeRecordWinStreaks[battleMode][lvlMode] = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode);
 }
 
 // For showing the opponent info card of the upcoming trainer
@@ -5632,7 +5649,7 @@ static void VblankCb_TourneyTree(void)
 
 static void SetFacilityTrainerAndMonPtrs(void)
 {
-    gFacilityTrainerMons = gBattleFrontierMons;
+    gFacilityTrainerMons = GetFrontierMonTable();
     gFacilityTrainers = gBattleFrontierTrainers;
 }
 
@@ -5764,7 +5781,7 @@ static void InitRandomTourneyTreeResults(void)
                     if (alreadySelectedMonId == monId
                         || species[0] == gFacilityTrainerMons[monId].species
                         || species[1] == gFacilityTrainerMons[monId].species
-                        || gFacilityTrainerMons[alreadySelectedMonId].heldItem == gFacilityTrainerMons[monId].heldItem)
+                        || (IsFrontierItemClauseOn() && gFacilityTrainerMons[alreadySelectedMonId].heldItem == gFacilityTrainerMons[monId].heldItem))
                         break;
                 }
             } while (k != j);

@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "main.h"
 #include "battle.h"
 #include "battle_main.h"
@@ -58,6 +60,7 @@ static void HandleFacilityTrainerBattleEnd(void)
         break;
     }
 
+    RestoreFrontierBattleLevels();
     SetMainCallback2(CB2_ReturnToFieldContinueScriptPlayMapMusic);
 }
 
@@ -74,6 +77,9 @@ static void Task_StartBattleAfterTransition(u8 taskId)
 static void DoFacilityTrainerBattleInternal(u8 facility)
 {
     gBattleScripting.specialTrainerBattleType = facility;
+
+    if (facility == FACILITY_BATTLE_TOWER || facility == FACILITY_BATTLE_DOME || facility == FACILITY_BATTLE_FACTORY)
+        RaiseFrontierBattleLevels();
 
     switch (facility)
     {
@@ -259,11 +265,11 @@ static void FillTrainerParty(u16 trainerId, enum BattleTrainer trainer, u8 monCo
     otID = Random32();
     while (i != monCount)
     {
-        u16 monId = monSet[Random() % bfMonCount];
+        u16 monId = FrontierUsesSetPools() ? GetRandomFrontierSetId() : monSet[Random() % bfMonCount];
 
         // "High tier" Pokémon are only allowed on open level mode
         // 20 is not a possible value for level here
-        if ((level == FRONTIER_MAX_LEVEL_50 || level == 20) && monId > FRONTIER_MONS_HIGH_TIER)
+        if (!FrontierUsesSetPools() && (level == FRONTIER_MAX_LEVEL_50 || level == 20) && monId > FRONTIER_MONS_HIGH_TIER)
             continue;
 
         // Ensure this Pokémon species isn't a duplicate.
@@ -278,7 +284,8 @@ static void FillTrainerParty(u16 trainerId, enum BattleTrainer trainer, u8 monCo
         // Ensure this Pokemon's held item isn't a duplicate.
         for (j = 0; j < i; j++)
         {
-            if (GetMonData(&gParties[trainer][j], MON_DATA_HELD_ITEM) != ITEM_NONE
+            if (IsFrontierItemClauseOn()
+             && GetMonData(&gParties[trainer][j], MON_DATA_HELD_ITEM) != ITEM_NONE
              && GetMonData(&gParties[trainer][j], MON_DATA_HELD_ITEM) == gFacilityTrainerMons[monId].heldItem)
                 break;
         }
@@ -329,7 +336,7 @@ void CreateFacilityMon(const struct TrainerMon *fmon, u16 level, u8 fixedIV, u32
     for (j = 0; j < MAX_MON_MOVES; j++)
     {
         move = fmon->moves[j];
-        if (flags & FLAG_FRONTIER_MON_FACTORY && move == MOVE_RETURN)
+        if (flags & FLAG_FRONTIER_MON_FACTORY && move == MOVE_RETURN && !FrontierUsesSetPools())
             move = MOVE_FRUSTRATION;
 
         SetMonMoveSlot(dst, move, j);

@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "battle.h"
 #include "battle_anim.h"
 #include "battle_arena.h"
@@ -9854,6 +9855,8 @@ bool32 IsSleepClauseEnabled(void)
     if (B_SLEEP_CLAUSE)
         return TRUE;
     if (FlagGet(B_FLAG_SLEEP_CLAUSE))
+        return TRUE;
+    if (IsFrontierSleepClauseOn())
         return TRUE;
     return FALSE;
 }

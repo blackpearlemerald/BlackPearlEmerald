@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "battle.h"
 #include "battle_factory_screen.h"
 #include "battle_factory.h"
@@ -1715,10 +1716,10 @@ static void CreateFrontierFactorySelectableMons(u8 firstMonId)
     u32 otId = 0;
     u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
-    u8 challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / 7;
+    u8 challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) / 7;
     u8 rentalRank = 0;
 
-    gFacilityTrainerMons = gBattleFrontierMons;
+    gFacilityTrainerMons = GetFrontierMonTable();
     if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_50)
         level = FRONTIER_MAX_LEVEL_OPEN;
     else

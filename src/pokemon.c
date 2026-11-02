@@ -1377,7 +1377,8 @@ void CalculateMonStats(struct Pokemon *mon)
     s32 currentHP = GetMonData(mon, MON_DATA_HP);
     enum Species species = GetMonData(mon, MON_DATA_SPECIES);
     u8 friendship = GetMonData(mon, MON_DATA_FRIENDSHIP);
-    s32 level = GetLevelFromMonExp(mon);
+    // BPE: Smogon rule sets raise everyone to Level 100 for the length of a battle.
+    s32 level = FlagGet(FLAG_FRONTIER_LEVEL_RAISED) ? MAX_LEVEL : GetLevelFromMonExp(mon);
     s32 newMaxHP;
 
     u8 nature = GetMonData(mon, MON_DATA_HIDDEN_NATURE);

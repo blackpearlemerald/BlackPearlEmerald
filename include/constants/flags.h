@@ -1659,7 +1659,8 @@
 #define FLAG_SAFE_FOLLOWER_MOVEMENT             (SPECIAL_FLAGS_START + 0x5) // When set, applymovement does not put the follower inside a pokeball
                                                                             // Also, scripted movements on the player will move follower(s), too
 #define FLAG_DEXNAV_SEARCHING                   (SPECIAL_FLAGS_START + 0x6) // BPE: a DexNav search is running. RAM only, so a save never holds a stale search.
-// FLAG_SPECIAL_FLAG_0x4007 - 0x407F also exist and are unused
+#define FLAG_FRONTIER_LEVEL_RAISED              (SPECIAL_FLAGS_START + 0x7) // BPE: a Smogon rule set battle is running. RAM only, so a save never holds raised levels.
+// FLAG_SPECIAL_FLAG_0x4008 - 0x407F also exist and are unused
 #define SPECIAL_FLAGS_END                       (SPECIAL_FLAGS_START + 0x7F)
 #define NUM_SPECIAL_FLAGS                       (SPECIAL_FLAGS_END - SPECIAL_FLAGS_START + 1)
 

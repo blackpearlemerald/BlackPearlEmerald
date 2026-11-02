@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "malloc.h"
 #include "battle.h"
 #include "battle_anim.h"
@@ -7609,7 +7610,9 @@ static bool8 GetBattleEntryEligibility(struct Pokemon *mon)
         return TRUE;
     default: // Battle Frontier
         species = GetMonData(mon, MON_DATA_SPECIES);
-        if (gSpeciesInfo[species].isFrontierBanned || IsMonDeadInNuzlocke(mon))
+        if (IsMonDeadInNuzlocke(mon) || !IsMonLegalForFrontierRule(mon, NULL))
+            return FALSE;
+        if (gSpeciesInfo[species].isFrontierBanned && !IsFrontierSmogonRule())
             return FALSE;
         return TRUE;
     }
@@ -7645,7 +7648,7 @@ static u8 CheckBattleEntriesAndGetMessage(void)
         {
             if (species == GetMonData(&party[order[j] - 1], MON_DATA_SPECIES))
                 return PARTY_MSG_MONS_CANT_BE_SAME;
-            if (item != ITEM_NONE && item == GetMonData(&party[order[j] - 1], MON_DATA_HELD_ITEM))
+            if (IsFrontierItemClauseOn() && item != ITEM_NONE && item == GetMonData(&party[order[j] - 1], MON_DATA_HELD_ITEM))
                 return PARTY_MSG_NO_SAME_HOLD_ITEMS;
         }
     }

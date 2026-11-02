@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "frontier_util.h"
 #include "easy_chat.h"
 #include "event_data.h"
@@ -1907,15 +1909,15 @@ u32 GetCurrentFacilityWinStreak(void)
     switch (facility)
     {
     case FRONTIER_FACILITY_TOWER:
-        return gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode];
+        return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode);
     case FRONTIER_FACILITY_DOME:
-        return gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode];
+        return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode);
     case FRONTIER_FACILITY_PALACE:
         return gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode];
     case FRONTIER_FACILITY_ARENA:
         return gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode];
     case FRONTIER_FACILITY_FACTORY:
-        return gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode];
+        return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode);
     case FRONTIER_FACILITY_PIKE:
         return gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode];
     case FRONTIER_FACILITY_PYRAMID:
@@ -2052,7 +2054,7 @@ static void AppendIfValid(enum Species species, u16 heldItem, u16 hp, enum Front
         return;
     if (hp == 0 && FlagGet(FLAG_NUZLOCKE)) // BPE Nuzlocke: dead Pokémon can't enter
         return;
-    if (gSpeciesInfo[species].isFrontierBanned)
+    if (gSpeciesInfo[species].isFrontierBanned && !IsFrontierSmogonRule())
         return;
     if (lvlMode == FRONTIER_LVL_50 && monLevel > FRONTIER_MAX_LEVEL_50)
         return;
@@ -2062,7 +2064,7 @@ static void AppendIfValid(enum Species species, u16 heldItem, u16 hp, enum Front
     if (i != *count)
         return;
 
-    if (heldItem != 0)
+    if (heldItem != 0 && IsFrontierItemClauseOn())
     {
         for (i = 0; i < *count && itemsArray[i] != heldItem; i++)
             ;
@@ -2124,7 +2126,7 @@ static void CheckPartyIneligibility(void)
                 if (heldItem == ITEM_NONE)
                     AppendIfValid(species, heldItem, hp, gSpecialVar_Result, level, speciesArray, itemArray, &numEligibleMons);
             }
-            else
+            else if (IsMonLegalForFrontierRule(&gParties[B_TRAINER_PLAYER][monId], NULL))
             {
                 AppendIfValid(species, heldItem, hp, gSpecialVar_Result, level, speciesArray, itemArray, &numEligibleMons);
             }
@@ -2217,21 +2219,23 @@ static void IncrementWinStreak(void)
     switch (facility)
     {
     case FRONTIER_FACILITY_TOWER:
-        if (gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] < MAX_STREAK)
+        if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) < MAX_STREAK)
         {
-            gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode]++;
+            (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode))++;
             if (battleMode == FRONTIER_MODE_SINGLES)
             {
-                SetGameStat(GAME_STAT_BATTLE_TOWER_SINGLES_STREAK, gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode]);
-                gSaveBlock2Ptr->frontier.towerSinglesStreak = gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode];
+                SetGameStat(GAME_STAT_BATTLE_TOWER_SINGLES_STREAK, *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode));
+                gSaveBlock2Ptr->frontier.towerSinglesStreak = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode);
             }
         }
+        RecordFrontierRuleStreak(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_DOME:
-        if (gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode] < MAX_STREAK)
-            gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode]++;
+        if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode) < MAX_STREAK)
+            (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode))++;
         if (gSaveBlock2Ptr->frontier.domeTotalChampionships[battleMode][lvlMode] < MAX_STREAK)
             gSaveBlock2Ptr->frontier.domeTotalChampionships[battleMode][lvlMode]++;
+        RecordFrontierRuleStreak(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_PALACE:
         if (gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode] < MAX_STREAK)
@@ -2242,8 +2246,9 @@ static void IncrementWinStreak(void)
             gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode]++;
         break;
     case FRONTIER_FACILITY_FACTORY:
-        if (gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] < MAX_STREAK)
-            gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode]++;
+        if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) < MAX_STREAK)
+            (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode))++;
+        RecordFrontierRuleStreak(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_PIKE:
         if (gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode] < MAX_STREAK)
@@ -2796,6 +2801,9 @@ u8 GetFrontierTrainerFixedIvs(u16 trainerId)
 {
     u8 fixedIv;
 
+    if (FrontierUsesSetPools())
+        return MAX_PER_STAT_IVS;
+
     if (trainerId <= FRONTIER_TRAINER_JILL)         // 0 - 99
         fixedIv = 3;
     else if (trainerId <= FRONTIER_TRAINER_CHLOE)   // 100 - 119
@@ -3217,6 +3225,10 @@ void GetFrontierTrainerName(u8 *dst, u16 trainerId)
 u16 GetRandomFrontierMonFromSet(u16 trainerId)
 {
     u8 level = SetFacilityPtrsGetLevel();
+
+    if (FrontierUsesSetPools())
+        return GetRandomFrontierSetId();
+
     const u16 *monSet = gFacilityTrainers[trainerId].monSet;
     u8 numMons = 0;
     u32 monId = monSet[numMons];
@@ -3265,7 +3277,7 @@ u8 SetFacilityPtrsGetLevel(void)
     else
     {
         gFacilityTrainers = gBattleFrontierTrainers;
-        gFacilityTrainerMons = gBattleFrontierMons;
+        gFacilityTrainerMons = GetFrontierMonTable();
         return GetFrontierEnemyMonLevel(gSaveBlock2Ptr->frontier.lvlMode);
     }
 }
@@ -3273,6 +3285,9 @@ u8 SetFacilityPtrsGetLevel(void)
 u8 GetFrontierEnemyMonLevel(enum FrontierLevelMode lvlMode)
 {
     u8 level;
+
+    if (IsFrontierSmogonRule())
+        return MAX_LEVEL;
 
     switch (lvlMode)
     {

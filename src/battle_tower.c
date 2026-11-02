@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "battle_tower.h"
 #include "apprentice.h"
 #include "event_data.h"
@@ -718,8 +720,10 @@ static void InitTowerChallenge(void)
     gSaveBlock2Ptr->frontier.challengePaused = FALSE;
     gSaveBlock2Ptr->frontier.disableRecordBattle = FALSE;
     ResetFrontierTrainerIds();
-    if (!(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]))
-        gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] = 0;
+    if (FrontierUsesSetPools())
+        StartFrontierRuleStreak(FRONTIER_FACILITY_TOWER, battleMode);
+    else if (!(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[battleMode][lvlMode]))
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) = 0;
 
     ValidateBattleTowerRecordChecksums();
     SetDynamicWarp(0, gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum, WARP_ID_NONE);
@@ -757,10 +761,15 @@ static void SetTowerData(void)
     case 0:
         break;
     case TOWER_DATA_WIN_STREAK:
-        gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] = gSpecialVar_0x8006;
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) = gSpecialVar_0x8006;
         break;
     case TOWER_DATA_WIN_STREAK_ACTIVE:
-        if (gSpecialVar_0x8006)
+        if (FrontierUsesSetPools())
+        {
+            if (!gSpecialVar_0x8006)
+                *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) = 0;
+        }
+        else if (gSpecialVar_0x8006)
             gSaveBlock2Ptr->frontier.winStreakActiveFlags |= sWinStreakFlags[battleMode][lvlMode];
         else
             gSaveBlock2Ptr->frontier.winStreakActiveFlags &= sWinStreakMasks[battleMode][lvlMode];
@@ -829,7 +838,7 @@ static bool8 ChooseSpecialBattleTowerTrainer(void)
         }
     }
 
-    if (battleMode == FRONTIER_MODE_SINGLES)
+    if (battleMode == FRONTIER_MODE_SINGLES && !FrontierUsesSetPools())
     {
         ValidateApprenticesChecksums();
         for (i = 0; i < APPRENTICE_COUNT; i++)
@@ -1044,8 +1053,8 @@ static void SaveCurrentWinStreak(void)
     u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
     u16 winStreak = GetCurrentBattleTowerWinStreak(lvlMode, battleMode);
 
-    if (gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] < winStreak)
-        gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] = winStreak;
+    if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) < winStreak)
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) = winStreak;
 }
 
 static void SaveBattleTowerRecord(void)
@@ -1100,7 +1109,7 @@ static void SaveTowerChallenge(void)
 {
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     u16 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    s32 challengeNum = (signed)(gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE);
+    s32 challengeNum = (signed)(*GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE);
 
     if (gSpecialVar_0x8005 == 0 && (challengeNum > 1 || gSaveBlock2Ptr->frontier.curChallengeBattleNum != 0))
         SaveBattleTowerRecord();
@@ -1192,7 +1201,7 @@ static void LoadMultiPartnerCandidatesData(void)
     objEventTemplates = gSaveBlock1Ptr->objectEventTemplates;
     lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    challengeNum = gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+    challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
     species1 = GetMonData(&gParties[B_TRAINER_PLAYER][0], MON_DATA_SPECIES);
     species2 = GetMonData(&gParties[B_TRAINER_PLAYER][1], MON_DATA_SPECIES);
     level = SetFacilityPtrsGetLevel();
@@ -1489,7 +1498,7 @@ static void LoadLinkMultiOpponentsData(void)
     case 0:
         if (battleMode == FRONTIER_MODE_LINK_MULTIS)
         {
-            challengeNum = gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+            challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
             if (IsLinkTaskFinished())
             {
                 SendBlock(BitmaskAllOtherLinkPlayers(), &challengeNum, sizeof(challengeNum));
@@ -1648,7 +1657,7 @@ static void ClearBattleTowerRecord(struct EmeraldBattleTowerRecord *record)
 
 u16 GetCurrentBattleTowerWinStreak(enum FrontierLevelMode lvlMode, u8 battleMode)
 {
-    u16 winStreak = gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode];
+    u16 winStreak = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, lvlMode);
 
     if (winStreak > MAX_STREAK)
         return MAX_STREAK;
@@ -1678,9 +1687,9 @@ static void AwardBattleTowerRibbons(void)
     s32 i;
     u32 partyIndex;
 #ifdef BUGFIX
-    struct RibbonCounter ribbons[MAX_FRONTIER_PARTY_SIZE];
+    struct RibbonCounter ribbons[MAX_FRONTIER_PARTY_SIZE] = {0};
 #else
-    struct RibbonCounter ribbons[3]; // BUG: 4 Pokémon can receive ribbons in a double battle mode.
+    struct RibbonCounter ribbons[3] = {0}; // BUG: 4 Pokémon can receive ribbons in a double battle mode.
 #endif
     u8 ribbonType = 0;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
@@ -1941,7 +1950,7 @@ u8 SetTentPtrsGetLevel(void)
     else
     {
         gFacilityTrainers = gBattleFrontierTrainers;
-        gFacilityTrainerMons = gBattleFrontierMons;
+        gFacilityTrainerMons = GetFrontierMonTable();
     }
 
     level = GetHighestLevelInPlayerParty();

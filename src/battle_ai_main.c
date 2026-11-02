@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "main.h"
 #include "malloc.h"
 #include "battle.h"
@@ -273,6 +274,8 @@ static u64 GetAiFlags(u16 trainerId, enum BattlerId battler)
             flags = AI_FLAG_ROAMING;
         else if (gBattleTypeFlags & BATTLE_TYPE_FIRST_BATTLE)
             flags = AI_FLAG_FIRST_BATTLE;
+        else if ((gBattleTypeFlags & BATTLE_TYPE_FRONTIER) && FrontierUsesSetPools())
+            flags = AI_FLAG_SMART_TRAINER;
         else if (gBattleTypeFlags & BATTLE_TYPE_FACTORY)
             flags = GetAiScriptsInBattleFactory();
         else if (gBattleTypeFlags & (BATTLE_TYPE_FRONTIER | BATTLE_TYPE_EREADER_TRAINER | BATTLE_TYPE_TRAINER_HILL | BATTLE_TYPE_SECRET_BASE))

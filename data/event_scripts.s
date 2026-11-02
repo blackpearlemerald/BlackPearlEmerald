@@ -9,6 +9,7 @@
 #include "constants/battle_dome.h"
 #include "constants/battle_factory.h"
 #include "constants/battle_frontier.h"
+#include "constants/frontier_rules.h"
 #include "constants/battle_palace.h"
 #include "constants/battle_pike.h"
 #include "constants/battle_pyramid.h"

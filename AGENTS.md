@@ -559,6 +559,22 @@ BPE's. Level-up data is `level_up_learnsets/gen_9.h` only (`P_LVL_UP_LEARNSETS`)
 `gen_N.h` files are not in the build, so don't count them as learnable.
 Tests: `make check TESTS=test/frontier_sets.c`, `python -m unittest BPETools/tests/test_frontier_sets.py`.
 
+Tower, Factory and Dome singles and doubles ask for a rule set through
+`BattleFrontier_EventScript_ChooseRules` in `data/scripts/battle_frontier.inc`. Read the
+current rule with `GetActiveFrontierRule()`, never `frontier.activeRule`: it returns vanilla
+for Tents, Multis and facilities with no rule menu, because the saved value can be stale.
+`FrontierUsesSetPools()` is true for Full Dex and Smogon. Go through
+`GetFrontierWinStreakPtr()` for those three facilities' streaks: each rule set has its own
+storage, so a Smogon loss can't end a vanilla streak. Rule streaks ignore
+`winStreakActiveFlags`, which vanilla shares by level mode; losing just zeroes the streak.
+Smogon challenges run in the Open level mode, and `GetFrontierEnemyMonLevel()` gives 100.
+The player's Level 100 is `FLAG_FRONTIER_LEVEL_RAISED`, a RAM-only flag that
+`CalculateMonStats` reads: it is set in `DoFacilityTrainerBattleInternal` and cleared in
+`HandleFacilityTrainerBattleEnd`, Exp. doesn't change, and no save can hold it, since
+parties are copied back to the save between battles. The retry loops that pick enemies can
+hang if a pool can't fit, and Gen 1 sets have no items, so a check that compares two
+`ITEM_NONE`s never ends: `test/frontier_challenge.c` builds every rule set's teams to catch this.
+
 ### Multi battles
 
 `multi_do` calls `AreMultiPartiesFullTeams` before the battle starts and reads its
