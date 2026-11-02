@@ -121,6 +121,14 @@
           "body": "The Egg Move Tutor in Wanda's house in Verdanturf teaches any Egg Move from a Pokémon's evolution family for one Pearl, without breeding. The Pikachu line, Alolan Raichu included, can learn Volt Tackle and Zap Cannon there."
         },
         {
+          "title": "Dusclops Tutor Moves",
+          "body": "The Dusclops Move Relearner in every Pokémon Center also teaches moves the official games gave by TM or tutor, such as Roost and Superpower, and older level-up moves like Pursuit and Jump Kick. The weakest are open from the start and the rest open with your first three badges. Each Pokémon's Pokédex page lists what it can learn and when."
+        },
+        {
+          "title": "Mints for Battle Points",
+          "body": "The vitamin clerk at the Battle Frontier's Exchange Service Corner also sells Mints for 16 BP."
+        },
+        {
           "title": "Shiny odds of 1 in 512",
           "body": "Shiny Pokémon appear at 1 in 512 instead of 1 in 8,192."
         },
@@ -161,6 +169,22 @@
         {
           "title": "Postgame challengers",
           "body": "Three optional trainers wait in Ever Grande City after you become Champion. Beating them unlocks unlimited shops: Ability Capsules and Ability Patches from Chakajacek, Bottle Caps from Furius2 and Pearls from Moira."
+        },
+        {
+          "title": "Battle Frontier rules",
+          "body": "Every Battle Frontier facility, the Battle Tents and Trainer Hill let you choose Vanilla or Full Dex rules. Full Dex replaces Emerald's opponents with tested sets for Pokémon from every generation. The Battle Facilities page explains each rule set and lists every set."
+        },
+        {
+          "title": "Smogon rules",
+          "body": "The Battle Tower, Battle Factory and Battle Dome add Smogon rules: pick Generations 1 to 9 or National Dex and a tier from Anything Goes down to RU, with every Pokémon raised to Level 100 for the battle only. Use the usual team size, or 6 vs 6 for double Battle Points."
+        },
+        {
+          "title": "Frontier Brains and records",
+          "body": "The Frontier Brains have new teams under Full Dex and Smogon rules, and a new attendant in the Ranking Hall shows your Full Dex and Smogon records."
+        },
+        {
+          "title": "Link Multi Battles",
+          "body": "Link Multi Battles stay on Vanilla rules, and a partner on a different release can't join."
         }
       ]
     }

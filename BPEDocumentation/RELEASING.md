@@ -137,7 +137,12 @@ release's source commit when player-facing features change. Legendary levels,
 locations and the pre-Elite Four group are extracted from that source's map
 scripts. A release whose source has no `features.json` shows only those
 extracted legendaries, and snapshots published before the page existed have no
-Features tab until a documentation correction rebuilds them. The Trainer AI
+Features tab until a documentation correction rebuilds them. The Battle
+Facilities page reads its text from `content/facilities.json` the same way, and
+its sets, pools and Frontier Brain teams from `src/data/battle_frontier/frontier_sets.h`
+at the release's source, so run `BPETools/generate_frontier_sets.py` before the
+release commit. A release whose source has no `BPETools/frontier_sets/` shows a
+short notice on that page instead. The Trainer AI
 document (`content/trainer_ai.json`) describes the AI rather than the release,
 so text corrections can reach published releases: a correction run uses the
 exporter's current copy for every release whose battle AI files and trainer AI

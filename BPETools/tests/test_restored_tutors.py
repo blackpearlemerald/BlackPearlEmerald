@@ -2,9 +2,13 @@
 import json
 import os
 import re
+import sys
 import unittest
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, os.path.join(ROOT, 'BPEDocumentation', 'scripts'))
+
+import teachable_data  # noqa: E402
 
 
 def read(path):
@@ -37,6 +41,11 @@ class RestoredTutorMoves(unittest.TestCase):
 
     def test_everything_opens_by_the_third_badge(self):
         self.assertLessEqual(max(int(b) for _, b in self.table), 3)
+
+    def test_documentation_keeps_extra_learners(self):
+        # make_teachables.py adds these to a species' teachable list, so the website must too.
+        teachable = teachable_data.build(ROOT)
+        self.assertIn('HIGH_JUMP_KICK', teachable['Blaziken'])
 
 
 if __name__ == '__main__':

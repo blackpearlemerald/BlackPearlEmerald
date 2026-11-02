@@ -385,7 +385,7 @@ class SaveNumberingTests(unittest.TestCase):
         self.assertEqual(items["ITEM_INFINITE_REPEL"], 1022)
         self.assertEqual(items["ITEMS_COUNT"], 1023)
         flags = build_calc_data.c_constants(str(REPO / "include/constants/flags.h"), "FLAG_NUZLOCKE")
-        self.assertEqual(flags, {"FLAG_NUZLOCKE": 0x493})
+        self.assertEqual(flags["FLAG_NUZLOCKE"], 0x493)
 
     def test_committed_calc_data_has_save_numbering(self):
         data = json.loads(CALC_DATA.read_text(encoding="utf-8"))["save_data"]

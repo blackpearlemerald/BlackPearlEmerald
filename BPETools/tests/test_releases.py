@@ -497,6 +497,8 @@ new Function('fetch', 'location', 'localStorage', code)(fetch, location, localSt
                              "https://example.test/BlackPearlEmerald/versions/1.0.1/index.html?missing-page=Features")
             self.assertEqual(destination("trainer-ai.html"),
                              "https://example.test/BlackPearlEmerald/versions/1.0.1/index.html?missing-page=Trainer+AI")
+            self.assertEqual(destination("facilities.html"),
+                             "https://example.test/BlackPearlEmerald/versions/1.0.1/index.html?missing-page=Battle+Facilities")
             self.assertNotIn("1.0.1", (root / "save-converter.html").read_text())
 
 

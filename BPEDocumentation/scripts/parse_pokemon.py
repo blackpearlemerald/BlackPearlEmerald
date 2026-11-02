@@ -1542,6 +1542,32 @@ def apply_relearner_moves(all_species):
     return egg_count, pre_count
 
 
+def read_dusclops_moves():
+    """The Dusclops relearner's Tutor Moves and the badges each needs, by move id."""
+    path = REPO / "src" / "data" / "pokemon" / "restored_tutor_moves.h"
+    if not path.is_file():
+        return {}
+    return {move: int(badges) for move, badges in re.findall(r"\{MOVE_(\w+), (\d+)\},", read_file(path))}
+
+
+def apply_dusclops_moves(all_species):
+    """List the Tutor Moves each species can learn from the Dusclops relearner.
+
+    tutorMoves keeps them too, since they are ordinary teachable moves to the game,
+    and the Pokédex shows them on their own tab with the badges they need. Releases
+    from before the table have no such moves.
+    """
+    table = read_dusclops_moves()
+    count = 0
+    for entry in all_species.values():
+        known = set(entry.get("tmMoves", []) + entry.get("hmMoves", []) + entry.get("tutorMoves", []))
+        moves = [{"move": move, "badges": badges} for move, badges in table.items() if move in known]
+        if moves:
+            entry["dusclopsMoves"] = sorted(moves, key=lambda e: e["badges"])
+            count += 1
+    return count
+
+
 # ── 10. Special move sources ──────────────────────────────────────────────────
 
 _SPECIAL_DISPLAY_NAMES = {
@@ -2535,6 +2561,8 @@ def main():
 
     egg_count, pre_count = apply_relearner_moves(all_species)
     print(f"       -> relearners: {egg_count} species get family Egg Moves, {pre_count} pre-evolution moves")
+    dusclops_count = apply_dusclops_moves(all_species)
+    print(f"       -> Dusclops Tutor Moves: {dusclops_count} species")
 
     print("  [10] Special move sources ...")
     special_count = apply_special_moves(all_species)

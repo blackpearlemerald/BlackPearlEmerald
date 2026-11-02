@@ -240,6 +240,19 @@
       + header + '<tbody>' + rows + '</tbody></table></div>';
   }
 
+  // The Tutor Moves list of the Dusclops relearner: each move opens at a badge count.
+  function renderDusclopsMoves(pkmn, moveData) {
+    var header = '<thead><tr><th>Opens</th><th>Move</th><th>Type</th><th>Cat</th><th>Pwr</th><th>Acc</th><th>PP</th></tr></thead>';
+    var rows = pkmn.dusclopsMoves.map(function (entry) {
+      var opens = entry.badges === 0 ? 'Any time' : entry.badges + (entry.badges === 1 ? ' badge' : ' badges');
+      return '<tr><td class="col-method">' + opens + '</td>' + renderMoveRow(entry.move, moveData) + '</tr>';
+    }).join('');
+    return '<p class="learnset-note">The Dusclops Move Relearner in every Pokémon Center teaches ' + esc(pkmn.name)
+      + ' these under Tutor Moves, once you have the badges shown.</p>'
+      + '<div class="learnset-scroll"><table class="learnset-table special-learnset-table">'
+      + header + '<tbody>' + rows + '</tbody></table></div>';
+  }
+
   // The Egg Move Tutor (the Ditto doll in Wanda's house) teaches every stage its
   // family's Egg Moves for one Pearl.
   var EGG_TUTOR_LINK = '<a href="index.html?map=MAP_VERDANTURF_TOWN_WANDAS_HOUSE">Egg Move Tutor (Ditto), Verdanturf</a>';
@@ -503,7 +516,18 @@
     var tmMoves = renderLearnsetTable(pkmn.tmMoves, moves, false);
     var hmMoves = renderLearnsetTable(pkmn.hmMoves, moves, false);
     var eggMoves = renderEggMovesTable(pkmn, moves);
-    var tutorMoves = renderLearnsetTable(pkmn.tutorMoves, moves, false);
+    // Older releases have no Dusclops list, so every tutor move stays on the Tutor tab.
+    var dusclops = pkmn.dusclopsMoves || [];
+    var otherTutorMoves = (pkmn.tutorMoves || []).filter(function (move) {
+      return !dusclops.some(function (entry) { return entry.move === move; });
+    });
+    var tutorMoves = renderLearnsetTable(otherTutorMoves, moves, false);
+    var dusclopsTab = dusclops.length
+      ? '<button class="tab-btn" data-tab="dusclops">Dusclops (' + dusclops.length + ')</button>'
+      : '';
+    var dusclopsPanel = dusclops.length
+      ? '<div id="tab-dusclops" class="tab-panel">' + renderDusclopsMoves(pkmn, moves) + '</div>'
+      : '';
     var specialMoves = renderSpecialLearnsetTable(pkmn.specialMoves, moves);
     var specialTab = (pkmn.specialMoves || []).length
       ? '<button class="tab-btn" data-tab="special">Special (' + pkmn.specialMoves.length + ')</button>'
@@ -544,7 +568,8 @@
       +     '<button class="tab-btn" data-tab="tm">TM (' + (pkmn.tmMoves || []).length + ')</button>'
       +     '<button class="tab-btn" data-tab="hm">HM (' + (pkmn.hmMoves || []).length + ')</button>'
       +     '<button class="tab-btn" data-tab="egg">Egg (' + (pkmn.eggMoves || []).length + ')</button>'
-      +     '<button class="tab-btn" data-tab="tutor">Tutor (' + (pkmn.tutorMoves || []).length + ')</button>'
+      +     '<button class="tab-btn" data-tab="tutor">Tutor (' + otherTutorMoves.length + ')</button>'
+      +     dusclopsTab
       +     specialTab
       +   '</div>'
       +   '<div id="tab-lv" class="tab-panel active">' + lvlMoves + '</div>'
@@ -552,6 +577,7 @@
       +   '<div id="tab-hm" class="tab-panel">' + hmMoves + '</div>'
       +   '<div id="tab-egg" class="tab-panel">' + eggMoves + '</div>'
       +   '<div id="tab-tutor" class="tab-panel">' + tutorMoves + '</div>'
+      +   dusclopsPanel
       +   specialPanel
       + '</div>'
       + '<div class="dex-section"><h2>Wild Encounters</h2>' + encHtml + '</div>';

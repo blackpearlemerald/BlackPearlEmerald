@@ -1,0 +1,128 @@
+/* The rule cards and facility table use features.css; these are the set browser's. */
+.sets-section { margin: 0 0 34px; scroll-margin-top: calc(var(--bpe-header-height, 48px) + 16px); }
+.sets-section[hidden], .sets-credit[hidden], .sets-credit details[hidden], .sets-controls label[hidden], .sets-more[hidden] { display: none; }
+
+.sets-section h2 {
+  margin: 0 0 14px;
+  color: #cbd9e5;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The facility table has more columns than the Features page's comparisons. */
+.page-facilities .features-table { min-width: 680px; }
+.page-facilities .features-table tbody th { width: 22%; }
+.page-facilities .features-table td { width: auto; }
+
+.sets-text { margin: 0 0 14px; color: #a4b9cb; font-size: 15px; line-height: 1.55; }
+
+.sets-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(23, 38, 52, 0.98), rgba(15, 27, 40, 0.98));
+}
+
+.sets-controls label { display: grid; gap: 5px; color: #8fa6b9; font-size: 13px; font-weight: 600; }
+.sets-controls .sets-search { flex: 1 1 200px; }
+
+.sets-controls select, .sets-controls input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 38px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  color: #e8eef5;
+  background: #0f1b28;
+  font: inherit;
+  font-size: 15px;
+}
+
+.sets-controls select:focus-visible, .sets-controls input:focus-visible { outline: 2px solid #a1f4c4; outline-offset: 1px; }
+
+.sets-summary { margin: 0 0 12px; color: #a4b9cb; font-size: 14.5px; }
+
+.sets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 12px;
+}
+
+.set-card {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(23, 38, 52, 0.98), rgba(15, 27, 40, 0.98));
+}
+
+.set-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.set-mon { display: flex; align-items: center; gap: 8px; min-width: 0; color: #f3f7fb; font-size: 16px; font-weight: 650; text-decoration: none; }
+.set-mon:hover span { color: #7fe0a6; text-decoration: underline; }
+.set-icon { width: 32px; height: 32px; flex: 0 0 auto; image-rendering: pixelated; }
+.set-rank { color: #8fa6b9; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.set-details { display: grid; gap: 3px; margin: 0 0 8px; font-size: 14px; line-height: 1.4; }
+.set-detail { display: grid; grid-template-columns: 62px 1fr; gap: 8px; }
+.set-detail dt { color: #8fa6b9; }
+.set-detail dd { min-width: 0; margin: 0; color: #d7e3ee; overflow-wrap: anywhere; }
+.set-detail a { color: #4db87a; text-decoration: none; }
+.set-detail a:hover { color: #7fe0a6; text-decoration: underline; }
+
+.set-moves {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 10px;
+  margin: 0;
+  padding: 8px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e8eef5;
+  font-size: 14px;
+  line-height: 1.4;
+  list-style: none;
+}
+
+.sets-more {
+  display: block;
+  margin: 16px auto 0;
+  padding: 9px 22px;
+  border: 1px solid rgba(99, 211, 147, 0.44);
+  border-radius: 8px;
+  color: #e8eef5;
+  background: rgba(77, 184, 122, 0.12);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sets-more:hover { background: rgba(77, 184, 122, 0.22); }
+
+.brain {
+  margin-bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  background: rgba(15, 27, 40, 0.6);
+}
+
+.brain summary { padding: 12px 16px; color: #f3f7fb; font-size: 16px; font-weight: 650; cursor: pointer; }
+.brain summary::marker { color: #63d393; }
+.brain summary:focus-visible { outline: 3px solid #a1f4c4; outline-offset: -3px; }
+.brain-team { padding: 0 16px 14px; }
+.brain-team h4 { margin: 4px 0 8px; color: #cbd9e5; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.sets-credit { margin-top: 26px; color: #8fa6b9; font-size: 14px; line-height: 1.55; }
+.sets-credit p { margin: 0 0 8px; }
+.sets-credit a { color: #4db87a; }
+.sets-credit summary { cursor: pointer; }
+.sets-credit pre { max-width: 100%; margin: 8px 0 0; color: #a4b9cb; font-size: 12.5px; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+@media (max-width: 640px) {
+  .sets-controls label { flex: 1 1 130px; }
+  .sets-grid { grid-template-columns: minmax(0, 1fr); }
+}

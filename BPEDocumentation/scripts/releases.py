@@ -27,7 +27,8 @@ REPOSITORY = "blackpearlemerald/BlackPearlEmerald"
 PAGES_LIMIT = 1_000_000_000
 # Serves tracked files with cross-origin access, so the patcher can fetch them.
 RAW_ROOT = "https://raw.githubusercontent.com/" + REPOSITORY + "/"
-LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Converter", "trainer-ai.html": "Trainer AI"}
+LATER_PAGES = {"features.html": "Features", "save-converter.html": "Save Converter", "trainer-ai.html": "Trainer AI",
+               "facilities.html": "Battle Facilities"}
 # Tools that work on any game version: their entry link always opens the newest release.
 VERSIONLESS_PAGES = {"save-converter.html"}
 
@@ -188,6 +189,48 @@ def validate_trainer_ai(path):
             raise ValueError("Trainer AI page data has no sections.")
 
 
+def validate_facilities(path):
+    """Check the Battle Facilities page export built by build_facilities.py."""
+    data = read_json(Path(path) / "data/facilities.json")
+    tables_path = Path(path) / "data/frontier_sets.json"
+    if not isinstance(data, dict) or data.get("schemaVersion") != 1 or not isinstance(data.get("available"), bool):
+        raise ValueError("Invalid Battle Facilities page data.")
+    if not data["available"]:
+        # A release without sets must never carry another release's.
+        if tables_path.exists():
+            raise ValueError("Battle Facilities sets are present but marked unavailable.")
+        return
+    if not tables_path.is_file():
+        raise ValueError("Incomplete documentation: data/frontier_sets.json")
+    tables = read_json(tables_path)
+    sets, pools = tables.get("sets"), tables.get("pools")
+    if tables.get("schemaVersion") != 1 or not isinstance(sets, list) or not sets or not isinstance(pools, dict):
+        raise ValueError("Invalid Battle Facilities set tables.")
+    fields = ((0, "species"), (1, "items"), (2, "abilities"), (3, "natures"), (4, "spreads"))
+    sizes = {name: len(tables[name]) for _, name in fields}
+    for row in sets:
+        if len(row) < 6 or any(row[i] >= sizes[name] for i, name in fields) or any(m >= len(tables["moves"]) for m in row[5:]):
+            raise ValueError("A Battle Facilities set has an unknown entry.")
+
+    def check_ids(value):
+        # Every leaf of pools and brains is a non-empty list of set ids.
+        if isinstance(value, dict):
+            for child in value.values():
+                check_ids(child)
+        elif not isinstance(value, list) or not value:
+            raise ValueError("Empty Battle Facilities set list.")
+        elif isinstance(value[0], list):
+            for child in value:
+                check_ids(child)
+        elif any(not 0 <= set_id < len(sets) for set_id in value):
+            raise ValueError("A Battle Facilities list names an unknown set.")
+
+    if not pools.get("fullDex") or not pools.get("smogon") or not tables.get("brains"):
+        raise ValueError("Battle Facilities tables are incomplete.")
+    check_ids(pools)
+    check_ids(tables["brains"])
+
+
 def validate_snapshot(path, shared=False, require_encounters=False, require_history=False, require_features=False):
     path = Path(path)
     required = ["index.html", "pokedex.html", "items.html", "trainers.html", "patcher.html", "search.html",
@@ -197,7 +240,8 @@ def validate_snapshot(path, shared=False, require_encounters=False, require_hist
     if require_history:
         required += ["version-history.html", "js/version-history.js", "css/version-history.css"]
     if require_features:
-        required += ["features.html", "js/features.js", "css/features.css", "data/features.json"]
+        required += ["features.html", "js/features.js", "css/features.css", "data/features.json",
+                     "facilities.html", "js/facilities.js", "css/facilities.css", "data/facilities.json"]
     for name in required:
         if not (path / name).is_file():
             raise ValueError(f"Incomplete documentation: {name}")
@@ -213,6 +257,8 @@ def validate_snapshot(path, shared=False, require_encounters=False, require_hist
         validate_features(path)
     if (path / "data/trainer_ai.json").is_file():
         validate_trainer_ai(path)
+    if (path / "data/facilities.json").is_file():
+        validate_facilities(path)
     if len(pokedex) < 300 or len(items) < 100 or len(world.get("maps", [])) < 100:
         raise ValueError("Documentation export is unexpectedly incomplete.")
     species_with_encounters = 0

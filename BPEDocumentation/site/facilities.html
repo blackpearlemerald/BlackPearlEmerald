@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="The rule sets of the Battle Frontier, Battle Tents and Trainer Hill in Pokémon Black Pearl Emerald, with every set you can face." />
+  <title>BPE Emerald — Battle Facilities</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/features.css" />
+  <link rel="stylesheet" href="css/facilities.css" />
+  <script src="js/release-context.js"></script>
+  <link rel="stylesheet" href="css/header.css" />
+</head>
+<body class="page-features page-facilities">
+  <script src="js/nav.js"></script>
+
+  <main class="features-page">
+    <header class="features-hero">
+      <h1>Battle Facilities</h1>
+      <p id="facilities-intro" hidden></p>
+    </header>
+
+    <p class="features-status" id="facilities-status" role="status">Loading battle facilities…</p>
+    <div id="facilities-sections"></div>
+
+    <section class="sets-section" id="sets" hidden>
+      <h2>Set browser</h2>
+      <p class="sets-text">Each rule set's sets, strongest first. These are the sets the game uses.</p>
+      <div class="sets-controls">
+        <label><span>Rules</span>
+          <select id="sets-rules">
+            <option value="fullDex">Full Dex</option>
+            <option value="smogon">Smogon</option>
+          </select>
+        </label>
+        <label><span>Battles</span>
+          <select id="sets-style">
+            <option value="singles">Singles</option>
+            <option value="doubles">Doubles</option>
+          </select>
+        </label>
+        <label id="sets-gen-field" hidden><span>Generation</span><select id="sets-gen"></select></label>
+        <label id="sets-tier-field" hidden><span>Tier</span><select id="sets-tier"></select></label>
+        <label class="sets-search"><span>Pokémon</span>
+          <input type="search" id="sets-search" placeholder="e.g. Garchomp" autocomplete="off" />
+        </label>
+      </div>
+      <p class="sets-summary" id="sets-summary" role="status"></p>
+      <div class="sets-grid" id="sets-list"></div>
+      <button type="button" class="sets-more" id="sets-more" hidden>Show more</button>
+    </section>
+
+    <section class="sets-section" id="brains" hidden>
+      <h2>Frontier Brains</h2>
+      <p class="sets-text" id="brains-text"></p>
+      <div id="brains-list"></div>
+    </section>
+
+    <footer class="sets-credit" id="sets-credit" hidden>
+      <p>Sets and tier rules come from <a href="https://github.com/smogon/pokemon-showdown">Pokémon Showdown</a>, used under its MIT license. Usage numbers come from Smogon's public monthly statistics.</p>
+      <details id="sets-license" hidden>
+        <summary>Pokémon Showdown license</summary>
+        <pre id="sets-license-text"></pre>
+      </details>
+    </footer>
+    <noscript>Enable JavaScript to load this version's battle facilities.</noscript>
+  </main>
+
+  <script src="js/facilities.js"></script>
+</body>
+</html>

@@ -607,6 +607,11 @@ by the vitamin clerk, and link players carry `GetBpeReleaseHash()` in `lp_field_
 puts each rule set's strongest sets through real battles with the facility AI. Neither drives
 the menus, the Factory screens or a link.
 
+The website's Battle Facilities page (`BPEDocumentation/scripts/build_facilities.py`) reads the
+committed `frontier_sets.h`, since a hosted export never builds the ROM and so can't run the
+generator, and its text is in `BPEDocumentation/content/facilities.json`. Commit a fresh header
+with any release that changes sets. The Pokédex's Dusclops tab comes from `sRestoredTutorMoves`.
+
 ### Multi battles
 
 `multi_do` calls `AreMultiPartiesFullTeams` before the battle starts and reads its

@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "intro": "The Battle Frontier, the Battle Tents and Trainer Hill let you choose the rules for each challenge. This page explains the rule sets, shows what each facility offers and lists every set you can face.",
+  "sections": [
+    {
+      "id": "rules",
+      "title": "Rule sets",
+      "items": [
+        {
+          "title": "Vanilla",
+          "body": "The facilities as Emerald has them, with Emerald's trainers and Pokémon. Every facility offers it."
+        },
+        {
+          "title": "Full Dex",
+          "body": "Opponents use tested sets for Pokémon from every generation instead of Emerald's list. Your first challenges draw from the middle of the list, and by the seventh challenge opponents come from its strongest quarter. Every facility offers it, with the usual level and team rules, and it keeps its own streaks. Pokémon banned from the Frontier stay banned, and the Battle Tents use the National Dex RU sets because they open mid-game."
+        },
+        {
+          "title": "Smogon",
+          "body": "The Battle Tower, Battle Factory and Battle Dome also offer Smogon rules. Pick a generation (1 to 9, or National Dex) and a tier: Anything Goes, Ubers, OU, UU or RU. Doubles offer Gens 3 to 9 and National Dex, in Anything Goes, Ubers and OU. A generation limits Pokémon, moves and items, a tier adds its own bans, and the attendant tells you what in your party breaks them. Battles use BPE's current mechanics, and every Pokémon is raised to Level 100 for the battle only. Randomized games that change abilities, types, base stats or the type chart, or that use Monotype, don't get Smogon rules."
+        },
+        {
+          "title": "6 vs 6",
+          "body": "Smogon rules let you use six Pokémon on each side instead of the usual team size. A 6 vs 6 challenge pays double Battle Points."
+        },
+        {
+          "title": "Streaks and records",
+          "body": "Each rule set's streak is separate, so a Smogon loss can't end a Vanilla streak. A facility keeps one running Smogon streak per battle type: starting a different Smogon option ends it, but the best streak for each option stays. The new attendant in the Ranking Hall shows your Full Dex and Smogon records."
+        },
+        {
+          "title": "Multi Battles",
+          "body": "Multi Battles with a partner use Vanilla or Full Dex. Link Multi Battles are always Vanilla, and both players need the same release of the game."
+        }
+      ]
+    },
+    {
+      "id": "facilities",
+      "title": "What each facility offers",
+      "items": [
+        {
+          "title": "Facilities",
+          "body": "Each attendant asks which rules you want when you start a challenge.",
+          "table": {
+            "columns": ["Facility", "Brain", "Rules", "Battles", "Team size"],
+            "rows": [
+              ["Battle Tower", "Anabel", "Vanilla, Full Dex, Smogon", "Singles, Doubles, Multi", "3 vs 3 (Doubles 4 vs 4), or 6 vs 6"],
+              ["Battle Dome", "Tucker", "Vanilla, Full Dex, Smogon", "Singles, Doubles", "Bring 3 and use 2, or 6 vs 6"],
+              ["Battle Factory", "Noland", "Vanilla, Full Dex, Smogon", "Singles, Doubles", "Rent 3, or rent 6"],
+              ["Battle Palace", "Spenser", "Vanilla, Full Dex", "Singles, Doubles", "Usual"],
+              ["Battle Arena", "Greta", "Vanilla, Full Dex", "Singles", "Usual"],
+              ["Battle Pike", "Lucy", "Vanilla, Full Dex", "Singles", "Usual"],
+              ["Battle Pyramid", "Brandon", "Vanilla, Full Dex", "Singles", "Usual"],
+              ["Battle Tents (Slateport, Verdanturf, Fallarbor)", "None", "Vanilla, Full Dex", "Singles", "Usual"],
+              ["Trainer Hill", "None", "Vanilla, Full Dex", "Two trainers per floor", "Usual"]
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

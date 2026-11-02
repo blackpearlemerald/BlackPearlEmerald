@@ -43,6 +43,7 @@ def build(root):
                             allowed -= set(special["universalMoves"])
                     else:
                         allowed.update(special["universalMoves"])
+                    allowed.update(special.get("extraLearners", {}).get(key, []))
                 if key == "TERAPAGOS":
                     allowed.discard("MOVE_TERA_BLAST")
                 out[name] = list(dict.fromkeys(m.removeprefix("MOVE_") for m in candidates if m in allowed))
