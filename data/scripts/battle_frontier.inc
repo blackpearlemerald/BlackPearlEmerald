@@ -1,16 +1,16 @@
-BattleFrontier_ShowCaughtBannedSpecies::
-	goto_if_eq VAR_0x8005, 0, BattleFrontier_ShowCaughtBannedSpeciesEnd
-	msgbox BattleFrontier_DoYouWantToSeeTheListOfCaughtBannedSpecies, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, BattleFrontier_ShowCaughtBannedSpeciesEnd
-	callnative ShowBattleFrontierCaughtBannedSpecies
-	waitstate
-BattleFrontier_ShowCaughtBannedSpeciesEnd:
+@ BPE: names each party Pokémon that can't enter and why, after frontier_checkineligible
+@ failed. VAR_RESULT is the level mode, and is kept.
+BattleFrontier_EventScript_ReportIneligibleMons::
+	copyvar VAR_0x8005, VAR_RESULT
+	setvar VAR_0x8004, 0
+BattleFrontier_EventScript_ReportNextIneligibleMon:
+	callnative BufferNextIneligibleFrontierMon
+	goto_if_eq VAR_RESULT, FALSE, BattleFrontier_EventScript_ReportIneligibleMonsEnd
+	msgbox gStringVar4, MSGBOX_DEFAULT
+	goto BattleFrontier_EventScript_ReportNextIneligibleMon
+BattleFrontier_EventScript_ReportIneligibleMonsEnd:
+	copyvar VAR_RESULT, VAR_0x8005
 	return
-
-
-BattleFrontier_DoYouWantToSeeTheListOfCaughtBannedSpecies:
-	.string "Do you want to see the list of\n"
-	.string "POKéMON species you can't bring?$"
 
 @ BPE: the rule menus every Tower, Factory and Dome attendant shares. VAR_RESULT comes
 @ back as the chosen FRONTIER_RULES_* value, or MULTI_B_PRESSED if the player backed out.

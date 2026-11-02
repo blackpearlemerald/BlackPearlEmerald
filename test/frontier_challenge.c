@@ -11,7 +11,7 @@
 #include "frontier_rules.h"
 #include "frontier_sets.h"
 #include "frontier_util.h"
-
+#include "string_util.h"
 #include "trainer_hill.h"
 #include "constants/battle_dome.h"
 #include "constants/battle_factory.h"
@@ -198,6 +198,102 @@ TEST("The team checker names what breaks the rules")
     EXPECT_EQ(gSpecialVar_0x8004, 3);
     BufferNextIllegalFrontierMon();
     EXPECT_EQ(gSpecialVar_Result, FALSE);
+}
+
+static const u8 sText_TierProblem[] = _("Mewtwo is in a higher tier\nthan Gen 4 OU.");
+static const u8 sText_GenProblem[] = _("Sylveon can't be used in\nGen 4.");
+
+TEST("The team checker tells a higher tier from a later generation")
+{
+    struct FrontierProblemInfo problem;
+
+    ZeroPlayerPartyMons();
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_SINGLES, SMOGON(4, FRONTIER_TIER_OU));
+
+    GivePlayerMon(0, SPECIES_MEWTWO, 50, ITEM_NONE, MOVE_PSYCHIC);
+    EXPECT(!IsMonLegalForFrontierRule(&gParties[B_TRAINER_PLAYER][0], &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_SPECIES);
+    GivePlayerMon(1, SPECIES_SYLVEON, 50, ITEM_NONE, MOVE_SWIFT);
+    EXPECT(!IsMonLegalForFrontierRule(&gParties[B_TRAINER_PLAYER][1], &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_SPECIES_GEN);
+    GivePlayerMon(2, SPECIES_CHARIZARD, 50, ITEM_NONE, MOVE_HURRICANE);
+    EXPECT(!IsMonLegalForFrontierRule(&gParties[B_TRAINER_PLAYER][2], &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_MOVE_GEN);
+    GivePlayerMon(3, SPECIES_CHARIZARD, 50, ITEM_ASSAULT_VEST, MOVE_FLAMETHROWER);
+    EXPECT(!IsMonLegalForFrontierRule(&gParties[B_TRAINER_PLAYER][3], &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_ITEM_GEN);
+
+    gSpecialVar_0x8004 = 0;
+    gSpecialVar_0x8005 = FRONTIER_LVL_OPEN;
+    BufferNextIneligibleFrontierMon();
+    EXPECT(StringCompare(gStringVar4, sText_TierProblem) == 0);
+    BufferNextIneligibleFrontierMon();
+    EXPECT(StringCompare(gStringVar4, sText_GenProblem) == 0);
+}
+
+TEST("Every Pokémon that can't enter is named with its reason")
+{
+    struct Pokemon *party = gParties[B_TRAINER_PLAYER];
+    struct FrontierProblemInfo problem;
+    bool32 isEgg = TRUE;
+    // Slot 3 is the only one with nothing to report
+    static const u8 nextSlots[] = {1, 2, 3, 5, 6};
+    static const u8 sText_SameSpecies[] = _("Only one Tyranitar can enter,\nbut you have more than one.");
+    static const u8 sText_SameItem[] = _("Leftovers is held more than\nonce, but items can't repeat.");
+    u32 i;
+
+    ZeroPlayerPartyMons();
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_SINGLES, VANILLA);
+    GivePlayerMon(0, SPECIES_JIRACHI, 50, ITEM_NONE, MOVE_PSYCHIC);
+    GivePlayerMon(1, SPECIES_GYARADOS, 60, ITEM_NONE, MOVE_WATERFALL);
+    GivePlayerMon(2, SPECIES_TOGEPI, 5, ITEM_NONE, MOVE_POUND);
+    SetMonData(&party[2], MON_DATA_IS_EGG, &isEgg);
+    GivePlayerMon(3, SPECIES_TYRANITAR, 50, ITEM_LEFTOVERS, MOVE_CRUNCH);
+    GivePlayerMon(4, SPECIES_TYRANITAR, 50, ITEM_NONE, MOVE_CRUNCH);
+    GivePlayerMon(5, SPECIES_FLYGON, 50, ITEM_LEFTOVERS, MOVE_EARTHQUAKE);
+
+    // Open Level lets Gyarados in
+    EXPECT(CanMonEnterFrontier(&party[1], FRONTIER_LVL_OPEN, &problem));
+
+    EXPECT(!CanMonEnterFrontier(&party[0], FRONTIER_LVL_50, &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_LEGENDARY);
+    EXPECT(!CanMonEnterFrontier(&party[1], FRONTIER_LVL_50, &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_LEVEL);
+    EXPECT(!CanMonEnterFrontier(&party[2], FRONTIER_LVL_50, &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_EGG);
+
+    gSpecialVar_0x8004 = 0;
+    gSpecialVar_0x8005 = FRONTIER_LVL_50;
+    for (i = 0; i < ARRAY_COUNT(nextSlots); i++)
+    {
+        BufferNextIneligibleFrontierMon();
+        EXPECT_EQ(gSpecialVar_Result, TRUE);
+        EXPECT_EQ(gSpecialVar_0x8004, nextSlots[i]);
+        if (i == 3)
+            EXPECT(StringCompare(gStringVar4, sText_SameSpecies) == 0);
+        if (i == 4)
+            EXPECT(StringCompare(gStringVar4, sText_SameItem) == 0);
+    }
+    BufferNextIneligibleFrontierMon();
+    EXPECT_EQ(gSpecialVar_Result, FALSE);
+
+    // The entry check agrees: only Tyranitar and Flygon can go, and three must
+    gSpecialVar_Result = FRONTIER_LVL_50;
+    gSpecialVar_0x8004 = FRONTIER_UTIL_FUNC_CHECK_INELIGIBLE;
+    CallFrontierUtilFunc();
+    EXPECT_EQ(gSpecialVar_0x8004, TRUE);
+}
+
+TEST("The Pyramid names a held item")
+{
+    struct FrontierProblemInfo problem;
+
+    ZeroPlayerPartyMons();
+    SetChallenge(FRONTIER_FACILITY_PYRAMID, FRONTIER_MODE_SINGLES, VANILLA);
+    GivePlayerMon(0, SPECIES_GYARADOS, 50, ITEM_LEFTOVERS, MOVE_WATERFALL);
+    EXPECT(!CanMonEnterFrontier(&gParties[B_TRAINER_PLAYER][0], FRONTIER_LVL_50, &problem));
+    EXPECT_EQ(problem.kind, FRONTIER_PROBLEM_HELD_ITEM);
+    EXPECT_EQ(problem.value, ITEM_LEFTOVERS);
 }
 
 TEST("Only Smogon tiers under Anything Goes have Sleep Clause")

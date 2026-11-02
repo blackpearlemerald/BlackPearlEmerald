@@ -209,13 +209,20 @@ bool32 IsMonLegalForFrontierRule(struct Pokemon *mon, struct FrontierProblemInfo
     struct FrontierProblemInfo found = {FRONTIER_PROBLEM_NONE, 0};
     u32 i;
 
+    enum Species species = GetMonData(mon, MON_DATA_SPECIES);
+    u32 genBit = 1u << FRONTIER_RULE_GEN(rule);
+    u16 anythingGoes = FRONTIER_RULE(FRONTIER_RULES_SMOGON, FRONTIER_RULE_GEN(rule), FRONTIER_TIER_ANYTHING_GOES, 0);
+
     if (FRONTIER_RULE_KIND(rule) != FRONTIER_RULES_SMOGON)
         return TRUE;
 
-    if (!FrontierRuleAllowsSpecies(rule, doubles, GetMonData(mon, MON_DATA_SPECIES)))
+    // Anything Goes holds every Pokémon the generation has, so the rest are in higher tiers.
+    if (!FrontierRuleAllowsSpecies(anythingGoes, doubles, species))
+        found.kind = FRONTIER_PROBLEM_SPECIES_GEN;
+    else if (!FrontierRuleAllowsSpecies(rule, doubles, species))
         found.kind = FRONTIER_PROBLEM_SPECIES;
     else if (!FrontierRuleAllowsItem(rule, doubles, item))
-        found = (struct FrontierProblemInfo){FRONTIER_PROBLEM_ITEM, item};
+        found = (struct FrontierProblemInfo){(gFrontierItemGens[item] & genBit) ? FRONTIER_PROBLEM_ITEM : FRONTIER_PROBLEM_ITEM_GEN, item};
     else if (!FrontierRuleAllowsAbility(rule, doubles, ability))
         found = (struct FrontierProblemInfo){FRONTIER_PROBLEM_ABILITY, ability};
 
@@ -224,7 +231,7 @@ bool32 IsMonLegalForFrontierRule(struct Pokemon *mon, struct FrontierProblemInfo
         enum Move move = GetMonData(mon, MON_DATA_MOVE1 + i);
 
         if (move != MOVE_NONE && !FrontierRuleAllowsMove(rule, doubles, move))
-            found = (struct FrontierProblemInfo){FRONTIER_PROBLEM_MOVE, move};
+            found = (struct FrontierProblemInfo){(gFrontierMoveGens[move] & genBit) ? FRONTIER_PROBLEM_MOVE : FRONTIER_PROBLEM_MOVE_GEN, move};
     }
     if (problem != NULL)
         *problem = found;

@@ -321,13 +321,125 @@ void SetFrontierRuleForChallenge(void)
         gSaveBlock2Ptr->frontier.lvlMode = FRONTIER_LVL_50;
 }
 
-static const u8 sText_SpeciesIllegal[] = _("{STR_VAR_1} isn't allowed\nunder these rules.");
-static const u8 sText_MoveIllegal[] = _("{STR_VAR_1} knows {STR_VAR_2},\nwhich these rules don't allow.");
-static const u8 sText_ItemIllegal[] = _("{STR_VAR_1} holds {STR_VAR_2},\nwhich these rules don't allow.");
-static const u8 sText_AbilityIllegal[] = _("{STR_VAR_1} has {STR_VAR_2},\nwhich these rules don't allow.");
+// The checks one Pokémon must pass on its own to enter. Whether the team repeats
+// a species or an item is left to the caller.
+bool32 CanMonEnterFrontier(struct Pokemon *mon, u32 lvlMode, struct FrontierProblemInfo *problem)
+{
+    struct FrontierProblemInfo found = {FRONTIER_PROBLEM_NONE, 0};
+    enum Species species = GetMonData(mon, MON_DATA_SPECIES_OR_EGG);
+    enum Item item = GetMonData(mon, MON_DATA_HELD_ITEM);
 
-// Puts the reason the next illegal party Pokémon can't enter in gStringVar4.
-// VAR_0x8004 is the slot to look from, and VAR_RESULT says whether there was one.
+    if (species == SPECIES_EGG)
+        found.kind = FRONTIER_PROBLEM_EGG;
+    else if (GetMonData(mon, MON_DATA_HP) == 0 && FlagGet(FLAG_NUZLOCKE))
+        found.kind = FRONTIER_PROBLEM_FAINTED;
+    else if (VarGet(VAR_FRONTIER_FACILITY) == FRONTIER_FACILITY_PYRAMID && item != ITEM_NONE)
+        found = (struct FrontierProblemInfo){FRONTIER_PROBLEM_HELD_ITEM, item};
+    else if (!IsMonLegalForFrontierRule(mon, &found))
+        ;
+    else if (gSpeciesInfo[species].isFrontierBanned && !IsFrontierSmogonRule())
+        found.kind = FRONTIER_PROBLEM_LEGENDARY;
+    else if (lvlMode == FRONTIER_LVL_50 && GetMonData(mon, MON_DATA_LEVEL) > FRONTIER_MAX_LEVEL_50)
+        found.kind = FRONTIER_PROBLEM_LEVEL;
+
+    if (problem != NULL)
+        *problem = found;
+    return found.kind == FRONTIER_PROBLEM_NONE;
+}
+
+static const u8 sText_RuleGen[] = _("Gen {STR_VAR_3}");
+static const u8 sText_RuleNationalDex[] = _("National Dex");
+static const u8 *const sRuleTierNames[FRONTIER_TIER_COUNT] =
+{
+    [FRONTIER_TIER_ANYTHING_GOES] = COMPOUND_STRING(" AG"),
+    [FRONTIER_TIER_UBERS]         = COMPOUND_STRING(" Ubers"),
+    [FRONTIER_TIER_OU]            = COMPOUND_STRING(" OU"),
+    [FRONTIER_TIER_UU]            = COMPOUND_STRING(" UU"),
+    [FRONTIER_TIER_RU]            = COMPOUND_STRING(" RU"),
+};
+
+static const u8 *const sProblemTexts[] =
+{
+    [FRONTIER_PROBLEM_SPECIES]      = COMPOUND_STRING("{STR_VAR_1} is in a higher tier\nthan {STR_VAR_3}."),
+    [FRONTIER_PROBLEM_SPECIES_GEN]  = COMPOUND_STRING("{STR_VAR_1} can't be used in\n{STR_VAR_3}."),
+    [FRONTIER_PROBLEM_MOVE]         = COMPOUND_STRING("{STR_VAR_1} knows {STR_VAR_2},\nwhich {STR_VAR_3} bans."),
+    [FRONTIER_PROBLEM_MOVE_GEN]     = COMPOUND_STRING("{STR_VAR_1} knows {STR_VAR_2},\nwhich isn't in {STR_VAR_3}."),
+    [FRONTIER_PROBLEM_ITEM]         = COMPOUND_STRING("{STR_VAR_1} holds {STR_VAR_2},\nwhich {STR_VAR_3} bans."),
+    [FRONTIER_PROBLEM_ITEM_GEN]     = COMPOUND_STRING("{STR_VAR_1} holds {STR_VAR_2},\nwhich isn't in {STR_VAR_3}."),
+    [FRONTIER_PROBLEM_ABILITY]      = COMPOUND_STRING("{STR_VAR_1} has {STR_VAR_2},\nwhich {STR_VAR_3} bans."),
+    [FRONTIER_PROBLEM_EGG]          = COMPOUND_STRING("An EGG can't enter."),
+    [FRONTIER_PROBLEM_FAINTED]      = COMPOUND_STRING("{STR_VAR_1} has fainted for good\nand can't enter."),
+    [FRONTIER_PROBLEM_LEGENDARY]    = COMPOUND_STRING("{STR_VAR_1} is a legendary\nPOKéMON these rules don't allow."),
+    [FRONTIER_PROBLEM_LEVEL]        = COMPOUND_STRING("{STR_VAR_1} is above Level 50."),
+    [FRONTIER_PROBLEM_HELD_ITEM]    = COMPOUND_STRING("{STR_VAR_1} holds {STR_VAR_2}.\nNo items may be brought in."),
+    [FRONTIER_PROBLEM_SAME_SPECIES] = COMPOUND_STRING("Only one {STR_VAR_2} can enter,\nbut you have more than one."),
+    [FRONTIER_PROBLEM_SAME_ITEM]    = COMPOUND_STRING("{STR_VAR_2} is held more than\nonce, but items can't repeat."),
+};
+
+// The generation, and the tier for bans: "Gen 4 OU" or "National Dex".
+static void BufferRuleName(bool32 withTier)
+{
+    u16 rule = GetActiveFrontierRule();
+
+    if (FRONTIER_RULE_GEN(rule) == FRONTIER_GEN_NATIONAL_DEX)
+    {
+        StringCopy(gStringVar4, sText_RuleNationalDex);
+    }
+    else
+    {
+        ConvertIntToDecimalStringN(gStringVar3, FRONTIER_RULE_GEN(rule), STR_CONV_MODE_LEFT_ALIGN, 1);
+        StringExpandPlaceholders(gStringVar4, sText_RuleGen);
+    }
+    if (withTier)
+        StringAppend(gStringVar4, sRuleTierNames[FRONTIER_RULE_TIER(rule)]);
+    StringCopy(gStringVar3, gStringVar4);
+}
+
+static void BufferFrontierProblem(struct Pokemon *mon, struct FrontierProblemInfo *problem)
+{
+    GetMonNickname(mon, gStringVar1);
+    switch (problem->kind)
+    {
+    case FRONTIER_PROBLEM_MOVE:
+    case FRONTIER_PROBLEM_MOVE_GEN:
+        StringCopy(gStringVar2, GetMoveName(problem->value));
+        break;
+    case FRONTIER_PROBLEM_ITEM:
+    case FRONTIER_PROBLEM_ITEM_GEN:
+    case FRONTIER_PROBLEM_HELD_ITEM:
+    case FRONTIER_PROBLEM_SAME_ITEM:
+        CopyItemName(problem->value, gStringVar2);
+        break;
+    case FRONTIER_PROBLEM_ABILITY:
+        StringCopy(gStringVar2, gAbilitiesInfo[problem->value].name);
+        break;
+    case FRONTIER_PROBLEM_SAME_SPECIES:
+        StringCopy(gStringVar2, GetSpeciesName(problem->value));
+        break;
+    default:
+        break;
+    }
+    switch (problem->kind)
+    {
+    case FRONTIER_PROBLEM_SPECIES_GEN:
+    case FRONTIER_PROBLEM_MOVE_GEN:
+    case FRONTIER_PROBLEM_ITEM_GEN:
+        BufferRuleName(FALSE);
+        break;
+    case FRONTIER_PROBLEM_SPECIES:
+    case FRONTIER_PROBLEM_MOVE:
+    case FRONTIER_PROBLEM_ITEM:
+    case FRONTIER_PROBLEM_ABILITY:
+        BufferRuleName(TRUE);
+        break;
+    default:
+        break;
+    }
+    StringExpandPlaceholders(gStringVar4, sProblemTexts[problem->kind]);
+}
+
+// Puts the reason the next party Pokémon breaking the Smogon rules can't enter in
+// gStringVar4. VAR_0x8004 is the slot to look from, and VAR_RESULT says whether there was one.
 void BufferNextIllegalFrontierMon(void)
 {
     u32 i;
@@ -342,25 +454,57 @@ void BufferNextIllegalFrontierMon(void)
         if (IsMonLegalForFrontierRule(mon, &problem))
             continue;
 
-        GetMonNickname(mon, gStringVar1);
-        switch (problem.kind)
-        {
-        default:
-            StringExpandPlaceholders(gStringVar4, sText_SpeciesIllegal);
-            break;
-        case FRONTIER_PROBLEM_MOVE:
-            StringCopy(gStringVar2, GetMoveName(problem.value));
-            StringExpandPlaceholders(gStringVar4, sText_MoveIllegal);
-            break;
-        case FRONTIER_PROBLEM_ITEM:
-            CopyItemName(problem.value, gStringVar2);
-            StringExpandPlaceholders(gStringVar4, sText_ItemIllegal);
-            break;
-        case FRONTIER_PROBLEM_ABILITY:
-            StringCopy(gStringVar2, gAbilitiesInfo[problem.value].name);
-            StringExpandPlaceholders(gStringVar4, sText_AbilityIllegal);
-            break;
-        }
+        BufferFrontierProblem(mon, &problem);
+        gSpecialVar_0x8004 = i + 1;
+        gSpecialVar_Result = TRUE;
+        return;
+    }
+    gSpecialVar_Result = FALSE;
+}
+
+// What stops this Pokémon from entering, given the ones before it. A repeated species
+// or item is only named at its second Pokémon, among those that pass on their own.
+static void GetFrontierEntryProblem(u32 slot, u32 lvlMode, struct FrontierProblemInfo *problem)
+{
+    struct Pokemon *party = gParties[B_TRAINER_PLAYER];
+    enum Species species = GetMonData(&party[slot], MON_DATA_SPECIES_OR_EGG);
+    enum Item item = GetMonData(&party[slot], MON_DATA_HELD_ITEM);
+    u32 i, sameSpecies = 0, sameItem = 0;
+
+    if (!CanMonEnterFrontier(&party[slot], lvlMode, problem))
+        return;
+    for (i = 0; i < slot; i++)
+    {
+        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE || !CanMonEnterFrontier(&party[i], lvlMode, NULL))
+            continue;
+        if (GetMonData(&party[i], MON_DATA_SPECIES_OR_EGG) == species)
+            sameSpecies++;
+        else if (item != ITEM_NONE && GetMonData(&party[i], MON_DATA_HELD_ITEM) == item)
+            sameItem++;
+    }
+    if (sameSpecies == 1)
+        *problem = (struct FrontierProblemInfo){FRONTIER_PROBLEM_SAME_SPECIES, species};
+    else if (sameSpecies == 0 && sameItem == 1 && IsFrontierItemClauseOn())
+        *problem = (struct FrontierProblemInfo){FRONTIER_PROBLEM_SAME_ITEM, item};
+}
+
+// The same for every reason a party Pokémon can't enter, after the entry check
+// failed. VAR_0x8005 is the level mode.
+void BufferNextIneligibleFrontierMon(void)
+{
+    u32 i;
+
+    for (i = gSpecialVar_0x8004; i < PARTY_SIZE; i++)
+    {
+        struct FrontierProblemInfo problem;
+
+        if (GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_SPECIES_OR_EGG) == SPECIES_NONE)
+            continue;
+        GetFrontierEntryProblem(i, gSpecialVar_0x8005, &problem);
+        if (problem.kind == FRONTIER_PROBLEM_NONE)
+            continue;
+
+        BufferFrontierProblem(&gParties[B_TRAINER_PLAYER][i], &problem);
         gSpecialVar_0x8004 = i + 1;
         gSpecialVar_Result = TRUE;
         return;
