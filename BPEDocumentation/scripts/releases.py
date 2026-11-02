@@ -124,7 +124,7 @@ def copy_frontend(destination):
         if relative == "js":
             skip.add("data")
         if relative == "calc/data":
-            skip.add("bpe_calc_data.json")
+            skip |= {"bpe_calc_data.json", "bpe_frontier_sets.json"}
         if relative == "calc/img":
             skip.add("newhd")
         return set(names) & skip
@@ -231,6 +231,23 @@ def validate_facilities(path):
     check_ids(tables["brains"])
 
 
+def validate_calc_frontier(path):
+    """The calculator's Frontier sets are the Battle Facilities page's, row for row,
+    since the page links a set to the calculator by its row."""
+    calc_path = Path(path) / "calc/data/bpe_frontier_sets.json"
+    count = read_json(Path(path) / "calc/data/bpe_calc_data.json").get("frontier_sets")
+    if not count:
+        if calc_path.exists():
+            raise ValueError("Calculator Frontier sets are present but not announced.")
+        return
+    facilities = Path(path) / "data/frontier_sets.json"
+    if not calc_path.is_file() or not facilities.is_file():
+        raise ValueError("Incomplete documentation: calc/data/bpe_frontier_sets.json")
+    rows = read_json(calc_path).get("sets")
+    if not isinstance(rows, list) or len(rows) != count or count != len(read_json(facilities)["sets"]):
+        raise ValueError("The calculator's Frontier sets do not match the Battle Facilities page.")
+
+
 def validate_snapshot(path, shared=False, require_encounters=False, require_history=False, require_features=False):
     path = Path(path)
     required = ["index.html", "pokedex.html", "items.html", "trainers.html", "patcher.html", "search.html",
@@ -259,6 +276,7 @@ def validate_snapshot(path, shared=False, require_encounters=False, require_hist
         validate_trainer_ai(path)
     if (path / "data/facilities.json").is_file():
         validate_facilities(path)
+    validate_calc_frontier(path)
     if len(pokedex) < 300 or len(items) < 100 or len(world.get("maps", [])) < 100:
         raise ValueError("Documentation export is unexpectedly incomplete.")
     species_with_encounters = 0

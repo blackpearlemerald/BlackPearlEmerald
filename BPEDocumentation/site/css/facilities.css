@@ -29,7 +29,52 @@
 }
 
 .sets-controls label { display: grid; gap: 5px; color: #8fa6b9; font-size: 13px; font-weight: 600; }
-.sets-controls .sets-search { flex: 1 1 200px; }
+.sets-controls .sets-search { display: flex; flex: 1 1 280px; align-items: flex-end; gap: 12px; }
+.sets-controls .sets-search > label:first-child { flex: 1 1 auto; }
+
+/* Off: search the chosen rules' sets. On: search every Frontier set. */
+.sets-controls .sets-scope {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  color: #cbd9e5;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.sets-controls .sets-scope input {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  min-height: 0;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 11px;
+  background: #0f1b28;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.sets-controls .sets-scope input::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #8fa6b9;
+  transition: transform 0.15s, background-color 0.15s;
+}
+
+.sets-controls .sets-scope input:checked { border-color: #4db87a; background: #2f7a50; }
+.sets-controls .sets-scope input:checked::before { background: #e8eef5; transform: translateX(16px); }
 
 .sets-controls select, .sets-controls input {
   box-sizing: border-box;
@@ -60,7 +105,26 @@
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: 12px;
   background: linear-gradient(145deg, rgba(23, 38, 52, 0.98), rgba(15, 27, 40, 0.98));
+  cursor: pointer;
+  transition: border-color 0.15s;
 }
+
+.set-card:hover { border-color: rgba(99, 211, 147, 0.5); }
+.set-side { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; }
+
+.set-calc {
+  padding: 2px 9px;
+  border: 1px solid rgba(99, 211, 147, 0.44);
+  border-radius: 6px;
+  color: #a1f4c4;
+  background: rgba(77, 184, 122, 0.12);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.set-calc:hover { background: rgba(77, 184, 122, 0.26); }
+.set-calc:focus-visible { outline: 2px solid #a1f4c4; outline-offset: 2px; }
 
 .set-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
 .set-mon { display: flex; align-items: center; gap: 8px; min-width: 0; color: #f3f7fb; font-size: 16px; font-weight: 650; text-decoration: none; }

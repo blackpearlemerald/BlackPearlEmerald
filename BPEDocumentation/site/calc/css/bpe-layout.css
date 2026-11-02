@@ -95,16 +95,66 @@ body {
 .bpe-option-check {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     cursor: pointer;
     color: var(--bpe-calc-text);
 }
 
+.bpe-option-check[hidden],
+.bpe-option-error[hidden] {
+    display: none;
+}
+
+/* On/off options are switches: a track with a knob that slides right when on. */
 .bpe-option-check input {
-    width: 16px;
-    height: 16px;
+    position: relative;
+    flex: 0 0 auto;
+    width: 34px;
+    height: 18px;
     margin: 0;
-    accent-color: var(--bpe-calc-accent);
+    border: 1px solid var(--bpe-calc-border);
+    border-radius: 9px;
+    background: var(--bpe-calc-control);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+}
+
+.bpe-option-check input::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bpe-calc-text);
+    transition: transform 0.15s;
+}
+
+.bpe-option-check input:checked {
+    border-color: var(--bpe-calc-accent);
+    background: var(--bpe-calc-accent);
+}
+
+.bpe-option-check input:checked::before {
+    background: var(--bpe-calc-bg);
+    transform: translateX(16px);
+}
+
+.bpe-option-check input:disabled {
+    opacity: 0.6;
+    cursor: progress;
+}
+
+.bpe-option-check input:focus-visible {
+    outline: 2px solid var(--bpe-calc-accent);
+    outline-offset: 2px;
+}
+
+.bpe-option-error {
+    color: #ff8a80;
 }
 
 .wrapper hr {
@@ -891,8 +941,18 @@ body {
     }
 
     .bpe-option-check input {
-        width: 20px;
-        height: 20px;
+        width: 40px;
+        height: 22px;
+        border-radius: 11px;
+    }
+
+    .bpe-option-check input::before {
+        width: 16px;
+        height: 16px;
+    }
+
+    .bpe-option-check input:checked::before {
+        transform: translateX(18px);
     }
 
     .wrapper hr {

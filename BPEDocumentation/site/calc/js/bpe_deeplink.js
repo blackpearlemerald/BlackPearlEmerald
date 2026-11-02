@@ -7,6 +7,12 @@
  *
  * That set is loaded on the opposing side, which also brings up the rest of
  * that trainer's team.
+ *
+ * The Battle Facilities page links a Battle Frontier set with
+ *     calc/index.html#frontier=<set id>&level=<level>
+ * where the id is the set's row in the game's table and the level the one the
+ * page's rule set fights at. That turns the Frontier sets on and loads the set
+ * on the opposing side at that level.
  */
 (function (root) {
   "use strict";
@@ -72,9 +78,33 @@
     return fallback;
   }
 
+  function parseFrontier() {
+    var id = (location.hash || "").match(/[#&]frontier=(\d+)/);
+    var level = (location.hash || "").match(/[#&]level=(\d+)/);
+    return id ? { id: Number(id[1]), level: level ? Number(level[1]) : null } : null;
+  }
+
   // Read the link before anything else runs: the calculator rewrites the URL
   // when it sets its generation, which drops the hash.
   var requested = parseHash();
+  var frontier = parseFrontier();
+
+  BPE.ready(function (data) {
+    if (!frontier) return;
+    if (!data.frontier_sets) {
+      console.warn("[bpe] this release has no Battle Frontier sets");
+      return;
+    }
+    BPE.showFrontier().done(function () {
+      var id = BPE.frontierId(frontier.id);
+      if (!id) {
+        console.warn("[bpe] no Battle Frontier set", frontier.id);
+        return;
+      }
+      BPE.loadOpposingSet(id);
+      if (frontier.level >= 1 && frontier.level <= 100) $("#p2 .level").val(frontier.level).change();
+    });
+  });
 
   BPE.ready(function (data) {
     var mon = requested;

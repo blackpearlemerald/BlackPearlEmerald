@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "BPEDocumentation/scripts"))
 sys.path.insert(0, str(ROOT / "BPETools"))
 
+import build_calc_data  # noqa: E402
 import build_facilities  # noqa: E402
 import common as C  # noqa: E402
 import generate_frontier_sets as generator  # noqa: E402
@@ -179,6 +180,65 @@ class AvailabilityAndValidation(unittest.TestCase):
             (site / "data/frontier_sets.json").write_text("{}", encoding="utf-8")
             with self.assertRaises(ValueError):
                 releases.validate_facilities(site)
+
+
+class CalculatorSets(unittest.TestCase):
+    """The calculator's Frontier sets, which the page links to by row."""
+
+    def spell(self):
+        return {"species": str.title, "item": lambda i: None if i == "NONE" else i.title(),
+                "ability": lambda a: None if a == "NONE" else a.title(), "mega": lambda s, i: None,
+                "move": lambda m, hp: "Hidden Power " + hp.title() if m == "HIDDEN_POWER" else m.title()}
+
+    def export(self, folder):
+        header = Path(folder) / "frontier_sets.h"
+        header.write_text("#define IVS_FIRE TRAINER_PARTY_IVS(31, 30, 31, 30, 30, 31)\n" + synthetic_header(), encoding="utf-8")
+        with patch.object(build_facilities, "HEADER_PATH", str(header)), \
+                patch.object(build_facilities, "SETS_FOLDER", folder), \
+                patch.object(build_facilities, "load_generator", return_value=generator):
+            return build_calc_data.frontier_sets(self.spell())
+
+    def test_labels_name_every_rule_set_in_menu_order(self):
+        pools = {"fullDex": {"singles": [0], "doubles": [0]},
+                 "smogon": {"nd": {"singles": {"AG": [0], "OU": [0, 1]}}, "9": {"doubles": {"Ubers": [0]}}}}
+        labels = build_calc_data.frontier_labels(pools)
+        self.assertEqual(labels[0], "Frontier: Full Dex; Full Dex Doubles; National Dex AG, OU; Gen 9 Doubles Ubers")
+        self.assertEqual(labels[1], "Frontier: National Dex OU")
+
+    def test_rows_follow_the_game_table(self):
+        with tempfile.TemporaryDirectory() as folder:
+            data = self.export(folder)
+        self.assertEqual(len(data["sets"]), 24)
+        first = data["sets"][0]
+        self.assertEqual(data["species"][first[0]], "Garchomp")
+        self.assertEqual(data["items"][first[1]], "Leftovers")
+        self.assertEqual(data["ivs"][first[8]], {"hp": 31, "at": 30, "df": 31, "sp": 30, "sa": 30, "sd": 31})
+        self.assertEqual([data["moves"][m] for m in first[9:]], ["Earthquake", "Hidden Power Fire"])
+        self.assertEqual(data["labels"][first[5]], "Frontier: Full Dex; National Dex AG; Gen 1 AG")
+        self.assertEqual(first[6], 100)  # also in a Smogon pool
+        self.assertEqual(data["sets"][1][1:3], [-1, -1])
+
+    def test_a_source_without_sets_has_none(self):
+        with tempfile.TemporaryDirectory() as folder:
+            with patch.object(build_facilities, "SETS_FOLDER", str(Path(folder) / "missing")):
+                self.assertIsNone(build_calc_data.frontier_sets(self.spell()))
+
+    def test_validation_matches_the_page(self):
+        with tempfile.TemporaryDirectory() as folder:
+            site = Path(folder)
+            (site / "calc/data").mkdir(parents=True)
+            (site / "data").mkdir()
+            (site / "data/frontier_sets.json").write_text('{"sets": [[0], [1]]}', encoding="utf-8")
+            (site / "calc/data/bpe_calc_data.json").write_text('{"frontier_sets": 2}', encoding="utf-8")
+            calc = site / "calc/data/bpe_frontier_sets.json"
+            calc.write_text('{"sets": [[0], [1]]}', encoding="utf-8")
+            releases.validate_calc_frontier(site)
+            calc.write_text('{"sets": [[0]]}', encoding="utf-8")
+            with self.assertRaises(ValueError):
+                releases.validate_calc_frontier(site)
+            (site / "calc/data/bpe_calc_data.json").write_text("{}", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                releases.validate_calc_frontier(site)
 
 
 class GameHeader(unittest.TestCase):

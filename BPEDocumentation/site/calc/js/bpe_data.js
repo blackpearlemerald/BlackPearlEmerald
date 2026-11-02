@@ -16,7 +16,7 @@
   var GEN = 9;                       // BPE plays by the newest mechanics
   // The query changes whenever the data gains fields this code needs, so a
   // browser does not pair new code with a cached older file.
-  var DATA_URL = "./data/bpe_calc_data.json?2";
+  var DATA_URL = "./data/bpe_calc_data.json?3";
 
   var BPE = root.BPE = root.BPE || {};
   var waiting = [];
@@ -195,7 +195,7 @@
   // later fights of a rematchable trainer. Both choices are the player's and
   // stay in this browser; Nuzlocke and no rematches are the defaults.
   var OPTIONS_KEY = "bpeCalcOptions";
-  var DEFAULT_OPTIONS = { mode: "nuzlocke", rematches: false };
+  var DEFAULT_OPTIONS = { mode: "nuzlocke", rematches: false, frontier: false };
 
   function readOptions() {
     var options = $.extend({}, DEFAULT_OPTIONS);
@@ -203,6 +203,7 @@
       var saved = JSON.parse(localStorage.getItem(OPTIONS_KEY) || "{}");
       if (saved.mode === "standard") options.mode = "standard";
       if (saved.rematches === true) options.rematches = true;
+      if (saved.frontier === true) options.frontier = true;
     } catch (error) { /* private mode or a damaged value: the defaults */ }
     return options;
   }
@@ -250,20 +251,82 @@
   // The id a set of the data goes by now, or null while it is not on offer.
   BPE.shownId = function (id) { return shownId[id] || null; };
 
+  // ── Battle Frontier sets ──────────────────────────────────────────────────
+  // The sets the Battle Frontier, Tents and Trainer Hill draw from are a file
+  // of their own (data/bpe_frontier_sets.json), loaded the first time they are
+  // shown. Row n is set n of the game's table, the id the Battle Facilities
+  // page links with. A set's name lists the rule sets that use it, so the set
+  // search finds "Frontier", "Full Dex" or "Gen 9 OU".
+  var FRONTIER_URL = "./data/bpe_frontier_sets.json?1";
+  var EV_STATS = ["hp", "at", "df", "sa", "sd", "sp"];   // the game's order for set EVs
+  var frontierSets = null;       // species -> name -> set
+  var frontierIds = [];          // the game's set id -> "<Species> (<name>)"
+  var isFrontierId = {};
+  var frontierLoad = null;
+
+  function expandFrontier(data) {
+    frontierSets = {};
+    data.sets.forEach(function (row, id) {
+      var species = data.species[row[0]];
+      var set = {
+        frontier_id: id,
+        level: row[6],
+        nature: data.natures[row[3]],
+        evs: {},
+        moves: row.slice(9).map(function (move) { return data.moves[move]; })
+      };
+      if (row[1] >= 0) set.item = data.items[row[1]];
+      if (row[2] >= 0) set.ability = data.abilities[row[2]];
+      if (row[7] >= 0) set.mega = data.species[row[7]];
+      if (row[8] >= 0) set.ivs = data.ivs[row[8]];
+      data.spreads[row[4]].forEach(function (value, i) { if (value) set.evs[EV_STATS[i]] = value; });
+      var sets = frontierSets[species] = frontierSets[species] || {};
+      var name = data.labels[row[5]], unique = name;
+      for (var n = 2; sets[unique]; n++) unique = name + " (" + n + ")";
+      sets[unique] = set;
+      frontierIds[id] = setId(species, unique);
+      isFrontierId[frontierIds[id]] = true;
+    });
+  }
+
+  function loadFrontier() {
+    if (!frontierLoad) {
+      frontierLoad = $.getJSON(FRONTIER_URL).then(expandFrontier);
+      frontierLoad.fail(function (jqXHR, textStatus, error) {
+        console.error("[bpe] could not load " + FRONTIER_URL + ": " + textStatus, error);
+        frontierLoad = null;
+      });
+    }
+    return frontierLoad;
+  }
+
+  // Show the Frontier's sets, loading them first if need be.
+  BPE.showFrontier = function () {
+    return loadFrontier().then(function () {
+      if (!BPE.options.frontier) BPE.setOptions({ frontier: true });
+    });
+  };
+
+  // "<Species> (<name>)" for the game's set id, once the sets are loaded.
+  BPE.frontierId = function (id) { return frontierIds[id] || null; };
+
   // The trainers become this generation's sets, beside the player's own
-  // imported ones, which stay.
+  // imported ones, which stay; so do the Frontier's when they are shown.
   function loadSets() {
     var target = root.SETDEX_SV, species, setName;
     for (species in target) {
       for (setName in target[species]) {
-        if (target[species][setName].tr_id != null) delete target[species][setName];
+        var old = target[species][setName];
+        if (old.tr_id != null || old.frontier_id != null) delete target[species][setName];
       }
     }
     BPE.sets = trainerSets(BPE.data.formatted_sets, BPE.options);
-    for (species in BPE.sets) {
-      target[species] = target[species] || {};
-      for (setName in BPE.sets[species]) target[species][setName] = BPE.sets[species][setName];
-    }
+    [BPE.sets, BPE.options.frontier && frontierSets].forEach(function (sets) {
+      for (species in sets || {}) {
+        target[species] = target[species] || {};
+        for (setName in sets[species]) target[species][setName] = sets[species][setName];
+      }
+    });
   }
 
   function selectedId(side) {
@@ -288,19 +351,24 @@
     else selector.val(id).change();
   };
 
-  // Change the mode or the rematches. A trainer's Pokémon already on either
-  // side is loaded again as the new choice has it; one that is no longer on
-  // offer (a rematch being hidden) gives way to the calculator's first set.
+  // Change the mode, the rematches or the Frontier sets. A trainer's Pokémon
+  // already on either side is loaded again as the new choice has it; one that
+  // is no longer on offer (a rematch or Frontier set being hidden) gives way
+  // to the calculator's first set.
   BPE.setOptions = function (changes) {
-    var before = ["#p1", "#p2"].map(function (side) { return dataId[selectedId(side)] || null; });
+    var before = ["#p1", "#p2"].map(function (side) {
+      var id = selectedId(side);
+      return { trainer: dataId[id] || null, frontier: !!isFrontierId[id] };
+    });
     $.extend(BPE.options, changes);
     saveOptions();
     loadSets();
     showOptions();
     $(document).trigger("bpe:sets");
     ["#p1", "#p2"].forEach(function (side, index) {
-      if (!before[index]) return;
-      var now = BPE.shownId(before[index]);
+      var was = before[index];
+      if (!was.trainer && !(was.frontier && !BPE.options.frontier)) return;
+      var now = was.trainer && BPE.shownId(was.trainer);
       if (now) BPE.loadSet(side, now);
       else if (typeof getFirstValidSetOption === "function" && getFirstValidSetOption()) {
         BPE.loadSet(side, getFirstValidSetOption().id);
@@ -311,6 +379,7 @@
   function showOptions() {
     $("#bpe-mode-" + BPE.options.mode).prop("checked", true);
     $("#bpe-show-rematches").prop("checked", BPE.options.rematches);
+    $("#bpe-show-frontier").prop("checked", BPE.options.frontier);
   }
 
   $(document).on("change", ".bpe-mode", function () {
@@ -318,6 +387,18 @@
   });
   $(document).on("change", "#bpe-show-rematches", function () {
     BPE.setOptions({ rematches: this.checked });
+  });
+  $(document).on("change", "#bpe-show-frontier", function () {
+    var toggle = this;
+    if (!toggle.checked) {
+      BPE.setOptions({ frontier: false });
+      return;
+    }
+    toggle.disabled = true;
+    BPE.showFrontier().fail(function () {
+      toggle.checked = false;
+      $("#bpe-frontier-error").prop("hidden", false);
+    }).always(function () { toggle.disabled = false; });
   });
 
   function apply(data) {
@@ -330,6 +411,11 @@
     addNames(calc.ABILITIES[GEN], names.abilities);
     addNames(calc.ITEMS[GEN], names.items);
     BPE.data = data;
+    // A release without Frontier sets has no switch for them. Sets shown last
+    // time come back once their file is in; until then they are not on offer.
+    var frontierShown = BPE.options.frontier && !!data.frontier_sets;
+    BPE.options.frontier = false;
+    $("#bpe-frontier-option").prop("hidden", !data.frontier_sets);
     loadSets();
     showOptions();
 
@@ -340,6 +426,7 @@
     waiting.forEach(function (callback) { callback(data); });
     waiting = [];
     $(document).trigger("bpe:data");
+    if (frontierShown) BPE.showFrontier();
   }
 
   function load() {

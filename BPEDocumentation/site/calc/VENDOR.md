@@ -45,6 +45,17 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
   level, so they match the data as written (`BPE.shownId`), and a link to a
   rematch shows the rematches. The data file's URL carries a version query;
   raise it when the data gains fields the code needs.
+- Battle Frontier sets (`js/bpe_data.js`, the "Show Battle Frontier sets"
+  switch beside the rematches): `data/bpe_frontier_sets.json`, written by
+  `build_calc_data.py` from `src/data/battle_frontier/frontier_sets.h`, holds
+  every set the Frontier, Tents and Trainer Hill use. It is loaded the first
+  time the switch is turned on, and `bpe_calc_data.json`'s `frontier_sets`
+  count says whether the release has any (no count, no switch). Row n is set
+  n of the game's table, which is also the Battle Facilities page's id, so
+  `releases.py` checks the two files agree row for row. A set is named for the
+  rule sets that use it ("Frontier: Full Dex; Gen 9 OU, UU"), so the set
+  search finds it by rule set too; it is level 100 if a Smogon rule set uses
+  it and 50 otherwise. The choice is kept in `bpeCalcOptions` with the others.
 - `js/bpe_trainers.js` — the opposing trainer's whole team inside Pokémon 2's
   panel, between its HP and its moves, in party order, with the one that is loaded marked. Clicking loads a team
   member.
@@ -61,7 +72,10 @@ ships the game's trainers instead), `calc/test/`, `*.d.ts` and `*.js.map`.
   `localStorage.bpeBoxParty`. Each tile shows its match-up against the
   trainer's Pokémon; sets spell stats `at`/`df`/`sa`/`sd`/`sp`, so they are
   renamed for the engine, which reads a missing stat as 31 IVs and 0 EVs.
-- `js/bpe_deeplink.js` — `calc.html#mon=...` from the map and the Trainers page.
+- `js/bpe_deeplink.js` — `calc.html#mon=...` from the map and the Trainers page,
+  and `index.html#frontier=<id>&level=<n>` from the Battle Facilities page,
+  which turns the Frontier sets on and loads that set as Pokémon 2 at the
+  level its rule set fights at.
 - `../js/calc_save_import.js`, `../js/save-converter.js` — Import .sav, shared
   with the rest of the site (`BPETools/tests/test_calc_save_import.py` covers
   the reading half).

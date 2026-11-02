@@ -14,6 +14,7 @@
   var tierField = document.getElementById('sets-tier-field');
   var tierSelect = document.getElementById('sets-tier');
   var search = document.getElementById('sets-search');
+  var searchAll = document.getElementById('sets-search-all');
   var summary = document.getElementById('sets-summary');
   var list = document.getElementById('sets-list');
   var more = document.getElementById('sets-more');
@@ -32,6 +33,8 @@
   var tables = null;
   var shownIds = [];
   var shownCount = 0;
+  var usedIn = null;   // set id -> the rule sets that use it, built on the first search of all sets
+  var byName = null;   // every set id, by Pokémon name
 
   function element(name, className, text) {
     var node = document.createElement(name);
@@ -100,11 +103,23 @@
     return row;
   }
 
-  function renderSet(id, rank) {
+  // The calculator loads the set on the opposing side, at the level the chosen
+  // rule set fights at; without one, at the calculator's own level for it.
+  function calcHref(id, level) {
+    return 'calc/index.html#frontier=' + id + (level ? '&level=' + level : '');
+  }
+
+  function renderSet(id, rank, level) {
     var row = tables.sets[id];
     var species = tables.species[row[0]];
     var item = tables.items[row[1]];
     var card = element('article', 'set-card');
+    var href = calcHref(id, level);
+    // The whole card opens the calculator; its own links still go where they say.
+    card.addEventListener('click', function (event) {
+      if (event.target.closest('a') || String(window.getSelection())) return;
+      window.location.href = href;
+    });
     var head = element('div', 'set-head');
     var mon = element('a', 'set-mon');
     mon.href = 'pokemon.html?id=' + encodeURIComponent(species[0]);
@@ -118,7 +133,13 @@
     }
     mon.appendChild(element('span', '', species[1]));
     head.appendChild(mon);
-    if (rank) head.appendChild(element('span', 'set-rank', '#' + rank));
+    var side = element('span', 'set-side');
+    if (rank) side.appendChild(element('span', 'set-rank', '#' + rank));
+    var calc = element('a', 'set-calc', 'Calc');
+    calc.href = href;
+    calc.title = 'Open this set in the damage calculator';
+    side.appendChild(calc);
+    head.appendChild(side);
     card.appendChild(head);
     var details = element('dl', 'set-details');
     var itemLink = 'No item';
@@ -130,6 +151,7 @@
     details.appendChild(detail('Ability', tables.abilities[row[2]] || 'None'));
     details.appendChild(detail('Nature', tables.natures[row[3]]));
     details.appendChild(detail('EVs', formatEvs(tables.spreads[row[4]])));
+    if (!rank && level == null) details.appendChild(detail('Used in', usedIn[id]));
     card.appendChild(details);
     var moves = element('ul', 'set-moves');
     row.slice(5).forEach(function (move) { moves.appendChild(element('li', '', tables.moves[move])); });
@@ -144,6 +166,44 @@
   function currentPool() {
     if (rulesSelect.value === 'fullDex') return tables.pools.fullDex[styleSelect.value];
     return tables.pools.smogon[genSelect.value][styleSelect.value][tierSelect.value];
+  }
+
+  // Full Dex sets fight at Level 50 unless the player picks Open Level; Smogon sets at 100.
+  function currentLevel() {
+    return rulesSelect.value === 'fullDex' ? 50 : 100;
+  }
+
+  // Where each set is used, as the rule menus name it: "Full Dex; Gen 9 OU, UU".
+  function buildUsedIn() {
+    var groups = {};
+    function add(id, group, tier) {
+      var named = groups[id] = groups[id] || {};
+      named[group] = named[group] || [];
+      if (tier) named[group].push(TIER_NAMES[tier] || tier);
+    }
+    ['singles', 'doubles'].forEach(function (style) {
+      (tables.pools.fullDex[style] || []).forEach(function (id) { add(id, 'Full Dex' + (style === 'doubles' ? ' Doubles' : '')); });
+    });
+    Object.keys(tables.pools.smogon).forEach(function (gen) {
+      ['singles', 'doubles'].forEach(function (style) {
+        var tiers = tables.pools.smogon[gen][style];
+        if (!tiers) return;
+        var group = genLabel(gen) + (style === 'doubles' ? ' Doubles' : '');
+        Object.keys(TIER_NAMES).forEach(function (tier) {
+          (tiers[tier] || []).forEach(function (id) { add(id, group, tier); });
+        });
+      });
+    });
+    usedIn = {};
+    Object.keys(groups).forEach(function (id) {
+      usedIn[id] = Object.keys(groups[id]).map(function (group) {
+        var tiers = groups[id][group];
+        return tiers.length ? group + ' ' + tiers.join(', ') : group;
+      }).join('; ');
+    });
+    byName = tables.sets.map(function (row, id) { return id; }).sort(function (a, b) {
+      return tables.species[tables.sets[a][0]][1].localeCompare(tables.species[tables.sets[b][0]][1]) || a - b;
+    });
   }
 
   function genLabel(gen) {
@@ -173,28 +233,33 @@
 
   function showMore() {
     var fragment = document.createDocumentFragment();
+    var level = searchAll.checked ? null : currentLevel();
     shownIds.slice(shownCount, shownCount + PAGE_SIZE).forEach(function (entry) {
-      fragment.appendChild(renderSet(entry[0], entry[1]));
+      fragment.appendChild(renderSet(entry[0], entry[1], level));
     });
     list.appendChild(fragment);
     shownCount = Math.min(shownCount + PAGE_SIZE, shownIds.length);
     more.hidden = shownCount >= shownIds.length;
   }
 
+  // The chosen rule set's sets in the game's order, ranked; or, searching all
+  // sets, every set by name with where it is used.
   function renderSets() {
     var query = fold(search.value.trim());
+    var all = searchAll.checked;
+    if (all && !usedIn) buildUsedIn();
     shownIds = [];
     var species = {};
-    currentPool().forEach(function (id, position) {
+    (all ? byName : currentPool()).forEach(function (id, position) {
       var mon = tables.species[tables.sets[id][0]];
       if (query && fold(mon[1]).indexOf(query) === -1) return;
-      shownIds.push([id, position + 1]);
+      shownIds.push([id, all ? null : position + 1]);
       species[mon[0]] = true;
     });
     var count = shownIds.length;
-    if (!count) summary.textContent = 'No sets for that Pokémon under these rules.';
+    if (!count) summary.textContent = all ? 'No Frontier sets for that Pokémon.' : 'No sets for that Pokémon under these rules.';
     else summary.textContent = count.toLocaleString() + (count === 1 ? ' set' : ' sets') + ' for '
-      + Object.keys(species).length.toLocaleString() + ' Pokémon.';
+      + Object.keys(species).length.toLocaleString() + ' Pokémon' + (all ? ' across every rule set.' : '.');
     list.replaceChildren();
     shownCount = 0;
     showMore();
@@ -204,7 +269,7 @@
     var block = element('div', 'brain-team');
     block.appendChild(element('h4', '', name));
     var grid = element('div', 'sets-grid');
-    ids.forEach(function (id) { grid.appendChild(renderSet(id)); });
+    ids.forEach(function (id) { grid.appendChild(renderSet(id, null, currentLevel())); });
     block.appendChild(grid);
     return block;
   }
@@ -276,6 +341,9 @@
       select.addEventListener('change', update);
     });
     search.addEventListener('input', renderSets);
+    searchAll.addEventListener('change', function () {
+      renderSets();
+    });
     more.addEventListener('click', showMore);
     update();
   }).catch(function () {

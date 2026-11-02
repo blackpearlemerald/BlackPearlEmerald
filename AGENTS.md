@@ -610,6 +610,11 @@ The website's Battle Facilities page (`BPEDocumentation/scripts/build_facilities
 committed `frontier_sets.h`, since a hosted export never builds the ROM and so can't run the
 generator, and its text is in `BPEDocumentation/content/facilities.json`. Commit a fresh header
 with any release that changes sets. The Pokédex's Dusclops tab comes from `sRestoredTutorMoves`.
+Its set browser searches the chosen rule set or, with the "All rule sets" switch, every set.
+Clicking a set opens it in the damage calculator (`calc/index.html#frontier=<set id>&level=<n>`),
+whose "Show Battle Frontier sets" switch loads `calc/data/bpe_frontier_sets.json`, written by
+`build_calc_data.py` from the same header. Both pages use the set's row in `gFrontierSetMons` as
+its id, and `releases.py` rejects an export whose two files disagree.
 
 ### Multi battles
 

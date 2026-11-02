@@ -25,7 +25,7 @@
 
     <section class="sets-section" id="sets" hidden>
       <h2>Set browser</h2>
-      <p class="sets-text">Each rule set's sets, strongest first. These are the sets the game uses.</p>
+      <p class="sets-text">Each rule set's sets, strongest first. These are the sets the game uses. Click a set to open it in the damage calculator.</p>
       <div class="sets-controls">
         <label><span>Rules</span>
           <select id="sets-rules">
@@ -41,9 +41,15 @@
         </label>
         <label id="sets-gen-field" hidden><span>Generation</span><select id="sets-gen"></select></label>
         <label id="sets-tier-field" hidden><span>Tier</span><select id="sets-tier"></select></label>
-        <label class="sets-search"><span>Pokémon</span>
-          <input type="search" id="sets-search" placeholder="e.g. Garchomp" autocomplete="off" />
-        </label>
+        <div class="sets-search">
+          <label><span>Pokémon</span>
+            <input type="search" id="sets-search" placeholder="e.g. Garchomp" autocomplete="off" />
+          </label>
+          <label class="sets-scope" title="Search every Frontier set instead of only these rules">
+            <input type="checkbox" role="switch" id="sets-search-all" />
+            <span>All rule sets</span>
+          </label>
+        </div>
       </div>
       <p class="sets-summary" id="sets-summary" role="status"></p>
       <div class="sets-grid" id="sets-list"></div>

@@ -25,6 +25,13 @@ Schema (read by site/calc/js/bpe_data.js):
   save_data                   = this source's species/move/item numbering and
                                   the rules js/calc_save_import.js needs to read
                                   a player's .sav into the calculator
+  frontier_sets               = how many sets the file below holds (absent when
+                                  the source has none)
+
+  site/calc/data/bpe_frontier_sets.json -- the Battle Frontier's sets in the
+                                  calculator's spelling, row n being set n of
+                                  gFrontierSetMons, the id the Battle Facilities
+                                  page links with (read by js/bpe_data.js)
 
 Run:  py BPEDocumentation/scripts/build_calc_data.py
 """
@@ -34,6 +41,7 @@ import re
 import shutil
 import sys
 
+import build_facilities
 import common
 
 SITE = common.SITE
@@ -46,6 +54,7 @@ WORLD_JSON = os.path.join(SITE, "js", "data", "world.json")
 
 CALC_DIR = os.path.join(SITE, "calc")
 OUT_JSON = os.path.join(CALC_DIR, "data", "bpe_calc_data.json")
+FRONTIER_JSON = os.path.join(CALC_DIR, "data", "bpe_frontier_sets.json")
 NEWHD_DIR = os.path.join(CALC_DIR, "img", "newhd")
 
 # ── Name helpers ──────────────────────────────────────────────────────────────
@@ -425,6 +434,76 @@ def dense(table):
     return out
 
 
+IVS_DEFINE = re.compile(r"^#define IVS_(\w+) TRAINER_PARTY_IVS\(([\d, ]+)\)$", re.M)
+TIER_ORDER = {tier: i for i, tier in enumerate(["AG", "Ubers", "OU", "UU", "RU"])}
+
+
+def frontier_labels(pools):
+    """Each set's name in the calculator: the rule sets it belongs to, as the
+    Battle Facilities page names them ("Frontier: Full Dex; Gen 9 OU, UU")."""
+    groups = {}  # set id -> {(group label): [tiers]}, in the game's pool order
+    for style, ids in pools["fullDex"].items():
+        for set_id in ids:
+            groups.setdefault(set_id, {})["Full Dex" + (" Doubles" if style == "doubles" else "")] = []
+    for gen, styles in pools["smogon"].items():
+        for style, tiers in styles.items():
+            name = ("National Dex" if gen == "nd" else "Gen " + gen) + (" Doubles" if style == "doubles" else "")
+            for tier, ids in tiers.items():
+                for set_id in ids:
+                    groups.setdefault(set_id, {}).setdefault(name, []).append(tier)
+    labels = {}
+    for set_id, named in groups.items():
+        parts = [(name + " " + ", ".join(sorted(tiers, key=TIER_ORDER.get))) if tiers else name
+                 for name, tiers in named.items()]
+        labels[set_id] = "Frontier: " + "; ".join(parts)
+    return labels
+
+
+def frontier_sets(spell):
+    """The Battle Frontier's sets as compact rows, or None when the source has none.
+
+    Read from frontier_sets.h, as the Battle Facilities page is, so a set's row
+    number here is its id there. Rows are [species, item, ability, nature, EV
+    spread, label, level, mega, Hidden Power IVs, move...] with -1 for nothing:
+    indexes into the tables beside them. A set the Smogon rule sets use is level
+    100; one only Full Dex uses is level 50, the default level mode.
+    """
+    if not os.path.isfile(build_facilities.HEADER_PATH) or not os.path.isdir(build_facilities.SETS_FOLDER):
+        return None
+    with open(build_facilities.HEADER_PATH, encoding="utf-8") as f:
+        text = f.read()
+    header = build_facilities.parse_header(text)
+    pools = build_facilities.build_pools(header, build_facilities.load_generator())
+    labels = frontier_labels(pools)
+    smogon = {set_id for gen in pools["smogon"].values() for style in gen.values()
+              for ids in style.values() for set_id in ids}
+    ivs = {name: dict(zip(["hp", "at", "df", "sp", "sa", "sd"], map(int, values.split(","))))
+           for name, values in IVS_DEFINE.findall(text)}
+
+    tables = {key: build_facilities.Table() for key in ("species", "items", "abilities", "natures", "labels", "ivs")}
+    moves = build_facilities.Table()
+    rows = []
+    for set_id, s in enumerate(header["sets"]):
+        species, item, ability, mega = spell["species"](s["species"]), spell["item"](s["item"]), spell["ability"](s["ability"]), None
+        if item:
+            mega = spell["mega"](species, s["item"])
+        hidden_power = s["hp"] if s["hp"] in ivs else None
+        rows.append([
+            tables["species"].add(species, species),
+            tables["items"].add(item, item) if item else -1,
+            tables["abilities"].add(ability, ability) if ability else -1,
+            tables["natures"].add(s["nature"], s["nature"].title()),
+            s["ev"],
+            tables["labels"].add(labels[set_id], labels[set_id]),
+            50 if set_id not in smogon else 100,
+            tables["species"].add(mega, mega) if mega else -1,
+            tables["ivs"].add(hidden_power, ivs[hidden_power]) if hidden_power else -1,
+        ] + [moves.add(name, name) for name in (spell["move"](m, s["hp"]) for m in s["moves"])])
+    out = {key: table.rows for key, table in tables.items()}
+    out.update(moves=moves.rows, spreads=header["spreads"], sets=rows)
+    return out
+
+
 def build_save_data(species_info, poks, move_name, item_name):
     """Tables that turn the numbers in a save file into calculator names.
 
@@ -687,6 +766,28 @@ def main():
                 n += 1
             sets[uniq] = set_data
 
+    def frontier_species(sid):
+        if normalize(sid) not in norm_index:
+            unmatched.add(sid)
+        return norm_index.get(normalize(sid), sid)
+
+    def item_display(iid):
+        return None if iid == "NONE" else (items_data.get(iid) or {}).get("name") or common.prettify_constant("ITEM_" + iid)
+
+    def frontier_move(mid, hidden_power):
+        if mid == "HIDDEN_POWER" and hidden_power:
+            return "Hidden Power " + hidden_power.title()
+        return calc_spelling(calc_moves, move_name.get(mid) or common.prettify_constant("MOVE_" + mid), out_moves)
+
+    frontier = frontier_sets({
+        "species": frontier_species,
+        "item": lambda iid: calc_spelling(calc_items, item_display(iid), mega_stones),
+        "ability": lambda aid: None if aid == "NONE" else calc_spelling(
+            calc_abilities, (abil_data.get(aid) or {}).get("name") or common.prettify_constant("ABILITY_" + aid)),
+        "mega": lambda species, iid: mega_for.get((species, item_display(iid))),
+        "move": frontier_move,
+    })
+
     save_data = build_save_data(save_species, poks, move_name,
                                 {iid: item["name"] for iid, item in items_data.items()})
 
@@ -700,6 +801,13 @@ def main():
     }
     if unmatched:
         raise ValueError("Trainer species missing from this release's calculator data: " + ", ".join(sorted(unmatched)))
+    if frontier:
+        blob["frontier_sets"] = len(frontier["sets"])
+        with open(FRONTIER_JSON, "w", encoding="utf-8") as f:
+            json.dump(frontier, f, ensure_ascii=False, separators=(",", ":"))
+    elif os.path.isfile(FRONTIER_JSON):
+        # Another source's sets must not be left for the calculator to find.
+        os.remove(FRONTIER_JSON)
     common.write_json(OUT_JSON, blob)
 
     # ── sprites: copy BPE pokemon sprites into calc/img/newhd named per JS ─────
@@ -726,6 +834,7 @@ def main():
     print("  moves:          %d" % len(out_moves))
     print("  trainers:       %d (%d rematches)" % (tr_id, len(rematches & set(trainers))))
     print("  set species:    %d" % len(formatted_sets))
+    print("  frontier sets:  %d" % (len(frontier["sets"]) if frontier else 0))
     print("  save numbering: %d species, %d moves, %d items" % tuple(
         sum(1 for entry in save_data[key] if entry) for key in ("species", "moves", "items")))
     print("Sprites -> %s" % NEWHD_DIR)
