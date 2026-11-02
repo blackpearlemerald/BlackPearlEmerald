@@ -29,7 +29,7 @@ EWRAM_DATA const struct BattleFrontierTrainer *gFacilityTrainers = NULL;
 EWRAM_DATA const struct TrainerMon *gFacilityTrainerMons = NULL;
 
 // IWRAM common
-COMMON_DATA u16 gFrontierTempParty[MAX_FRONTIER_PARTY_SIZE] = {0};
+COMMON_DATA u16 gFrontierTempParty[PARTY_SIZE] = {0};
 
 static void HandleFacilityTrainerBattleEnd(void)
 {
@@ -88,10 +88,10 @@ static void DoFacilityTrainerBattleInternal(u8 facility)
         switch (VarGet(VAR_FRONTIER_BATTLE_MODE))
         {
         case FRONTIER_MODE_SINGLES:
-            FillFrontierTrainerParty(FRONTIER_PARTY_SIZE);
+            FillFrontierTrainerParty(GetFrontierTeamSize());
             break;
         case FRONTIER_MODE_DOUBLES:
-            FillFrontierTrainerParty(FRONTIER_DOUBLES_PARTY_SIZE);
+            FillFrontierTrainerParty(GetFrontierTeamSize());
             gBattleTypeFlags |= BATTLE_TYPE_DOUBLE;
             break;
         case FRONTIER_MODE_MULTIS:
@@ -114,7 +114,7 @@ static void DoFacilityTrainerBattleInternal(u8 facility)
         if (VarGet(VAR_FRONTIER_BATTLE_MODE) == FRONTIER_MODE_DOUBLES)
         gBattleTypeFlags |= BATTLE_TYPE_DOUBLE;
         if (TRAINER_BATTLE_PARAM.opponentA == TRAINER_FRONTIER_BRAIN)
-        FillFrontierTrainerParty(DOME_BATTLE_PARTY_SIZE);
+        FillFrontierTrainerParty(IsFrontier6v6() ? PARTY_SIZE : DOME_BATTLE_PARTY_SIZE);
         CreateTask(Task_StartBattleAfterTransition, 1);
         CreateTask_PlayMapChosenOrBattleBGM(0);
         BattleTransition_StartOnField(GetSpecialBattleTransition(B_TRANSITION_GROUP_B_DOME));
@@ -208,7 +208,7 @@ void FillFrontierTrainersParties(u8 monsCount)
 static void FillTrainerParty(u16 trainerId, enum BattleTrainer trainer, u8 monCount)
 {
     s32 i, j;
-    u16 chosenMonIndices[MAX_FRONTIER_PARTY_SIZE];
+    u16 chosenMonIndices[PARTY_SIZE];
     u8 level = SetFacilityPtrsGetLevel();
     u8 fixedIV = 0;
     u8 bfMonCount;

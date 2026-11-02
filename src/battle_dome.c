@@ -1840,6 +1840,12 @@ static void GetDomeData(void)
         break;
     case DOME_DATA_SELECTED_MONS:
         ClearSelectedPartyOrder();
+        if (IsFrontier6v6())
+        {
+            for (u32 i = 0; i < PARTY_SIZE; i++)
+                gSelectedOrderFromParty[i] = i + 1;
+            break;
+        }
         gSelectedOrderFromParty[0] = gSaveBlock2Ptr->frontier.selectedPartyMons[3];
         gSelectedOrderFromParty[1] = gSaveBlock2Ptr->frontier.selectedPartyMons[3] >> 8;
         break;
@@ -1915,8 +1921,45 @@ static void SetDomeData(void)
         }
         break;
     case DOME_DATA_SELECTED_MONS:
-        gSaveBlock2Ptr->frontier.selectedPartyMons[3] = T1_READ_16(gSelectedOrderFromParty);
+        // That slot holds the fourth Pokémon in 6v6, which uses everyone anyway.
+        if (!IsFrontier6v6())
+            gSaveBlock2Ptr->frontier.selectedPartyMons[3] = T1_READ_16(gSelectedOrderFromParty);
         break;
+    }
+}
+
+// 6v6 teams keep their first three Pokémon in DOME_MONS, which every tournament
+// screen and the AI's matchups read, and the other three here.
+static bool32 IsDomeSpeciesOnTeam(int tournamentId, int extraCount, enum Species species)
+{
+    int i;
+
+    for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
+    {
+        if (gFacilityTrainerMons[DOME_MONS[tournamentId][i]].species == species)
+            return TRUE;
+    }
+    for (i = 0; i < extraCount; i++)
+    {
+        if (gFacilityTrainerMons[gSaveBlock2Ptr->frontier.ruleData.extraDomeMonIds[tournamentId][i]].species == species)
+            return TRUE;
+    }
+    return FALSE;
+}
+
+static void ChooseExtraDomeMons(int tournamentId, int trainerId)
+{
+    int i;
+
+    for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
+    {
+        u16 monId;
+
+        do
+        {
+            monId = GetRandomFrontierMonFromSet(trainerId);
+        } while (IsDomeSpeciesOnTeam(tournamentId, i, gFacilityTrainerMons[monId].species));
+        gSaveBlock2Ptr->frontier.ruleData.extraDomeMonIds[tournamentId][i] = monId;
     }
 }
 
@@ -2009,6 +2052,9 @@ static void InitDomeTrainers(void)
             DOME_MONS[i][j] = monId;
             species[j] = gFacilityTrainerMons[monId].species;
         }
+
+        if (IsFrontier6v6())
+            ChooseExtraDomeMons(i, trainerId);
 
         DOME_TRAINERS[i].isEliminated = FALSE;
         DOME_TRAINERS[i].eliminatedAt = 0;
@@ -2171,7 +2217,10 @@ static void SwapDomeTrainers(int id1, int id2, u16 *statsArray)
     SWAP(DOME_TRAINERS[id1].trainerId, DOME_TRAINERS[id2].trainerId, temp);
 
     for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
+    {
         SWAP(DOME_MONS[id1][i], DOME_MONS[id2][i], temp);
+        SWAP(gSaveBlock2Ptr->frontier.ruleData.extraDomeMonIds[id1][i], gSaveBlock2Ptr->frontier.ruleData.extraDomeMonIds[id2][i], temp);
+    }
 }
 
 static void BufferDomeRoundText(void)
@@ -2193,6 +2242,7 @@ static void InitDomeOpponentParty(void)
 
 static void CreateDomeOpponentMon(u8 monPartyId, u16 tournamentTrainerId, u8 tournamentMonId, u32 otId)
 {
+    u16 monId;
     #ifdef BUGFIX
     u8 fixedIv = GetDomeTrainerMonIvs(DOME_TRAINERS[tournamentTrainerId].trainerId);
     #else
@@ -2200,7 +2250,12 @@ static void CreateDomeOpponentMon(u8 monPartyId, u16 tournamentTrainerId, u8 tou
     #endif
     u8 level = SetFacilityPtrsGetLevel();
 
-    CreateFacilityMon(&gFacilityTrainerMons[DOME_MONS[tournamentTrainerId][tournamentMonId]],
+    if (tournamentMonId < FRONTIER_PARTY_SIZE)
+        monId = DOME_MONS[tournamentTrainerId][tournamentMonId];
+    else
+        monId = gSaveBlock2Ptr->frontier.ruleData.extraDomeMonIds[tournamentTrainerId][tournamentMonId - FRONTIER_PARTY_SIZE];
+
+    CreateFacilityMon(&gFacilityTrainerMons[monId],
                       level, fixedIv, otId, 0, &gParties[B_TRAINER_OPPONENT_A][monPartyId]);
 }
 
@@ -2211,8 +2266,14 @@ static void CreateDomeOpponentMons(u16 tournamentTrainerId)
     int i, selectedMonBits;
 
     ZeroEnemyPartyMons();
-    selectedMonBits = GetDomeTrainerSelectedMons(tournamentTrainerId);
     otId = Random32();
+    if (IsFrontier6v6())
+    {
+        for (i = 0; i < PARTY_SIZE; i++)
+            CreateDomeOpponentMon(i, tournamentTrainerId, i, otId);
+        return;
+    }
+    selectedMonBits = GetDomeTrainerSelectedMons(tournamentTrainerId);
 
     if (Random() % 10 > 5)
     {
@@ -5653,13 +5714,18 @@ static void SetFacilityTrainerAndMonPtrs(void)
     gFacilityTrainers = gBattleFrontierTrainers;
 }
 
+static int GetDomeBattlePartySize(void)
+{
+    return IsFrontier6v6() ? PARTY_SIZE : DOME_BATTLE_PARTY_SIZE;
+}
+
 static void ResetSketchedMoves(void)
 {
     int i, moveSlot;
 
-    for (i = 0; i < DOME_BATTLE_PARTY_SIZE; i++)
+    for (i = 0; i < GetDomeBattlePartySize(); i++)
     {
-        int playerMonId = gSaveBlock2Ptr->frontier.selectedPartyMons[gSelectedOrderFromParty[i] - 1] - 1;
+        int playerMonId = GetFrontierSelectedMon(gSelectedOrderFromParty[i] - 1) - 1;
         int count;
 
         for (moveSlot = 0; moveSlot < MAX_MON_MOVES; moveSlot++)
@@ -5683,9 +5749,9 @@ static void RestoreDomePlayerPartyHeldItems(void)
 {
     int i;
 
-    for (i = 0; i < DOME_BATTLE_PARTY_SIZE; i++)
+    for (i = 0; i < GetDomeBattlePartySize(); i++)
     {
-        int playerMonId = gSaveBlock2Ptr->frontier.selectedPartyMons[gSelectedOrderFromParty[i] - 1] - 1;
+        int playerMonId = GetFrontierSelectedMon(gSelectedOrderFromParty[i] - 1) - 1;
         enum Item item = GetMonData(GetSavedPlayerPartyMon(playerMonId), MON_DATA_HELD_ITEM);
         SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_HELD_ITEM, &item);
     }

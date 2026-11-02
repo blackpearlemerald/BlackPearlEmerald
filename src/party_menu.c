@@ -222,7 +222,7 @@ EWRAM_DATA u8 gSelectedMonPartyId = 0;
 EWRAM_DATA MainCallback gPostMenuFieldCallback = NULL;
 static EWRAM_DATA u16 *sSlot1TilemapBuffer = 0; // for switching party slots
 static EWRAM_DATA u16 *sSlot2TilemapBuffer = 0; //
-EWRAM_DATA u8 gSelectedOrderFromParty[MAX_FRONTIER_PARTY_SIZE] = {0};
+EWRAM_DATA u8 gSelectedOrderFromParty[PARTY_SIZE] = {0};
 static EWRAM_DATA u16 sPartyMenuItemId = 0;
 EWRAM_DATA u8 gBattlePartyCurrentOrder[PARTY_SIZE / 2] = {0}; // bits 0-3 are the current pos of Slot 1, 4-7 are Slot 2, and so on
 static EWRAM_DATA u8 sInitialLevel = 0;
@@ -440,6 +440,7 @@ static bool8 HasPartySlotAlreadyBeenSelected(u8);
 static u8 GetBattleEntryLevelCap(void);
 static u8 GetMaxBattleEntries(void);
 static u8 GetMinBattleEntries(void);
+static u8 GetBattleOrderDescription(u8 order);
 static void Task_ContinueChoosingHalfParty(u8);
 static void BufferBattlePartyOrder(u8 *, bool8);
 static void BufferBattlePartyOrderBySide(u8 *, u8, enum BattlerId);
@@ -1114,7 +1115,7 @@ static void DisplayPartyPokemonDataForChooseHalf(u8 slot)
         {
             if (order[i] != 0 && (order[i] - 1) == slot)
             {
-                DisplayPartyPokemonDescriptionData(slot, i + PARTYBOX_DESC_FIRST);
+                DisplayPartyPokemonDescriptionData(slot, GetBattleOrderDescription(i));
                 return;
             }
         }
@@ -4012,7 +4013,7 @@ static void CursorCb_Enter(u8 taskId)
         {
             PlaySE(SE_SELECT);
             gSelectedOrderFromParty[i] = gPartyMenu.slotId + 1;
-            DisplayPartyPokemonDescriptionText(i + PARTYBOX_DESC_FIRST, &sPartyMenuBoxes[gPartyMenu.slotId], 1);
+            DisplayPartyPokemonDescriptionText(GetBattleOrderDescription(i), &sPartyMenuBoxes[gPartyMenu.slotId], 1);
             if (i == (maxBattlers - 1))
                 MoveCursorToConfirm();
             DisplayPartyMenuStdMessage(PARTY_MSG_CHOOSE_MON);
@@ -4057,7 +4058,7 @@ static void CursorCb_NoEntry(u8 taskId)
     for (i = 0; i < (maxBattlers - 1); i++)
     {
         if (gSelectedOrderFromParty[i] != 0)
-            DisplayPartyPokemonDescriptionText(i + PARTYBOX_DESC_FIRST, &sPartyMenuBoxes[gSelectedOrderFromParty[i] - 1], 1);
+            DisplayPartyPokemonDescriptionText(GetBattleOrderDescription(i), &sPartyMenuBoxes[gSelectedOrderFromParty[i] - 1], 1);
     }
     DisplayPartyMenuStdMessage(PARTY_MSG_CHOOSE_MON);
     gTasks[taskId].func = Task_HandleChooseMonInput;
@@ -7721,6 +7722,13 @@ static u8 GetMinBattleEntries(void)
     }
 }
 
+static u8 GetBattleOrderDescription(u8 order)
+{
+    if (order < FRONTIER_DOUBLES_PARTY_SIZE)
+        return order + PARTYBOX_DESC_FIRST;
+    return order - FRONTIER_DOUBLES_PARTY_SIZE + PARTYBOX_DESC_FIFTH;
+}
+
 static u8 GetBattleEntryLevelCap(void)
 {
     switch (VarGet(VAR_FRONTIER_FACILITY))
@@ -7742,7 +7750,9 @@ static const u8 *GetFacilityCancelString(void)
 
     if (!(facilityNum != FACILITY_UNION_ROOM && facilityNum != FACILITY_MULTI_OR_EREADER))
         return gText_CancelBattle;
-    else if (facilityNum == FRONTIER_FACILITY_DOME && gSpecialVar_0x8005 == 2)
+    else if (facilityNum == FRONTIER_FACILITY_DOME
+          && gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MAP_BATTLE_FRONTIER_BATTLE_DOME_PRE_BATTLE_ROOM)
+          && gSaveBlock1Ptr->location.mapNum == MAP_NUM(MAP_BATTLE_FRONTIER_BATTLE_DOME_PRE_BATTLE_ROOM))
         return gText_ReturnToWaitingRoom;
     else
         return gText_CancelChallenge;

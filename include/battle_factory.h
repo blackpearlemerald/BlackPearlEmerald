@@ -9,5 +9,8 @@ u8 GetNumPastRentalsRank(u8 battleMode, enum FrontierLevelMode lvlMode);
 u64 GetAiScriptsInBattleFactory(void);
 void SetMonMoveAvoidReturn(struct Pokemon *mon, enum Move moveArg, u8 moveSlot);
 void FillFactoryTrainerParty(void);
+u32 GetFactoryTeamSize(void);
+u32 GetFactoryRentalCount(void);
+struct RentalMon *GetFactoryRental(u32 id);
 
 #endif // GUARD_BATTLE_FACTORY_H

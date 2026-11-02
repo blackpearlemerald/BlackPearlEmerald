@@ -13,11 +13,13 @@
 #include "constants/battle_dome.h"
 #include "constants/battle_factory.h"
 #include "constants/battle_frontier.h"
+#include "constants/frontier_util.h"
 
 #define VANILLA       FRONTIER_RULE(FRONTIER_RULES_VANILLA, 0, 0, 0)
 #define FULL_DEX      FRONTIER_RULE(FRONTIER_RULES_FULL_DEX, 0, 0, 0)
 #define SMOGON(g, t)  FRONTIER_RULE(FRONTIER_RULES_SMOGON, g, t, FRONTIER_TEAM_USUAL)
 #define NAT_DEX_OU    SMOGON(FRONTIER_GEN_NATIONAL_DEX, FRONTIER_TIER_OU)
+#define SMOGON_6V6(g, t) FRONTIER_RULE(FRONTIER_RULES_SMOGON, g, t, FRONTIER_TEAM_6V6)
 
 static void SetChallenge(u32 facility, u32 battleMode, u16 rule)
 {
@@ -239,13 +241,14 @@ TEST("Enemy sets start in the middle of the pool and end at the top")
 static void BuildEveryTeam(u32 rule, bool32 doubles, u32 streak)
 {
     u32 battleMode = doubles ? FRONTIER_MODE_DOUBLES : FRONTIER_MODE_SINGLES;
-    u32 i, j;
+    u32 i, j, teamSize;
 
     SetChallenge(FRONTIER_FACILITY_TOWER, battleMode, rule);
     *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, battleMode, FRONTIER_LVL_OPEN) = streak;
     TRAINER_BATTLE_PARAM.opponentA = 0;
-    FillFrontierTrainerParty(doubles ? FRONTIER_DOUBLES_PARTY_SIZE : FRONTIER_PARTY_SIZE);
-    for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
+    teamSize = GetFrontierTeamSize();
+    FillFrontierTrainerParty(teamSize);
+    for (i = 0; i < teamSize; i++)
     {
         EXPECT_EQ(GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_LEVEL), MAX_LEVEL);
         for (j = 0; j < i; j++)
@@ -254,20 +257,37 @@ static void BuildEveryTeam(u32 rule, bool32 doubles, u32 streak)
 
     SetChallenge(FRONTIER_FACILITY_FACTORY, battleMode, rule);
     *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, FRONTIER_LVL_OPEN) = streak;
-    for (i = 0; i < ARRAY_COUNT(gSaveBlock2Ptr->frontier.rentalMons); i++)
-        gSaveBlock2Ptr->frontier.rentalMons[i].monId = 0xFFFF;
+    for (i = 0; i < FACTORY_RENTALS_6V6; i++)
+        GetFactoryRental(i)->monId = 0xFFFF;
     SetFacilityPtrsGetLevel();
     gSpecialVar_0x8004 = BATTLE_FACTORY_FUNC_GENERATE_RENTAL_MONS;
     CallBattleFactoryFunction();
     gSpecialVar_0x8004 = BATTLE_FACTORY_FUNC_GENERATE_OPPONENT_MONS;
     CallBattleFactoryFunction();
-    for (i = 0; i < PARTY_SIZE; i++)
-        EXPECT_LT(gSaveBlock2Ptr->frontier.rentalMons[i].monId, gFrontierSetMonsCount);
+    for (i = 0; i < GetFactoryRentalCount(); i++)
+        EXPECT_LT(GetFactoryRental(i)->monId, gFrontierSetMonsCount);
+    for (i = 0; i < GetFactoryTeamSize(); i++)
+    {
+        for (j = 0; j < GetFactoryRentalCount(); j++)
+            EXPECT_NE(gFacilityTrainerMons[gFrontierTempParty[i]].species, gFacilityTrainerMons[GetFactoryRental(j)->monId].species);
+    }
 
     SetChallenge(FRONTIER_FACILITY_DOME, battleMode, rule);
     *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, FRONTIER_LVL_OPEN) = streak / FRONTIER_STAGES_PER_CHALLENGE;
     gSpecialVar_0x8004 = BATTLE_DOME_FUNC_INIT_TRAINERS;
     CallBattleDomeFunction();
+    TRAINER_BATTLE_PARAM.opponentA = gSaveBlock2Ptr->frontier.domeTrainers[1].trainerId;
+    gSpecialVar_0x8004 = BATTLE_DOME_FUNC_INIT_OPPONENT_PARTY;
+    CallBattleDomeFunction();
+    if (FRONTIER_RULE_SIZE(rule) == FRONTIER_TEAM_6V6)
+    {
+        for (i = 0; i < PARTY_SIZE; i++)
+        {
+            EXPECT_NE(GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_SPECIES), SPECIES_NONE);
+            for (j = 0; j < i; j++)
+                EXPECT_NE(GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_SPECIES), GetMonData(&gParties[B_TRAINER_OPPONENT_A][j], MON_DATA_SPECIES));
+        }
+    }
 }
 
 TEST("Every singles rule set can fill the Tower, Factory and Dome")
@@ -310,4 +330,100 @@ TEST("Every doubles rule set can fill the Tower, Factory and Dome")
             BuildEveryTeam(SMOGON(gen, tier), TRUE, 49);
         }
     }
+}
+
+TEST("Every singles rule set can fill six-Pokémon teams")
+{
+    u32 gen, tier;
+
+    ZeroPlayerPartyMons();
+    for (gen = 0; gen < 3; gen++)
+        GivePlayerMon(gen, SPECIES_GARCHOMP + gen, 50, ITEM_NONE, MOVE_TACKLE);
+    gSaveBlock2Ptr->frontier.selectedPartyMons[0] = 1;
+    gSaveBlock2Ptr->frontier.selectedPartyMons[1] = 2;
+    gSaveBlock2Ptr->frontier.selectedPartyMons[2] = 3;
+    for (gen = 0; gen < FRONTIER_GEN_COUNT; gen++)
+    {
+        for (tier = 0; tier < FRONTIER_TIER_COUNT; tier++)
+        {
+            BuildEveryTeam(SMOGON_6V6(gen, tier), FALSE, 0);
+            BuildEveryTeam(SMOGON_6V6(gen, tier), FALSE, 49);
+        }
+    }
+}
+
+TEST("Every doubles rule set can fill six-Pokémon teams")
+{
+    u32 gen, tier;
+
+    ZeroPlayerPartyMons();
+    for (gen = 0; gen < 3; gen++)
+        GivePlayerMon(gen, SPECIES_GARCHOMP + gen, 50, ITEM_NONE, MOVE_TACKLE);
+    gSaveBlock2Ptr->frontier.selectedPartyMons[0] = 1;
+    gSaveBlock2Ptr->frontier.selectedPartyMons[1] = 2;
+    gSaveBlock2Ptr->frontier.selectedPartyMons[2] = 3;
+    for (gen = 0; gen < FRONTIER_GEN_COUNT; gen++)
+    {
+        if (gen == 1 || gen == 2)
+            continue;
+        for (tier = 0; tier <= FRONTIER_TIER_OU; tier++)
+        {
+            BuildEveryTeam(SMOGON_6V6(gen, tier), TRUE, 0);
+            BuildEveryTeam(SMOGON_6V6(gen, tier), TRUE, 49);
+        }
+    }
+}
+
+TEST("Team sizes follow the battle type and the rule")
+{
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_SINGLES, NAT_DEX_OU);
+    EXPECT_EQ(GetFrontierTeamSize(), FRONTIER_PARTY_SIZE);
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_DOUBLES, NAT_DEX_OU);
+    EXPECT_EQ(GetFrontierTeamSize(), FRONTIER_DOUBLES_PARTY_SIZE);
+    SetChallenge(FRONTIER_FACILITY_DOME, FRONTIER_MODE_DOUBLES, NAT_DEX_OU);
+    EXPECT_EQ(GetFrontierTeamSize(), FRONTIER_PARTY_SIZE);
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_MULTIS, SMOGON_6V6(0, 2));
+    EXPECT_EQ(GetFrontierTeamSize(), FRONTIER_MULTI_PARTY_SIZE);
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_DOUBLES, SMOGON_6V6(0, 2));
+    EXPECT_EQ(GetFrontierTeamSize(), PARTY_SIZE);
+    SetChallenge(FRONTIER_FACILITY_PALACE, FRONTIER_MODE_SINGLES, SMOGON_6V6(0, 2));
+    EXPECT_EQ(GetFrontierTeamSize(), FRONTIER_PARTY_SIZE);
+}
+
+TEST("The last two of six selected Pokémon stay separate from the save's list")
+{
+    u32 i;
+
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_SINGLES, SMOGON_6V6(0, 2));
+    for (i = 0; i < PARTY_SIZE; i++)
+        SetFrontierSelectedMon(i, i + 1);
+    for (i = 0; i < PARTY_SIZE; i++)
+        EXPECT_EQ(GetFrontierSelectedMon(i), i + 1);
+    EXPECT_EQ(gSaveBlock2Ptr->frontier.selectedPartyMons[3], 4);
+    EXPECT_EQ(gSaveBlock2Ptr->frontier.ruleData.extraSelectedMons[1], 6);
+}
+
+static u32 GetBattlePointsForWin(u16 rule)
+{
+    u32 before;
+
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_SINGLES, rule);
+    *GetFrontierWinStreakPtr(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_SINGLES, FRONTIER_LVL_OPEN) = 21;
+    TRAINER_BATTLE_PARAM.opponentA = 0;
+    before = gSaveBlock2Ptr->frontier.battlePoints;
+    gSpecialVar_0x8004 = FRONTIER_UTIL_FUNC_GIVE_BATTLE_POINTS;
+    CallFrontierUtilFunc();
+    return gSaveBlock2Ptr->frontier.battlePoints - before;
+}
+
+TEST("6v6 pays double Battle Points and other rule sets pay the same")
+{
+    u32 usual;
+
+    gSaveBlock2Ptr->frontier.battlePoints = 0;
+    usual = GetBattlePointsForWin(VANILLA);
+    EXPECT_GT(usual, 0);
+    EXPECT_EQ(GetBattlePointsForWin(NAT_DEX_OU), usual);
+    EXPECT_EQ(GetBattlePointsForWin(FULL_DEX), usual);
+    EXPECT_EQ(GetBattlePointsForWin(SMOGON_6V6(0, 2)), usual * 2);
 }

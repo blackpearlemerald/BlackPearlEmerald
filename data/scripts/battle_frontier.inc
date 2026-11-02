@@ -34,6 +34,7 @@ BattleFrontier_EventScript_SetSimpleRule:
 	copyvar VAR_0x8004, VAR_RESULT
 	setvar VAR_0x8005, 0
 	setvar VAR_0x8006, 0
+	setvar VAR_0x8007, FRONTIER_TEAM_USUAL
 	callnative SetFrontierRuleForChallenge
 	copyvar VAR_RESULT, VAR_0x8004
 	return
@@ -68,9 +69,32 @@ BattleFrontier_EventScript_ShowTiers:
 	dynmultistack 17, 0, FALSE, 5, FALSE, 0, DYN_MULTICHOICE_CB_NONE
 	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_EventScript_ChooseGeneration
 	copyvar VAR_0x8006, VAR_RESULT
+	message BattleFrontier_Text_WhichTeamSize
+	waitmessage
+	goto_if_eq VAR_FRONTIER_FACILITY, FRONTIER_FACILITY_FACTORY, BattleFrontier_EventScript_PushRentThree
+	goto_if_eq VAR_FRONTIER_FACILITY, FRONTIER_FACILITY_DOME, BattleFrontier_EventScript_PushDomeUsual
+	goto_if_eq VAR_FRONTIER_BATTLE_MODE, FRONTIER_MODE_DOUBLES, BattleFrontier_EventScript_PushFourVsFour
+	dynmultipush BattleFrontier_Text_ThreeVsThree, FRONTIER_TEAM_USUAL
+	goto BattleFrontier_EventScript_PushSixVsSix
+BattleFrontier_EventScript_PushRentThree:
+	dynmultipush BattleFrontier_Text_RentThree, FRONTIER_TEAM_USUAL
+	dynmultipush BattleFrontier_Text_RentSix, FRONTIER_TEAM_6V6
+	goto BattleFrontier_EventScript_ShowTeamSizes
+BattleFrontier_EventScript_PushDomeUsual:
+	dynmultipush BattleFrontier_Text_DomeUsual, FRONTIER_TEAM_USUAL
+	goto BattleFrontier_EventScript_PushSixVsSix
+BattleFrontier_EventScript_PushFourVsFour:
+	dynmultipush BattleFrontier_Text_FourVsFour, FRONTIER_TEAM_USUAL
+BattleFrontier_EventScript_PushSixVsSix:
+	dynmultipush BattleFrontier_Text_SixVsSix, FRONTIER_TEAM_6V6
+BattleFrontier_EventScript_ShowTeamSizes:
+	dynmultistack 17, 0, FALSE, 2, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_EventScript_ChooseGeneration
+	copyvar VAR_0x8007, VAR_RESULT
 	setvar VAR_0x8004, FRONTIER_RULES_SMOGON
 	callnative SetFrontierRuleForChallenge
 	msgbox BattleFrontier_Text_SmogonRulesNote, MSGBOX_DEFAULT
+	call_if_eq VAR_0x8007, FRONTIER_TEAM_6V6, BattleFrontier_EventScript_DoubleBattlePointsNote
 	goto_if_eq VAR_FRONTIER_FACILITY, FRONTIER_FACILITY_FACTORY, BattleFrontier_EventScript_SmogonRuleChosen
 	setvar VAR_0x8004, 0
 BattleFrontier_EventScript_ReportIllegalMons:
@@ -82,6 +106,43 @@ BattleFrontier_EventScript_ReportIllegalMons:
 BattleFrontier_EventScript_SmogonRuleChosen:
 	setvar VAR_RESULT, FRONTIER_RULES_SMOGON
 	return
+
+BattleFrontier_EventScript_DoubleBattlePointsNote:
+	msgbox BattleFrontier_Text_DoubleBattlePoints, MSGBOX_DEFAULT
+	return
+
+BattleFrontier_EventScript_SelectSixMons::
+	msgbox BattleFrontier_Text_SelectSixMons, MSGBOX_DEFAULT
+	return
+
+BattleFrontier_Text_WhichTeamSize:
+	.string "How many POKéMON on each team?$"
+
+BattleFrontier_Text_ThreeVsThree:
+	.string "3 vs 3$"
+
+BattleFrontier_Text_FourVsFour:
+	.string "4 vs 4$"
+
+BattleFrontier_Text_DomeUsual:
+	.string "Bring 3, use 2$"
+
+BattleFrontier_Text_SixVsSix:
+	.string "6 vs 6$"
+
+BattleFrontier_Text_RentThree:
+	.string "Rent 3$"
+
+BattleFrontier_Text_RentSix:
+	.string "Rent 6$"
+
+BattleFrontier_Text_DoubleBattlePoints:
+	.string "6 vs 6 challenges pay double\n"
+	.string "the usual Battle Points.$"
+
+BattleFrontier_Text_SelectSixMons:
+	.string "Please select the six POKéMON\n"
+	.string "you wish to enter.$"
 
 BattleFrontier_Text_WhichRules:
 	.string "Which rules would you like?$"

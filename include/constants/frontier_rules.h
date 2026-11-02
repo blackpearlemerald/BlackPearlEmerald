@@ -23,6 +23,8 @@
 #define FRONTIER_TEAM_6V6        1
 #define FRONTIER_TEAM_SIZE_COUNT 2
 
+#define FACTORY_RENTALS_6V6 12 // 6 for the player and 6 for the opponent
+
 #define FRONTIER_RULE_TOWER    0
 #define FRONTIER_RULE_FACTORY  1
 #define FRONTIER_RULE_DOME     2

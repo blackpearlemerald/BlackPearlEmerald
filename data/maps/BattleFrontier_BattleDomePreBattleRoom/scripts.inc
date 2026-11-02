@@ -132,14 +132,24 @@ BattleFrontier_BattleDomePreBattleRoom_EventScript_TourneyInFinals::
 	msgbox BattleFrontier_BattleDomePreBattleRoom_Text_TourneyInFinals, MSGBOX_DEFAULT
 	return
 
-BattleFrontier_BattleDomePreBattleRoom_EventScript_ContinueChallenge::
+BattleFrontier_BattleDomePreBattleRoom_EventScript_AskChooseTwoMons:
 	message BattleFrontier_BattleDomePreBattleRoom_Text_ChooseTwoMons
+	return
+
+BattleFrontier_BattleDomePreBattleRoom_EventScript_AskOrderSixMons:
+	message BattleFrontier_BattleDomePreBattleRoom_Text_OrderSixMons
+	return
+
+BattleFrontier_BattleDomePreBattleRoom_EventScript_ContinueChallenge::
+	callnative SetDomeRoundPartySize
+	call_if_eq VAR_0x8005, DOME_BATTLE_PARTY_SIZE, BattleFrontier_BattleDomePreBattleRoom_EventScript_AskChooseTwoMons
+	call_if_ne VAR_0x8005, DOME_BATTLE_PARTY_SIZE, BattleFrontier_BattleDomePreBattleRoom_EventScript_AskOrderSixMons
 	waitmessage
 	waitbuttonpress
 	fadescreen FADE_TO_BLACK
 	call BattleFrontier_EventScript_GetLvlMode
 	copyvar VAR_0x8004, VAR_RESULT
-	setvar VAR_0x8005, DOME_BATTLE_PARTY_SIZE  @ 2 of the 3 party mons are selected for battle
+	callnative SetDomeRoundPartySize  @ 2 of the 3 party mons are selected for battle, or all 6 are ordered
 	special ChoosePartyForBattleFrontier
 	frontier_resetsketch
 	goto_if_eq VAR_RESULT, 0, BattleFrontier_BattleDomePreBattleRoom_EventScript_AskReadyForNextRound
@@ -284,6 +294,10 @@ BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForSemifinals:
 BattleFrontier_BattleDomePreBattleRoom_Text_ReadyForFinals:
 	.string "Your final match is next.\n"
 	.string "Are you ready?$"
+
+BattleFrontier_BattleDomePreBattleRoom_Text_OrderSixMons:
+	.string "Please choose the order your six\n"
+	.string "POKéMON will battle in.$"
 
 BattleFrontier_BattleDomePreBattleRoom_Text_ChooseTwoMons:
 	.string "Please choose the two POKéMON\n"

@@ -463,8 +463,7 @@ struct FrontierRuleData
     u32 fullDexHillTimes[NUM_TRAINER_HILL_MODES];
     struct RentalMon extraRentalMons[FRONTIER_PARTY_SIZE * 2]; // 6v6 needs 12 rentals
     u16 extraSelectedMons[2]; // 6v6 needs 6 selected Pokémon
-    u16 extraDomeMonIds[DOME_TOURNAMENT_TRAINERS_COUNT][FRONTIER_PARTY_SIZE];
-    struct DomeMonData extraDomePlayerPartyData[FRONTIER_PARTY_SIZE];
+    u16 extraDomeMonIds[DOME_TOURNAMENT_TRAINERS_COUNT][FRONTIER_PARTY_SIZE]; // 6v6 teams, the first 3 are in domeMonIds
 };
 
 struct BattleFrontier

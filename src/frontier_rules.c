@@ -12,6 +12,7 @@
 #include "string_util.h"
 #include "strings.h"
 #include "constants/abilities.h"
+#include "constants/battle_dome.h"
 #include "constants/battle_frontier.h"
 #include "constants/items.h"
 #include "constants/moves.h"
@@ -111,6 +112,43 @@ bool32 FrontierUsesSetPools(void)
 bool32 IsFrontierSmogonRule(void)
 {
     return FRONTIER_RULE_KIND(GetActiveFrontierRule()) == FRONTIER_RULES_SMOGON;
+}
+
+bool32 IsFrontier6v6(void)
+{
+    u16 rule = GetActiveFrontierRule();
+
+    return FRONTIER_RULE_KIND(rule) == FRONTIER_RULES_SMOGON && FRONTIER_RULE_SIZE(rule) == FRONTIER_TEAM_6V6;
+}
+
+// How many Pokémon each side brings to the challenge.
+u32 GetFrontierTeamSize(void)
+{
+    u32 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
+
+    if (IsFrontier6v6())
+        return PARTY_SIZE;
+    if (battleMode == FRONTIER_MODE_MULTIS || battleMode == FRONTIER_MODE_LINK_MULTIS)
+        return FRONTIER_MULTI_PARTY_SIZE;
+    if (battleMode == FRONTIER_MODE_DOUBLES && VarGet(VAR_FRONTIER_FACILITY) == FRONTIER_FACILITY_TOWER)
+        return FRONTIER_DOUBLES_PARTY_SIZE;
+    return FRONTIER_PARTY_SIZE;
+}
+
+// 6v6 keeps the last two picks in the rule data, since the save's list holds four.
+u16 GetFrontierSelectedMon(u32 id)
+{
+    if (id < MAX_FRONTIER_PARTY_SIZE)
+        return gSaveBlock2Ptr->frontier.selectedPartyMons[id];
+    return gSaveBlock2Ptr->frontier.ruleData.extraSelectedMons[id - MAX_FRONTIER_PARTY_SIZE];
+}
+
+void SetFrontierSelectedMon(u32 id, u16 value)
+{
+    if (id < MAX_FRONTIER_PARTY_SIZE)
+        gSaveBlock2Ptr->frontier.selectedPartyMons[id] = value;
+    else
+        gSaveBlock2Ptr->frontier.ruleData.extraSelectedMons[id - MAX_FRONTIER_PARTY_SIZE] = value;
 }
 
 bool32 IsFrontierItemClauseOn(void)
@@ -230,7 +268,7 @@ void RestoreFrontierBattleLevels(void)
 
 void SetFrontierRuleForChallenge(void)
 {
-    SetFrontierRule(FRONTIER_RULE(gSpecialVar_0x8004, gSpecialVar_0x8005, gSpecialVar_0x8006, FRONTIER_TEAM_USUAL));
+    SetFrontierRule(FRONTIER_RULE(gSpecialVar_0x8004, gSpecialVar_0x8005, gSpecialVar_0x8006, gSpecialVar_0x8007));
     // A Tent's level mode left in the save would hide the rule from the checks that follow.
     if (gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT)
         gSaveBlock2Ptr->frontier.lvlMode = FRONTIER_LVL_50;
@@ -298,4 +336,15 @@ void ScriptCheckSmogonRulesAllowed(void)
 void ScriptIsSmogonRule(void)
 {
     gSpecialVar_0x8006 = IsFrontierSmogonRule();
+}
+
+void SetFrontierPartySizeVar(void)
+{
+    gSpecialVar_0x8005 = GetFrontierTeamSize();
+}
+
+// In 6v6 the player brings everyone, so this only sets their order for the round.
+void SetDomeRoundPartySize(void)
+{
+    gSpecialVar_0x8005 = IsFrontier6v6() ? PARTY_SIZE : DOME_BATTLE_PARTY_SIZE;
 }

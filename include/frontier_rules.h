@@ -31,6 +31,10 @@ u32 GetFrontierCurrentStreak(u32 facility, u32 battleMode, u16 rule);
 u16 GetActiveFrontierRule(void);
 bool32 FrontierUsesSetPools(void);
 bool32 IsFrontierSmogonRule(void);
+bool32 IsFrontier6v6(void);
+u32 GetFrontierTeamSize(void);
+u16 GetFrontierSelectedMon(u32 id);
+void SetFrontierSelectedMon(u32 id, u16 value);
 bool32 IsFrontierItemClauseOn(void);
 bool32 IsFrontierSleepClauseOn(void);
 u16 *GetFrontierWinStreakPtr(u32 facility, u32 battleMode, u32 lvlMode);
@@ -45,5 +49,7 @@ void SetFrontierRuleForChallenge(void);
 void BufferNextIllegalFrontierMon(void);
 void ScriptCheckSmogonRulesAllowed(void);
 void ScriptIsSmogonRule(void);
+void SetFrontierPartySizeVar(void);
+void SetDomeRoundPartySize(void);
 
 #endif // GUARD_FRONTIER_RULES_H

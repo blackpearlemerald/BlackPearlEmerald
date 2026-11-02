@@ -961,8 +961,8 @@ static void SetFrontierData(void)
         gSaveBlock2Ptr->frontier.challengePaused = gSpecialVar_0x8006;
         break;
     case FRONTIER_DATA_SELECTED_MON_ORDER:
-        for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
-            gSaveBlock2Ptr->frontier.selectedPartyMons[i] = gSelectedOrderFromParty[i];
+        for (i = 0; i < PARTY_SIZE; i++)
+            SetFrontierSelectedMon(i, gSelectedOrderFromParty[i]);
         break;
     case FRONTIER_DATA_RECORD_DISABLED:
         gSaveBlock2Ptr->frontier.disableRecordBattle = gSpecialVar_0x8006;
@@ -976,10 +976,11 @@ static void SetFrontierData(void)
 static void SetSelectedPartyOrder(void)
 {
     s32 i;
+    s32 count = IsFrontier6v6() ? PARTY_SIZE : gSpecialVar_0x8005;
 
     ClearSelectedPartyOrder();
-    for (i = 0; i < gSpecialVar_0x8005; i++)
-        gSelectedOrderFromParty[i] = gSaveBlock2Ptr->frontier.selectedPartyMons[i];
+    for (i = 0; i < count; i++)
+        gSelectedOrderFromParty[i] = GetFrontierSelectedMon(i);
     ReducePlayerPartyToSelectedMons();
 }
 
@@ -997,11 +998,11 @@ static void SaveSelectedParty(void)
 {
     u8 i;
 
-    for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
+    for (i = 0; i < PARTY_SIZE; i++)
     {
-        u16 monId = gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1;
+        u16 monId = GetFrontierSelectedMon(i) - 1;
         if (monId < PARTY_SIZE)
-            SavePlayerPartyMon(gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1, &gParties[B_TRAINER_PLAYER][i]);
+            SavePlayerPartyMon(monId, &gParties[B_TRAINER_PLAYER][i]);
     }
 }
 
@@ -1960,10 +1961,10 @@ static void GiveBattlePoints(void)
     switch (facility)
     {
     case FRONTIER_FACILITY_TOWER:
-        challengeNum = gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+        challengeNum = *GetFrontierWinStreakPtr(facility, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
         break;
     case FRONTIER_FACILITY_DOME:
-        challengeNum = gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode];
+        challengeNum = *GetFrontierWinStreakPtr(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_PALACE:
         challengeNum = gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
@@ -1972,7 +1973,7 @@ static void GiveBattlePoints(void)
         challengeNum = gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
         break;
     case FRONTIER_FACILITY_FACTORY:
-        challengeNum = gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+        challengeNum = *GetFrontierWinStreakPtr(facility, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
         break;
     case FRONTIER_FACILITY_PIKE:
         challengeNum = gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode] / NUM_PIKE_ROOMS;
@@ -1990,19 +1991,15 @@ static void GiveBattlePoints(void)
     points = sBattlePointAwards[facility][battleMode][challengeNum];
     if (TRAINER_BATTLE_PARAM.opponentA == TRAINER_FRONTIER_BRAIN)
         points += 10;
+    if (IsFrontier6v6())
+        points *= 2;
     gSaveBlock2Ptr->frontier.battlePoints += points;
     ConvertIntToDecimalStringN(gStringVar1, points, STR_CONV_MODE_LEFT_ALIGN, 2);
     if (gSaveBlock2Ptr->frontier.battlePoints > MAX_BATTLE_FRONTIER_POINTS)
         gSaveBlock2Ptr->frontier.battlePoints = MAX_BATTLE_FRONTIER_POINTS;
 
-    points = gSaveBlock2Ptr->frontier.cardBattlePoints;
-    points += sBattlePointAwards[facility][battleMode][challengeNum];
-    IncrementDailyBattlePoints(sBattlePointAwards[facility][battleMode][challengeNum]);
-    if (TRAINER_BATTLE_PARAM.opponentA == TRAINER_FRONTIER_BRAIN)
-    {
-        points += 10;
-        IncrementDailyBattlePoints(10);
-    }
+    IncrementDailyBattlePoints(points);
+    points += gSaveBlock2Ptr->frontier.cardBattlePoints;
     if (points > 0xFFFF)
         points = 0xFFFF;
     gSaveBlock2Ptr->frontier.cardBattlePoints = points;
@@ -2087,28 +2084,12 @@ static void CheckPartyIneligibility(void)
     s32 monId = 0;
     s32 toChoose = 0;
     u8 count = 0;
-    s32 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
     s32 monIdLooper;
 
     // count is re-used, define for clarity
     #define numEligibleMons count
 
-    switch (battleMode)
-    {
-    case FRONTIER_MODE_SINGLES:
-        toChoose = FRONTIER_PARTY_SIZE;
-        break;
-    case FRONTIER_MODE_MULTIS:
-    case FRONTIER_MODE_LINK_MULTIS:
-        toChoose = FRONTIER_MULTI_PARTY_SIZE;
-        break;
-    case FRONTIER_MODE_DOUBLES:
-        if (VarGet(VAR_FRONTIER_FACILITY) == FRONTIER_FACILITY_TOWER)
-            toChoose = FRONTIER_DOUBLES_PARTY_SIZE;
-        else
-            toChoose = FRONTIER_PARTY_SIZE;
-        break;
-    }
+    toChoose = GetFrontierTeamSize();
 
     monIdLooper = 0;
     do
@@ -2265,11 +2246,11 @@ static void RestoreHeldItems(void)
 {
     u8 i;
 
-    for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
+    for (i = 0; i < PARTY_SIZE; i++)
     {
-        if (gSaveBlock2Ptr->frontier.selectedPartyMons[i] != 0)
+        if (GetFrontierSelectedMon(i) != 0)
         {
-            enum Item item = GetMonData(GetSavedPlayerPartyMon(gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1), MON_DATA_HELD_ITEM);
+            enum Item item = GetMonData(GetSavedPlayerPartyMon(GetFrontierSelectedMon(i) - 1), MON_DATA_HELD_ITEM);
             SetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_HELD_ITEM, &item);
         }
     }
@@ -2298,23 +2279,23 @@ static void ResetSketchedMoves(void)
 {
     u8 i, j, k;
 
-    for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
+    for (i = 0; i < PARTY_SIZE; i++)
     {
-        u16 monId = gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1;
+        u16 monId = GetFrontierSelectedMon(i) - 1;
         if (monId < PARTY_SIZE)
         {
             for (j = 0; j < MAX_MON_MOVES; j++)
             {
                 for (k = 0; k < MAX_MON_MOVES; k++)
                 {
-                    if (GetMonData(GetSavedPlayerPartyMon(gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1), MON_DATA_MOVE1 + k)
+                    if (GetMonData(GetSavedPlayerPartyMon(monId), MON_DATA_MOVE1 + k)
                         == GetMonData(&gParties[B_TRAINER_PLAYER][i], MON_DATA_MOVE1 + j))
                         break;
                 }
                 if (k == MAX_MON_MOVES)
                     SetMonMoveSlot(&gParties[B_TRAINER_PLAYER][i], MOVE_SKETCH, j);
             }
-            SavePlayerPartyMon(gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1, &gParties[B_TRAINER_PLAYER][i]);
+            SavePlayerPartyMon(monId, &gParties[B_TRAINER_PLAYER][i]);
         }
     }
 }

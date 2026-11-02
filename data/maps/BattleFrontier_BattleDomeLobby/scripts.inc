@@ -147,6 +147,10 @@ BattleFrontier_BattleDomeLobby_EventScript_AskTakeChallenge::
 	case 2, BattleFrontier_BattleDomeLobby_EventScript_CancelChallenge
 	case MULTI_B_PRESSED, BattleFrontier_BattleDomeLobby_EventScript_CancelChallenge
 
+BattleFrontier_BattleDomeLobby_EventScript_SelectThreeMons:
+	msgbox BattleFrontier_BattleDomeLobby_Text_SelectThreeMons, MSGBOX_DEFAULT
+	return
+
 BattleFrontier_BattleDomeLobby_EventScript_TryEnterChallenge::
 	call BattleFrontier_EventScript_ChooseRules
 	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_BattleDomeLobby_EventScript_CancelChallenge
@@ -165,12 +169,14 @@ BattleFrontier_BattleDomeLobby_EventScript_LevelModeChosen:
 	frontier_checkineligible
 	goto_if_eq VAR_0x8004, TRUE, BattleFrontier_BattleDomeLobby_EventScript_NotEnoughValidMons
 	frontier_set FRONTIER_DATA_LVL_MODE, VAR_RESULT
-	msgbox BattleFrontier_BattleDomeLobby_Text_SelectThreeMons, MSGBOX_DEFAULT
+	callnative SetFrontierPartySizeVar
+	call_if_eq VAR_0x8005, PARTY_SIZE, BattleFrontier_EventScript_SelectSixMons
+	call_if_ne VAR_0x8005, PARTY_SIZE, BattleFrontier_BattleDomeLobby_EventScript_SelectThreeMons
 	fadescreen FADE_TO_BLACK
 	callnative RemoveFollowingPokemon
 	call BattleFrontier_EventScript_GetLvlMode
 	copyvar VAR_0x8004, VAR_RESULT
-	setvar VAR_0x8005, FRONTIER_PARTY_SIZE
+	callnative SetFrontierPartySizeVar
 	special ChoosePartyForBattleFrontier
 	goto_if_eq VAR_RESULT, 0, BattleFrontier_BattleDomeLobby_EventScript_LoadPartyCancelChallenge
 	msgbox BattleFrontier_BattleDomeLobby_Text_OkayToSaveBeforeChallenge, MSGBOX_YESNO

@@ -242,20 +242,20 @@ static void CB2_ReturnFromChooseBattleFrontierParty(void)
 
 void ReducePlayerPartyToSelectedMons(void)
 {
-    struct Pokemon party[MAX_FRONTIER_PARTY_SIZE];
+    struct Pokemon party[PARTY_SIZE];
     int i;
 
     CpuFill32(0, party, sizeof party);
 
     // copy the selected Pokémon according to the order.
-    for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
+    for (i = 0; i < PARTY_SIZE; i++)
         if (gSelectedOrderFromParty[i]) // as long as the order keeps going (did the player select 1 mon? 2? 3?), do not stop
             party[i] = gParties[B_TRAINER_PLAYER][gSelectedOrderFromParty[i] - 1]; // index is 0 based, not literal
 
     CpuFill32(0, gParties[B_TRAINER_PLAYER], sizeof gParties[B_TRAINER_PLAYER]);
 
-    // overwrite the first 4 with the order copied to.
-    for (i = 0; i < MAX_FRONTIER_PARTY_SIZE; i++)
+    // overwrite the party with the order copied to.
+    for (i = 0; i < PARTY_SIZE; i++)
         gParties[B_TRAINER_PLAYER][i] = party[i];
 
     CalculatePlayerPartyCount();

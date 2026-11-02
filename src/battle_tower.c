@@ -686,14 +686,6 @@ static const u8 sBattleTowerPartySizes2[] =
 // Unknown, unused data
 static const u16 sUnused[] = { 179, 141, 200, 183 };
 
-static const u8 sBattleTowerPartySizes[FRONTIER_MODE_COUNT] =
-{
-    [FRONTIER_MODE_SINGLES]     = FRONTIER_PARTY_SIZE,
-    [FRONTIER_MODE_DOUBLES]     = FRONTIER_DOUBLES_PARTY_SIZE,
-    [FRONTIER_MODE_MULTIS]      = FRONTIER_MULTI_PARTY_SIZE,
-    [FRONTIER_MODE_LINK_MULTIS] = FRONTIER_MULTI_PARTY_SIZE,
-};
-
 static const u16 sRecordTrainerSpeechWon[] =
 {
     EC_WORD_YAY, EC_WORD_YAY, EC_WORD_EXCL_EXCL, EC_WORD_I_VE, EC_WORD_WON, EC_WORD_EXCL_EXCL
@@ -1665,17 +1657,6 @@ u16 GetCurrentBattleTowerWinStreak(enum FrontierLevelMode lvlMode, u8 battleMode
         return winStreak;
 }
 
-static u8 GetMonCountForBattleMode(u8 battleMode)
-{
-    u8 partySizes[ARRAY_COUNT(sBattleTowerPartySizes)];
-    memcpy(partySizes, sBattleTowerPartySizes, sizeof(sBattleTowerPartySizes));
-
-    if (battleMode < ARRAY_COUNT(sBattleTowerPartySizes))
-        return partySizes[battleMode];
-    else
-        return FRONTIER_PARTY_SIZE;
-}
-
 struct RibbonCounter
 {
     u8 partyIndex;
@@ -1686,15 +1667,11 @@ static void AwardBattleTowerRibbons(void)
 {
     s32 i;
     u32 partyIndex;
-#ifdef BUGFIX
-    struct RibbonCounter ribbons[MAX_FRONTIER_PARTY_SIZE] = {0};
-#else
-    struct RibbonCounter ribbons[3] = {0}; // BUG: 4 Pokémon can receive ribbons in a double battle mode.
-#endif
+    struct RibbonCounter ribbons[PARTY_SIZE] = {0};
     u8 ribbonType = 0;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     u8 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    u8 monCount = GetMonCountForBattleMode(battleMode);
+    u8 monCount = GetFrontierTeamSize();
 
     if (lvlMode != FRONTIER_LVL_50)
         ribbonType = MON_DATA_VICTORY_RIBBON;
@@ -1707,7 +1684,7 @@ static void AwardBattleTowerRibbons(void)
     {
         for (i = 0; i < monCount; i++)
         {
-            partyIndex = gSaveBlock2Ptr->frontier.selectedPartyMons[i] - 1;
+            partyIndex = GetFrontierSelectedMon(i) - 1;
             ribbons[i].partyIndex = partyIndex;
             ribbons[i].count = 0;
             if (!GetMonData(GetSavedPlayerPartyMon(partyIndex), ribbonType))
