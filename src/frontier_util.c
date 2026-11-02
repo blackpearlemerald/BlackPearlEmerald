@@ -1914,15 +1914,15 @@ u32 GetCurrentFacilityWinStreak(void)
     case FRONTIER_FACILITY_DOME:
         return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_DOME, battleMode, lvlMode);
     case FRONTIER_FACILITY_PALACE:
-        return gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode];
+        return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PALACE, battleMode, lvlMode);
     case FRONTIER_FACILITY_ARENA:
-        return gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode];
+        return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_ARENA, 0, lvlMode);
     case FRONTIER_FACILITY_FACTORY:
         return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode);
     case FRONTIER_FACILITY_PIKE:
-        return gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode];
+        return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, lvlMode);
     case FRONTIER_FACILITY_PYRAMID:
-        return gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode];
+        return *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode);
     default:
         return 0;
     }
@@ -1967,19 +1967,19 @@ static void GiveBattlePoints(void)
         challengeNum = *GetFrontierWinStreakPtr(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_PALACE:
-        challengeNum = gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+        challengeNum = *GetFrontierWinStreakPtr(facility, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
         break;
     case FRONTIER_FACILITY_ARENA:
-        challengeNum = gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+        challengeNum = *GetFrontierWinStreakPtr(facility, 0, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
         break;
     case FRONTIER_FACILITY_FACTORY:
         challengeNum = *GetFrontierWinStreakPtr(facility, battleMode, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
         break;
     case FRONTIER_FACILITY_PIKE:
-        challengeNum = gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode] / NUM_PIKE_ROOMS;
+        challengeNum = *GetFrontierWinStreakPtr(facility, 0, lvlMode) / NUM_PIKE_ROOMS;
         break;
     case FRONTIER_FACILITY_PYRAMID:
-        challengeNum = gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+        challengeNum = *GetFrontierWinStreakPtr(facility, 0, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
         break;
     }
 
@@ -2219,12 +2219,14 @@ static void IncrementWinStreak(void)
         RecordFrontierRuleStreak(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_PALACE:
-        if (gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode] < MAX_STREAK)
-            gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode]++;
+        if (*GetFrontierWinStreakPtr(facility, battleMode, lvlMode) < MAX_STREAK)
+            (*GetFrontierWinStreakPtr(facility, battleMode, lvlMode))++;
+        RecordFrontierRuleStreak(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_ARENA:
-        if (gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode] < MAX_STREAK)
-            gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode]++;
+        if (*GetFrontierWinStreakPtr(facility, 0, lvlMode) < MAX_STREAK)
+            (*GetFrontierWinStreakPtr(facility, 0, lvlMode))++;
+        RecordFrontierRuleStreak(facility, 0, lvlMode);
         break;
     case FRONTIER_FACILITY_FACTORY:
         if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_FACTORY, battleMode, lvlMode) < MAX_STREAK)
@@ -2232,12 +2234,14 @@ static void IncrementWinStreak(void)
         RecordFrontierRuleStreak(facility, battleMode, lvlMode);
         break;
     case FRONTIER_FACILITY_PIKE:
-        if (gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode] < MAX_STREAK)
-            gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode]++;
+        if (*GetFrontierWinStreakPtr(facility, 0, lvlMode) < MAX_STREAK)
+            (*GetFrontierWinStreakPtr(facility, 0, lvlMode))++;
+        RecordFrontierRuleStreak(facility, 0, lvlMode);
         break;
     case FRONTIER_FACILITY_PYRAMID:
-        if (gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] < MAX_STREAK)
-            gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode]++;
+        if (*GetFrontierWinStreakPtr(facility, 0, lvlMode) < MAX_STREAK)
+            (*GetFrontierWinStreakPtr(facility, 0, lvlMode))++;
+        RecordFrontierRuleStreak(facility, 0, lvlMode);
         break;
     }
 }

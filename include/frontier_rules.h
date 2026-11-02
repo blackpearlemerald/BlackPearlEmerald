@@ -44,6 +44,7 @@ void RaiseFrontierBattleLevels(void);
 void RestoreFrontierBattleLevels(void);
 const struct TrainerMon *GetFrontierMonTable(void);
 u16 GetRandomFrontierSetId(void);
+void CreateFullDexHillMon(struct Pokemon *party, u32 slot, u32 mode, u32 floor, u32 trainerNum, u32 level, u32 otId);
 bool32 IsMonLegalForFrontierRule(struct Pokemon *mon, struct FrontierProblemInfo *problem);
 void SetFrontierRuleForChallenge(void);
 void BufferNextIllegalFrontierMon(void);

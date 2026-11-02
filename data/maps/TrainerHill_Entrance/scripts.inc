@@ -154,6 +154,9 @@ TrainerHill_Entrance_EventScript_ChooseChallenge::
 	case 4, TrainerHill_Entrance_EventScript_CancelEntry
 	case MULTI_B_PRESSED, TrainerHill_Entrance_EventScript_CancelEntry
 	trainerhill_setmode VAR_RESULT
+	call BattleFrontier_EventScript_ChooseFullDexRules
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, TrainerHill_Entrance_EventScript_CancelEntry
+	callnative SetTrainerHillRule
 	setvar VAR_TRAINER_HILL_IS_ACTIVE, 1
 	setvar VAR_TEMP_5, 0
 	special HealPlayerParty

@@ -52,6 +52,8 @@ void InitTrainerHillBattleStruct(void);
 void FreeTrainerHillBattleStruct(void);
 void CopyTrainerHillTrainerText(u8 which, u16 trainerId);
 bool8 InTrainerHillChallenge(void);
+bool32 IsTrainerHillFullDex(void);
+void SetTrainerHillRule(void);
 void PrintOnTrainerHillRecordsWindow(void);
 void LoadTrainerHillObjectEventTemplates(void);
 bool32 LoadTrainerHillFloorObjectEventScripts(void);

@@ -89,19 +89,23 @@ u32 GetFrontierCurrentStreak(u32 facility, u32 battleMode, u16 rule)
     return data->currentStreak[facility][battleMode];
 }
 
-// The rule set the current challenge runs under. Facilities that have no rule menu
-// are always vanilla, so a rule left in the save can't reach them.
+// The rule set the current challenge runs under. Every lobby sets it, but only the
+// Tower, Factory and Dome have Smogon rules, and Link Multis are always vanilla,
+// so a rule left in the save can't reach anything that doesn't offer it.
 u16 GetActiveFrontierRule(void)
 {
     u32 facility = VarGet(VAR_FRONTIER_FACILITY);
+    u32 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
+    u16 rule = gSaveBlock2Ptr->frontier.activeRule;
 
-    if (gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT)
+    if (facility >= NUM_FRONTIER_FACILITIES || (facility == FRONTIER_FACILITY_TOWER && battleMode == FRONTIER_MODE_LINK_MULTIS))
         return FRONTIER_RULE(FRONTIER_RULES_VANILLA, 0, 0, 0);
-    if (facility != FRONTIER_FACILITY_TOWER && facility != FRONTIER_FACILITY_FACTORY && facility != FRONTIER_FACILITY_DOME)
+    if (FRONTIER_RULE_KIND(rule) == FRONTIER_RULES_SMOGON
+     && (gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT
+      || (facility != FRONTIER_FACILITY_TOWER && facility != FRONTIER_FACILITY_FACTORY && facility != FRONTIER_FACILITY_DOME)
+      || battleMode > FRONTIER_MODE_DOUBLES))
         return FRONTIER_RULE(FRONTIER_RULES_VANILLA, 0, 0, 0);
-    if (VarGet(VAR_FRONTIER_BATTLE_MODE) > FRONTIER_MODE_DOUBLES)
-        return FRONTIER_RULE(FRONTIER_RULES_VANILLA, 0, 0, 0);
-    return gSaveBlock2Ptr->frontier.activeRule;
+    return rule;
 }
 
 bool32 FrontierUsesSetPools(void)
@@ -177,13 +181,34 @@ static u32 GetRuleFacility(u32 facility)
 
 static u16 *GetFullDexStreakPtr(u32 facility, u32 battleMode, u32 lvlMode)
 {
-    u32 slot = FULL_DEX_TOWER + battleMode;
+    u32 slot;
 
-    if (facility == FRONTIER_FACILITY_DOME)
+    switch (facility)
+    {
+    default:
+        slot = FULL_DEX_TOWER + battleMode;
+        break;
+    case FRONTIER_FACILITY_DOME:
         slot = FULL_DEX_DOME + battleMode;
-    else if (facility == FRONTIER_FACILITY_FACTORY)
+        break;
+    case FRONTIER_FACILITY_PALACE:
+        slot = FULL_DEX_PALACE + battleMode;
+        break;
+    case FRONTIER_FACILITY_ARENA:
+        slot = FULL_DEX_ARENA;
+        break;
+    case FRONTIER_FACILITY_FACTORY:
         slot = FULL_DEX_FACTORY + battleMode;
-    return gSaveBlock2Ptr->frontier.ruleData.fullDexStreaks[slot][lvlMode];
+        break;
+    case FRONTIER_FACILITY_PIKE:
+        slot = FULL_DEX_PIKE;
+        break;
+    case FRONTIER_FACILITY_PYRAMID:
+        slot = FULL_DEX_PYRAMID;
+        break;
+    }
+    // Tents have no streak.
+    return gSaveBlock2Ptr->frontier.ruleData.fullDexStreaks[slot][min(lvlMode, FRONTIER_LVL_OPEN)];
 }
 
 // Each rule set keeps its own streak, so playing one can't change a vanilla streak.
@@ -197,11 +222,23 @@ u16 *GetFrontierWinStreakPtr(u32 facility, u32 battleMode, u32 lvlMode)
         return GetFullDexStreakPtr(facility, battleMode, lvlMode);
     }
 
-    if (facility == FRONTIER_FACILITY_DOME)
+    switch (facility)
+    {
+    case FRONTIER_FACILITY_DOME:
         return &gSaveBlock2Ptr->frontier.domeWinStreaks[battleMode][lvlMode];
-    if (facility == FRONTIER_FACILITY_FACTORY)
+    case FRONTIER_FACILITY_PALACE:
+        return &gSaveBlock2Ptr->frontier.palaceWinStreaks[battleMode][lvlMode];
+    case FRONTIER_FACILITY_ARENA:
+        return &gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode];
+    case FRONTIER_FACILITY_FACTORY:
         return &gSaveBlock2Ptr->frontier.factoryWinStreaks[battleMode][lvlMode];
-    return &gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode];
+    case FRONTIER_FACILITY_PIKE:
+        return &gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode];
+    case FRONTIER_FACILITY_PYRAMID:
+        return &gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode];
+    default:
+        return &gSaveBlock2Ptr->frontier.towerWinStreaks[battleMode][lvlMode];
+    }
 }
 
 // Called when a challenge starts. Picking another Smogon option ends the running streak.

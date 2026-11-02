@@ -108,6 +108,8 @@ BattleFrontier_BattlePikeLobby_EventScript_AskTakeChallenge::
 	case MULTI_B_PRESSED, BattleFrontier_BattlePikeLobby_EventScript_CancelChallenge
 
 BattleFrontier_BattlePikeLobby_EventScript_TryEnterChallenge::
+	call BattleFrontier_EventScript_ChooseFullDexRules
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_BattlePikeLobby_EventScript_CancelChallenge
 	message BattleFrontier_BattlePikeLobby_Text_WhichChallengeMode
 	waitmessage
 	multichoice 17, 6, MULTI_LEVEL_MODE, FALSE

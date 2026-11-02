@@ -3,6 +3,7 @@
 #include "frontier_sets.h"
 #include "battle.h"
 #include "battle_factory.h"
+#include "battle_tent.h"
 #include "battle_factory_screen.h"
 #include "event_data.h"
 #include "battle_setup.h"
@@ -352,7 +353,7 @@ static void SetRentalsToOpponentParty(void)
     if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_TENT)
         gFacilityTrainerMons = GetFrontierMonTable();
     else
-        gFacilityTrainerMons = gSlateportBattleTentMons;
+        gFacilityTrainerMons = GetSlateportTentMonTable();
 
     for (i = 0; i < teamSize; i++)
     {
@@ -376,7 +377,7 @@ static void SetPlayerAndOpponentParties(void)
 
     if (gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT)
     {
-        gFacilityTrainerMons = gSlateportBattleTentMons;
+        gFacilityTrainerMons = GetSlateportTentMonTable();
         monLevel = TENT_MIN_LEVEL;
     }
     else
@@ -649,7 +650,7 @@ static void RestorePlayerPartyHeldItems(void)
     if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_TENT)
         gFacilityTrainerMons = GetFrontierMonTable();
     else
-        gFacilityTrainerMons = gSlateportBattleTentMons;
+        gFacilityTrainerMons = GetSlateportTentMonTable();
 
     for (i = 0; i < GetFactoryTeamSize(); i++)
     {

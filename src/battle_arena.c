@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "battle.h"
 #include "battle_arena.h"
 #include "battle_message.h"
@@ -460,7 +461,7 @@ static void InitArenaChallenge(void)
     else
         isCurrent = gSaveBlock2Ptr->frontier.winStreakActiveFlags & STREAK_ARENA_50;
 
-    if (!isCurrent)
+    if (!isCurrent && !FrontierUsesSetPools())
         gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode] = 0;
 
     SetDynamicWarp(0, gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum, WARP_ID_NONE);
@@ -477,7 +478,7 @@ static void GetArenaData(void)
         gSpecialVar_Result = gSaveBlock2Ptr->frontier.arenaPrize;
         break;
     case ARENA_DATA_WIN_STREAK:
-        gSpecialVar_Result = gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode];
+        gSpecialVar_Result = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_ARENA, 0, lvlMode);
         break;
     case ARENA_DATA_WIN_STREAK_ACTIVE:
         if (lvlMode != FRONTIER_LVL_50)
@@ -498,10 +499,15 @@ static void SetArenaData(void)
         gSaveBlock2Ptr->frontier.arenaPrize = gSpecialVar_0x8006;
         break;
     case ARENA_DATA_WIN_STREAK:
-        gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode] = gSpecialVar_0x8006;
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_ARENA, 0, lvlMode) = gSpecialVar_0x8006;
         break;
     case ARENA_DATA_WIN_STREAK_ACTIVE:
-        if (lvlMode != FRONTIER_LVL_50)
+        if (FrontierUsesSetPools())
+        {
+            if (!gSpecialVar_0x8006)
+                *GetFrontierWinStreakPtr(FRONTIER_FACILITY_ARENA, 0, lvlMode) = 0;
+        }
+        else if (lvlMode != FRONTIER_LVL_50)
         {
             if (gSpecialVar_0x8006)
                 gSaveBlock2Ptr->frontier.winStreakActiveFlags |= STREAK_ARENA_OPEN;
@@ -532,7 +538,7 @@ static void SetArenaPrize(void)
 {
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
 
-    if (gSaveBlock2Ptr->frontier.arenaWinStreaks[lvlMode] > 41)
+    if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_ARENA, 0, lvlMode) > 41)
         gSaveBlock2Ptr->frontier.arenaPrize = sLongStreakPrizeItems[Random() % ARRAY_COUNT(sLongStreakPrizeItems)];
     else
         gSaveBlock2Ptr->frontier.arenaPrize = sShortStreakPrizeItems[Random() % ARRAY_COUNT(sShortStreakPrizeItems)];

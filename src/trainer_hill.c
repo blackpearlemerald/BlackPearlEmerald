@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "malloc.h"
 #include "battle.h"
 #include "battle_tower.h"
@@ -478,7 +479,10 @@ static void CheckFinalTime(void)
     else if (GetTimerValue(&gSaveBlock1Ptr->trainerHill.bestTime) > gSaveBlock1Ptr->trainerHill.timer)
     {
         SetTimerValue(&gSaveBlock1Ptr->trainerHill.bestTime, gSaveBlock1Ptr->trainerHill.timer);
-        gSaveBlock1Ptr->trainerHillTimes[gSaveBlock1Ptr->trainerHill.mode] = gSaveBlock1Ptr->trainerHill.bestTime;
+        if (IsTrainerHillFullDex())
+            gSaveBlock2Ptr->frontier.ruleData.fullDexHillTimes[gSaveBlock1Ptr->trainerHill.mode] = gSaveBlock1Ptr->trainerHill.timer;
+        else
+            gSaveBlock1Ptr->trainerHillTimes[gSaveBlock1Ptr->trainerHill.mode] = gSaveBlock1Ptr->trainerHill.bestTime;
         gSpecialVar_Result = 0;
     }
     else
@@ -913,6 +917,11 @@ static void CreateNPCTrainerHillParty(u16 trainerId, enum BattleTrainer trainer)
         u8 id = sTrainerPartySlots[trId][partySlot];
         struct Pokemon *mon = &gParties[trainer][i];
 
+        if (IsTrainerHillFullDex())
+        {
+            CreateFullDexHillMon(gParties[trainer], i, gSaveBlock1Ptr->trainerHill.mode, floorId, trId, level, TRAINER_HILL_OTID);
+            continue;
+        }
         CreateBattleTowerMon(mon, &sHillData->floors[floorId].trainers[trId].mons[id]);
         SetTrainerHillMonLevel(mon, level);
     }
@@ -1037,6 +1046,21 @@ static void TrainerHillSetMode(void)
     gSaveBlock1Ptr->trainerHill.mode = gSpecialVar_0x8005;
     gSaveBlock1Ptr->trainerHill.bestTime = gSaveBlock1Ptr->trainerHillTimes[gSpecialVar_0x8005];
 #endif //FREE_TRAINER_HILL
+}
+
+bool32 IsTrainerHillFullDex(void)
+{
+    return gSaveBlock1Ptr->trainerHill.fullDex;
+}
+
+// VAR_RESULT is the rule the player chose. Full Dex keeps its own best times.
+void SetTrainerHillRule(void)
+{
+    u32 time = gSaveBlock2Ptr->frontier.ruleData.fullDexHillTimes[gSaveBlock1Ptr->trainerHill.mode];
+
+    gSaveBlock1Ptr->trainerHill.fullDex = (gSpecialVar_Result == FRONTIER_RULES_FULL_DEX);
+    if (IsTrainerHillFullDex())
+        SetTimerValue(&gSaveBlock1Ptr->trainerHill.bestTime, (time != 0) ? time : HILL_MAX_TIME);
 }
 
 // Determines which prize list to use from the set of prize lists.

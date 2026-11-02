@@ -121,6 +121,8 @@ BattleFrontier_BattleArenaLobby_EventScript_AskTakeChallenge::
 	case MULTI_B_PRESSED, BattleFrontier_BattleArenaLobby_EventScript_CancelChallenge
 
 BattleFrontier_BattleArenaLobby_EventScript_TryEnterChallenge::
+	call BattleFrontier_EventScript_ChooseFullDexRules
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_BattleArenaLobby_EventScript_CancelChallenge
 	message BattleFrontier_BattleArenaLobby_Text_WhichLevelMode
 	waitmessage
 	multichoice 17, 6, MULTI_LEVEL_MODE, FALSE

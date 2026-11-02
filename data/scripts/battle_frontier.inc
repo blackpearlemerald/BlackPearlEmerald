@@ -30,6 +30,16 @@ BattleFrontier_EventScript_ShowRules:
 	case FRONTIER_RULES_SMOGON, BattleFrontier_EventScript_ChooseGeneration
 	return
 
+@ The same for everywhere else, which only has Vanilla and Full Dex.
+BattleFrontier_EventScript_ChooseFullDexRules::
+	message BattleFrontier_Text_WhichRules
+	waitmessage
+	dynmultipush BattleFrontier_Text_RulesVanilla, FRONTIER_RULES_VANILLA
+	dynmultipush BattleFrontier_Text_RulesFullDex, FRONTIER_RULES_FULL_DEX
+	dynmultistack 17, 0, FALSE, 2, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	goto_if_ne VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_EventScript_SetSimpleRule
+	return
+
 BattleFrontier_EventScript_SetSimpleRule:
 	copyvar VAR_0x8004, VAR_RESULT
 	setvar VAR_0x8005, 0

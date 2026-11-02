@@ -11,6 +11,7 @@
 #include "constants/moves.h"
 #include "constants/pokeball.h"
 #include "constants/pokemon.h"
+#include "constants/trainer_hill.h"
 
 #include "data/battle_frontier/frontier_sets.h"
 
@@ -33,6 +34,9 @@ static u32 GetPoolIndex(u16 rule, bool32 doubles)
 
 const struct FrontierSetPool *GetFrontierSetPool(u16 rule, bool32 doubles)
 {
+    // Tents are mid-game, so they use the lowest tier's sets.
+    if (FRONTIER_RULE_KIND(rule) == FRONTIER_RULES_FULL_DEX && gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT)
+        return &gFrontierSetPools[FRONTIER_GEN_NATIONAL_DEX][FRONTIER_TIER_RU];
     if (FRONTIER_RULE_KIND(rule) == FRONTIER_RULES_FULL_DEX)
         return &gFrontierFullDexPools[doubles != FALSE];
     return &gFrontierSetPools[FRONTIER_RULE_GEN(rule)][GetPoolIndex(rule, doubles)];
@@ -106,8 +110,8 @@ const struct TrainerMon *GetFrontierMonTable(void)
 u16 GetRandomFrontierSetId(void)
 {
     u32 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    const struct FrontierSetPool *pool = GetFrontierSetPool(GetActiveFrontierRule(), battleMode == FRONTIER_MODE_DOUBLES);
-    u32 round = GetCurrentFacilityWinStreak();
+    const struct FrontierSetPool *pool = GetFrontierSetPool(GetActiveFrontierRule(), battleMode == FRONTIER_MODE_DOUBLES || battleMode == FRONTIER_MODE_MULTIS);
+    u32 round = (gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT) ? 0 : GetCurrentFacilityWinStreak();
     u32 quarter = pool->count / 4;
     u32 start, length;
 
@@ -123,6 +127,36 @@ u16 GetRandomFrontierSetId(void)
     if (start + length > pool->count)
         start = pool->count - length;
     return pool->sets[start + Random() % length];
+}
+
+#define HILL_LAST_FLOOR ((NUM_TRAINER_HILL_MODES * NUM_TRAINER_HILL_FLOORS) - 1)
+
+// The same floor always has the same teams, so that times can be compared. Modes and
+// floors climb from the middle of the pool to the top quarter.
+void CreateFullDexHillMon(struct Pokemon *party, u32 slot, u32 mode, u32 floor, u32 trainerNum, u32 level, u32 otId)
+{
+    const struct FrontierSetPool *pool = GetFrontierSetPool(FRONTIER_RULE(FRONTIER_RULES_FULL_DEX, 0, 0, 0), FALSE);
+    u32 step = mode * NUM_TRAINER_HILL_FLOORS + floor;
+    u32 quarter = pool->count / 4;
+    u32 start = 2 * quarter * (HILL_LAST_FLOOR - step) / HILL_LAST_FLOOR;
+    u32 attempt, i;
+
+    for (attempt = 0; ; attempt++)
+    {
+        u32 hash = (step * 64 + trainerNum * 8 + slot) * 2654435761u + attempt * 40503u;
+        const struct TrainerMon *set = &gFrontierSetMons[pool->sets[start + (hash >> 8) % quarter]];
+
+        for (i = 0; i < slot; i++)
+        {
+            if (GetMonData(&party[i], MON_DATA_SPECIES) == set->species)
+                break;
+        }
+        if (i == slot)
+        {
+            CreateFacilityMon(set, level, MAX_PER_STAT_IVS, otId, 0, &party[slot]);
+            return;
+        }
+    }
 }
 
 bool32 IsMonLegalForFrontierRule(struct Pokemon *mon, struct FrontierProblemInfo *problem)

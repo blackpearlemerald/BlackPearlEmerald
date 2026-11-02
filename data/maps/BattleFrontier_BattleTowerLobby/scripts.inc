@@ -339,6 +339,8 @@ BattleFrontier_BattleTowerLobby_EventScript_AskEnterMultisChallenge::
 
 BattleFrontier_BattleTowerLobby_EventScript_TryEnterMultisChallenge::
 	setvar VAR_FRONTIER_BATTLE_MODE, FRONTIER_MODE_MULTIS
+	call BattleFrontier_EventScript_ChooseFullDexRules
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_BattleTowerLobby_EventScript_CancelChallenge
 	message BattleFrontier_BattleTowerLobby_Text_WhichLevelMode
 	waitmessage
 	multichoice 17, 6, MULTI_LEVEL_MODE, FALSE

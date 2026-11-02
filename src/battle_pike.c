@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "battle_pike.h"
 #include "event_data.h"
 #include "frontier_util.h"
@@ -625,7 +627,7 @@ static void GetBattlePikeData(void)
         gSpecialVar_Result = gSaveBlock2Ptr->frontier.pikePrize;
         break;
     case PIKE_DATA_WIN_STREAK:
-        gSpecialVar_Result = gSaveBlock2Ptr->frontier.pikeWinStreaks[gSaveBlock2Ptr->frontier.lvlMode];
+        gSpecialVar_Result = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, gSaveBlock2Ptr->frontier.lvlMode);
         break;
     case PIKE_DATA_RECORD_STREAK:
         gSpecialVar_Result = gSaveBlock2Ptr->frontier.pikeRecordStreaks[gSaveBlock2Ptr->frontier.lvlMode];
@@ -653,7 +655,7 @@ static void SetBattlePikeData(void)
         break;
     case PIKE_DATA_WIN_STREAK:
         if (gSpecialVar_0x8006 <= MAX_STREAK)
-            gSaveBlock2Ptr->frontier.pikeWinStreaks[gSaveBlock2Ptr->frontier.lvlMode] = gSpecialVar_0x8006;
+            *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, gSaveBlock2Ptr->frontier.lvlMode) = gSpecialVar_0x8006;
         break;
     case PIKE_DATA_RECORD_STREAK:
         if (gSpecialVar_0x8006 <= MAX_STREAK && gSaveBlock2Ptr->frontier.pikeRecordStreaks[gSaveBlock2Ptr->frontier.lvlMode] < gSpecialVar_0x8006)
@@ -664,7 +666,12 @@ static void SetBattlePikeData(void)
             gSaveBlock2Ptr->frontier.pikeTotalStreaks[gSaveBlock2Ptr->frontier.lvlMode] = gSpecialVar_0x8006;
         break;
     case PIKE_DATA_WIN_STREAK_ACTIVE:
-        if (lvlMode != FRONTIER_LVL_50)
+        if (FrontierUsesSetPools())
+        {
+            if (!gSpecialVar_0x8006)
+                *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, lvlMode) = 0;
+        }
+        else if (lvlMode != FRONTIER_LVL_50)
         {
             if (gSpecialVar_0x8006)
                 gSaveBlock2Ptr->frontier.winStreakActiveFlags |= STREAK_PIKE_OPEN;
@@ -1104,6 +1111,19 @@ static bool8 UNUSED GetInWildMonRoom(void)
     return sInWildMonRoom;
 }
 
+// Full Dex wild Pokémon come from the same sets as its Trainers.
+static bool32 TryGenerateFullDexPikeWildMon(bool8 checkKeenEyeIntimidate)
+{
+    s32 monLevel = FRONTIER_MAX_LEVEL_50 - 4;
+
+    if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_50)
+        monLevel = max(GetHighestLevelInPlayerParty() - 4, FRONTIER_MIN_LEVEL_OPEN);
+    if (checkKeenEyeIntimidate == TRUE && !CanEncounterWildMon(monLevel))
+        return FALSE;
+    CreateFacilityMon(&gFrontierSetMons[GetRandomFrontierSetId()], monLevel, MAX_PER_STAT_IVS, 0, 0, &gParties[B_TRAINER_OPPONENT_A][0]);
+    return TRUE;
+}
+
 bool32 TryGenerateBattlePikeWildMon(bool8 checkKeenEyeIntimidate)
 {
     s32 i;
@@ -1114,6 +1134,9 @@ bool32 TryGenerateBattlePikeWildMon(bool8 checkKeenEyeIntimidate)
     u32 abilityNum;
     s32 pikeMonId = GetMonData(&gParties[B_TRAINER_OPPONENT_A][0], MON_DATA_SPECIES);
     pikeMonId = SpeciesToPikeMonId(pikeMonId);
+
+    if (FrontierUsesSetPools())
+        return TryGenerateFullDexPikeWildMon(checkKeenEyeIntimidate);
 
     if (gSaveBlock2Ptr->frontier.lvlMode != FRONTIER_LVL_50)
     {
@@ -1157,7 +1180,7 @@ u8 GetBattlePikeWildMonHeaderId(void)
 {
     u8 headerId;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
-    u16 winStreak = gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode];
+    u16 winStreak = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, lvlMode);
 
     if (winStreak <= 20 * NUM_PIKE_ROOMS)
         headerId = 0;
@@ -1392,7 +1415,7 @@ static void PrepareOneTrainer(bool8 difficult)
         battleNum = FRONTIER_STAGES_PER_CHALLENGE - 1;
 
     lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
-    challengeNum = gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode] / NUM_PIKE_ROOMS;
+    challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, lvlMode) / NUM_PIKE_ROOMS;
     do
     {
         trainerId = GetRandomScaledFrontierTrainerId(challengeNum, battleNum);
@@ -1415,7 +1438,7 @@ static void PrepareTwoTrainers(void)
     int i;
     u16 trainerId;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
-    u16 challengeNum = gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode] / NUM_PIKE_ROOMS;
+    u16 challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, lvlMode) / NUM_PIKE_ROOMS;
 
     gFacilityTrainers = gBattleFrontierTrainers;
     do
@@ -1499,7 +1522,7 @@ static u8 GetPikeQueenFightType(u8 nextRoom)
     u8 facility = FRONTIER_FACILITY_PIKE;
     u8 ret = FRONTIER_BRAIN_NOT_READY;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
-    u16 winStreak = gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode];
+    u16 winStreak = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PIKE, 0, lvlMode);
     winStreak += nextRoom;
     numPikeSymbols = GetPlayerSymbolCountForFacility(FRONTIER_FACILITY_PIKE);
 
@@ -1612,7 +1635,7 @@ static void InitPikeChallenge(void)
     gSaveBlock2Ptr->frontier.challengeStatus = 0;
     gSaveBlock2Ptr->frontier.curChallengeBattleNum = 0;
     gSaveBlock2Ptr->frontier.challengePaused = FALSE;
-    if (!(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[lvlMode]))
+    if (!FrontierUsesSetPools() && !(gSaveBlock2Ptr->frontier.winStreakActiveFlags & sWinStreakFlags[lvlMode]))
         gSaveBlock2Ptr->frontier.pikeWinStreaks[lvlMode] = 0;
 
     TRAINER_BATTLE_PARAM.opponentA = 0;

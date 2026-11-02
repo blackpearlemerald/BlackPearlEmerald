@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "battle_tent.h"
 #include "overworld.h"
 #include "event_data.h"
@@ -289,6 +291,11 @@ static void SwapRentalMons(void)
     DoBattleFactorySwapScreen();
 }
 
+const struct TrainerMon *GetSlateportTentMonTable(void)
+{
+    return FrontierUsesSetPools() ? gFrontierSetMons : gSlateportBattleTentMons;
+}
+
 bool8 InSlateportBattleTent(void)
 {
     return gMapHeader.regionMapSectionId == MAPSEC_SLATEPORT_CITY
@@ -313,13 +320,13 @@ static void GenerateInitialRentalMons(void)
         monIds[i] = 0;
         heldItems[i] = 0;
     }
-    gFacilityTrainerMons = gSlateportBattleTentMons;
+    gFacilityTrainerMons = GetSlateportTentMonTable();
     currSpecies = SPECIES_NONE;
     i = 0;
     while (i != PARTY_SIZE)
     {
         // Cannot have two Pokémon of the same species.
-        monSetId = Random() % NUM_SLATEPORT_TENT_MONS;
+        monSetId = FrontierUsesSetPools() ? GetRandomFrontierSetId() : Random() % NUM_SLATEPORT_TENT_MONS;
         for (j = firstMonId; j < firstMonId + i; j++)
         {
             if (monIds[j] == monSetId)
@@ -366,7 +373,7 @@ static void GenerateOpponentMons(void)
     s32 numMons = 0;
 
     gFacilityTrainers = gSlateportBattleTentTrainers;
-    gFacilityTrainerMons = gSlateportBattleTentMons;
+    gFacilityTrainerMons = GetSlateportTentMonTable();
 
     while (1)
     {
@@ -397,7 +404,7 @@ static void GenerateOpponentMons(void)
     i = 0;
     while (i != FRONTIER_PARTY_SIZE)
     {
-        sRandMonId = monSet[Random() % numMons];
+        sRandMonId = FrontierUsesSetPools() ? GetRandomFrontierSetId() : monSet[Random() % numMons];
 
         // Ensure none of the opponent's Pokémon are the same as the potential rental Pokémon for the player
         for (j = 0; j < (int)ARRAY_COUNT(gSaveBlock2Ptr->frontier.rentalMons); j++)

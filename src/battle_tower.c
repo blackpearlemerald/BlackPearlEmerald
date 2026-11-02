@@ -1929,6 +1929,8 @@ u8 SetTentPtrsGetLevel(void)
         gFacilityTrainers = gBattleFrontierTrainers;
         gFacilityTrainerMons = GetFrontierMonTable();
     }
+    if (FrontierUsesSetPools())
+        gFacilityTrainerMons = GetFrontierMonTable();
 
     level = GetHighestLevelInPlayerParty();
     if (level < TENT_MIN_LEVEL)
@@ -1985,7 +1987,7 @@ static void FillTentTrainerParty_(u16 trainerId, u8 firstMonId, u8 monCount)
     otID = Random32();
     while (i != monCount)
     {
-        u16 monId = monSet[Random() % bfMonCount];
+        u16 monId = FrontierUsesSetPools() ? GetRandomFrontierSetId() : monSet[Random() % bfMonCount];
 
         // Ensure this Pokémon species isn't a duplicate.
         for (j = 0; j < i + firstMonId; j++)

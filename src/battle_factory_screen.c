@@ -3,6 +3,7 @@
 #include "battle.h"
 #include "battle_factory_screen.h"
 #include "battle_factory.h"
+#include "battle_tent.h"
 #include "sprite.h"
 #include "event_data.h"
 #include "overworld.h"
@@ -1775,7 +1776,7 @@ static void CreateSlateportTentSelectableMons(u8 firstMonId)
     u8 level = TENT_MIN_LEVEL;
     u32 otId = 0;
 
-    gFacilityTrainerMons = gSlateportBattleTentMons;
+    gFacilityTrainerMons = GetSlateportTentMonTable();
     otId = READ_OTID_FROM_SAVE;
 
     for (i = 0; i < Select_GetMonCount(); i++)

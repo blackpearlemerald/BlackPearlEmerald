@@ -1,4 +1,6 @@
 #include "global.h"
+#include "frontier_rules.h"
+#include "frontier_sets.h"
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
 #include "event_data.h"
@@ -858,9 +860,12 @@ static void InitPyramidChallenge(void)
     else
         isCurrent = gSaveBlock2Ptr->frontier.winStreakActiveFlags & STREAK_PYRAMID_50;
 
+    if (FrontierUsesSetPools())
+        isCurrent = (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) != 0);
+
     if (!isCurrent)
     {
-        gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] = 0;
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) = 0;
         InitPyramidBagItems(lvlMode);
     }
 
@@ -879,7 +884,7 @@ static void GetBattlePyramidData(void)
         gSpecialVar_Result = gSaveBlock2Ptr->frontier.pyramidPrize;
         break;
     case PYRAMID_DATA_WIN_STREAK:
-        gSpecialVar_Result = gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode];
+        gSpecialVar_Result = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode);
         break;
     case PYRAMID_DATA_WIN_STREAK_ACTIVE:
         if (lvlMode != FRONTIER_LVL_50)
@@ -912,10 +917,15 @@ static void SetBattlePyramidData(void)
         gSaveBlock2Ptr->frontier.pyramidPrize = gSpecialVar_0x8006;
         break;
     case PYRAMID_DATA_WIN_STREAK:
-        gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] = gSpecialVar_0x8006;
+        *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) = gSpecialVar_0x8006;
         break;
     case PYRAMID_DATA_WIN_STREAK_ACTIVE:
-        if (lvlMode != FRONTIER_LVL_50)
+        if (FrontierUsesSetPools())
+        {
+            if (!gSpecialVar_0x8006)
+                *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) = 0;
+        }
+        else if (lvlMode != FRONTIER_LVL_50)
         {
             if (gSpecialVar_0x8006)
                 gSaveBlock2Ptr->frontier.winStreakActiveFlags |= STREAK_PYRAMID_OPEN;
@@ -948,7 +958,7 @@ static void SavePyramidChallenge(void)
 
 static void SetBattlePyramidPrize(void)
 {
-    if (gSaveBlock2Ptr->frontier.pyramidWinStreaks[gSaveBlock2Ptr->frontier.lvlMode] > 41)
+    if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, gSaveBlock2Ptr->frontier.lvlMode) > 41)
         gSaveBlock2Ptr->frontier.pyramidPrize = sLongStreakRewardItems[Random() % ARRAY_COUNT(sLongStreakRewardItems)];
     else
         gSaveBlock2Ptr->frontier.pyramidPrize = sShortStreakRewardItems[Random() % ARRAY_COUNT(sShortStreakRewardItems)];
@@ -988,7 +998,7 @@ static void SetPickupItem(void)
     rng_value_t rand;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
     u32 floor = gSaveBlock2Ptr->frontier.curChallengeBattleNum;
-    u32 round = (gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] / FRONTIER_STAGES_PER_CHALLENGE) % TOTAL_PYRAMID_ROUNDS;
+    u32 round = (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE) % TOTAL_PYRAMID_ROUNDS;
 
     if (round >= TOTAL_PYRAMID_ROUNDS)
         round = TOTAL_PYRAMID_ROUNDS - 1;
@@ -1119,9 +1129,11 @@ static void UpdatePyramidWinStreak(void)
 {
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
 
-    if (gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] < 999)
-        gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode]++;
-    if (gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] > gSaveBlock2Ptr->frontier.pyramidRecordStreaks[lvlMode])
+    if (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) < 999)
+        (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode))++;
+    if (FrontierUsesSetPools())
+        RecordFrontierRuleStreak(FRONTIER_FACILITY_PYRAMID, 0, lvlMode);
+    else if (gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] > gSaveBlock2Ptr->frontier.pyramidRecordStreaks[lvlMode])
         gSaveBlock2Ptr->frontier.pyramidRecordStreaks[lvlMode] = gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode];
 }
 
@@ -1576,7 +1588,15 @@ void GenerateBattlePyramidWildMon(enum Species forceSpecies)
     const struct PyramidWildMon *wildMons;
     u32 id;
     enum FrontierLevelMode lvl = gSaveBlock2Ptr->frontier.lvlMode;
-    u16 round = (gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvl] / FRONTIER_STAGES_PER_CHALLENGE) % TOTAL_PYRAMID_ROUNDS;
+    u16 round = (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvl) / FRONTIER_STAGES_PER_CHALLENGE) % TOTAL_PYRAMID_ROUNDS;
+
+    // Full Dex wild Pokémon come from the same sets as its Trainers.
+    if (FrontierUsesSetPools())
+    {
+        lvl = SetFacilityPtrsGetLevel() - 10 + (Random() % 6);
+        CreateFacilityMon(&gFrontierSetMons[GetRandomFrontierSetId()], lvl, MAX_PER_STAT_IVS, 0, 0, &gParties[B_TRAINER_OPPONENT_A][0]);
+        return;
+    }
 
     if (round >= TOTAL_PYRAMID_ROUNDS)
         round = TOTAL_PYRAMID_ROUNDS - 1;
@@ -1719,7 +1739,7 @@ static u16 GetUniqueTrainerId(u8 objectEventId)
     int i;
     u16 trainerId;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
-    u32 challengeNum = gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] / FRONTIER_STAGES_PER_CHALLENGE;
+    u32 challengeNum = *GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE;
     u32 floor = gSaveBlock2Ptr->frontier.curChallengeBattleNum;
     if (floor == FRONTIER_STAGES_PER_CHALLENGE)
     {
@@ -2189,7 +2209,7 @@ u16 GetBattlePyramidPickupItemId(void)
     int rand;
     u32 i;
     enum FrontierLevelMode lvlMode = gSaveBlock2Ptr->frontier.lvlMode;
-    int round = (gSaveBlock2Ptr->frontier.pyramidWinStreaks[lvlMode] / FRONTIER_STAGES_PER_CHALLENGE);
+    int round = (*GetFrontierWinStreakPtr(FRONTIER_FACILITY_PYRAMID, 0, lvlMode) / FRONTIER_STAGES_PER_CHALLENGE);
 
     if (round >= TOTAL_PYRAMID_ROUNDS)
         round = TOTAL_PYRAMID_ROUNDS - 1;

@@ -131,6 +131,8 @@ VerdanturfTown_BattleTentLobby_EventScript_AskEnterChallenge::
 VerdanturfTown_BattleTentLobby_EventScript_TryEnterChallenge::
 	setvar VAR_FRONTIER_FACILITY, FRONTIER_FACILITY_PALACE
 	setvar VAR_FRONTIER_BATTLE_MODE, FRONTIER_MODE_SINGLES
+	call BattleFrontier_EventScript_ChooseFullDexRules
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, VerdanturfTown_BattleTentLobby_EventScript_CancelChallenge
 	setvar VAR_RESULT, 2
 	frontier_checkineligible
 	goto_if_eq VAR_0x8004, TRUE, VerdanturfTown_BattleTentLobby_EventScript_NotEnoughValidMons

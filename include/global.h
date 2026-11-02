@@ -460,7 +460,7 @@ struct FrontierRuleData
     u16 currentRule[FRONTIER_RULE_FACILITY_COUNT][FRONTIER_RULE_MODE_COUNT];
     u16 currentStreak[FRONTIER_RULE_FACILITY_COUNT][FRONTIER_RULE_MODE_COUNT];
     u16 fullDexStreaks[13][FRONTIER_LVL_MODE_COUNT][2]; // Every facility mode: current, then best
-    u32 fullDexHillTimes[NUM_TRAINER_HILL_MODES];
+    u32 fullDexHillTimes[NUM_TRAINER_HILL_MODES]; // Frames, 0 if never cleared
     struct RentalMon extraRentalMons[FRONTIER_PARTY_SIZE * 2]; // 6v6 needs 12 rentals
     u16 extraSelectedMons[2]; // 6v6 needs 6 selected Pokémon
     u16 extraDomeMonIds[DOME_TOURNAMENT_TRAINERS_COUNT][FRONTIER_PARTY_SIZE]; // 6v6 teams, the first 3 are in domeMonIds
@@ -972,7 +972,7 @@ struct TrainerHillSave
     /*0x3D64*/ u32 timer;
     /*0x3D68*/ u32 bestTime;
     /*0x3D6C*/ u8 unk_3D6C;
-    /*0x3D6D*/ u8 unused;
+    /*0x3D6D*/ u8 fullDex; // BPE: this challenge uses the Full Dex teams
     /*0x3D6E*/ u16 receivedPrize:1;
                u16 checkedFinalTime:1;
                u16 spokeToOwner:1;

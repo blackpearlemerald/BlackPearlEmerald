@@ -5,11 +5,13 @@
 #include "battle_factory.h"
 #include "battle_frontier.h"
 #include "battle_setup.h"
+#include "battle_tower.h"
 #include "battle_util.h"
 #include "event_data.h"
 #include "frontier_rules.h"
 #include "frontier_sets.h"
 #include "frontier_util.h"
+#include "trainer_hill.h"
 #include "constants/battle_dome.h"
 #include "constants/battle_factory.h"
 #include "constants/battle_frontier.h"
@@ -426,4 +428,118 @@ TEST("6v6 pays double Battle Points and other rule sets pay the same")
     EXPECT_EQ(GetBattlePointsForWin(NAT_DEX_OU), usual);
     EXPECT_EQ(GetBattlePointsForWin(FULL_DEX), usual);
     EXPECT_EQ(GetBattlePointsForWin(SMOGON_6V6(0, 2)), usual * 2);
+}
+
+TEST("Every facility offers Full Dex with its own streak")
+{
+    static const u8 facilities[] = {
+        FRONTIER_FACILITY_TOWER, FRONTIER_FACILITY_DOME, FRONTIER_FACILITY_PALACE, FRONTIER_FACILITY_ARENA,
+        FRONTIER_FACILITY_FACTORY, FRONTIER_FACILITY_PIKE, FRONTIER_FACILITY_PYRAMID,
+    };
+    u32 i, j;
+
+    for (i = 0; i < ARRAY_COUNT(facilities); i++)
+    {
+        u32 facility = facilities[i];
+
+        SetChallenge(facility, FRONTIER_MODE_SINGLES, VANILLA);
+        *GetFrontierWinStreakPtr(facility, FRONTIER_MODE_SINGLES, FRONTIER_LVL_50) = 3;
+        SetFrontierRule(FULL_DEX);
+        EXPECT(FrontierUsesSetPools());
+        EXPECT_EQ(*GetFrontierWinStreakPtr(facility, FRONTIER_MODE_SINGLES, FRONTIER_LVL_50), 0);
+        *GetFrontierWinStreakPtr(facility, FRONTIER_MODE_SINGLES, FRONTIER_LVL_50) = 9;
+        RecordFrontierRuleStreak(facility, FRONTIER_MODE_SINGLES, FRONTIER_LVL_50);
+        for (j = 0; j < ARRAY_COUNT(facilities); j++)
+        {
+            if (i != j)
+                EXPECT_EQ(*GetFrontierWinStreakPtr(facilities[j], FRONTIER_MODE_SINGLES, FRONTIER_LVL_50), 0);
+        }
+        SetFrontierRule(VANILLA);
+        EXPECT_EQ(*GetFrontierWinStreakPtr(facility, FRONTIER_MODE_SINGLES, FRONTIER_LVL_50), 3);
+        *GetFrontierWinStreakPtr(facility, FRONTIER_MODE_SINGLES, FRONTIER_LVL_50) = 0;
+    }
+}
+
+TEST("Full Dex reaches Multis, but not Link Multis")
+{
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_MULTIS, FULL_DEX);
+    EXPECT(FrontierUsesSetPools());
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_LINK_MULTIS, FULL_DEX);
+    EXPECT(!FrontierUsesSetPools());
+}
+
+TEST("Full Dex fills every facility's Trainers from the sets")
+{
+    static const u8 facilities[] = {FRONTIER_FACILITY_PALACE, FRONTIER_FACILITY_ARENA, FRONTIER_FACILITY_PIKE, FRONTIER_FACILITY_PYRAMID};
+    u32 i, j;
+
+    ZeroPlayerPartyMons();
+    GivePlayerMon(0, SPECIES_GARCHOMP, 50, ITEM_NONE, MOVE_TACKLE);
+    for (i = 0; i < ARRAY_COUNT(facilities); i++)
+    {
+        SetChallenge(facilities[i], FRONTIER_MODE_SINGLES, FULL_DEX);
+        gSaveBlock2Ptr->frontier.lvlMode = FRONTIER_LVL_50;
+        TRAINER_BATTLE_PARAM.opponentA = 0;
+        FillFrontierTrainerParty(FRONTIER_PARTY_SIZE);
+        for (j = 0; j < FRONTIER_PARTY_SIZE; j++)
+        {
+            EXPECT_EQ(GetMonData(&gParties[B_TRAINER_OPPONENT_A][j], MON_DATA_LEVEL), FRONTIER_MAX_LEVEL_50);
+            EXPECT(!gSpeciesInfo[GetMonData(&gParties[B_TRAINER_OPPONENT_A][j], MON_DATA_SPECIES)].isFrontierBanned);
+        }
+    }
+}
+
+TEST("Full Dex Tents use the lowest tier's sets at the Tent's level")
+{
+    const struct FrontierSetPool *pool;
+    u32 i;
+
+    ZeroPlayerPartyMons();
+    GivePlayerMon(0, SPECIES_GARCHOMP, 35, ITEM_NONE, MOVE_TACKLE);
+    SetChallenge(FRONTIER_FACILITY_PALACE, FRONTIER_MODE_SINGLES, FULL_DEX);
+    gSaveBlock2Ptr->frontier.lvlMode = FRONTIER_LVL_TENT;
+    EXPECT(FrontierUsesSetPools());
+    pool = GetFrontierSetPool(FULL_DEX, FALSE);
+    EXPECT(pool == GetFrontierSetPool(SMOGON(FRONTIER_GEN_NATIONAL_DEX, FRONTIER_TIER_RU), FALSE));
+    SetTentPtrsGetLevel();
+    EXPECT(gFacilityTrainerMons == gFrontierSetMons);
+    gSaveBlock2Ptr->frontier.curChallengeBattleNum = 0;
+    TRAINER_BATTLE_PARAM.opponentA = 0;
+    FillTentTrainerParty(FRONTIER_PARTY_SIZE);
+    for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
+        EXPECT_EQ(GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_LEVEL), 35);
+    gSaveBlock2Ptr->frontier.lvlMode = FRONTIER_LVL_OPEN;
+}
+
+TEST("Full Dex Hill teams never change and hold no repeats")
+{
+    u32 mode, floor, trainer, i, j;
+
+    for (mode = 0; mode < NUM_TRAINER_HILL_MODES; mode++)
+    {
+        for (floor = 0; floor < NUM_TRAINER_HILL_FLOORS; floor++)
+        {
+            for (trainer = 0; trainer < HILL_TRAINERS_PER_FLOOR; trainer++)
+            {
+                u16 species[MULTI_PARTY_SIZE];
+
+                for (i = 0; i < MULTI_PARTY_SIZE; i++)
+                {
+                    CreateFullDexHillMon(gParties[B_TRAINER_OPPONENT_A], i, mode, floor, trainer, 50, 0);
+                    species[i] = GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_SPECIES);
+                    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_LEVEL), 50);
+                    EXPECT(!gSpeciesInfo[species[i]].isFrontierBanned);
+                    for (j = 0; j < i; j++)
+                        EXPECT_NE(species[i], species[j]);
+                }
+                ZeroEnemyPartyMons();
+                for (i = 0; i < MULTI_PARTY_SIZE; i++)
+                {
+                    CreateFullDexHillMon(gParties[B_TRAINER_OPPONENT_A], i, mode, floor, trainer, 50, 0);
+                    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_SPECIES), species[i]);
+                }
+                ZeroEnemyPartyMons();
+            }
+        }
+    }
 }
