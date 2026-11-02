@@ -3,7 +3,7 @@
 
 // Max number of moves shown by the move relearner.
 // BPE: raised to 100 for the restored tutor moves, which Mew can learn nearly all of.
-#define MAX_RELEARNER_MOVES 100
+#define MAX_RELEARNER_MOVES 130
 
 // Move Relearner menu change constants
 enum MoveRelearnerStates

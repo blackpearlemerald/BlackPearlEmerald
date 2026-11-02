@@ -94,6 +94,7 @@ def prepare_output(all_learnables: dict[str, set[str]], tms: list[str], tutors: 
         new += f"static const u16 s{species}TeachableLearnset[] = "
         new += "{\n"
         species_upper =  SNAKIFY_PAT.sub(r"_\1", species).upper()
+        extra_learners = special_movesets.get("extraLearners", {}).get(species_upper, [])
         if teaching_type == "ALL_TEACHABLES":
             part1 = list(filter(lambda m: m not in special_movesets["signatureTeachables"], tms))
             part2 = list(filter(lambda m: m not in special_movesets["signatureTeachables"], tutors))
@@ -104,6 +105,7 @@ def prepare_output(all_learnables: dict[str, set[str]], tms: list[str], tutors: 
                     learnables = filter(lambda m: m not in special_movesets["universalMoves"], learnables)
             else:
                 learnables = all_learnables[species_upper] + special_movesets["universalMoves"]
+            learnables = list(learnables) + extra_learners
             part1 = list(filter(lambda m: m in learnables, tms))
             part2 = list(filter(lambda m: m in learnables, tutors))
 

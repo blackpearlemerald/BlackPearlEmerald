@@ -547,6 +547,18 @@ nothing may read that space as records. Older saves' copy is cleared once on loa
 (`FLAG_FRONTIER_RULE_DATA_READY`). The save layout and EWRAM use did not change.
 Tests: `make check TESTS=test/frontier_rules.c`.
 
+The enemy sets and tier rules are in `BPETools/frontier_sets/`, whose README covers where
+they came from and how to remake them. `python BPETools/generate_frontier_sets.py` writes
+`src/data/battle_frontier/frontier_sets.h` from them; `--check` fails when it is stale, so
+rerun it after changing learnsets, evolutions or abilities. `gFrontierSetMons` is a normal
+`struct TrainerMon` table, so `gFacilityTrainerMons` can point at it. `src/frontier_sets.c`
+gives each rule set its pool, strongest set first, and answers what a rule set allows. Gens
+limit Pokémon, moves and items, never abilities: a player's Pokémon can't drop one. A Gen 3
+set's own ability can differ from what Showdown lists, so the generator and the test read
+BPE's. Level-up data is `level_up_learnsets/gen_9.h` only (`P_LVL_UP_LEARNSETS`): the other
+`gen_N.h` files are not in the build, so don't count them as learnable.
+Tests: `make check TESTS=test/frontier_sets.c`, `python -m unittest BPETools/tests/test_frontier_sets.py`.
+
 ### Multi battles
 
 `multi_do` calls `AreMultiPartiesFullTeams` before the battle starts and reads its
@@ -996,13 +1008,17 @@ is used at once; with more, `UseRegisteredKeyItemOnField()` in
   pre-evolution learns, at that pre-evolution's level.
 - The relearner also has a Tutor Moves list: `sRestoredTutorMoves` in
   `src/data/pokemon/restored_tutor_moves.h`, moves the official games taught by TM
-  or tutor that BPE has no TM or tutor for, Roost and Superpower among them. Each
+  or tutor that BPE has no TM or tutor for, Roost and Superpower among them, plus
+  older level-up moves the Gen 9 lists dropped, such as Pursuit and Jump Kick. Each
   opens at a badge count, weakest first, and all are open by the third badge. BPE
   has no room for real TMs: `ITEMS_COUNT` is capped and `BAG_TMHM_COUNT` (250) is
   exactly the 242 TMs plus 8 HMs. Add a move to that table and to `extraTutors` in
   `src/data/pokemon/special_movesets.json`, which makes it teachable with no NPC;
-  the table stays sorted by move id. `Randomizer_CanLearnTeachableMove` leaves these
-  moves out of its count, so existing seeds keep their odds.
+  the table stays sorted by move id. Use the name `all_learnables.json` uses, never
+  an alias: an alias matches no species, so `MOVE_SELFDESTRUCT` taught nobody at
+  first. `extraLearners` in the same file adds moves that file doesn't list for a
+  species, like Blaziken's High Jump Kick. `Randomizer_CanLearnTeachableMove` leaves
+  these moves out of its count, so existing seeds keep their odds.
 - The Egg Move Tutor (Ditto doll, `General_EggTutor_EventScript` in Wanda's
   house, Verdanturf) teaches the Egg Moves of the family's first stage to any
   stage, for one Pearl. Pichu's list includes Volt Tackle, which otherwise comes
