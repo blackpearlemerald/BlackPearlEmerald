@@ -211,6 +211,16 @@ static u16 *GetFullDexStreakPtr(u32 facility, u32 battleMode, u32 lvlMode)
     return gSaveBlock2Ptr->frontier.ruleData.fullDexStreaks[slot][min(lvlMode, FRONTIER_LVL_OPEN)];
 }
 
+u32 GetFacilityBestStreak(u32 facility, u32 battleMode, u16 rule)
+{
+    return GetFrontierBestStreak(GetRuleFacility(facility), battleMode, rule);
+}
+
+u32 GetFullDexStreak(u32 facility, u32 battleMode, u32 lvlMode, bool32 best)
+{
+    return GetFullDexStreakPtr(facility, battleMode, lvlMode)[best != FALSE];
+}
+
 // Each rule set keeps its own streak, so playing one can't change a vanilla streak.
 u16 *GetFrontierWinStreakPtr(u32 facility, u32 battleMode, u32 lvlMode)
 {

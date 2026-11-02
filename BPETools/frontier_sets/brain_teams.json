@@ -1,0 +1,49 @@
+{
+  "_comment": "Frontier Brain teams. Each brain has a Silver team, then a Gold team, of six species. A team's first three fight in the usual format and all six in 6v6. Each species uses its strongest set in that pool. Noland keeps his random rentals, and Gens 1-9 use the strongest sets of their tier.",
+  "full_dex": {
+    "tower":   [["alakazam", "tyranitar", "gyarados", "scizor", "togekiss", "gliscor"],
+                ["latios", "metagross", "dragonite", "greninja", "heatran", "clefable"]],
+    "dome":    [["charizard", "salamence", "suicune", "gengar", "ferrothorn", "mamoswine"],
+                ["swampert", "latias", "metagross", "garchomp", "weavile", "volcarona"]],
+    "palace":  [["crobat", "lapras", "arcanine", "conkeldurr", "venusaur", "togekiss"],
+                ["suicune", "arcanine", "kingambit", "dragapult", "primarina", "corviknight"]],
+    "arena":   [["heracross", "umbreon", "breloom", "machamp", "hawlucha", "slowbro"],
+                ["gengar", "zapdos", "gardevoir", "urshifu", "ironvaliant", "gholdengo"]],
+    "pike":    [["seviper", "milotic", "steelix", "toxapex", "dondozo", "scolipede"],
+                ["milotic", "gyarados", "dragapult", "sneasler", "ogerponwellspring", "kingambit"]],
+    "pyramid": [["regirock", "regice", "registeel", "golurk", "regidrago", "regigigas"],
+                ["articuno", "zapdos", "moltres", "zapdosgalar", "moltresgalar", "articunogalar"]]
+  },
+  "tiers": {
+    "AG": {
+      "tower": [["calyrexshadow", "kyogre", "zaciancrowned", "groudon", "necrozmaduskmane", "arceus"],
+                ["koraidon", "miraidon", "lunala", "marshadow", "eternatus", "rayquaza"]],
+      "dome":  [["kyuremblack", "yveltal", "lugia", "mewtwo", "palkiaorigin", "chienpao"],
+                ["calyrexice", "kyogre", "rayquaza", "arceussteel", "fluttermane", "gengar"]]
+    },
+    "Ubers": {
+      "tower": [["zacian", "kyogre", "groudon", "lunala", "eternatus", "chienpao"],
+                ["arceus", "rayquaza", "kyuremblack", "marshadow", "necrozmaduskmane", "fluttermane"]],
+      "dome":  [["mewtwo", "lugia", "hooh", "yveltal", "sneasler", "baxcalibur"],
+                ["zaciancrowned", "kyogre", "arceusground", "palkia", "dialga", "darmanitangalar"]]
+    },
+    "OU": {
+      "tower": [["garchomp", "tapulele", "ironvaliant", "kartana", "heatran", "corviknight"],
+                ["zamazenta", "ceruledge", "ironmoth", "latios", "gholdengo", "greninja"]],
+      "dome":  [["tapukoko", "greattusk", "rillaboom", "weavile", "kommoo", "volcarona"],
+                ["landorustherian", "dragonite", "ironhands", "kingambit", "hatterene", "cinderace"]]
+    },
+    "UU": {
+      "tower": [["alakazam", "mamoswine", "celesteela", "primarina", "scolipede", "zeraora"],
+                ["jirachi", "keldeo", "salamence", "hydreigon", "azumarill", "ironleaves"]],
+      "dome":  [["venusaur", "conkeldurr", "lilliganthisui", "tapufini", "skarmory", "polteageist"],
+                ["quaquaval", "enamorus", "excadrill", "aerodactyl", "swampert", "latias"]]
+    },
+    "RU": {
+      "tower": [["togekiss", "inteleon", "mimikyu", "nihilego", "volcanion", "kleavor"],
+                ["regidrago", "entei", "suicune", "chandelure", "lucario", "cresselia"]],
+      "dome":  [["charizard", "metagross", "feraligatr", "infernape", "flygon", "gardevoir"],
+                ["arcanine", "crawdaunt", "gallade", "heracross", "mukalola", "talonflame"]]
+    }
+  }
+}

@@ -129,6 +129,47 @@ u16 GetRandomFrontierSetId(void)
     return pool->sets[start + Random() % length];
 }
 
+// Gens 1-9 have no written teams: their Brains use the strongest sets of the tier,
+// with Gold's six first and Silver's the next six.
+static u16 GetStrongestBrainSetId(u16 rule, u32 monId, u32 symbol)
+{
+    const struct FrontierSetPool *pool = GetFrontierSetPool(rule, FALSE);
+    u16 species[PARTY_SIZE * 2];
+    u32 wanted = monId + (symbol == 0 ? PARTY_SIZE : 0);
+    u32 count = 0;
+    u32 i, j;
+
+    for (i = 0; i < pool->count; i++)
+    {
+        u16 setSpecies = gFrontierSetMons[pool->sets[i]].species;
+
+        for (j = 0; j < count; j++)
+        {
+            if (species[j] == setSpecies)
+                break;
+        }
+        if (j != count)
+            continue;
+        if (count == wanted)
+            return pool->sets[i];
+        species[count++] = setSpecies;
+    }
+    return pool->sets[0];
+}
+
+u16 GetFrontierBrainSetId(u32 monId)
+{
+    u16 rule = GetActiveFrontierRule();
+    u32 facility = VarGet(VAR_FRONTIER_FACILITY);
+    u32 symbol = GetFronterBrainSymbol();
+
+    if (FRONTIER_RULE_KIND(rule) == FRONTIER_RULES_FULL_DEX)
+        return gFrontierBrainFullDexTeams[facility][symbol][monId];
+    if (FRONTIER_RULE_GEN(rule) == FRONTIER_GEN_NATIONAL_DEX)
+        return gFrontierBrainTierTeams[facility == FRONTIER_FACILITY_DOME][FRONTIER_RULE_TIER(rule)][symbol][monId];
+    return GetStrongestBrainSetId(rule, monId, symbol);
+}
+
 #define HILL_LAST_FLOOR ((NUM_TRAINER_HILL_MODES * NUM_TRAINER_HILL_FLOORS) - 1)
 
 // The same floor always has the same teams, so that times can be compared. Modes and

@@ -595,6 +595,17 @@ static void VBlankCB(void)
     SetGpuReg(REG_OFFSET_BG1VOFS, gBattle_BG1_Y);
 }
 
+// BPE: Link Multis refuse a partner on another release, whose sets and rules can differ.
+u16 GetBpeReleaseHash(void)
+{
+    const char *marker = BPE_RELEASE_MARKER;
+    u32 hash = 0;
+
+    while (*marker != '\0')
+        hash = hash * 31 + *marker++;
+    return hash;
+}
+
 void CB2_InitTitleScreen(void)
 {
     if (IS_FRLG)

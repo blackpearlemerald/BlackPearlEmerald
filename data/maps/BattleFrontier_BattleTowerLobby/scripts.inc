@@ -817,9 +817,21 @@ BattleFrontier_BattleTowerLobby_EventScript_TryCableLink::
 BattleFrontier_BattleTowerLobby_EventScript_AbortLinkDifferentSelections::
 	special CloseLink
 	goto_if_eq VAR_0x8005, 3, BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentSelection
+	goto_if_eq VAR_0x8005, 4, BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentRelease
 	msgbox Text_PlayersMadeDifferentSelections, MSGBOX_DEFAULT
 	release
 	end
+
+BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentRelease::
+	msgbox BattleFrontier_BattleTowerLobby_Text_FriendDifferentRelease, MSGBOX_DEFAULT
+	release
+	end
+
+BattleFrontier_BattleTowerLobby_Text_FriendDifferentRelease:
+	.string "Your friend is playing a different\n"
+	.string "version of the game.\p"
+	.string "You'll both need the same version\n"
+	.string "to link for a Multi Battle.$"
 
 BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentSelection::
 	msgbox BattleFrontier_BattleTowerLobby_Text_FriendChoseDifferentLvlMode, MSGBOX_DEFAULT

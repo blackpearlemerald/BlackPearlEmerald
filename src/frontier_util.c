@@ -2457,6 +2457,154 @@ static void PrintHallRecords(s32 hallFacilityId, s32 lvlMode)
     }
 }
 
+static const u8 sText_RecordsFullDex[] = _("Full Dex");
+static const u8 sText_RecordsGen[] = _("Gen {STR_VAR_1}");
+static const u8 sText_RecordsNationalDex[] = _("National Dex");
+static const u8 sText_RecordsUsual[] = _("Usual");
+static const u8 sText_Records6v6[] = _("6v6");
+static const u8 sText_RecordsCurrent[] = _("Current");
+static const u8 sText_RecordsBest[] = _("Best");
+static const u8 sText_RecordsTitle[] = _("{STR_VAR_2} {STR_VAR_3}");
+static const u8 sText_RecordsHillTitle[] = _("Trainer Hill: Full Dex");
+static const u8 sText_RecordsNoTime[] = _("--:--");
+static const u8 sText_RecordsTime[] = _("{STR_VAR_1}:{STR_VAR_2}");
+
+static const u8 *const sRecordsFacilityNames[NUM_FRONTIER_FACILITIES] =
+{
+    [FRONTIER_FACILITY_TOWER]   = COMPOUND_STRING("Tower"),
+    [FRONTIER_FACILITY_DOME]    = COMPOUND_STRING("Dome"),
+    [FRONTIER_FACILITY_PALACE]  = COMPOUND_STRING("Palace"),
+    [FRONTIER_FACILITY_ARENA]   = COMPOUND_STRING("Arena"),
+    [FRONTIER_FACILITY_FACTORY] = COMPOUND_STRING("Factory"),
+    [FRONTIER_FACILITY_PIKE]    = COMPOUND_STRING("Pike"),
+    [FRONTIER_FACILITY_PYRAMID] = COMPOUND_STRING("Pyramid"),
+};
+
+static const u8 *const sRecordsModeNames[FRONTIER_MODE_COUNT] =
+{
+    [FRONTIER_MODE_SINGLES]     = COMPOUND_STRING("Singles"),
+    [FRONTIER_MODE_DOUBLES]     = COMPOUND_STRING("Doubles"),
+    [FRONTIER_MODE_MULTIS]      = COMPOUND_STRING("Multi"),
+    [FRONTIER_MODE_LINK_MULTIS] = COMPOUND_STRING("Link Multi"),
+};
+
+static const u8 *const sRecordsTierNames[FRONTIER_TIER_COUNT] =
+{
+    [FRONTIER_TIER_ANYTHING_GOES] = COMPOUND_STRING("Anything Goes"),
+    [FRONTIER_TIER_UBERS]         = COMPOUND_STRING("Ubers"),
+    [FRONTIER_TIER_OU]            = COMPOUND_STRING("OU"),
+    [FRONTIER_TIER_UU]            = COMPOUND_STRING("UU"),
+    [FRONTIER_TIER_RU]            = COMPOUND_STRING("RU"),
+};
+
+static void PrintRecordNumber(u32 value, s32 x, s32 y)
+{
+    ConvertIntToDecimalStringN(gStringVar1, value, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gStringVar1, x, y, TEXT_SKIP_DRAW, NULL);
+}
+
+static void PrintRulesRecordsTitle(u32 facility, u32 battleMode, const u8 *subtitle)
+{
+    StringCopy(gStringVar2, sRecordsFacilityNames[facility]);
+    StringAppend(gStringVar2, gText_Space);
+    StringAppend(gStringVar2, sRecordsModeNames[battleMode]);
+    StringCopy(gStringVar3, subtitle);
+    StringExpandPlaceholders(gStringVar4, sText_RecordsTitle);
+    PrintAligned(gStringVar4, 1);
+}
+
+static void PrintSmogonRecords(u32 facility, u32 battleMode, u32 gen)
+{
+    u32 tier, tierCount = (battleMode == FRONTIER_MODE_DOUBLES) ? FRONTIER_TIER_OU + 1 : FRONTIER_TIER_COUNT;
+
+    if (gen == FRONTIER_GEN_NATIONAL_DEX)
+    {
+        StringCopy(gStringVar3, sText_RecordsNationalDex);
+    }
+    else
+    {
+        ConvertIntToDecimalStringN(gStringVar1, gen, STR_CONV_MODE_LEFT_ALIGN, 1);
+        StringExpandPlaceholders(gStringVar3, sText_RecordsGen);
+    }
+    StringCopy(gStringVar4, gStringVar3);
+    PrintRulesRecordsTitle(facility, battleMode, gStringVar4);
+    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, sText_RecordsUsual, 120, 33, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, sText_Records6v6, 176, 33, TEXT_SKIP_DRAW, NULL);
+    for (tier = 0; tier < tierCount; tier++)
+    {
+        s32 y = 49 + tier * 16;
+
+        AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, sRecordsTierNames[tier], 8, y, TEXT_SKIP_DRAW, NULL);
+        PrintRecordNumber(GetFacilityBestStreak(facility, battleMode, FRONTIER_RULE(FRONTIER_RULES_SMOGON, gen, tier, FRONTIER_TEAM_USUAL)), 124, y);
+        PrintRecordNumber(GetFacilityBestStreak(facility, battleMode, FRONTIER_RULE(FRONTIER_RULES_SMOGON, gen, tier, FRONTIER_TEAM_6V6)), 176, y);
+    }
+}
+
+static void PrintFullDexRecords(u32 facility, u32 battleMode)
+{
+    u32 lvlMode;
+
+    PrintRulesRecordsTitle(facility, battleMode, sText_RecordsFullDex);
+    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, sText_RecordsCurrent, 104, 33, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, sText_RecordsBest, 164, 33, TEXT_SKIP_DRAW, NULL);
+    for (lvlMode = 0; lvlMode < FRONTIER_LVL_MODE_COUNT; lvlMode++)
+    {
+        s32 y = 49 + lvlMode * 16;
+
+        AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, (lvlMode == FRONTIER_LVL_50) ? gText_Lv502 : gText_OpenLv, 8, y, TEXT_SKIP_DRAW, NULL);
+        PrintRecordNumber(GetFullDexStreak(facility, battleMode, lvlMode, FALSE), 108, y);
+        PrintRecordNumber(GetFullDexStreak(facility, battleMode, lvlMode, TRUE), 164, y);
+    }
+}
+
+static void PrintHillRecords(void)
+{
+    static const u8 *const modeNames[NUM_TRAINER_HILL_MODES] =
+    {
+        COMPOUND_STRING("Normal"),
+        COMPOUND_STRING("Variety"),
+        COMPOUND_STRING("Unique"),
+        COMPOUND_STRING("Expert"),
+    };
+    u32 mode;
+
+    PrintAligned(sText_RecordsHillTitle, 1);
+    for (mode = 0; mode < NUM_TRAINER_HILL_MODES; mode++)
+    {
+        u32 frames = gSaveBlock2Ptr->frontier.ruleData.fullDexHillTimes[mode];
+        s32 y = 33 + mode * 16;
+
+        AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, modeNames[mode], 8, y, TEXT_SKIP_DRAW, NULL);
+        if (frames == 0)
+        {
+            StringCopy(gStringVar4, sText_RecordsNoTime);
+        }
+        else
+        {
+            ConvertIntToDecimalStringN(gStringVar1, frames / 3600, STR_CONV_MODE_LEFT_ALIGN, 2);
+            ConvertIntToDecimalStringN(gStringVar2, (frames / 60) % 60, STR_CONV_MODE_LEADING_ZEROS, 2);
+            StringExpandPlaceholders(gStringVar4, sText_RecordsTime);
+        }
+        AddTextPrinterParameterized(gRecordsWindowId, FONT_NORMAL, gStringVar4, 124, y, TEXT_SKIP_DRAW, NULL);
+    }
+}
+
+// VAR_0x8004 is the facility, VAR_0x8005 the battle mode and VAR_0x8006 the generation.
+void ShowFrontierRuleRecords(void)
+{
+    gRecordsWindowId = AddWindow(&sFrontierResultsWindowTemplate);
+    DrawStdWindowFrame(gRecordsWindowId, FALSE);
+    FillWindowPixelBuffer(gRecordsWindowId, PIXEL_FILL(1));
+    if (gSpecialVar_0x8004 == FRONTIER_RECORDS_HILL)
+        PrintHillRecords();
+    else if (gSpecialVar_0x8006 == FRONTIER_RECORDS_FULL_DEX)
+        PrintFullDexRecords(gSpecialVar_0x8004, gSpecialVar_0x8005);
+    else
+        PrintSmogonRecords(gSpecialVar_0x8004, gSpecialVar_0x8005, gSpecialVar_0x8006);
+    PutWindowTilemap(gRecordsWindowId);
+    CopyWindowToVram(gRecordsWindowId, COPYWIN_FULL);
+}
+
 void ShowRankingHallRecordsWindow(void)
 {
     gRecordsWindowId = AddWindow(&sRankingHallRecordsWindowTemplate);
@@ -2592,6 +2740,23 @@ void SetFrontierBrainObjEventGfx_2(void)
 
 #define FRONTIER_BRAIN_OTID 61226
 
+static void CreateFrontierBrainSetTeam(void)
+{
+    s32 i, selectedMonBits = 0xFF, monPartyId = 0;
+    s32 monLevel;
+
+    if (VarGet(VAR_FRONTIER_FACILITY) == FRONTIER_FACILITY_DOME && !IsFrontier6v6())
+        selectedMonBits = GetDomeTrainerSelectedMons(TrainerIdToDomeTournamentId(TRAINER_FRONTIER_BRAIN));
+
+    ZeroEnemyPartyMons();
+    monLevel = SetFacilityPtrsGetLevel();
+    for (i = 0; i < GetFrontierTeamSize(); selectedMonBits >>= 1, i++)
+    {
+        if (selectedMonBits & 1)
+            CreateFacilityMon(&gFrontierSetMons[GetFrontierBrainSetId(i)], monLevel, MAX_PER_STAT_IVS, FRONTIER_BRAIN_OTID, 0, &gParties[B_TRAINER_OPPONENT_A][monPartyId++]);
+    }
+}
+
 void CreateFrontierBrainPokemon(void)
 {
     s32 i, j;
@@ -2601,6 +2766,12 @@ void CreateFrontierBrainPokemon(void)
     u8 friendship;
     s32 facility = VarGet(VAR_FRONTIER_FACILITY);
     s32 symbol = GetFronterBrainSymbol();
+
+    if (FrontierUsesSetPools())
+    {
+        CreateFrontierBrainSetTeam();
+        return;
+    }
 
     if (facility == FRONTIER_FACILITY_DOME)
         selectedMonBits = GetDomeTrainerSelectedMons(TrainerIdToDomeTournamentId(TRAINER_FRONTIER_BRAIN));
@@ -2646,6 +2817,8 @@ enum Species GetFrontierBrainMonSpecies(u8 monId)
     s32 facility = VarGet(VAR_FRONTIER_FACILITY);
     s32 symbol = GetFronterBrainSymbol();
 
+    if (FrontierUsesSetPools())
+        return gFrontierSetMons[GetFrontierBrainSetId(monId)].species;
     return sFrontierBrainsMons[facility][symbol][monId].species;
 }
 
@@ -2660,6 +2833,8 @@ u16 GetFrontierBrainMonMove(u8 monId, u8 moveSlotId)
     s32 facility = VarGet(VAR_FRONTIER_FACILITY);
     s32 symbol = GetFronterBrainSymbol();
 
+    if (FrontierUsesSetPools())
+        return gFrontierSetMons[GetFrontierBrainSetId(monId)].moves[moveSlotId];
     return sFrontierBrainsMons[facility][symbol][monId].moves[moveSlotId];
 }
 
@@ -2668,6 +2843,8 @@ u8 GetFrontierBrainMonNature(u8 monId)
     s32 facility = VarGet(VAR_FRONTIER_FACILITY);
     s32 symbol = GetFronterBrainSymbol();
 
+    if (FrontierUsesSetPools())
+        return gFrontierSetMons[GetFrontierBrainSetId(monId)].nature;
     return sFrontierBrainsMons[facility][symbol][monId].nature;
 }
 
@@ -2676,6 +2853,8 @@ u8 GetFrontierBrainMonEvs(u8 monId, u8 evStatId)
     s32 facility = VarGet(VAR_FRONTIER_FACILITY);
     s32 symbol = GetFronterBrainSymbol();
 
+    if (FrontierUsesSetPools())
+        return gFrontierSetMons[GetFrontierBrainSetId(monId)].ev[evStatId];
     return sFrontierBrainsMons[facility][symbol][monId].evs[evStatId];
 }
 

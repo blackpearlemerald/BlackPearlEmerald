@@ -11,6 +11,7 @@
 #include "frontier_rules.h"
 #include "frontier_sets.h"
 #include "frontier_util.h"
+
 #include "trainer_hill.h"
 #include "constants/battle_dome.h"
 #include "constants/battle_factory.h"
@@ -543,3 +544,78 @@ TEST("Full Dex Hill teams never change and hold no repeats")
         }
     }
 }
+
+static void ExpectBrainTeam(u32 facility, u16 rule, bool32 gold)
+{
+    u32 i, j, teamSize;
+
+    SetChallenge(facility, FRONTIER_MODE_SINGLES, rule);
+    if (gold)
+        FlagSet(FLAG_SYS_TOWER_SILVER + facility * 2);
+    else
+        FlagClear(FLAG_SYS_TOWER_SILVER + facility * 2);
+    teamSize = GetFrontierTeamSize();
+    TRAINER_BATTLE_PARAM.opponentA = TRAINER_FRONTIER_BRAIN;
+    FillFrontierTrainerParty(teamSize);
+    for (i = 0; i < teamSize; i++)
+    {
+        u32 species = GetMonData(&gParties[B_TRAINER_OPPONENT_A][i], MON_DATA_SPECIES);
+
+        EXPECT_NE(species, SPECIES_NONE);
+        EXPECT_EQ(species, GetFrontierBrainMonSpecies(i));
+        if (FRONTIER_RULE_KIND(rule) == FRONTIER_RULES_SMOGON)
+            EXPECT(FrontierRuleAllowsSpecies(rule, FALSE, species));
+        else
+            EXPECT(!gSpeciesInfo[species].isFrontierBanned);
+        for (j = 0; j < i; j++)
+            EXPECT_NE(species, GetMonData(&gParties[B_TRAINER_OPPONENT_A][j], MON_DATA_SPECIES));
+    }
+    FlagClear(FLAG_SYS_TOWER_SILVER + facility * 2);
+}
+
+TEST("Frontier Brains have legal teams under every rule set")
+{
+    static const u8 facilities[] = {FRONTIER_FACILITY_TOWER, FRONTIER_FACILITY_PALACE, FRONTIER_FACILITY_ARENA, FRONTIER_FACILITY_PIKE, FRONTIER_FACILITY_PYRAMID};
+    u32 i, gen, tier, symbol;
+
+    ZeroPlayerPartyMons();
+    GivePlayerMon(0, SPECIES_GARCHOMP, 50, ITEM_NONE, MOVE_TACKLE);
+    for (symbol = 0; symbol < 2; symbol++)
+    {
+        for (i = 0; i < ARRAY_COUNT(facilities); i++)
+            ExpectBrainTeam(facilities[i], FULL_DEX, symbol);
+        for (gen = 0; gen < FRONTIER_GEN_COUNT; gen++)
+        {
+            for (tier = 0; tier < FRONTIER_TIER_COUNT; tier++)
+            {
+                ExpectBrainTeam(FRONTIER_FACILITY_TOWER, SMOGON(gen, tier), symbol);
+                ExpectBrainTeam(FRONTIER_FACILITY_TOWER, SMOGON_6V6(gen, tier), symbol);
+            }
+        }
+    }
+}
+
+TEST("The Dome's Brain picks two Pokémon, or brings all six in 6v6")
+{
+    u32 i;
+
+    ZeroPlayerPartyMons();
+    for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
+        GivePlayerMon(i, SPECIES_GARCHOMP + i, 50, ITEM_NONE, MOVE_TACKLE);
+    gSaveBlock2Ptr->frontier.selectedPartyMons[0] = 1;
+    gSaveBlock2Ptr->frontier.selectedPartyMons[1] = 2;
+    gSaveBlock2Ptr->frontier.selectedPartyMons[2] = 3;
+    SetChallenge(FRONTIER_FACILITY_DOME, FRONTIER_MODE_SINGLES, FULL_DEX);
+    gSpecialVar_0x8004 = BATTLE_DOME_FUNC_INIT_TRAINERS;
+    CallBattleDomeFunction();
+    gSaveBlock2Ptr->frontier.domeTrainers[1].trainerId = TRAINER_FRONTIER_BRAIN;
+    for (i = 0; i < FRONTIER_PARTY_SIZE; i++)
+        gSaveBlock2Ptr->frontier.domeMonIds[1][i] = GetFrontierBrainMonSpecies(i);
+    TRAINER_BATTLE_PARAM.opponentA = TRAINER_FRONTIER_BRAIN;
+    FillFrontierTrainerParty(DOME_BATTLE_PARTY_SIZE);
+    EXPECT_NE(GetMonData(&gParties[B_TRAINER_OPPONENT_A][1], MON_DATA_SPECIES), SPECIES_NONE);
+    EXPECT_EQ(GetMonData(&gParties[B_TRAINER_OPPONENT_A][2], MON_DATA_SPECIES), SPECIES_NONE);
+
+    ExpectBrainTeam(FRONTIER_FACILITY_DOME, SMOGON_6V6(FRONTIER_GEN_NATIONAL_DEX, FRONTIER_TIER_OU), FALSE);
+}
+

@@ -5,6 +5,7 @@
 
 void CallFrontierUtilFunc(void);
 u8 GetFrontierBrainStatus(void);
+void ShowFrontierRuleRecords(void);
 void CopyFrontierTrainerText(u8 whichText, u16 trainerId);
 void ResetWinStreaks(void);
 u32 GetCurrentFacilityWinStreak(void);

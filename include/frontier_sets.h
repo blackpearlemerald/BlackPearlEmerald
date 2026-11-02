@@ -1,6 +1,7 @@
 #ifndef GUARD_FRONTIER_SETS_H
 #define GUARD_FRONTIER_SETS_H
 
+#include "constants/battle_frontier.h"
 #include "constants/frontier_rules.h"
 #include "data.h"
 
@@ -41,6 +42,8 @@ extern const struct TrainerMon gFrontierSetMons[];
 extern const u32 gFrontierSetMonsCount;
 extern const struct FrontierSetPool gFrontierSetPools[FRONTIER_GEN_COUNT][FRONTIER_POOL_COUNT];
 extern const struct FrontierSetPool gFrontierFullDexPools[2];
+extern const u16 gFrontierBrainFullDexTeams[NUM_FRONTIER_FACILITIES][2][PARTY_SIZE];
+extern const u16 gFrontierBrainTierTeams[2][FRONTIER_TIER_COUNT][2][PARTY_SIZE];
 extern const u8 gFrontierSpeciesRules[][FRONTIER_GEN_COUNT];
 extern const u16 gFrontierMoveGens[];
 extern const u16 gFrontierItemGens[];

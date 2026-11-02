@@ -24,6 +24,7 @@ BattleFrontier_ExchangeServiceCorner_EventScript_TryPurchasePrize::
 	goto_if_eq VAR_TEMP_2, EXCHANGE_CORNER_DECOR1_CLERK, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseDecor1
 	goto_if_eq VAR_TEMP_2, EXCHANGE_CORNER_DECOR2_CLERK, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseDecor2
 	goto_if_eq VAR_TEMP_2, EXCHANGE_CORNER_VITAMIN_CLERK, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseVitamin
+	goto_if_eq VAR_TEMP_2, EXCHANGE_CORNER_MINT_CLERK, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseMint
 	goto BattleFrontier_ExchangeServiceCorner_EventScript_ChooseHoldItem
 	end
 
@@ -62,6 +63,7 @@ BattleFrontier_ExchangeServiceCorner_EventScript_TryGiveItem::
 	playse SE_SHOP
 	msgbox BattleFrontier_ExchangeServiceCorner_Text_HereIsYourPrize, MSGBOX_DEFAULT
 	goto_if_eq VAR_TEMP_2, EXCHANGE_CORNER_VITAMIN_CLERK, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseVitamin
+	goto_if_eq VAR_TEMP_2, EXCHANGE_CORNER_MINT_CLERK, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseMint
 	goto BattleFrontier_ExchangeServiceCorner_EventScript_ChooseHoldItem
 	end
 
@@ -201,8 +203,115 @@ BattleFrontier_ExchangeServiceCorner_EventScript_VitaminClerk::
 	faceplayer
 	setvar VAR_TEMP_2, EXCHANGE_CORNER_VITAMIN_CLERK
 	call BattleFrontier_ExchangeServiceCorner_EventScript_ClerkWelcome
-	goto BattleFrontier_ExchangeServiceCorner_EventScript_ChooseVitamin
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_Vitamins, EXCHANGE_CORNER_VITAMIN_CLERK
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_Mints, EXCHANGE_CORNER_MINT_CLERK
+	dynmultistack 18, 0, FALSE, 2, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_ExchangeServiceCorner_EventScript_ClerkGoodbye
+	goto_if_eq VAR_RESULT, EXCHANGE_CORNER_VITAMIN_CLERK, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseVitamin
+	setvar VAR_TEMP_2, EXCHANGE_CORNER_MINT_CLERK
+	goto BattleFrontier_ExchangeServiceCorner_EventScript_ChooseMint
 	end
+
+BattleFrontier_ExchangeServiceCorner_EventScript_ChooseMint::
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_LonelyMint, ITEM_LONELY_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_AdamantMint, ITEM_ADAMANT_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_NaughtyMint, ITEM_NAUGHTY_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_BraveMint, ITEM_BRAVE_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_BoldMint, ITEM_BOLD_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_ImpishMint, ITEM_IMPISH_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_LaxMint, ITEM_LAX_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_RelaxedMint, ITEM_RELAXED_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_ModestMint, ITEM_MODEST_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_MildMint, ITEM_MILD_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_RashMint, ITEM_RASH_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_QuietMint, ITEM_QUIET_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_CalmMint, ITEM_CALM_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_GentleMint, ITEM_GENTLE_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_CarefulMint, ITEM_CAREFUL_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_SassyMint, ITEM_SASSY_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_TimidMint, ITEM_TIMID_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_HastyMint, ITEM_HASTY_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_JollyMint, ITEM_JOLLY_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_NaiveMint, ITEM_NAIVE_MINT
+	dynmultipush BattleFrontier_ExchangeServiceCorner_Text_SeriousMint, ITEM_SERIOUS_MINT
+	dynmultistack 14, 0, FALSE, 6, FALSE, 0, DYN_MULTICHOICE_CB_NONE
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_ExchangeServiceCorner_EventScript_ClerkGoodbye
+	copyvar VAR_0x8009, VAR_RESULT
+	setvar VAR_0x8008, 16
+	bufferitemname STR_VAR_1, VAR_0x8009
+	msgbox BattleFrontier_ExchangeServiceCorner_Text_ConfirmPurchase, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseMint
+	goto BattleFrontier_ExchangeServiceCorner_EventScript_TryPurchasePrize
+	end
+
+BattleFrontier_ExchangeServiceCorner_Text_Vitamins:
+	.string "Vitamins$"
+
+BattleFrontier_ExchangeServiceCorner_Text_Mints:
+	.string "Mints, 16 BP$"
+
+BattleFrontier_ExchangeServiceCorner_Text_LonelyMint:
+	.string "Lonely  +Atk -Def$"
+
+BattleFrontier_ExchangeServiceCorner_Text_AdamantMint:
+	.string "Adamant  +Atk -SpA$"
+
+BattleFrontier_ExchangeServiceCorner_Text_NaughtyMint:
+	.string "Naughty  +Atk -SpD$"
+
+BattleFrontier_ExchangeServiceCorner_Text_BraveMint:
+	.string "Brave  +Atk -Spe$"
+
+BattleFrontier_ExchangeServiceCorner_Text_BoldMint:
+	.string "Bold  +Def -Atk$"
+
+BattleFrontier_ExchangeServiceCorner_Text_ImpishMint:
+	.string "Impish  +Def -SpA$"
+
+BattleFrontier_ExchangeServiceCorner_Text_LaxMint:
+	.string "Lax  +Def -SpD$"
+
+BattleFrontier_ExchangeServiceCorner_Text_RelaxedMint:
+	.string "Relaxed  +Def -Spe$"
+
+BattleFrontier_ExchangeServiceCorner_Text_ModestMint:
+	.string "Modest  +SpA -Atk$"
+
+BattleFrontier_ExchangeServiceCorner_Text_MildMint:
+	.string "Mild  +SpA -Def$"
+
+BattleFrontier_ExchangeServiceCorner_Text_RashMint:
+	.string "Rash  +SpA -SpD$"
+
+BattleFrontier_ExchangeServiceCorner_Text_QuietMint:
+	.string "Quiet  +SpA -Spe$"
+
+BattleFrontier_ExchangeServiceCorner_Text_CalmMint:
+	.string "Calm  +SpD -Atk$"
+
+BattleFrontier_ExchangeServiceCorner_Text_GentleMint:
+	.string "Gentle  +SpD -Def$"
+
+BattleFrontier_ExchangeServiceCorner_Text_CarefulMint:
+	.string "Careful  +SpD -SpA$"
+
+BattleFrontier_ExchangeServiceCorner_Text_SassyMint:
+	.string "Sassy  +SpD -Spe$"
+
+BattleFrontier_ExchangeServiceCorner_Text_TimidMint:
+	.string "Timid  +Spe -Atk$"
+
+BattleFrontier_ExchangeServiceCorner_Text_HastyMint:
+	.string "Hasty  +Spe -Def$"
+
+BattleFrontier_ExchangeServiceCorner_Text_JollyMint:
+	.string "Jolly  +Spe -SpA$"
+
+BattleFrontier_ExchangeServiceCorner_Text_NaiveMint:
+	.string "Naive  +Spe -SpD$"
+
+BattleFrontier_ExchangeServiceCorner_Text_SeriousMint:
+	.string "Serious  Neutral$"
 
 BattleFrontier_ExchangeServiceCorner_EventScript_ChooseVitamin::
 	setvar VAR_0x8004, SCROLL_MULTI_BF_EXCHANGE_CORNER_VITAMIN_VENDOR

@@ -1,4 +1,5 @@
 #include "global.h"
+#include "title_screen.h"
 #include "m4a.h"
 #include "malloc.h"
 #include "reload_save.h"
@@ -316,7 +317,7 @@ static void InitLocalLinkPlayer(void)
     gLocalLinkPlayer.linkType = gLinkType;
     gLocalLinkPlayer.language = gGameLanguage;
     gLocalLinkPlayer.version = gGameVersion + 0x4000;
-    gLocalLinkPlayer.lp_field_2 = 0x8000;
+    gLocalLinkPlayer.lp_field_2 = GetBpeReleaseHash();
     gLocalLinkPlayer.progressFlags = IsNationalPokedexEnabled();
     if (FlagGet(FLAG_IS_CHAMPION))
     {
@@ -776,6 +777,22 @@ void OpenLinkTimed(void)
     OpenLink();
 }
 
+static bool32 IsTowerLinkOnOtherRelease(void)
+{
+    int i;
+
+    if (gLinkPlayers[0].linkType != LINKTYPE_BATTLE_TOWER_50
+     && gLinkPlayers[0].linkType != LINKTYPE_BATTLE_TOWER_OPEN
+     && gLinkPlayers[0].linkType != LINKTYPE_BATTLE_TOWER)
+        return FALSE;
+    for (i = 1; i < GetLinkPlayerCount(); i++)
+    {
+        if (gLinkPlayers[i].lp_field_2 != gLinkPlayers[0].lp_field_2)
+            return TRUE;
+    }
+    return FALSE;
+}
+
 u8 GetLinkPlayerDataExchangeStatusTimed(int minPlayers, int maxPlayers)
 {
     int i;
@@ -808,7 +825,13 @@ u8 GetLinkPlayerDataExchangeStatusTimed(int minPlayers, int maxPlayers)
                     count++;
                 }
             }
-            if (count == GetLinkPlayerCount())
+            if (count == GetLinkPlayerCount() && IsTowerLinkOnOtherRelease())
+            {
+                // See BattleFrontier_BattleTowerLobby_EventScript_AbortLinkDifferentSelections
+                sPlayerDataExchangeStatus = EXCHANGE_DIFF_SELECTIONS;
+                gSpecialVar_0x8005 = 4;
+            }
+            else if (count == GetLinkPlayerCount())
             {
                 if (gLinkPlayers[0].linkType == LINKTYPE_TRADE_SETUP)
                 {

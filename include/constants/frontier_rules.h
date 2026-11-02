@@ -39,4 +39,8 @@
 
 #define FRONTIER_BEST_STREAK_MAX 255
 
+// For the Ranking Hall's records, see ShowFrontierRuleRecords.
+#define FRONTIER_RECORDS_HILL     7
+#define FRONTIER_RECORDS_FULL_DEX 0xFF
+
 #endif // GUARD_CONSTANTS_FRONTIER_RULES_H
