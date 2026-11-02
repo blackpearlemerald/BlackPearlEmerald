@@ -110,7 +110,7 @@ const struct TrainerMon *GetFrontierMonTable(void)
 u16 GetRandomFrontierSetId(void)
 {
     u32 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
-    const struct FrontierSetPool *pool = GetFrontierSetPool(GetActiveFrontierRule(), battleMode == FRONTIER_MODE_DOUBLES || battleMode == FRONTIER_MODE_MULTIS);
+    const struct FrontierSetPool *pool = GetFrontierSetPool(GetActiveFrontierRule(), battleMode != FRONTIER_MODE_SINGLES);
     u32 round = (gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT) ? 0 : GetCurrentFacilityWinStreak();
     u32 quarter = pool->count / 4;
     u32 start, length;

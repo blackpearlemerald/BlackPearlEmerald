@@ -1,4 +1,5 @@
 #include "global.h"
+#include "frontier_rules.h"
 #include "title_screen.h"
 #include "m4a.h"
 #include "malloc.h"
@@ -318,6 +319,7 @@ static void InitLocalLinkPlayer(void)
     gLocalLinkPlayer.language = gGameLanguage;
     gLocalLinkPlayer.version = gGameVersion + 0x4000;
     gLocalLinkPlayer.lp_field_2 = GetBpeReleaseHash();
+    gLocalLinkPlayer.neverRead = FRONTIER_RULE_KIND(GetActiveFrontierRule());
     gLocalLinkPlayer.progressFlags = IsNationalPokedexEnabled();
     if (FlagGet(FLAG_IS_CHAMPION))
     {
@@ -777,20 +779,24 @@ void OpenLinkTimed(void)
     OpenLink();
 }
 
-static bool32 IsTowerLinkOnOtherRelease(void)
+// Link Multi partners need the same release and rules. Returns the value
+// BattleFrontier_BattleTowerLobby_EventScript_AbortLinkDifferentSelections reads, or 0.
+static u32 GetTowerLinkMismatch(void)
 {
     int i;
 
     if (gLinkPlayers[0].linkType != LINKTYPE_BATTLE_TOWER_50
      && gLinkPlayers[0].linkType != LINKTYPE_BATTLE_TOWER_OPEN
      && gLinkPlayers[0].linkType != LINKTYPE_BATTLE_TOWER)
-        return FALSE;
+        return 0;
     for (i = 1; i < GetLinkPlayerCount(); i++)
     {
         if (gLinkPlayers[i].lp_field_2 != gLinkPlayers[0].lp_field_2)
-            return TRUE;
+            return 4;
+        if (gLinkPlayers[i].neverRead != gLinkPlayers[0].neverRead)
+            return 5;
     }
-    return FALSE;
+    return 0;
 }
 
 u8 GetLinkPlayerDataExchangeStatusTimed(int minPlayers, int maxPlayers)
@@ -825,11 +831,10 @@ u8 GetLinkPlayerDataExchangeStatusTimed(int minPlayers, int maxPlayers)
                     count++;
                 }
             }
-            if (count == GetLinkPlayerCount() && IsTowerLinkOnOtherRelease())
+            if (count == GetLinkPlayerCount() && GetTowerLinkMismatch() != 0)
             {
-                // See BattleFrontier_BattleTowerLobby_EventScript_AbortLinkDifferentSelections
                 sPlayerDataExchangeStatus = EXCHANGE_DIFF_SELECTIONS;
-                gSpecialVar_0x8005 = 4;
+                gSpecialVar_0x8005 = GetTowerLinkMismatch();
             }
             else if (count == GetLinkPlayerCount())
             {

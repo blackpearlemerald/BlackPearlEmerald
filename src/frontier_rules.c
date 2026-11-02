@@ -90,7 +90,7 @@ u32 GetFrontierCurrentStreak(u32 facility, u32 battleMode, u16 rule)
 }
 
 // The rule set the current challenge runs under. Every lobby sets it, but only the
-// Tower, Factory and Dome have Smogon rules, and Link Multis are always vanilla,
+// Tower, Factory and Dome have Smogon rules, and only outside Multis and Tents,
 // so a rule left in the save can't reach anything that doesn't offer it.
 u16 GetActiveFrontierRule(void)
 {
@@ -98,7 +98,7 @@ u16 GetActiveFrontierRule(void)
     u32 battleMode = VarGet(VAR_FRONTIER_BATTLE_MODE);
     u16 rule = gSaveBlock2Ptr->frontier.activeRule;
 
-    if (facility >= NUM_FRONTIER_FACILITIES || (facility == FRONTIER_FACILITY_TOWER && battleMode == FRONTIER_MODE_LINK_MULTIS))
+    if (facility >= NUM_FRONTIER_FACILITIES)
         return FRONTIER_RULE(FRONTIER_RULES_VANILLA, 0, 0, 0);
     if (FRONTIER_RULE_KIND(rule) == FRONTIER_RULES_SMOGON
      && (gSaveBlock2Ptr->frontier.lvlMode == FRONTIER_LVL_TENT

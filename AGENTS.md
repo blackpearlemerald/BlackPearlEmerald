@@ -575,10 +575,9 @@ parties are copied back to the save between battles. The retry loops that pick e
 hang if a pool can't fit, and Gen 1 sets have no items, so a check that compares two
 `ITEM_NONE`s never ends: `test/frontier_challenge.c` builds every rule set's teams to catch this.
 
-Every other facility, the Tents, Tower Multis and Trainer Hill ask for Vanilla or Full Dex
+Every other facility, the Tents, Tower Multis, Link Multis and Trainer Hill ask for Vanilla or Full Dex
 through `BattleFrontier_EventScript_ChooseFullDexRules`. `GetActiveFrontierRule()` turns a
-leftover Smogon rule into vanilla anywhere that doesn't offer one, and Link Multis are always
-vanilla. Reach a current streak through `GetFrontierWinStreakPtr()` for every facility. Tents
+leftover Smogon rule into vanilla anywhere that doesn't offer one. Reach a current streak through `GetFrontierWinStreakPtr()` for every facility. Tents
 use the National Dex RU pool as their mid-game sets. Pike and Pyramid wild Pokémon are random
 sets from the pool, created with `CreateFacilityMon`. Full Dex Hill teams come from
 `CreateFullDexHillMon`, which hashes the mode, floor, trainer and slot so a floor never changes,
@@ -601,7 +600,7 @@ first three fight in the usual format. Noland keeps his random rentals. Full Dex
 level modes as vanilla.
 
 The Ranking Hall attendant shows these records through `ShowFrontierRuleRecords`. Mints are sold
-by the vitamin clerk, and link players carry `GetBpeReleaseHash()` in `lp_field_2`, which
+by the vitamin clerk, and link players carry `GetBpeReleaseHash()` in `lp_field_2` and the rule kind in `neverRead`, which
 `GetLinkPlayerDataExchangeStatusTimed` compares for Battle Tower link types only. Tests:
 `make check TESTS=test/frontier_challenge.c` and `make check TESTS=test/frontier_battles.c`, which
 puts each rule set's strongest sets through real battles with the facility AI. Neither drives

@@ -404,6 +404,8 @@ BattleFrontier_BattleTowerLobby_EventScript_AskEnterLinkMultisChallenge::
 
 BattleFrontier_BattleTowerLobby_EventScript_TryEnterLinkMultisChallenge::
 	setvar VAR_FRONTIER_BATTLE_MODE, FRONTIER_MODE_LINK_MULTIS
+	call BattleFrontier_EventScript_ChooseFullDexRules
+	goto_if_eq VAR_RESULT, MULTI_B_PRESSED, BattleFrontier_BattleTowerLobby_EventScript_CancelChallenge
 	message BattleFrontier_BattleTowerLobby_Text_WhichLevelMode
 	waitmessage
 	multichoice 17, 6, MULTI_LEVEL_MODE, FALSE
@@ -818,6 +820,7 @@ BattleFrontier_BattleTowerLobby_EventScript_AbortLinkDifferentSelections::
 	special CloseLink
 	goto_if_eq VAR_0x8005, 3, BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentSelection
 	goto_if_eq VAR_0x8005, 4, BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentRelease
+	goto_if_eq VAR_0x8005, 5, BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentRules
 	msgbox Text_PlayersMadeDifferentSelections, MSGBOX_DEFAULT
 	release
 	end
@@ -826,6 +829,16 @@ BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentRelease::
 	msgbox BattleFrontier_BattleTowerLobby_Text_FriendDifferentRelease, MSGBOX_DEFAULT
 	release
 	end
+
+BattleFrontier_BattleTowerLobby_EventScript_FriendDifferentRules::
+	msgbox BattleFrontier_BattleTowerLobby_Text_FriendDifferentRules, MSGBOX_DEFAULT
+	release
+	end
+
+BattleFrontier_BattleTowerLobby_Text_FriendDifferentRules:
+	.string "Your friend chose different rules.\p"
+	.string "You'll both need to choose the same\n"
+	.string "rules for a Multi Battle.$"
 
 BattleFrontier_BattleTowerLobby_Text_FriendDifferentRelease:
 	.string "Your friend is playing a different\n"

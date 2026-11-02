@@ -461,11 +461,13 @@ TEST("Every facility offers Full Dex with its own streak")
     }
 }
 
-TEST("Full Dex reaches Multis, but not Link Multis")
+TEST("Full Dex reaches Multis and Link Multis, but Smogon rules don't")
 {
     SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_MULTIS, FULL_DEX);
     EXPECT(FrontierUsesSetPools());
     SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_LINK_MULTIS, FULL_DEX);
+    EXPECT(FrontierUsesSetPools());
+    SetChallenge(FRONTIER_FACILITY_TOWER, FRONTIER_MODE_LINK_MULTIS, NAT_DEX_OU);
     EXPECT(!FrontierUsesSetPools());
 }
 
