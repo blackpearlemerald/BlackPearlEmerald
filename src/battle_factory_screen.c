@@ -1883,8 +1883,16 @@ static void Select_PrintSelectMonString(void)
         str = gText_SelectSecondPkmn;
     else if (sFactorySelectScreen->selectingMonsState == 3)
         str = gText_SelectThirdPkmn;
-    else
+    else if (GetFactoryTeamSize() == FRONTIER_PARTY_SIZE)
         str = gText_TheseThreePkmnOkay;
+    else if (sFactorySelectScreen->selectingMonsState == 4)
+        str = gText_SelectFourthPkmn;
+    else if (sFactorySelectScreen->selectingMonsState == 5)
+        str = gText_SelectFifthPkmn;
+    else if (sFactorySelectScreen->selectingMonsState == 6)
+        str = gText_SelectSixthPkmn;
+    else
+        str = gText_TheseSixPkmnOkay;
 
     AddTextPrinterParameterized(SELECT_WIN_INFO, FONT_NORMAL, str, 2, 5, 0, NULL);
     CopyWindowToVram(SELECT_WIN_INFO, COPYWIN_GFX);

@@ -575,6 +575,38 @@ parties are copied back to the save between battles. The retry loops that pick e
 hang if a pool can't fit, and Gen 1 sets have no items, so a check that compares two
 `ITEM_NONE`s never ends: `test/frontier_challenge.c` builds every rule set's teams to catch this.
 
+Every other facility, the Tents, Tower Multis and Trainer Hill ask for Vanilla or Full Dex
+through `BattleFrontier_EventScript_ChooseFullDexRules`. `GetActiveFrontierRule()` turns a
+leftover Smogon rule into vanilla anywhere that doesn't offer one, and Link Multis are always
+vanilla. Reach a current streak through `GetFrontierWinStreakPtr()` for every facility. Tents
+use the National Dex RU pool as their mid-game sets. Pike and Pyramid wild Pokémon are random
+sets from the pool, created with `CreateFacilityMon`. Full Dex Hill teams come from
+`CreateFullDexHillMon`, which hashes the mode, floor, trainer and slot so a floor never changes,
+and `trainerHill.fullDex` (the old unused byte) marks the challenge. Hill best times are plain
+frames in `fullDexHillTimes`, 0 meaning none, not encrypted like `trainerHillTimes`.
+
+6v6 is Smogon only: `IsFrontier6v6()` and `GetFrontierTeamSize()`. `gSelectedOrderFromParty` holds
+six, `GetFrontierSelectedMon()` reads the two that don't fit `selectedPartyMons`, and
+`GetFactoryRental()` the rentals past `rentalMons`, so use those, never the fields. The Dome
+screens and matchups read the first three of each team in `domeMonIds`; the other three are in
+`extraDomeMonIds` and only show up in battle. The Dome's fourth `selectedPartyMons` slot holds the
+round's order in vanilla but the fourth Pokémon in 6v6, so `DOME_DATA_SELECTED_MONS` skips it. The
+Factory shows two rows of balls and no big pictures when confirming, and the swap screen's slide
+assumes three balls, so six just change color.
+
+Frontier Brains under rule sets go through `GetFrontierBrainSetId()`: written teams in
+`BPETools/frontier_sets/brain_teams.json` for Full Dex and National Dex tiers, each species
+using its strongest set in that pool, and the strongest sets of the tier for Gens 1-9. A team's
+first three fight in the usual format. Noland keeps his random rentals. Full Dex uses the same
+level modes as vanilla.
+
+The Ranking Hall attendant shows these records through `ShowFrontierRuleRecords`. Mints are sold
+by the vitamin clerk, and link players carry `GetBpeReleaseHash()` in `lp_field_2`, which
+`GetLinkPlayerDataExchangeStatusTimed` compares for Battle Tower link types only. Tests:
+`make check TESTS=test/frontier_challenge.c` and `make check TESTS=test/frontier_battles.c`, which
+puts each rule set's strongest sets through real battles with the facility AI. Neither drives
+the menus, the Factory screens or a link.
+
 ### Multi battles
 
 `multi_do` calls `AreMultiPartiesFullTeams` before the battle starts and reads its
@@ -596,7 +628,7 @@ Starting with 2.1.0 the PC has 41 boxes and the save uses a new flash layout. Th
 - PC Pokémon are 60-byte records in `gPokemonStoragePtr->boxes`. Read and write them only through the accessors in `src/pokemon_storage_system.c` (`GetBoxMonDataAt`, `SetBoxMonAt`, `GetBoxedMonPtr`, …). `GetBoxedMonPtr` returns a pointer into an unpacked cache of one box, which stays valid only until another box is accessed. Packing drops HP, status, PP, contest stats and every ribbon except the Champion Ribbon, so deposited Pokémon are healed (`OW_PC_HEAL` is `GEN_7`).
 - Saving is refused while only a pre-2.1 save exists (`SAVE_STATUS_OUTDATED`); players convert it on the website Save Converter (`BPEDocumentation/site/save-converter.html`) or clear it. Every release before 2.1 shares one save layout: 1.0.1 and 2.0.0-beta through 2.0.7-beta have byte-identical save blocks, PC storage and Pokémon records, and their species, item, move, flag and variable numbering agrees, so one converter path handles them all. The only known 1.0.1 differences are cosmetic: Partner Pikachu and the internal Egg placeholder have different species numbers, and two Route 111 Gabby & Ty visibility flags are swapped.
 - SaveBlock1 can still grow **at its very end** without a converter path. The engine zero-fills each sector before writing, so the bytes past an older save's SaveBlock1 read back as zero, and every offset that save already holds stays put. That is how the Items and Key Items pockets grew: `BAG_ITEMS_COUNT` and `BAG_KEYITEMS_COUNT` slots stay in `struct Bag`, and `BAG_ITEMS_EXTRA_COUNT` / `BAG_KEYITEMS_EXTRA_COUNT` more live in `SaveBlock1.itemsExtra` and `keyItemsExtra` at the end, which `BagPocket_GetSlotPtr` in `src/item.c` splices in. Use `BAG_*_TOTAL` for the capacity. Zero is only a safe default for plain fields: bag quantities are XORed with the save's encryption key, so a raw zero slot reads back as a quantity equal to the key. `LoadGameSave()` therefore calls `RepairEmptyBagSlots()`; without it, 2.1.7 let players with no Poké Balls throw one with the last-used-ball button (R). Anything encrypted that is appended later needs the same repair on load. A pocket may not exceed 1023 slots (`BagPocket.capacity` is a 10-bit bitfield). Growing a pocket in place instead, or adding anything before the end, moves flags, vars and the Day Care and does need a new `SAVE_FORMAT_VERSION`.
-- **EWRAM, not flash, is what limits this now.** SaveBlock1 gets progress parts 1-4, so 16320 bytes, and 144 of them are still free. But every extra slot costs EWRAM twice, in SaveBlock1 and in the `gLoadedSaveData` link backup, and the **test** build (which carries the test runner on top of the game) has only 12 bytes left since expansion 1.16.4 (the game build 504): `arm-none-eabi-nm -S pokeemerald-test.elf`, highest `0x020…` symbol end against `0x02040000`. `make` reports the game build's EWRAM but not the test build's, and the test build overflows first, so check it before adding any EWRAM data. Freeing room means trimming `HEAP_SIZE` (read the peak from the debug menu first) or dropping the `gLoadedSaveData` bag mirror, which also halves the per-slot cost.
+- **EWRAM, not flash, is what limits this now.** SaveBlock1 gets progress parts 1-4, so 16320 bytes, and 144 of them are still free. But every extra slot costs EWRAM twice, in SaveBlock1 and in the `gLoadedSaveData` link backup, and the **test** build (which carries the test runner on top of the game) has only 8 bytes left since the Frontier overhaul (the game build 500): `arm-none-eabi-nm -S pokeemerald-test.elf`, highest `0x020…` symbol end against `0x02040000`. `make` reports the game build's EWRAM but not the test build's, and the test build overflows first, so check it before adding any EWRAM data. Freeing room means trimming `HEAP_SIZE` (read the peak from the debug menu first) or dropping the `gLoadedSaveData` bag mirror, which also halves the per-slot cost.
 - A pocket that reaches into one of those arrays must be handled anywhere the code touches `bag.<pocket>` directly rather than through `BagPocket_GetSlotData`/`SetSlotData`: today that is `ClearBag`, `LoadPlayerBag`/`SavePlayerBag` and the Wally/Old Man tutorial bag in `src/item_menu.c`. `SavePlayerBag` re-keys the whole pocket, so a slot it does not also restore would be corrupted.
 - RAM is nearly full: 41 boxes needed a smaller `HEAP_SIZE` and `MAX_MAP_DATA_SIZE`, and contest data at the top of the heap was moved down. `BPETools/tests/test_ram_budget.py` checks the map and heap limits. Debug builds show the heap peak under Debug menu (SELECT + START) > ROM Info… > Save Block space, on the last of its five message boxes.
 - If a save block, the box header, `struct BoxPokemon` or the packed layout changes, update together: the sizes in `test/save.c`, `BPETools/bpe_save_format.py`, `BPEDocumentation/site/js/save-converter.js`, the save inspector, and (for the packed layout) the vectors with `python BPETools/save_format_vectors.py`. A changed layout also needs a new `SAVE_FORMAT_VERSION` and a converter path for existing 2.1 saves.
