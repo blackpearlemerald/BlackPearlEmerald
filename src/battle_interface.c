@@ -689,6 +689,7 @@ u8 CreateBattlerHealthboxSprites(enum BattlerId battler)
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
     gBattleStruct->moveInfoSpriteId = MAX_SPRITES;
+    gBattleStruct->runWindowSpriteId = MAX_SPRITES;
 
     return healthboxLeftSpriteId;
 }
@@ -2793,7 +2794,8 @@ static const struct SpriteTemplate sSpriteTemplate_MoveInfoWindow =
 };
 
 #if B_LAST_USED_BALL_BUTTON == R_BUTTON && B_LAST_USED_BALL_CYCLE == TRUE
-    static const u8 ALIGNED(4) sLastUsedBallWindowGfx[] = INCGFX_U8("graphics/battle_interface/last_used_ball_r_cycle.png", ".4bpp");
+    // BPE: a compact frame around a 75% ball, so the L RUN tab fits below it.
+    static const u8 ALIGNED(4) sLastUsedBallWindowGfx[] = INCGFX_U8("graphics/battle_interface/last_used_ball_r_cycle_small.png", ".4bpp");
 #elif B_LAST_USED_BALL_CYCLE == TRUE
     static const u8 ALIGNED(4) sLastUsedBallWindowGfx[] = INCGFX_U8("graphics/battle_interface/last_used_ball_l_cycle.png", ".4bpp");
 #elif B_LAST_USED_BALL_BUTTON == R_BUTTON
@@ -2817,14 +2819,48 @@ static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
     sMoveInfoWindowGfx, sizeof(sMoveInfoWindowGfx), MOVE_INFO_WINDOW_TAG
 };
 
-#define LAST_USED_BALL_X_F    14
-#define LAST_USED_BALL_X_0    -14
-#define LAST_USED_BALL_Y      ((IsDoubleBattle()) ? 78 : 68)
-#define LAST_USED_BALL_Y_BNC  ((IsDoubleBattle()) ? 76 : 66)
+// BPE: L runs from wild battles; this tab says so on the action menu, where
+// the move info tab sits on the move menu.
+#define RUN_WINDOW_TAG 0xE723
 
-#define LAST_BALL_WIN_X_F       (LAST_USED_BALL_X_F - 0)
-#define LAST_BALL_WIN_X_0       (LAST_USED_BALL_X_0 - 0)
-#define LAST_USED_WIN_Y         (LAST_USED_BALL_Y - 8)
+static void SpriteCB_RunWin(struct Sprite *sprite);
+static void DestroyRunWindow(struct Sprite *sprite);
+
+static const struct SpriteTemplate sSpriteTemplate_RunWindow =
+{
+    .tileTag = RUN_WINDOW_TAG,
+    .paletteTag = TAG_ABILITY_POP_UP,
+    .oam = &sOamData_MoveInfoWindow,
+    .callback = SpriteCB_RunWin
+};
+
+static const u8 sRunWindowGfx[] = INCGFX_U8("graphics/battle_interface/run_window_l.png", ".4bpp");
+
+static const struct SpriteSheet sSpriteSheet_RunWindow =
+{
+    sRunWindowGfx, sizeof(sRunWindowGfx), RUN_WINDOW_TAG
+};
+
+// The three tabs share the pop-up palette.
+static void TryFreeBattleTabPalette(void)
+{
+    if (GetSpriteTileStartByTag(TAG_LAST_BALL_WINDOW) == 0xFFFF
+     && GetSpriteTileStartByTag(MOVE_INFO_WINDOW_TAG) == 0xFFFF
+     && GetSpriteTileStartByTag(RUN_WINDOW_TAG) == 0xFFFF)
+        FreeSpritePaletteByTag(TAG_ABILITY_POP_UP);
+}
+
+// BPE: the ball is drawn at 75% and centred in the compact frame. It slides the
+// same 28 pixels as the window.
+#define LAST_USED_BALL_X_F    11
+#define LAST_USED_BALL_X_0    -17
+#define LAST_USED_BALL_Y      ((IsDoubleBattle()) ? 76 : 66)
+#define LAST_USED_BALL_Y_BNC  ((IsDoubleBattle()) ? 74 : 64)
+#define LAST_USED_BALL_SCALE  341 // 256 / 0.75
+
+#define LAST_BALL_WIN_X_F       14
+#define LAST_BALL_WIN_X_0       -14
+#define LAST_USED_WIN_Y         ((IsDoubleBattle()) ? 70 : 60)
 
 #define sHide  data[0]
 #define sTimer  data[1]
@@ -2833,6 +2869,23 @@ static const struct SpriteSheet sSpriteSheet_MoveInfoWindow =
 
 #define sState     data[0]
 #define sSameBall  data[1]
+
+static u8 AddLastUsedBallIcon(void)
+{
+    u8 spriteId = AddItemIconSprite(102, 102, gBallToDisplay);
+    u8 matrixNum;
+
+    if (spriteId == MAX_SPRITES)
+        return MAX_SPRITES;
+    matrixNum = AllocOamMatrix();
+    if (matrixNum != 0xFF)
+    {
+        SetOamMatrix(matrixNum, LAST_USED_BALL_SCALE, 0, 0, LAST_USED_BALL_SCALE);
+        gSprites[spriteId].oam.affineMode = ST_OAM_AFFINE_NORMAL;
+        gSprites[spriteId].oam.matrixNum = matrixNum;
+    }
+    return spriteId;
+}
 
 bool32 CanThrowLastUsedBall(void)
 {
@@ -2872,7 +2925,7 @@ void TryAddLastUsedBallItemSprites(void)
     // ball
     if (gBattleStruct->ballSpriteIds[0] == MAX_SPRITES)
     {
-        gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, gBallToDisplay);
+        gBattleStruct->ballSpriteIds[0] = AddLastUsedBallIcon();
         if (gBattleStruct->ballSpriteIds[0] != MAX_SPRITES)
         {
             gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_0;
@@ -2904,8 +2957,7 @@ void TryAddLastUsedBallItemSprites(void)
 static void DestroyLastUsedBallWinGfx(struct Sprite *sprite)
 {
     FreeSpriteTilesByTag(TAG_LAST_BALL_WINDOW);
-    if (GetSpriteTileStartByTag(MOVE_INFO_WINDOW_TAG) == 0xFFFF)
-        FreeSpritePaletteByTag(TAG_ABILITY_POP_UP);
+    TryFreeBattleTabPalette();
     DestroySprite(sprite);
     gBattleStruct->ballSpriteIds[1] = MAX_SPRITES;
 }
@@ -2914,6 +2966,8 @@ static void DestroyLastUsedBallGfx(struct Sprite *sprite)
 {
     FreeSpriteTilesByTag(102);
     FreeSpritePaletteByTag(102);
+    if (sprite->oam.affineMode != ST_OAM_AFFINE_OFF)
+        FreeOamMatrix(sprite->oam.matrixNum);
     DestroySprite(sprite);
     gBattleStruct->ballSpriteIds[0] = MAX_SPRITES;
 }
@@ -2925,6 +2979,10 @@ void TryToAddMoveInfoWindow(void)
 
     if (B_MOVE_DESCRIPTION_BUTTON == L_BUTTON && gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_L_EQUALS_A)
         return;
+
+    // BPE: the run tab sits in the same place, so it can't slide out under this one.
+    if (gBattleStruct->runWindowSpriteId != MAX_SPRITES)
+        DestroyRunWindow(&gSprites[gBattleStruct->runWindowSpriteId]);
 
     LoadSpritePalette(&sSpritePalette_AbilityPopUp);
     if (GetSpriteTileStartByTag(MOVE_INFO_WINDOW_TAG) == 0xFFFF)
@@ -2945,10 +3003,65 @@ void TryToHideMoveInfoWindow(void)
 static void DestroyMoveInfoWinGfx(struct Sprite *sprite)
 {
     FreeSpriteTilesByTag(MOVE_INFO_WINDOW_TAG);
-    if (GetSpriteTileStartByTag(TAG_LAST_BALL_WINDOW) == 0xFFFF)
-        FreeSpritePaletteByTag(TAG_ABILITY_POP_UP);
+    TryFreeBattleTabPalette();
     DestroySprite(sprite);
     gBattleStruct->moveInfoSpriteId = MAX_SPRITES;
+}
+
+// Three pixels below the compact ball window, and clear of the text box.
+#define RUN_WIN_Y (LAST_USED_WIN_Y + 35)
+
+bool32 CanQuickRun(void)
+{
+    if (gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_L_EQUALS_A)
+        return FALSE;
+    return !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER | BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED));
+}
+
+void TryToAddRunWindow(void)
+{
+    if (!CanQuickRun())
+        return;
+
+    LoadSpritePalette(&sSpritePalette_AbilityPopUp);
+    if (GetSpriteTileStartByTag(RUN_WINDOW_TAG) == 0xFFFF)
+        LoadSpriteSheet(&sSpriteSheet_RunWindow);
+
+    if (gBattleStruct->runWindowSpriteId == MAX_SPRITES)
+        gBattleStruct->runWindowSpriteId = CreateSprite(&sSpriteTemplate_RunWindow, LAST_BALL_WIN_X_0, RUN_WIN_Y, 6);
+    if (gBattleStruct->runWindowSpriteId != MAX_SPRITES)
+        gSprites[gBattleStruct->runWindowSpriteId].sHide = FALSE;
+}
+
+void TryToHideRunWindow(void)
+{
+    if (gBattleStruct->runWindowSpriteId != MAX_SPRITES)
+        gSprites[gBattleStruct->runWindowSpriteId].sHide = TRUE;
+}
+
+static void DestroyRunWindow(struct Sprite *sprite)
+{
+    FreeSpriteTilesByTag(RUN_WINDOW_TAG);
+    DestroySprite(sprite);
+    gBattleStruct->runWindowSpriteId = MAX_SPRITES;
+    TryFreeBattleTabPalette();
+}
+
+static void SpriteCB_RunWin(struct Sprite *sprite)
+{
+    if (sprite->sHide)
+    {
+        if (sprite->x != LAST_BALL_WIN_X_0)
+            sprite->x--;
+
+        if (sprite->x == LAST_BALL_WIN_X_0)
+            DestroyRunWindow(sprite);
+    }
+    else
+    {
+        if (sprite->x != LAST_BALL_WIN_X_F)
+            sprite->x++;
+    }
 }
 
 static void SpriteCB_LastUsedBallWin(struct Sprite *sprite)
@@ -3100,7 +3213,7 @@ static void Task_BounceBall(u8 taskId)
     case 2: //Create New Icon
         if (!sprite->inUse)
         {
-            gBattleStruct->ballSpriteIds[0] = AddItemIconSprite(102, 102, gBallToDisplay);
+            gBattleStruct->ballSpriteIds[0] = AddLastUsedBallIcon();
             if (gBattleStruct->ballSpriteIds[0] != MAX_SPRITES)
             {
                 gSprites[gBattleStruct->ballSpriteIds[0]].x = LAST_USED_BALL_X_F;

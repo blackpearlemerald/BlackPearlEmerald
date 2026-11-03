@@ -138,6 +138,9 @@ void UpdateAbilityPopup(enum BattlerId battlerId);
 void CategoryIcons_LoadSpritesGfx(void);
 void TryToAddMoveInfoWindow(void);
 void TryToHideMoveInfoWindow(void);
+bool32 CanQuickRun(void);
+void TryToAddRunWindow(void);
+void TryToHideRunWindow(void);
 void TryAddPokeballIconToHealthbox(u8 healthboxSpriteId, bool8 noStatus);
 void UpdateNickInHealthbox(u8 healthboxSpriteId, struct Pokemon *mon);
 

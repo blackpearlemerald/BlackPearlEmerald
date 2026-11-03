@@ -306,6 +306,7 @@ static void HandleInputChooseAction(enum BattlerId battler)
                 PlaySE(SE_SELECT);
                 ArrowsChangeColorLastBallCycle(FALSE);
                 TryHideLastUsedBall();
+                TryToHideRunWindow();
                 BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_THROW_BALL, 0);
                 BtlController_Complete(battler);
             }
@@ -317,6 +318,7 @@ static void HandleInputChooseAction(enum BattlerId battler)
     {
         PlaySE(SE_SELECT);
         TryHideLastUsedBall();
+        TryToHideRunWindow();
 
         switch (gActionSelectionCursor[battler])
         {
@@ -388,6 +390,7 @@ static void HandleInputChooseAction(enum BattlerId battler)
                 AddBagItem(itemId, 1);
             }
             PlaySE(SE_SELECT);
+            TryToHideRunWindow();
             BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_CANCEL_PARTNER, 0);
             BtlController_Complete(battler);
         }
@@ -402,12 +405,22 @@ static void HandleInputChooseAction(enum BattlerId battler)
             }
         }
     }
+    else if (JOY_NEW(L_BUTTON) && CanQuickRun())
+    {
+        // BPE: L runs from wild battles, as if RUN were picked.
+        PlaySE(SE_SELECT);
+        TryHideLastUsedBall();
+        TryToHideRunWindow();
+        BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_RUN, 0);
+        BtlController_Complete(battler);
+    }
     else if (JOY_NEW(START_BUTTON))
     {
         SwapHpBarsWithHpText();
     }
     else if (DEBUG_BATTLE_MENU == TRUE && JOY_NEW(SELECT_BUTTON))
     {
+        TryToHideRunWindow();
         BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_DEBUG, 0);
         BtlController_Complete(battler);
     }
@@ -416,6 +429,7 @@ static void HandleInputChooseAction(enum BattlerId battler)
     {
         PlaySE(SE_SELECT);
         TryHideLastUsedBall();
+        TryToHideRunWindow();
         BtlController_EmitTwoReturnValues(battler, B_COMM_TO_ENGINE, B_ACTION_THROW_BALL, 0);
         BtlController_Complete(battler);
     }
@@ -2106,6 +2120,7 @@ static void PlayerHandleChooseAction(enum BattlerId battler)
         ActionSelectionDestroyCursorAt(i);
 
     TryRestoreLastUsedBall();
+    TryToAddRunWindow();
     ActionSelectionCreateCursorAt(gActionSelectionCursor[battler], 0);
     PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, battler, gBattlerPartyIndexes[battler]);
     BattleStringExpandPlaceholdersToDisplayedString(gText_WhatWillPkmnDo);

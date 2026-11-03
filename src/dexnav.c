@@ -2022,9 +2022,16 @@ static void DexNavLoadEncounterData(void)
 static void TryDrawIconInSlot(enum Species species, s16 x, s16 y)
 {
     if (species == SPECIES_NONE || species > NUM_SPECIES)
+    {
         CreateNoDataIcon(x, y);   //'X' in slot
+    }
     else
+    {
         CreateMonIcon(species, SpriteCB_MonIcon, x, y, 0, 0xFFFFFFFF);
+        // BPE: the search window's owned mark, in the slot's top right corner.
+        if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
+            CreateSprite(&sOwnedIconTemplate, x + 8, y - 8, 0);
+    }
 }
 
 static void DrawSpeciesIcons(void)
@@ -2034,6 +2041,8 @@ static void DrawSpeciesIcons(void)
     enum Species species;
 
     LoadCompressedSpriteSheetUsingHeap(&sNoDataIconSpriteSheet);
+    LoadCompressedSpriteSheetUsingHeap(&sOwnedIconSpriteSheet);
+    LoadSpritePalette(&sHeldItemSpritePalette);
     for (i = 0; i < NUM_LAND_MONS_ENCOUNTER_SLOTS; i++)
     {
         species = sDexNavUiDataPtr->landSpecies[i];
