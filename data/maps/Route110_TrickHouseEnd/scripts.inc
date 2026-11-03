@@ -12,7 +12,15 @@ Route110_TrickHouseEnd_OnResume:
 Route110_TrickHouseEnd_OnTransition:
 	setvar VAR_TEMP_1, 0
 	setvar VAR_TEMP_2, 0
+	@ BPE: a room replayed through the Abra after the last challenge ends here
+	@ too. The Trick Master has left, so keep him and his exit trigger away,
+	@ and don't hide the Nugget his departure revealed.
+	goto_if_eq VAR_TRICK_HOUSE_LEVEL, 8, Route110_TrickHouseEnd_EventScript_TrickMasterGone
 	special SetTrickHouseNuggetFlag
+	end
+
+Route110_TrickHouseEnd_EventScript_TrickMasterGone::
+	setvar VAR_TEMP_2, 1
 	end
 
 Route110_TrickHouseEnd_OnWarp:

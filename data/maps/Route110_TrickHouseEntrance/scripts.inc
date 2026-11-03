@@ -15,6 +15,9 @@ Route110_TrickHouseEntrance_MapScripts::
 
 Route110_TrickHouseEntrance_OnTransition:
 	setflag FLAG_LANDMARK_TRICK_HOUSE
+	@ BPE: the Abra that Teleports the player into any room appears once all
+	@ eight challenges are beaten. FLAG_TEMP_1 hides it.
+	call_if_lt VAR_TRICK_HOUSE_LEVEL, 8, Route110_TrickHouseEntrance_EventScript_HideAbra
 	goto_if_eq VAR_TRICK_HOUSE_ENTER_FROM_CORRIDOR, 1, Route110_TrickHouseEntrance_EventScript_EnterFromCorridor
 	goto_if_eq VAR_TRICK_HOUSE_PRIZE_PICKUP, 1, Route110_TrickHouseEntrance_EventScript_SetReadyToGiveReward
 	goto_if_eq VAR_TRICK_HOUSE_FOUND_TRICK_MASTER, 1, Route110_TrickHouseEntrance_EventScript_MoveTrickMasterToDoor
@@ -586,6 +589,98 @@ Route110_TrickHouseEntrance_EventScript_LeftOnJourneyNote2::
 	releaseall
 	end
 
+Route110_TrickHouseEntrance_EventScript_HideAbra::
+	setflag FLAG_TEMP_1
+	return
+
+@ BPE: the Trick Master left his Abra behind. It Teleports the player into
+@ any of the eight rooms, so their trainers and wild Pokémon stay reachable.
+@ Every room's door is already open (VAR_TRICK_HOUSE_PUZZLE_*_STATE is 2).
+Route110_TrickHouseEntrance_EventScript_Abra::
+	lock
+	faceplayer
+	waitse
+	playmoncry SPECIES_ABRA, CRY_MODE_NORMAL
+	waitmoncry
+	message Route110_TrickHouseEntrance_Text_AbraWhichRoom
+	waitmessage
+	dynmultichoice 0, 0, FALSE, 5, 0, DYN_MULTICHOICE_CB_NONE, Route110_TrickHouseEntrance_Text_Room1, Route110_TrickHouseEntrance_Text_Room2, Route110_TrickHouseEntrance_Text_Room3, Route110_TrickHouseEntrance_Text_Room4, Route110_TrickHouseEntrance_Text_Room5, Route110_TrickHouseEntrance_Text_Room6, Route110_TrickHouseEntrance_Text_Room7, Route110_TrickHouseEntrance_Text_Room8, Route110_TrickHouseEntrance_Text_AbraCancel
+	switch VAR_RESULT
+	case 0, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom1
+	case 1, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom2
+	case 2, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom3
+	case 3, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom4
+	case 4, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom5
+	case 5, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom6
+	case 6, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom7
+	case 7, Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom8
+	msgbox Route110_TrickHouseEntrance_Text_AbraDozesOff, MSGBOX_DEFAULT
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport::
+	msgbox Route110_TrickHouseEntrance_Text_AbraUsedTeleport, MSGBOX_DEFAULT
+	closemessage
+	playse SE_M_TELEPORT
+	waitse
+	return
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom1::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE1, 0, 21
+	waitstate
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom2::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE2, 0, 21
+	waitstate
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom3::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE3, 0, 21
+	waitstate
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom4::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE4, 0, 21
+	waitstate
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom5::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE5, 0, 21
+	waitstate
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom6::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE6, 0, 21
+	waitstate
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom7::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE7, 0, 21
+	waitstate
+	release
+	end
+
+Route110_TrickHouseEntrance_EventScript_AbraTeleportRoom8::
+	call Route110_TrickHouseEntrance_EventScript_AbraUsedTeleport
+	warpteleport MAP_ROUTE110_TRICK_HOUSE_PUZZLE8, 0, 21
+	waitstate
+	release
+	end
+
 Route110_TrickHousePuzzle_EventScript_Door::
 	lockall
 	switch VAR_TRICK_HOUSE_LEVEL
@@ -597,6 +692,7 @@ Route110_TrickHousePuzzle_EventScript_Door::
 	case 5, Route110_TrickHousePuzzle6_EventScript_Door
 	case 6, Route110_TrickHousePuzzle7_EventScript_Door
 	case 7, Route110_TrickHousePuzzle8_EventScript_Door
+	releaseall
 	end
 
 Route110_TrickHousePuzzle1_EventScript_Door::
@@ -806,6 +902,43 @@ Route110_TrickHouseEntrance_Text_LeavingOnJourneyNote:
 	.string "There is a note affixed to the scroll…\p"
 	.string "“I am leaving on a journey.\n"
 	.string "Don't look for me. TRICK MASTER”$"
+
+Route110_TrickHouseEntrance_Text_AbraWhichRoom:
+	.string "The TRICK MASTER's ABRA stayed behind.\n"
+	.string "Which room should it TELEPORT you to?$"
+
+Route110_TrickHouseEntrance_Text_Room1:
+	.string "ROOM 1$"
+
+Route110_TrickHouseEntrance_Text_Room2:
+	.string "ROOM 2$"
+
+Route110_TrickHouseEntrance_Text_Room3:
+	.string "ROOM 3$"
+
+Route110_TrickHouseEntrance_Text_Room4:
+	.string "ROOM 4$"
+
+Route110_TrickHouseEntrance_Text_Room5:
+	.string "ROOM 5$"
+
+Route110_TrickHouseEntrance_Text_Room6:
+	.string "ROOM 6$"
+
+Route110_TrickHouseEntrance_Text_Room7:
+	.string "ROOM 7$"
+
+Route110_TrickHouseEntrance_Text_Room8:
+	.string "ROOM 8$"
+
+Route110_TrickHouseEntrance_Text_AbraCancel:
+	.string "CANCEL$"
+
+Route110_TrickHouseEntrance_Text_AbraUsedTeleport:
+	.string "ABRA used TELEPORT!$"
+
+Route110_TrickHouseEntrance_Text_AbraDozesOff:
+	.string "ABRA dozed off again…$"
 
 Route110_TrickHouseEntrance_Text_NextTimeUseThisTrick:
 	.string "For the next time, I'll use this trick,\n"

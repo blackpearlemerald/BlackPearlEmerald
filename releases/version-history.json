@@ -1,6 +1,12 @@
 {
   "schemaVersion": 2,
   "releases": {
+    "2.3.2": {
+      "channel": "stable",
+      "changes": [
+        "After you beat the Trick House, an Abra in the entrance Teleports you into any of its eight rooms."
+      ]
+    },
     "2.3.1": {
       "channel": "stable",
       "changes": [
